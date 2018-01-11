@@ -14,8 +14,6 @@ import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import java.util.Collections;
-
 import i.am.shiro.amai.R;
 import i.am.shiro.amai.adapter.BookAdapter;
 
@@ -37,8 +35,7 @@ public class DownloadsFragment extends Fragment implements SearchView.OnQueryTex
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_downloads, container, false);
 
-        BookAdapter adapter = new BookAdapter();
-        adapter.setData(Collections.emptyList());
+        BookAdapter adapter = new BookAdapter(getContext());
 
         DividerItemDecoration itemDecoration = new DividerItemDecoration(getContext(), VERTICAL);
 

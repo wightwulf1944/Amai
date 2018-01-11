@@ -1,5 +1,6 @@
 package i.am.shiro.amai.adapter;
 
+import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -7,6 +8,9 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+
+import java.util.Collections;
 import java.util.List;
 
 import i.am.shiro.amai.R;
@@ -18,7 +22,14 @@ import i.am.shiro.amai.model.Book;
 
 public class BookAdapter extends RecyclerView.Adapter<BookAdapter.ViewHolder> {
 
+    private final Context context;
+
     private List<Book> data;
+
+    public BookAdapter(Context context) {
+        this.context = context;
+        data = Collections.emptyList();
+    }
 
     public void setData(List<Book> data) {
         this.data = data;
@@ -43,7 +54,7 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.ViewHolder> {
         return data.size();
     }
 
-    static class ViewHolder extends RecyclerView.ViewHolder {
+    class ViewHolder extends RecyclerView.ViewHolder {
 
         private final ImageView thumbnailImage;
 
@@ -61,6 +72,10 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.ViewHolder> {
         private void bind(Book book) {
             titleText.setText(book.getTitle());
             pageText.setText(book.getPageCountStr());
+
+            Glide.with(context)
+                    .load(book.getThumbnailUrl())
+                    .into(thumbnailImage);
         }
     }
 }
