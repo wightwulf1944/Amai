@@ -9,8 +9,8 @@
 
     <ImageView
         android:id="@+id/thumbnailImage"
-        android:layout_width="60dp"
-        android:layout_height="90dp"
+        android:layout_width="250px"
+        android:layout_height="350px"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -27,7 +27,7 @@
         android:gravity="top"
         android:maxLines="3"
         android:singleLine="false"
-        app:autoSizeMaxTextSize="22sp"
+        app:autoSizeMaxTextSize="20sp"
         app:autoSizeMinTextSize="14sp"
         app:autoSizeTextType="uniform"
         app:layout_constraintBottom_toTopOf="@+id/textView2"
@@ -38,10 +38,10 @@
 
     <TextView
         android:id="@+id/pageText"
-        android:layout_width="20dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="1sp"
-        android:layout_marginRight="1sp"
+        android:layout_marginEnd="2sp"
+        android:layout_marginRight="2sp"
         android:textAppearance="@style/TextAppearance.AppCompat.Caption"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/textView2"
