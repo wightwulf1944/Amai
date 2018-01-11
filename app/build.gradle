@@ -36,4 +36,9 @@ dependencies {
 
     //    https://github.com/JakeWharton/timber
     implementation 'com.jakewharton.timber:timber:4.5.1'
+
+    //    http://square.github.io/retrofit/
+    implementation 'com.squareup.retrofit2:retrofit:2.3.0'
+    implementation 'com.squareup.retrofit2:converter-moshi:2.3.0'
+    implementation 'com.squareup.retrofit2:adapter-rxjava2:2.3.0'
 }
