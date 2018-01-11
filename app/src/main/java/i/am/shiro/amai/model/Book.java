@@ -40,7 +40,7 @@ public class Book {
 
         pageCount = bookJson.pageCount;
 
-        thumbnailUrl = THUMBNAIL_BASE_URL + bookJson.mediaId;
+        thumbnailUrl = thumbnailUrlFrom(bookJson);
 
         imageUrls = IntStream.range(1, bookJson.pageCount)
                 .mapToObj(json -> THUMBNAIL_BASE_URL + json)
@@ -60,6 +60,21 @@ public class Book {
                 .filter(json -> json.type.equals("tag"))
                 .map(json -> json.name)
                 .collect(toList());
+    }
+
+    private static String thumbnailUrlFrom(BookJson bookJson) {
+        return THUMBNAIL_BASE_URL + bookJson.mediaId + "/thumb" + fileExtensionFrom(bookJson.images.thumbnail);
+    }
+
+    private static String fileExtensionFrom(BookJson.Image image) {
+        switch (image.type) {
+            case "j":
+                return ".jpg";
+            case "p":
+                return ".png";
+            default:
+                throw new RuntimeException("Unknown type " + image.type);
+        }
     }
 
     public String getTitle() {
