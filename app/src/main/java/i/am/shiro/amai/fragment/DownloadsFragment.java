@@ -14,12 +14,10 @@ import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import java.util.Arrays;
-import java.util.List;
+import java.util.Collections;
 
 import i.am.shiro.amai.R;
-import i.am.shiro.amai.adapter.DownloadsAdapter;
-import i.am.shiro.amai.model.Content;
+import i.am.shiro.amai.adapter.BookAdapter;
 
 import static android.support.v7.widget.DividerItemDecoration.VERTICAL;
 
@@ -39,8 +37,8 @@ public class DownloadsFragment extends Fragment implements SearchView.OnQueryTex
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_downloads, container, false);
 
-        DownloadsAdapter adapter = new DownloadsAdapter();
-        adapter.setData(mockData());
+        BookAdapter adapter = new BookAdapter();
+        adapter.setData(Collections.emptyList());
 
         DividerItemDecoration itemDecoration = new DividerItemDecoration(getContext(), VERTICAL);
 
@@ -68,15 +66,5 @@ public class DownloadsFragment extends Fragment implements SearchView.OnQueryTex
     @Override
     public boolean onQueryTextChange(String newText) {
         return false;
-    }
-
-    private List<Content> mockData() {
-        return Arrays.asList(
-                new Content("hu"),
-                new Content("when I am using TextView with singleLine=\"true\" and ellip"),
-                new Content(" I think that TextView should use all available space to display a whole text (not just a part - it shouldn't be cropped) and the textSize"),
-                new Content("wer"),
-                new Content("wai")
-        );
     }
 }

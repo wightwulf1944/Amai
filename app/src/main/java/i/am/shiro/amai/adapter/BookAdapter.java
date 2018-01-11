@@ -10,18 +10,19 @@ import android.widget.TextView;
 import java.util.List;
 
 import i.am.shiro.amai.R;
-import i.am.shiro.amai.model.Content;
+import i.am.shiro.amai.model.Book;
 
 /**
  * Created by Shiro on 1/6/2018.
  */
 
-public class DownloadsAdapter extends RecyclerView.Adapter<DownloadsAdapter.ViewHolder> {
+public class BookAdapter extends RecyclerView.Adapter<BookAdapter.ViewHolder> {
 
-    private List<Content> data;
+    private List<Book> data;
 
-    public void setData(List<Content> data) {
+    public void setData(List<Book> data) {
         this.data = data;
+        notifyDataSetChanged();
     }
 
     @Override
@@ -33,8 +34,8 @@ public class DownloadsAdapter extends RecyclerView.Adapter<DownloadsAdapter.View
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        Content content = data.get(position);
-        holder.bind(content);
+        Book book = data.get(position);
+        holder.bind(book);
     }
 
     @Override
@@ -57,9 +58,9 @@ public class DownloadsAdapter extends RecyclerView.Adapter<DownloadsAdapter.View
             pageText = view.findViewById(R.id.pageText);
         }
 
-        private void bind(Content content) {
-            titleText.setText(content.getTitle());
-            pageText.setText(content.getPageCountStr());
+        private void bind(Book book) {
+            titleText.setText(book.getTitle());
+            pageText.setText(book.getPageCountStr());
         }
     }
 }
