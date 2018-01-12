@@ -1,6 +1,8 @@
 package i.am.shiro.amai.adapter;
 
 import android.content.Context;
+import android.support.constraint.ConstraintLayout;
+import android.support.constraint.ConstraintSet;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -39,7 +41,7 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.ViewHolder> {
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-        View view = inflater.inflate(R.layout.item_linear_book, parent, false);
+        View view = inflater.inflate(R.layout.item_staggered_book, parent, false);
         return new ViewHolder(view);
     }
 
@@ -56,6 +58,8 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.ViewHolder> {
 
     class ViewHolder extends RecyclerView.ViewHolder {
 
+        private final ConstraintLayout constraintLayout;
+
         private final ImageView thumbnailImage;
 
         private final TextView titleText;
@@ -64,6 +68,7 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.ViewHolder> {
 
         ViewHolder(View view) {
             super(view);
+            constraintLayout = view.findViewById(R.id.constraintLayout);
             thumbnailImage = view.findViewById(R.id.thumbnailImage);
             titleText = view.findViewById(R.id.titleText);
             pageText = view.findViewById(R.id.pageText);
@@ -72,6 +77,15 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.ViewHolder> {
         private void bind(Book book) {
             titleText.setText(book.getTitle());
             pageText.setText(book.getPageCountStr());
+
+            String ratioStr = String.format("h,%s:%s",
+                    book.getThumbnailWidth(),
+                    book.getThumbnailHeight());
+
+            ConstraintSet constraintSet = new ConstraintSet();
+            constraintSet.clone(constraintLayout);
+            constraintSet.setDimensionRatio(R.id.thumbnailImage, ratioStr);
+            constraintSet.applyTo(constraintLayout);
 
             Glide.with(context)
                     .load(book.getThumbnailUrl())

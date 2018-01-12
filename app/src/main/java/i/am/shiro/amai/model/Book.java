@@ -25,6 +25,10 @@ public class Book {
 
     private String thumbnailUrl;
 
+    private int thumbnailWidth;
+
+    private int thumbnailHeight;
+
     private List<String> imageUrls;
 
     private List<String> artistTags;
@@ -41,6 +45,8 @@ public class Book {
         pageCount = bookJson.pageCount;
 
         thumbnailUrl = thumbnailUrlFrom(bookJson);
+        thumbnailWidth = bookJson.images.thumbnail.width;
+        thumbnailHeight = bookJson.images.thumbnail.height;
 
         imageUrls = IntStream.range(1, bookJson.pageCount)
                 .mapToObj(json -> THUMBNAIL_BASE_URL + json)
@@ -87,5 +93,13 @@ public class Book {
 
     public String getThumbnailUrl() {
         return thumbnailUrl;
+    }
+
+    public int getThumbnailWidth() {
+        return thumbnailWidth;
+    }
+
+    public int getThumbnailHeight() {
+        return thumbnailHeight;
     }
 }

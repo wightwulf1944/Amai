@@ -5,8 +5,8 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,7 +17,8 @@ import i.am.shiro.amai.model.Book;
 import i.am.shiro.amai.retrofit.Nhentai;
 import timber.log.Timber;
 
-import static android.support.v7.widget.DividerItemDecoration.VERTICAL;
+import static android.support.v7.widget.StaggeredGridLayoutManager.GAP_HANDLING_NONE;
+import static android.support.v7.widget.StaggeredGridLayoutManager.VERTICAL;
 import static io.reactivex.android.schedulers.AndroidSchedulers.mainThread;
 
 /**
@@ -32,12 +33,13 @@ public class SourceFragment extends Fragment {
 
         BookAdapter adapter = new BookAdapter(getContext());
 
-        DividerItemDecoration itemDecoration = new DividerItemDecoration(getContext(), VERTICAL);
+        StaggeredGridLayoutManager layoutManager = new StaggeredGridLayoutManager(2, VERTICAL);
+        layoutManager.setGapStrategy(GAP_HANDLING_NONE);
 
         RecyclerView recyclerView = view.findViewById(R.id.recyclerView);
         recyclerView.setHasFixedSize(true);
         recyclerView.setAdapter(adapter);
-        recyclerView.addItemDecoration(itemDecoration);
+        recyclerView.setLayoutManager(layoutManager);
 
         Nhentai.api.getAll(1)
                 .flattenAsObservable(bookSearchJson -> bookSearchJson.results)

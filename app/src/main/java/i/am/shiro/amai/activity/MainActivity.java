@@ -36,7 +36,7 @@ public class MainActivity extends AppCompatActivity {
 
         BottomNavigationView navigation = findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(this::onNavigationItemSelected);
-        navigation.setSelectedItemId(R.id.navigation_downloads);
+        navigation.setSelectedItemId(R.id.navigation_source);
     }
 
     private boolean onNavigationItemSelected(@NonNull MenuItem item) {
