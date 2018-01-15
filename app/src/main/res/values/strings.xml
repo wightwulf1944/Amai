@@ -3,4 +3,9 @@
     <string name="title_downloads">Downloads</string>
     <string name="title_source">Source</string>
     <string name="title_queue">Queue</string>
+
+    <string name="storage_note">
+        Uninstalling this app will also delete your downloads
+        Changing the storage option will not transfer your downloads
+    </string>
 </resources>

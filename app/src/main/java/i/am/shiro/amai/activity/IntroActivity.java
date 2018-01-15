@@ -2,19 +2,17 @@ package i.am.shiro.amai.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 
 import i.am.shiro.amai.Preferences;
 import i.am.shiro.amai.R;
 import i.am.shiro.amai.adapter.IntroAdapter;
+import i.am.shiro.amai.fragment.AboutIntroFragment;
+import i.am.shiro.amai.fragment.StorageIntroFragment;
 
 /**
  * Created by Shiro on 1/6/2018.
@@ -23,9 +21,10 @@ import i.am.shiro.amai.adapter.IntroAdapter;
 public class IntroActivity extends AppCompatActivity {
 
     private final Fragment[] fragments = {
-            new Page1Fragment(),
-            new Page2Fragment()
+            new AboutIntroFragment(),
+            new StorageIntroFragment()
     };
+
     private ViewPager viewPager;
 
     @Override
@@ -53,24 +52,6 @@ public class IntroActivity extends AppCompatActivity {
             Intent intent = new Intent(this, MainActivity.class);
             startActivity(intent);
             finish();
-        }
-    }
-
-    public static class Page1Fragment extends Fragment {
-
-        @Nullable
-        @Override
-        public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-            return inflater.inflate(R.layout.fragment_intro_page_1, container, false);
-        }
-    }
-
-    public static class Page2Fragment extends Fragment {
-
-        @Nullable
-        @Override
-        public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-            return inflater.inflate(R.layout.fragment_intro_page_2, container, false);
         }
     }
 }
