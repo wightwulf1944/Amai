@@ -1,6 +1,7 @@
 package i.am.shiro.amai.fragment;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -42,37 +43,35 @@ public class StorageIntroFragment extends Fragment {
         LinearLayout optionsLayout = view.findViewById(R.id.optionsLayout);
 
         for (StorageOption storageOption : storageOptions) {
-            View internal = inflater.inflate(R.layout.item_storage_option, optionsLayout, false);
-            internal.setTag(storageOption);
-            internal.setOnClickListener(this::onStorageOptionViewClicked);
+            View storageOptionView = inflater.inflate(R.layout.item_storage_option, optionsLayout, false);
+            storageOptionView.setTag(storageOption);
+            storageOptionView.setOnClickListener(this::onStorageOptionViewClicked);
 
-            TextView titleText = internal.findViewById(R.id.titleText);
+            TextView titleText = storageOptionView.findViewById(R.id.titleText);
             titleText.setText(storageOption.getTitle());
 
-            TextView pathText = internal.findViewById(R.id.pathText);
+            TextView pathText = storageOptionView.findViewById(R.id.pathText);
             pathText.setText(storageOption.getPath());
 
-            TextView freeSpaceText = internal.findViewById(R.id.freeSpaceText);
+            TextView freeSpaceText = storageOptionView.findViewById(R.id.freeSpaceText);
             freeSpaceText.setText(storageOption.getFreeSpaceStr());
 
-            ProgressBar gauge = internal.findViewById(R.id.gauge);
+            ProgressBar gauge = storageOptionView.findViewById(R.id.gauge);
             gauge.setMax(storageOption.getTotalSpaceMb());
             gauge.setProgress(storageOption.getUsedSpaceMb());
 
-            optionsLayout.addView(internal);
+            optionsLayout.addView(storageOptionView);
         }
 
         selectedStorageOptionView = optionsLayout.getChildAt(0);
-        selectedStorageOptionView.setSelected(true);
+        selectedStorageOptionView.setBackgroundColor(Color.GREEN);
 
         return view;
     }
 
     private void onStorageOptionViewClicked(View view) {
-        selectedStorageOptionView.setSelected(false);
+        selectedStorageOptionView.setBackgroundColor(Color.TRANSPARENT);
         selectedStorageOptionView = view;
-        selectedStorageOptionView.setSelected(true);
-
-        StorageOption storageOption = (StorageOption) selectedStorageOptionView.getTag();
+        selectedStorageOptionView.setBackgroundColor(Color.GREEN);
     }
 }
