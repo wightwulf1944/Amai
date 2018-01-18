@@ -1,7 +1,6 @@
 package i.am.shiro.amai.fragment;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -27,7 +26,7 @@ public class StorageIntroFragment extends Fragment {
 
     private List<StorageOption> storageOptions;
 
-    private View selectedStorageOptionView;
+    private int selectedIndex;
 
     @Override
     public void onAttach(Context context) {
@@ -44,8 +43,7 @@ public class StorageIntroFragment extends Fragment {
 
         for (StorageOption storageOption : storageOptions) {
             View storageOptionView = inflater.inflate(R.layout.item_storage_option, optionsLayout, false);
-            storageOptionView.setTag(storageOption);
-            storageOptionView.setOnClickListener(this::onStorageOptionViewClicked);
+            storageOptionView.setOnClickListener(this::setSelectedStorageOption);
 
             TextView titleText = storageOptionView.findViewById(R.id.titleText);
             titleText.setText(storageOption.getTitle());
@@ -63,15 +61,16 @@ public class StorageIntroFragment extends Fragment {
             optionsLayout.addView(storageOptionView);
         }
 
-        selectedStorageOptionView = optionsLayout.getChildAt(0);
-        selectedStorageOptionView.setBackgroundColor(Color.GREEN);
+        View defaultSelection = optionsLayout.getChildAt(selectedIndex);
+        setSelectedStorageOption(defaultSelection);
 
         return view;
     }
 
-    private void onStorageOptionViewClicked(View view) {
-        selectedStorageOptionView.setBackgroundColor(Color.TRANSPARENT);
-        selectedStorageOptionView = view;
-        selectedStorageOptionView.setBackgroundColor(Color.GREEN);
+    private void setSelectedStorageOption(View view) {
+        ViewGroup optionsLayout = (ViewGroup) view.getParent();
+        optionsLayout.dispatchSetSelected(false);
+        view.setSelected(true);
+        selectedIndex = optionsLayout.indexOfChild(view);
     }
 }
