@@ -3,18 +3,16 @@ package i.am.shiro.amai.model;
 import com.annimon.stream.IntStream;
 import com.annimon.stream.Stream;
 
-import java.util.List;
-
-import io.realm.RealmModel;
+import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
 
-import static com.annimon.stream.Collectors.toList;
+import static com.annimon.stream.Collectors.joining;
 
 /**
  * Created by Shiro on 1/6/2018.
  */
 
-public class Book implements RealmModel {
+public class Book extends RealmObject {
 
     private static final String THUMBNAIL_BASE_URL = "https://t.nhentai.net/galleries/";
 
@@ -33,13 +31,17 @@ public class Book implements RealmModel {
 
     private int thumbnailHeight;
 
-    private List<String> imageUrls;
+    private String imageUrls;
 
-    private List<String> artistTags;
+    private String artistTags;
 
-    private List<String> languageTags;
+    private String languageTags;
 
-    private List<String> generalTags;
+    private String generalTags;
+
+    public Book() {
+        // realm required empty constructor
+    }
 
     public Book(BookJson bookJson) {
         id = bookJson.id;
@@ -54,22 +56,22 @@ public class Book implements RealmModel {
 
         imageUrls = IntStream.range(1, bookJson.pageCount)
                 .mapToObj(json -> THUMBNAIL_BASE_URL + json)
-                .collect(toList());
+                .collect(joining(","));
 
         artistTags = Stream.of(bookJson.tags)
                 .filter(json -> json.type.equals("artist"))
                 .map(json -> json.name)
-                .collect(toList());
+                .collect(joining(","));
 
         languageTags = Stream.of(bookJson.tags)
                 .filter(json -> json.type.equals("language"))
                 .map(json -> json.name)
-                .collect(toList());
+                .collect(joining(","));
 
         generalTags = Stream.of(bookJson.tags)
                 .filter(json -> json.type.equals("tag"))
                 .map(json -> json.name)
-                .collect(toList());
+                .collect(joining(","));
     }
 
     private static String thumbnailUrlFrom(BookJson bookJson) {

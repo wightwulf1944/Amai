@@ -3,6 +3,7 @@ package i.am.shiro.amai;
 import android.app.Application;
 
 import io.realm.Realm;
+import io.realm.RealmConfiguration;
 import timber.log.Timber;
 
 /**
@@ -27,6 +28,12 @@ public class AmaiApplication extends Application {
         }
 
         Preferences.init(this);
+
         Realm.init(this);
+        RealmConfiguration config = new RealmConfiguration.Builder()
+                .deleteRealmIfMigrationNeeded()
+                .compactOnLaunch()
+                .build();
+        Realm.setDefaultConfiguration(config);
     }
 }
