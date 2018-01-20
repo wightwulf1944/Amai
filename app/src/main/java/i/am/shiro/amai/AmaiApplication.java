@@ -24,5 +24,7 @@ public class AmaiApplication extends Application {
                 }
             });
         }
+
+        Preferences.init(this);
     }
 }

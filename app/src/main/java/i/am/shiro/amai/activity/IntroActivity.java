@@ -48,7 +48,7 @@ public class IntroActivity extends AppCompatActivity {
         if (nextItem < fragments.length) {
             viewPager.setCurrentItem(nextItem);
         } else {
-            Preferences.setFirstRunDone(this);
+            Preferences.setFirstRunDone();
             Intent intent = new Intent(this, MainActivity.class);
             startActivity(intent);
             finish();

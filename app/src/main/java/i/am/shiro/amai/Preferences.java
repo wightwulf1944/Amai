@@ -1,6 +1,7 @@
 package i.am.shiro.amai;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
 /**
@@ -9,17 +10,23 @@ import android.preference.PreferenceManager;
 
 public class Preferences {
 
-    private static final String IS_FIRST_RUN_KEY = "isFirstRun";
+    private static final String IS_FIRST_RUN = "isFirstRun";
 
-    public static boolean isFirstRun(Context context) {
-        return PreferenceManager.getDefaultSharedPreferences(context)
-                .getBoolean(IS_FIRST_RUN_KEY, true);
+    private static SharedPreferences sharedPreferences;
+
+    static void init(Context context) {
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
     }
 
-    public static void setFirstRunDone(Context context) {
-        PreferenceManager.getDefaultSharedPreferences(context)
+    public static boolean isFirstRun() {
+        return sharedPreferences
+                .getBoolean(IS_FIRST_RUN, true);
+    }
+
+    public static void setFirstRunDone() {
+        sharedPreferences
                 .edit()
-                .putBoolean(IS_FIRST_RUN_KEY, false)
+                .putBoolean(IS_FIRST_RUN, false)
                 .apply();
     }
 }
