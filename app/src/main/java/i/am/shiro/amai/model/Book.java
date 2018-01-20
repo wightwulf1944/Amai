@@ -87,6 +87,10 @@ public class Book implements RealmModel {
         }
     }
 
+    public int getId() {
+        return id;
+    }
+
     public String getTitle() {
         return title;
     }

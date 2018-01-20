@@ -31,11 +31,17 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.ViewHolder> {
     public BookAdapter(Context context) {
         this.context = context;
         data = Collections.emptyList();
+        setHasStableIds(true);
     }
 
     public void setData(List<Book> data) {
         this.data = data;
         notifyDataSetChanged();
+    }
+
+    @Override
+    public long getItemId(int position) {
+        return data.get(position).getId();
     }
 
     @Override
