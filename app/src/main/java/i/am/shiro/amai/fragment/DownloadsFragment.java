@@ -5,19 +5,22 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import java.util.Collections;
+
 import i.am.shiro.amai.R;
 import i.am.shiro.amai.adapter.BookAdapter;
 
-import static android.support.v7.widget.DividerItemDecoration.VERTICAL;
+import static android.support.v7.widget.StaggeredGridLayoutManager.GAP_HANDLING_NONE;
+import static android.support.v7.widget.StaggeredGridLayoutManager.VERTICAL;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -35,16 +38,23 @@ public class DownloadsFragment extends Fragment implements SearchView.OnQueryTex
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_downloads, container, false);
 
-        BookAdapter adapter = new BookAdapter(getContext());
+        BookAdapter adapter = new BookAdapter(this, inflater);
+        adapter.setData(Collections.emptyList());
 
-        DividerItemDecoration itemDecoration = new DividerItemDecoration(getContext(), VERTICAL);
+        StaggeredGridLayoutManager layoutManager = new StaggeredGridLayoutManager(getSpanCount(), VERTICAL);
+        layoutManager.setGapStrategy(GAP_HANDLING_NONE);
 
         RecyclerView recyclerView = view.findViewById(R.id.recyclerView);
         recyclerView.setHasFixedSize(true);
         recyclerView.setAdapter(adapter);
-        recyclerView.addItemDecoration(itemDecoration);
+        recyclerView.setLayoutManager(layoutManager);
 
         return view;
+    }
+
+    //TODO
+    private int getSpanCount() {
+        return 2;
     }
 
     @Override
