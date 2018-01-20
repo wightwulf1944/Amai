@@ -25,8 +25,12 @@ public class SourceFragmentViewModel extends ViewModel {
         books.setValue(Collections.emptyList());
     }
 
-    public LiveData<List<Book>> getBooks() {
-        return books;
+    public List<Book> getBooks() {
+        return books.getValue();
+    }
+
+    public void observeBooks(LifecycleOwner owner, Observer<List<Book>> observer) {
+        books.observe(owner, observer);
     }
 
     public void fetchBooks() {

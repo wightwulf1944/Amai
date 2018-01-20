@@ -49,7 +49,7 @@ public class SourceFragment extends Fragment {
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(layoutManager);
 
-        viewModel.getBooks().observe(this, adapter::setData);
+        viewModel.observeBooks(this, adapter::setData);
         viewModel.fetchBooks();
 
         return view;
