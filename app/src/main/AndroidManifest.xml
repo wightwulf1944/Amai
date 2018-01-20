@@ -28,6 +28,8 @@
         <activity
             android:name=".activity.IntroActivity"
             android:theme="@style/AppTheme.NoActionBar"/>
+        <activity
+            android:name=".activity.DetailActivity"/>
     </application>
 
 </manifest>
