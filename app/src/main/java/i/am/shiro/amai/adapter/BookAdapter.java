@@ -1,8 +1,8 @@
 package i.am.shiro.amai.adapter;
 
-import android.content.Context;
 import android.support.constraint.ConstraintLayout;
 import android.support.constraint.ConstraintSet;
+import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,7 +12,6 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 
-import java.util.Collections;
 import java.util.List;
 
 import i.am.shiro.amai.R;
@@ -24,13 +23,15 @@ import i.am.shiro.amai.model.Book;
 
 public class BookAdapter extends RecyclerView.Adapter<BookAdapter.ViewHolder> {
 
-    private final Context context;
+    private final Fragment parentFragment;
+
+    private final LayoutInflater inflater;
 
     private List<Book> data;
 
-    public BookAdapter(Context context) {
-        this.context = context;
-        data = Collections.emptyList();
+    public BookAdapter(Fragment parentFragment, LayoutInflater inflater) {
+        this.parentFragment = parentFragment;
+        this.inflater = inflater;
         setHasStableIds(true);
     }
 
@@ -46,7 +47,6 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.ViewHolder> {
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        LayoutInflater inflater = LayoutInflater.from(parent.getContext());
         View view = inflater.inflate(R.layout.item_staggered_book, parent, false);
         return new ViewHolder(view);
     }
@@ -93,7 +93,7 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.ViewHolder> {
             constraintSet.setDimensionRatio(R.id.thumbnailImage, ratioStr);
             constraintSet.applyTo(constraintLayout);
 
-            Glide.with(context)
+            Glide.with(parentFragment)
                     .load(book.getThumbnailUrl())
                     .into(thumbnailImage);
         }
