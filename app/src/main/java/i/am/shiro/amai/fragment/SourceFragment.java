@@ -3,6 +3,8 @@ package i.am.shiro.amai.fragment;
 
 import android.arch.lifecycle.ViewModelProvider;
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -14,6 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import i.am.shiro.amai.R;
+import i.am.shiro.amai.activity.DetailActivity;
 import i.am.shiro.amai.adapter.BookAdapter;
 import i.am.shiro.amai.viewmodel.SourceFragmentViewModel;
 
@@ -40,6 +43,7 @@ public class SourceFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_source, container, false);
 
         BookAdapter adapter = new BookAdapter(this, inflater);
+        adapter.setOnItemClickListener(this::onItemClicked);
 
         StaggeredGridLayoutManager layoutManager = new StaggeredGridLayoutManager(getSpanCount(), VERTICAL);
         layoutManager.setGapStrategy(GAP_HANDLING_NONE);
@@ -53,6 +57,13 @@ public class SourceFragment extends Fragment {
         viewModel.fetchBooks();
 
         return view;
+    }
+
+    private void onItemClicked(int position) {
+        Context context = getContext();
+        int bookId = viewModel.getBooks().get(position).getId();
+        Intent intent = DetailActivity.makeIntent(context, bookId);
+        startActivity(intent);
     }
 
     //TODO

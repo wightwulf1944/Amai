@@ -13,11 +13,15 @@ import i.am.shiro.amai.retrofit.Nhentai;
 import io.realm.Realm;
 import timber.log.Timber;
 
+import static io.reactivex.android.schedulers.AndroidSchedulers.mainThread;
+
 /**
  * Created by Shiro on 1/20/2018.
  */
 
 public class SourceFragmentViewModel extends ViewModel {
+
+    private final Realm realm = Realm.getDefaultInstance();
 
     private final MutableLiveData<List<Book>> books = new MutableLiveData<>();
 
@@ -38,6 +42,7 @@ public class SourceFragmentViewModel extends ViewModel {
                 .flattenAsObservable(bookSearchJson -> bookSearchJson.results)
                 .map(Book::new)
                 .toList()
+                .observeOn(mainThread())
                 .subscribe(
                         this::onBooksFetched,
                         throwable -> Timber.d("Failed to get data", throwable)
@@ -45,11 +50,15 @@ public class SourceFragmentViewModel extends ViewModel {
     }
 
     private void onBooksFetched(List<Book> fetchedBooks) {
-        books.postValue(fetchedBooks);
-        Realm realm = Realm.getDefaultInstance();
+        books.setValue(fetchedBooks);
         realm.beginTransaction();
         realm.insertOrUpdate(fetchedBooks);
         realm.commitTransaction();
+    }
+
+    @Override
+    protected void onCleared() {
+        super.onCleared();
         realm.close();
     }
 }
