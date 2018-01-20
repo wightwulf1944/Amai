@@ -2,6 +2,7 @@ package i.am.shiro.amai;
 
 import android.app.Application;
 
+import io.realm.Realm;
 import timber.log.Timber;
 
 /**
@@ -26,5 +27,6 @@ public class AmaiApplication extends Application {
         }
 
         Preferences.init(this);
+        Realm.init(this);
     }
 }

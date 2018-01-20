@@ -5,18 +5,22 @@ import com.annimon.stream.Stream;
 
 import java.util.List;
 
+import io.realm.RealmModel;
+import io.realm.annotations.PrimaryKey;
+
 import static com.annimon.stream.Collectors.toList;
 
 /**
  * Created by Shiro on 1/6/2018.
  */
 
-public class Book {
+public class Book implements RealmModel {
 
     private static final String THUMBNAIL_BASE_URL = "https://t.nhentai.net/galleries/";
 
     private static final String GALLERY_BASE_URL = "https://i.nhentai.net/galleries/";
 
+    @PrimaryKey
     private int id;
 
     private String title;
