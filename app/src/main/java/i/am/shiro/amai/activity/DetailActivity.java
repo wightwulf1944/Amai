@@ -19,6 +19,8 @@ public class DetailActivity extends AppCompatActivity {
 
     private static final String BOOK_ID = "bookId";
 
+    private Realm realm;
+
     public static Intent makeIntent(Context context, int bookId) {
         Intent intent = new Intent(context, DetailActivity.class);
         intent.putExtra(BOOK_ID, bookId);
@@ -28,20 +30,24 @@ public class DetailActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        realm = Realm.getDefaultInstance();
 
-        Book book = getBook();
+        int bookId = getIntent().getIntExtra(BOOK_ID, -1);
+        Book book = getBook(bookId);
         Timber.d("Detail activity received book with id: %s", book.getId());
 
         setContentView(R.layout.activity_detail);
     }
 
-    private Book getBook() {
-        int bookId = getIntent().getIntExtra(BOOK_ID, -1);
-        Realm realm = Realm.getDefaultInstance();
-        Book book = realm.where(Book.class)
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        realm.close();
+    }
+
+    private Book getBook(int bookId) {
+        return realm.where(Book.class)
                 .equalTo("id", bookId)
                 .findFirst();
-        realm.close();
-        return book;
     }
 }

@@ -40,7 +40,6 @@ public class SourceFragmentViewModel extends ViewModel {
     public void fetchBooks() {
         Nhentai.api.getAll(1)
                 .flattenAsObservable(bookSearchJson -> bookSearchJson.results)
-                .map(Book::new)
                 .toList()
                 .observeOn(mainThread())
                 .subscribe(

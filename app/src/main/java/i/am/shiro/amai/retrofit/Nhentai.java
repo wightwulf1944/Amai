@@ -1,10 +1,8 @@
 package i.am.shiro.amai.retrofit;
 
-import android.text.TextUtils;
+import com.squareup.moshi.Moshi;
 
-import java.util.List;
-
-import i.am.shiro.amai.model.BookJson;
+import i.am.shiro.amai.model.Book;
 import i.am.shiro.amai.model.BookSearchJson;
 import io.reactivex.Single;
 import retrofit2.Retrofit;
@@ -20,20 +18,38 @@ import retrofit2.http.Query;
 
 public class Nhentai {
 
-    public static Api api = new Retrofit.Builder()
-            .baseUrl("https://nhentai.net/api/")
-            .addCallAdapterFactory(RxJava2CallAdapterFactory.createAsync())
-            .addConverterFactory(MoshiConverterFactory.create())
-            .build()
-            .create(Api.class);
+    public static final String THUMBNAIL_BASE_URL = "https://t.nhentai.net/galleries/";
+
+    public static final String GALLERY_BASE_URL = "https://i.nhentai.net/galleries/";
+
+    private static final String BASE_URL = "https://nhentai.net/api/";
+
+    public static final Api api = buildApi();
+
+    private static Api buildApi() {
+        RxJava2CallAdapterFactory callAdapterFactory = RxJava2CallAdapterFactory.createAsync();
+
+        Moshi moshi = new Moshi.Builder()
+                .add(new Book.MoshiAdapter())
+                .build();
+
+        MoshiConverterFactory converterFactory = MoshiConverterFactory.create(moshi);
+
+        return new Retrofit.Builder()
+                .baseUrl(BASE_URL)
+                .addCallAdapterFactory(callAdapterFactory)
+                .addConverterFactory(converterFactory)
+                .build()
+                .create(Api.class);
+    }
 
     public interface Api {
 
         @GET("gallery/{id}")
-        Single<BookJson> getBookDetails(@Path("id") int id);
+        Single<Book> getBookDetails(@Path("id") int id);
 
         @GET("gallery/{id}/related")
-        Single<BookJson> getRelatedBooks(@Path("id") int id);
+        Single<Book> getRelatedBooks(@Path("id") int id);
 
         @GET("galleries/search")
         Single<BookSearchJson> search(@Query("query") String query, @Query("page") Integer page);
@@ -47,25 +63,25 @@ public class Nhentai {
 
     public static class QueryBuilder {
 
-        private List<String> queries;
+        private StringBuilder sb = new StringBuilder();
 
         public void addTag(String s) {
             String query = String.format("tag:\"%s\"", s);
-            queries.add(query);
+            sb.append(query);
         }
 
         public void addArtist(String s) {
             String query = String.format("artist:\"%s\"", s);
-            queries.add(query);
+            sb.append(query);
         }
 
         public void addLanguage(String s) {
             String query = String.format("language:\"%s\"", s);
-            queries.add(query);
+            sb.append(query);
         }
 
         public String build() {
-            return TextUtils.join(" ", queries);
+            return sb.toString();
         }
     }
 }

@@ -9,7 +9,7 @@ import java.util.List;
  */
 
 public class BookSearchJson {
-    @Json(name = "result") public List<BookJson> results;
+    @Json(name = "result") public List<Book> results;
     @Json(name = "num_pages") int pageTotal;
     @Json(name = "per_page") int booksPerPage;
 }
