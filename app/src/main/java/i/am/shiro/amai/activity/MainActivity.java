@@ -10,11 +10,15 @@ import android.view.MenuItem;
 
 import i.am.shiro.amai.Preferences;
 import i.am.shiro.amai.R;
+import i.am.shiro.amai.fragment.BrowseFragment;
 import i.am.shiro.amai.fragment.DownloadsFragment;
 import i.am.shiro.amai.fragment.QueueFragment;
-import i.am.shiro.amai.fragment.BrowseFragment;
+import io.realm.Realm;
 
 public class MainActivity extends AppCompatActivity {
+
+    // Needed to maintain at least one instance of Realm
+    private final Realm realm = Realm.getDefaultInstance();
 
     private final DownloadsFragment downloadsFragment = new DownloadsFragment();
 
@@ -38,6 +42,12 @@ public class MainActivity extends AppCompatActivity {
         BottomNavigationView navigation = findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(this::onNavigationItemSelected);
         navigation.setSelectedItemId(R.id.navigation_source);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        realm.close();
     }
 
     private boolean onNavigationItemSelected(@NonNull MenuItem item) {

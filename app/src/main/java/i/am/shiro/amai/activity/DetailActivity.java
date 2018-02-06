@@ -19,7 +19,7 @@ public class DetailActivity extends AppCompatActivity {
 
     private static final String BOOK_ID = "bookId";
 
-    private Realm realm;
+    private final Realm realm = Realm.getDefaultInstance();
 
     public static Intent makeIntent(Context context, int bookId) {
         Intent intent = new Intent(context, DetailActivity.class);
@@ -30,7 +30,6 @@ public class DetailActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        realm = Realm.getDefaultInstance();
 
         int bookId = getIntent().getIntExtra(BOOK_ID, -1);
         Book book = getBook(bookId);

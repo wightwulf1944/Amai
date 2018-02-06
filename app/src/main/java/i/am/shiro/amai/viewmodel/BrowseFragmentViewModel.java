@@ -10,6 +10,7 @@ import java.util.List;
 
 import i.am.shiro.amai.model.Book;
 import i.am.shiro.amai.retrofit.Nhentai;
+import io.reactivex.disposables.Disposable;
 import io.realm.Realm;
 import timber.log.Timber;
 
@@ -25,6 +26,8 @@ public class BrowseFragmentViewModel extends ViewModel {
 
     private final MutableLiveData<List<Book>> books = new MutableLiveData<>();
 
+    private Disposable disposable;
+
     public BrowseFragmentViewModel() {
         books.setValue(Collections.emptyList());
     }
@@ -38,7 +41,7 @@ public class BrowseFragmentViewModel extends ViewModel {
     }
 
     public void fetchBooks() {
-        Nhentai.api.getAll(1)
+        disposable = Nhentai.api.getAll(1)
                 .flattenAsObservable(bookSearchJson -> bookSearchJson.results)
                 .toList()
                 .observeOn(mainThread())
@@ -58,7 +61,7 @@ public class BrowseFragmentViewModel extends ViewModel {
     @Override
     protected void onCleared() {
         super.onCleared();
-        Timber.d("Closed");
+        disposable.dispose();
         realm.close();
     }
 }
