@@ -23,10 +23,14 @@ public class Preferences {
                 .getBoolean(IS_FIRST_RUN, true);
     }
 
-    public static void setFirstRunDone() {
+    public static void setFirstRun(boolean isFirstRun) {
         sharedPreferences
                 .edit()
-                .putBoolean(IS_FIRST_RUN, false)
+                .putBoolean(IS_FIRST_RUN, isFirstRun)
                 .apply();
+    }
+
+    public static void setFirstRunDone() {
+        setFirstRun(false);
     }
 }

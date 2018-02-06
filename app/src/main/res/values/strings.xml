@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">Amai</string>
     <string name="title_downloads">Downloads</string>
-    <string name="title_source">Source</string>
+    <string name="title_browse">Browse</string>
     <string name="title_queue">Queue</string>
 
     <string name="storage_note">

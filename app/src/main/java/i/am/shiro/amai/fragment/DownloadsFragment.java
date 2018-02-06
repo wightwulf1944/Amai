@@ -61,7 +61,7 @@ public class DownloadsFragment extends Fragment implements SearchView.OnQueryTex
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.downloads_action, menu);
 
-        SearchView searchView = (SearchView) menu.findItem(R.id.searchAction).getActionView();
+        SearchView searchView = (SearchView) menu.findItem(R.id.filterAction).getActionView();
         searchView.setOnQueryTextListener(this);
     }
 

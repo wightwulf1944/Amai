@@ -12,13 +12,13 @@ import i.am.shiro.amai.Preferences;
 import i.am.shiro.amai.R;
 import i.am.shiro.amai.fragment.DownloadsFragment;
 import i.am.shiro.amai.fragment.QueueFragment;
-import i.am.shiro.amai.fragment.SourceFragment;
+import i.am.shiro.amai.fragment.BrowseFragment;
 
 public class MainActivity extends AppCompatActivity {
 
     private final DownloadsFragment downloadsFragment = new DownloadsFragment();
 
-    private final SourceFragment sourceFragment = new SourceFragment();
+    private final BrowseFragment browseFragment = new BrowseFragment();
 
     private final QueueFragment queueFragment = new QueueFragment();
 
@@ -46,7 +46,7 @@ public class MainActivity extends AppCompatActivity {
                 switchFragment(downloadsFragment);
                 return true;
             case R.id.navigation_source:
-                switchFragment(sourceFragment);
+                switchFragment(browseFragment);
                 return true;
             case R.id.navigation_queue:
                 switchFragment(queueFragment);

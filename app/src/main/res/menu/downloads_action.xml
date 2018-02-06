@@ -3,9 +3,9 @@
       xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:id="@+id/searchAction"
-        android:icon="@drawable/ic_search"
-        android:title="Search"
+        android:id="@+id/filterAction"
+        android:icon="@drawable/ic_filter"
+        android:title="Filter"
         app:actionViewClass="android.support.v7.widget.SearchView"
         app:showAsAction="collapseActionView|always"/>
 
