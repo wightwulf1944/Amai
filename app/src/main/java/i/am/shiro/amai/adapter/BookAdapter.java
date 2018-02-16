@@ -97,8 +97,8 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.ViewHolder> {
             pageText.setText(book.getPageCountStr());
 
             String ratioStr = String.format("h,%s:%s",
-                    book.getThumbnailWidth(),
-                    book.getThumbnailHeight());
+                    book.getPreviewWidth(),
+                    book.getPreviewHeight());
 
             ConstraintSet constraintSet = new ConstraintSet();
             constraintSet.clone(constraintLayout);
@@ -106,7 +106,7 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.ViewHolder> {
             constraintSet.applyTo(constraintLayout);
 
             Glide.with(parentFragment)
-                    .load(book.getThumbnailUrl())
+                    .load(book.getPreviewUrl())
                     .into(thumbnailImage);
         }
     }

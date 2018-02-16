@@ -47,7 +47,7 @@ public class BrowseFragmentViewModel extends ViewModel {
                 .observeOn(mainThread())
                 .subscribe(
                         this::onBooksFetched,
-                        throwable -> Timber.d("Failed to get data", throwable)
+                        throwable -> Timber.w("Failed to get data", throwable)
                 );
     }
 
@@ -61,7 +61,7 @@ public class BrowseFragmentViewModel extends ViewModel {
     @Override
     protected void onCleared() {
         super.onCleared();
-        disposable.dispose();
+        if (disposable != null) disposable.dispose();
         realm.close();
     }
 }

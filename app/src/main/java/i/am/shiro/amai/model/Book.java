@@ -1,14 +1,13 @@
 package i.am.shiro.amai.model;
 
-import com.annimon.stream.IntStream;
-import com.annimon.stream.Stream;
 import com.squareup.moshi.FromJson;
+import com.squareup.moshi.ToJson;
 
+import io.realm.RealmList;
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
 
-import static com.annimon.stream.Collectors.joining;
-import static i.am.shiro.amai.retrofit.Nhentai.THUMBNAIL_BASE_URL;
+import static i.am.shiro.amai.retrofit.Nhentai.WEBPAGE_BASE_URL;
 
 /**
  * Created by Shiro on 1/6/2018.
@@ -19,26 +18,74 @@ public class Book extends RealmObject {
     @PrimaryKey
     private int id;
 
+    private String webUrl;
+
     private String title;
 
     private int pageCount;
 
-    private String thumbnailUrl;
+    private RealmList<String> parodyTags;
 
-    private int thumbnailWidth;
+    private RealmList<String> characterTags;
 
-    private int thumbnailHeight;
+    private RealmList<String> generalTags;
 
-    private String imageUrls;
+    private RealmList<String> artistTags;
 
-    private String artistTags;
+    private RealmList<String> groupTags;
 
-    private String languageTags;
+    private RealmList<String> languageTags;
 
-    private String generalTags;
+    private RealmList<String> categoryTags;
+
+    private String previewUrl;
+
+    private int previewWidth;
+
+    private int previewHeight;
+
+    private String coverUrl;
+
+    private int coverWidth;
+
+    private int coverHeight;
+
+    private RealmList<String> pageThumbnailUrls;
+
+    private RealmList<String> pageUrls;
+
+    public Book() {
+        // realm required default constructor
+    }
+
+    private Book(BookJson json) {
+        id = json.id;
+        webUrl = WEBPAGE_BASE_URL + json.id;
+        title = json.title.english;
+        pageCount = json.pageCount;
+        parodyTags = json.getTagsByType("parody");
+        characterTags = json.getTagsByType("character");
+        generalTags = json.getTagsByType("tag");
+        artistTags = json.getTagsByType("artist");
+        groupTags = json.getTagsByType("group");
+        languageTags = json.getTagsByType("language");
+        categoryTags = json.getTagsByType("category");
+        previewUrl = json.getPreviewUrl();
+        previewWidth = json.images.thumbnail.width;
+        previewHeight = json.images.thumbnail.height;
+        coverUrl = json.getCoverUrl();
+        coverWidth = json.images.cover.width;
+        coverHeight = json.images.cover.height;
+        pageThumbnailUrls = json.getPageThumbnailUrls();
+        pageUrls = json.getPageUrls();
+    }
 
     public int getId() {
         return id;
+    }
+
+    public String getWebUrl() {
+        return webUrl;
     }
 
     public String getTitle() {
@@ -49,62 +96,77 @@ public class Book extends RealmObject {
         return String.valueOf(pageCount);
     }
 
-    public String getThumbnailUrl() {
-        return thumbnailUrl;
+    public RealmList<String> getParodyTags() {
+        return parodyTags;
     }
 
-    public int getThumbnailWidth() {
-        return thumbnailWidth;
+    public RealmList<String> getCharacterTags() {
+        return characterTags;
     }
 
-    public int getThumbnailHeight() {
-        return thumbnailHeight;
+    public RealmList<String> getGeneralTags() {
+        return generalTags;
+    }
+
+    public RealmList<String> getArtistTags() {
+        return artistTags;
+    }
+
+    public RealmList<String> getGroupTags() {
+        return groupTags;
+    }
+
+    public RealmList<String> getLanguageTags() {
+        return languageTags;
+    }
+
+    public RealmList<String> getCategoryTags() {
+        return categoryTags;
+    }
+
+    public String getPreviewUrl() {
+        return previewUrl;
+    }
+
+    public int getPreviewWidth() {
+        return previewWidth;
+    }
+
+    public int getPreviewHeight() {
+        return previewHeight;
+    }
+
+    public String getCoverUrl() {
+        return coverUrl;
+    }
+
+    public int getCoverWidth() {
+        return coverWidth;
+    }
+
+    public int getCoverHeight() {
+        return coverHeight;
+    }
+
+    public RealmList<String> getPageThumbnailUrls() {
+        return pageThumbnailUrls;
+    }
+
+    public RealmList<String> getPageUrls() {
+        return pageUrls;
     }
 
     public static class MoshiAdapter {
 
-        private static String thumbnailUrlFrom(BookJson bookJson) {
-            return THUMBNAIL_BASE_URL + bookJson.mediaId + "/thumb" + fileExtensionFrom(bookJson.images.thumbnail);
-        }
-
-        private static String fileExtensionFrom(BookJson.Image image) {
-            switch (image.type) {
-                case "j":
-                    return ".jpg";
-                case "p":
-                    return ".png";
-                default:
-                    throw new RuntimeException("Unknown type " + image.type);
-            }
-        }
-
-        private static String getImageUrls(BookJson json) {
-            return IntStream.range(1, json.pageCount)
-                    .mapToObj(page -> THUMBNAIL_BASE_URL + page)
-                    .collect(joining(","));
-        }
-
-        private static String getTagsByCategory(BookJson json, String category) {
-            return Stream.of(json.tags)
-                    .filter(tag -> tag.type.equals(category))
-                    .map(tag -> tag.name)
-                    .collect(joining(","));
-        }
-
         @FromJson
         Book from(BookJson json) {
-            Book book = new Book();
-            book.id = json.id;
-            book.title = json.title.english;
-            book.pageCount = json.pageCount;
-            book.thumbnailUrl = thumbnailUrlFrom(json);
-            book.thumbnailWidth = json.images.thumbnail.width;
-            book.thumbnailHeight = json.images.thumbnail.height;
-            book.imageUrls = getImageUrls(json);
-            book.artistTags = getTagsByCategory(json, "artist");
-            book.languageTags = getTagsByCategory(json, "language");
-            book.generalTags = getTagsByCategory(json, "tag");
-            return book;
+            return new Book(json);
+        }
+
+        @ToJson
+        BookJson from(Book book) {
+            // required by Moshi but should not be used
+            return null;
         }
     }
 }

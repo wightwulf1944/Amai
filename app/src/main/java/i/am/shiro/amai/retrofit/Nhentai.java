@@ -18,11 +18,13 @@ import retrofit2.http.Query;
 
 public class Nhentai {
 
+    public static final String WEBPAGE_BASE_URL = "https://nhentai.net/g/";
+
     public static final String THUMBNAIL_BASE_URL = "https://t.nhentai.net/galleries/";
 
-    public static final String GALLERY_BASE_URL = "https://i.nhentai.net/galleries/";
+    public static final String IMAGE_BASE_URL = "https://i.nhentai.net/galleries/";
 
-    private static final String BASE_URL = "https://nhentai.net/api/";
+    private static final String API_URL = "https://nhentai.net/api/";
 
     public static final Api api = buildApi();
 
@@ -36,7 +38,7 @@ public class Nhentai {
         MoshiConverterFactory converterFactory = MoshiConverterFactory.create(moshi);
 
         return new Retrofit.Builder()
-                .baseUrl(BASE_URL)
+                .baseUrl(API_URL)
                 .addCallAdapterFactory(callAdapterFactory)
                 .addConverterFactory(converterFactory)
                 .build()
@@ -63,7 +65,7 @@ public class Nhentai {
 
     public static class QueryBuilder {
 
-        private StringBuilder sb = new StringBuilder();
+        private final StringBuilder sb = new StringBuilder();
 
         public void addTag(String s) {
             String query = String.format("tag:\"%s\"", s);
