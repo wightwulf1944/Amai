@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -19,6 +20,7 @@ import com.google.android.flexbox.FlexboxLayout;
 import java.util.List;
 
 import i.am.shiro.amai.R;
+import i.am.shiro.amai.adapter.PreviewAdapter;
 import i.am.shiro.amai.model.Book;
 import io.realm.Realm;
 import timber.log.Timber;
@@ -49,7 +51,7 @@ public class DetailActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        initBook();
+        book = extractBook(getIntent());
 
         setContentView(R.layout.activity_detail);
 
@@ -57,6 +59,12 @@ public class DetailActivity extends AppCompatActivity {
         Glide.with(this)
                 .load(book.getCoverUrl())
                 .into(coverImage);
+
+        PreviewAdapter adapter = new PreviewAdapter(this, book.getPageThumbnailUrls());
+
+        RecyclerView previewRecycler = findViewById(R.id.previewRecycler);
+        previewRecycler.setHasFixedSize(true);
+        previewRecycler.setAdapter(adapter);
 
         TextView titleText = findViewById(R.id.titleText);
         titleText.setText(book.getTitle());
@@ -72,13 +80,14 @@ public class DetailActivity extends AppCompatActivity {
         populateFlexboxWithTags(tagFlexbox, "Categories:", book.getCategoryTags());
     }
 
-    private void initBook() {
-        int bookId = getIntent().getIntExtra(BOOK_ID, -1);
-        book = realm.where(Book.class)
+    private Book extractBook(Intent intent) {
+        int bookId = intent.getIntExtra(BOOK_ID, -1);
+        Book book = realm.where(Book.class)
                 .equalTo("id", bookId)
                 .findFirst();
 
         if (book == null) throw new NullPointerException();
+        else return book;
     }
 
     private void populateFlexboxWithTags(FlexboxLayout flexboxLayout, String label, List<String> tags) {
