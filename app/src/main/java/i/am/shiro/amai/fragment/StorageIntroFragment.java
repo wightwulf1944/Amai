@@ -14,6 +14,7 @@ import android.widget.TextView;
 
 import java.util.List;
 
+import i.am.shiro.amai.Preferences;
 import i.am.shiro.amai.R;
 import i.am.shiro.amai.model.StorageOption;
 import i.am.shiro.amai.util.StorageUtil;
@@ -72,5 +73,8 @@ public class StorageIntroFragment extends Fragment {
         optionsLayout.dispatchSetSelected(false);
         view.setSelected(true);
         selectedIndex = optionsLayout.indexOfChild(view);
+
+        StorageOption storageOption = storageOptions.get(selectedIndex);
+        Preferences.setStoragePath(storageOption.getPath());
     }
 }

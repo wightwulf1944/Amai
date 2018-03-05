@@ -22,6 +22,7 @@ import java.util.List;
 import i.am.shiro.amai.R;
 import i.am.shiro.amai.adapter.PreviewAdapter;
 import i.am.shiro.amai.model.Book;
+import i.am.shiro.amai.service.DownloadService;
 import io.realm.Realm;
 import timber.log.Timber;
 
@@ -41,9 +42,9 @@ public class DetailActivity extends AppCompatActivity {
     private Book book;
 
     @NonNull
-    public static Intent makeIntent(Context context, int bookId) {
+    public static Intent makeIntent(Context context, Book book) {
         Intent intent = new Intent(context, DetailActivity.class);
-        intent.putExtra(BOOK_ID, bookId);
+        intent.putExtra(BOOK_ID, book.getId());
         return intent;
     }
 
@@ -123,7 +124,7 @@ public class DetailActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.download:
-                // TODO
+                DownloadService.start(this, book);
                 return true;
             case R.id.open_in_browser:
                 invokeOpenInBrowser();

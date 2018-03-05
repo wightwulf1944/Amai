@@ -12,6 +12,8 @@ public class Preferences {
 
     private static final String IS_FIRST_RUN = "isFirstRun";
 
+    private static final String STORAGE_PATH = "storagePath";
+
     private static SharedPreferences sharedPreferences;
 
     static void init(Context context) {
@@ -32,5 +34,17 @@ public class Preferences {
 
     public static void setFirstRunDone() {
         setFirstRun(false);
+    }
+
+    public static void setStoragePath(String storagePath) {
+        sharedPreferences
+                .edit()
+                .putString(STORAGE_PATH, storagePath)
+                .apply();
+    }
+
+    public static String getStoragePath() {
+        return sharedPreferences
+                .getString(STORAGE_PATH, null);
     }
 }

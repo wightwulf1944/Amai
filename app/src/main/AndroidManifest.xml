@@ -32,6 +32,7 @@
         <activity
             android:name=".activity.DetailActivity" />
 
+        <service android:name=".service.DownloadService" />
     </application>
 
 </manifest>

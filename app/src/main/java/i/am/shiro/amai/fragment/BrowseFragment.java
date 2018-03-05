@@ -22,6 +22,7 @@ import i.am.shiro.amai.R;
 import i.am.shiro.amai.activity.DetailActivity;
 import i.am.shiro.amai.adapter.BookAdapter;
 import i.am.shiro.amai.viewmodel.BrowseFragmentViewModel;
+import i.am.shiro.amai.model.Book;
 
 import static android.support.v7.widget.StaggeredGridLayoutManager.GAP_HANDLING_NONE;
 import static android.support.v7.widget.StaggeredGridLayoutManager.VERTICAL;
@@ -88,8 +89,8 @@ public class BrowseFragment extends Fragment implements SearchView.OnQueryTextLi
 
     private void onItemClicked(int position) {
         Context context = getContext();
-        int bookId = viewModel.getBooks().get(position).getId();
-        Intent intent = DetailActivity.makeIntent(context, bookId);
+        Book book = viewModel.getBooks().get(position);
+        Intent intent = DetailActivity.makeIntent(context, book);
         startActivity(intent);
     }
 }

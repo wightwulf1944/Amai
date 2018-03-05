@@ -3,6 +3,7 @@ package i.am.shiro.amai.model;
 import com.squareup.moshi.FromJson;
 import com.squareup.moshi.ToJson;
 
+import i.am.shiro.amai.constant.BookStatus;
 import io.realm.RealmList;
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
@@ -17,6 +18,9 @@ public class Book extends RealmObject {
 
     @PrimaryKey
     private int id;
+
+    @BookStatus
+    private int status;
 
     private String webUrl;
 
@@ -82,6 +86,15 @@ public class Book extends RealmObject {
 
     public int getId() {
         return id;
+    }
+
+    @BookStatus
+    public int getStatus() {
+        return status;
+    }
+
+    public void setStatus(@BookStatus int status) {
+        this.status = status;
     }
 
     public String getWebUrl() {
