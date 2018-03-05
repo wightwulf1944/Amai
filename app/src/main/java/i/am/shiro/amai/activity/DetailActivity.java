@@ -6,6 +6,8 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.constraint.ConstraintLayout;
+import android.support.constraint.ConstraintSet;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -55,6 +57,17 @@ public class DetailActivity extends AppCompatActivity {
         book = extractBook(getIntent());
 
         setContentView(R.layout.activity_detail);
+
+        ConstraintLayout coverImageConstraintLayout = findViewById(R.id.coverImageConstraintLayout);
+
+        String ratioStr = String.format("h,%s:%s",
+                book.getCoverImage().getWidth(),
+                book.getCoverImage().getHeight());
+
+        ConstraintSet constraintSet = new ConstraintSet();
+        constraintSet.clone(coverImageConstraintLayout);
+        constraintSet.setDimensionRatio(R.id.coverImage, ratioStr);
+        constraintSet.applyTo(coverImageConstraintLayout);
 
         ImageView coverImage = findViewById(R.id.coverImage);
         Glide.with(this)
