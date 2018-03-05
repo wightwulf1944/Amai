@@ -1,7 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ImageView xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/constraintLayout"
     android:layout_width="wrap_content"
     android:layout_height="match_parent"
     android:layout_marginEnd="4dp"
-    android:layout_marginRight="4dp"
-    android:adjustViewBounds="true" />
+    android:layout_marginRight="4dp">
+
+    <ImageView
+        android:id="@+id/thumbnailImage"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@android:color/white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+</android.support.constraint.ConstraintLayout>

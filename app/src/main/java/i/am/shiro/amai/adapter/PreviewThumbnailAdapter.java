@@ -1,6 +1,8 @@
 package i.am.shiro.amai.adapter;
 
 import android.app.Activity;
+import android.support.constraint.ConstraintLayout;
+import android.support.constraint.ConstraintSet;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.RecyclerView.Adapter;
 import android.view.LayoutInflater;
@@ -53,14 +55,26 @@ public class PreviewThumbnailAdapter extends Adapter<PreviewThumbnailAdapter.Vie
 
     class ViewHolder extends RecyclerView.ViewHolder {
 
+        final ConstraintLayout constraintLayout;
+
         final ImageView previewImage;
 
         ViewHolder(View itemView) {
             super(itemView);
-            previewImage = (ImageView) itemView;
+            constraintLayout = (ConstraintLayout) itemView;
+            previewImage = itemView.findViewById(R.id.thumbnailImage);
         }
 
         void bind(Image image) {
+            String ratioStr = String.format("v,%s:%s",
+                    image.getWidth(),
+                    image.getHeight());
+
+            ConstraintSet constraintSet = new ConstraintSet();
+            constraintSet.clone(constraintLayout);
+            constraintSet.setDimensionRatio(R.id.thumbnailImage, ratioStr);
+            constraintSet.applyTo(constraintLayout);
+
             Glide.with(parentActivity)
                     .load(image.getUrl())
                     .into(previewImage);
