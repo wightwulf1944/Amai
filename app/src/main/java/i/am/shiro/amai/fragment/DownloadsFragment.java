@@ -1,6 +1,8 @@
 package i.am.shiro.amai.fragment;
 
 
+import android.arch.lifecycle.ViewModelProvider;
+import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -14,10 +16,9 @@ import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import java.util.Collections;
-
 import i.am.shiro.amai.R;
 import i.am.shiro.amai.adapter.BookAdapter;
+import i.am.shiro.amai.viewmodel.DownloadsFragmentModel;
 
 import static android.support.v7.widget.StaggeredGridLayoutManager.GAP_HANDLING_NONE;
 import static android.support.v7.widget.StaggeredGridLayoutManager.VERTICAL;
@@ -27,10 +28,14 @@ import static android.support.v7.widget.StaggeredGridLayoutManager.VERTICAL;
  */
 public class DownloadsFragment extends Fragment implements SearchView.OnQueryTextListener {
 
+    private DownloadsFragmentModel viewModel;
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
+        ViewModelProvider viewModelProvider = ViewModelProviders.of(this);
+        viewModel = viewModelProvider.get(DownloadsFragmentModel.class);
     }
 
     @Nullable
@@ -39,7 +44,6 @@ public class DownloadsFragment extends Fragment implements SearchView.OnQueryTex
         View view = inflater.inflate(R.layout.fragment_downloads, container, false);
 
         BookAdapter adapter = new BookAdapter(this, inflater);
-        adapter.setData(Collections.emptyList());
 
         StaggeredGridLayoutManager layoutManager = new StaggeredGridLayoutManager(getSpanCount(), VERTICAL);
         layoutManager.setGapStrategy(GAP_HANDLING_NONE);
@@ -48,6 +52,8 @@ public class DownloadsFragment extends Fragment implements SearchView.OnQueryTex
         recyclerView.setHasFixedSize(true);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(layoutManager);
+
+        viewModel.observeBooks(this, adapter::setData);
 
         return view;
     }

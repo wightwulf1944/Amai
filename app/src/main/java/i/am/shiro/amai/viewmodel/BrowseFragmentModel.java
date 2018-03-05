@@ -20,7 +20,7 @@ import static io.reactivex.android.schedulers.AndroidSchedulers.mainThread;
  * Created by Shiro on 1/20/2018.
  */
 
-public class BrowseFragmentViewModel extends ViewModel {
+public class BrowseFragmentModel extends ViewModel {
 
     private final Realm realm = Realm.getDefaultInstance();
 
@@ -28,7 +28,7 @@ public class BrowseFragmentViewModel extends ViewModel {
 
     private Disposable disposable;
 
-    public BrowseFragmentViewModel() {
+    public BrowseFragmentModel() {
         books.setValue(Collections.emptyList());
     }
 
