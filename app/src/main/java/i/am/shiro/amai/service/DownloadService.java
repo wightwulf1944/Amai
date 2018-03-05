@@ -16,6 +16,7 @@ import java.util.List;
 
 import i.am.shiro.amai.Preferences;
 import i.am.shiro.amai.model.Book;
+import i.am.shiro.amai.model.Image;
 import io.realm.Realm;
 import timber.log.Timber;
 
@@ -68,11 +69,12 @@ public class DownloadService extends IntentService {
 
     private void downloadBook(Realm realm, Book book) throws Exception {
         File bookDir = getBookDir(book);
-        for (String pageUrl : book.getPageUrls()) {
-            File srcPageFile = downloadPage(pageUrl);
-            File destPageFile = getPageFile(bookDir, pageUrl);
+        for (Image pageImage : book.getPageImages()) {
+            String pageImageUrl = pageImage.getUrl();
+            File srcPageFile = downloadPage(pageImageUrl);
+            File destPageFile = getPageFile(bookDir, pageImageUrl);
             FileUtils.copyFile(srcPageFile, destPageFile);
-            Timber.w("Page successfully downloaded: %s", pageUrl);
+            Timber.w("Page successfully downloaded: %s", pageImageUrl);
         }
 
         realm.beginTransaction();

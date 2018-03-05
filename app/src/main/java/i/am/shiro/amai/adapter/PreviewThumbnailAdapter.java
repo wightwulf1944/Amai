@@ -13,6 +13,7 @@ import com.bumptech.glide.Glide;
 import java.util.List;
 
 import i.am.shiro.amai.R;
+import i.am.shiro.amai.model.Image;
 
 /**
  * Created by Shiro on 2/19/2018.
@@ -23,13 +24,13 @@ public class PreviewThumbnailAdapter extends Adapter<PreviewThumbnailAdapter.Vie
 
     private final Activity parentActivity;
 
-    private final List<String> previewUrls;
+    private final List<Image> pageThumbnailImages;
 
     private final LayoutInflater inflater;
 
-    public PreviewThumbnailAdapter(Activity parentActivity, List<String> previewUrls) {
+    public PreviewThumbnailAdapter(Activity parentActivity, List<Image> pageThumbnailImages) {
         this.parentActivity = parentActivity;
-        this.previewUrls = previewUrls;
+        this.pageThumbnailImages = pageThumbnailImages;
         inflater = LayoutInflater.from(parentActivity);
     }
 
@@ -41,24 +42,28 @@ public class PreviewThumbnailAdapter extends Adapter<PreviewThumbnailAdapter.Vie
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        String previewUrl = previewUrls.get(position);
-        Glide.with(parentActivity)
-                .load(previewUrl)
-                .into(holder.previewImage);
+        Image pageThumbnailImage = pageThumbnailImages.get(position);
+        holder.bind(pageThumbnailImage);
     }
 
     @Override
     public int getItemCount() {
-        return previewUrls.size();
+        return pageThumbnailImages.size();
     }
 
-    static class ViewHolder extends RecyclerView.ViewHolder {
+    class ViewHolder extends RecyclerView.ViewHolder {
 
         final ImageView previewImage;
 
         ViewHolder(View itemView) {
             super(itemView);
             previewImage = (ImageView) itemView;
+        }
+
+        void bind(Image image) {
+            Glide.with(parentActivity)
+                    .load(image.getUrl())
+                    .into(previewImage);
         }
     }
 }

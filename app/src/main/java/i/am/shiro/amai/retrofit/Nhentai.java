@@ -4,6 +4,7 @@ import com.squareup.moshi.Moshi;
 
 import i.am.shiro.amai.model.Book;
 import i.am.shiro.amai.model.BookSearchJson;
+import i.am.shiro.amai.model.adapter.BookMoshiAdapter;
 import io.reactivex.Single;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
@@ -32,7 +33,7 @@ public class Nhentai {
         RxJava2CallAdapterFactory callAdapterFactory = RxJava2CallAdapterFactory.createAsync();
 
         Moshi moshi = new Moshi.Builder()
-                .add(new Book.MoshiAdapter())
+                .add(new BookMoshiAdapter())
                 .build();
 
         MoshiConverterFactory converterFactory = MoshiConverterFactory.create(moshi);

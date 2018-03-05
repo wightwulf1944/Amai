@@ -58,10 +58,10 @@ public class DetailActivity extends AppCompatActivity {
 
         ImageView coverImage = findViewById(R.id.coverImage);
         Glide.with(this)
-                .load(book.getCoverUrl())
+                .load(book.getCoverImage().getUrl())
                 .into(coverImage);
 
-        PreviewThumbnailAdapter adapter = new PreviewThumbnailAdapter(this, book.getPageThumbnailUrls());
+        PreviewThumbnailAdapter adapter = new PreviewThumbnailAdapter(this, book.getPageThumbnailImages());
 
         RecyclerView previewRecycler = findViewById(R.id.previewRecycler);
         previewRecycler.setHasFixedSize(true);

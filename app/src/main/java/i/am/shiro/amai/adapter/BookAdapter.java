@@ -17,6 +17,7 @@ import java.util.List;
 
 import i.am.shiro.amai.R;
 import i.am.shiro.amai.model.Book;
+import i.am.shiro.amai.model.Image;
 
 /**
  * Created by Shiro on 1/6/2018.
@@ -96,9 +97,11 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.ViewHolder> {
             titleText.setText(book.getTitle());
             pageText.setText(book.getPageCountStr());
 
+            Image coverThumbnailImage = book.getCoverThumbnailImage();
+
             String ratioStr = String.format("h,%s:%s",
-                    book.getPreviewWidth(),
-                    book.getPreviewHeight());
+                    coverThumbnailImage.getWidth(),
+                    coverThumbnailImage.getHeight());
 
             ConstraintSet constraintSet = new ConstraintSet();
             constraintSet.clone(constraintLayout);
@@ -106,7 +109,7 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.ViewHolder> {
             constraintSet.applyTo(constraintLayout);
 
             Glide.with(parentFragment)
-                    .load(book.getPreviewUrl())
+                    .load(coverThumbnailImage.getUrl())
                     .into(thumbnailImage);
         }
     }

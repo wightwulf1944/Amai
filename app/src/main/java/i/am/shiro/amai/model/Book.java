@@ -1,14 +1,9 @@
 package i.am.shiro.amai.model;
 
-import com.squareup.moshi.FromJson;
-import com.squareup.moshi.ToJson;
-
 import i.am.shiro.amai.constant.BookStatus;
 import io.realm.RealmList;
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
-
-import static i.am.shiro.amai.retrofit.Nhentai.WEBPAGE_BASE_URL;
 
 /**
  * Created by Shiro on 1/6/2018.
@@ -42,47 +37,13 @@ public class Book extends RealmObject {
 
     private RealmList<String> categoryTags;
 
-    private String previewUrl;
+    private Image coverImage;
 
-    private int previewWidth;
+    private Image coverThumbnailImage;
 
-    private int previewHeight;
+    private RealmList<Image> pageImages;
 
-    private String coverUrl;
-
-    private int coverWidth;
-
-    private int coverHeight;
-
-    private RealmList<String> pageThumbnailUrls;
-
-    private RealmList<String> pageUrls;
-
-    public Book() {
-        // realm required default constructor
-    }
-
-    private Book(BookJson json) {
-        id = json.id;
-        webUrl = WEBPAGE_BASE_URL + json.id;
-        title = json.title.english;
-        pageCount = json.pageCount;
-        parodyTags = json.getTagsByType("parody");
-        characterTags = json.getTagsByType("character");
-        generalTags = json.getTagsByType("tag");
-        artistTags = json.getTagsByType("artist");
-        groupTags = json.getTagsByType("group");
-        languageTags = json.getTagsByType("language");
-        categoryTags = json.getTagsByType("category");
-        previewUrl = json.getPreviewUrl();
-        previewWidth = json.images.thumbnail.width;
-        previewHeight = json.images.thumbnail.height;
-        coverUrl = json.getCoverUrl();
-        coverWidth = json.images.cover.width;
-        coverHeight = json.images.cover.height;
-        pageThumbnailUrls = json.getPageThumbnailUrls();
-        pageUrls = json.getPageUrls();
-    }
+    private RealmList<Image> pageThumbnailImages;
 
     public int getId() {
         return id;
@@ -137,49 +98,102 @@ public class Book extends RealmObject {
         return categoryTags;
     }
 
-    public String getPreviewUrl() {
-        return previewUrl;
+    public Image getCoverImage() {
+        return coverImage;
     }
 
-    public int getPreviewWidth() {
-        return previewWidth;
+    public Image getCoverThumbnailImage() {
+        return coverThumbnailImage;
     }
 
-    public int getPreviewHeight() {
-        return previewHeight;
+    public RealmList<Image> getPageImages() {
+        return pageImages;
     }
 
-    public String getCoverUrl() {
-        return coverUrl;
+    public RealmList<Image> getPageThumbnailImages() {
+        return pageThumbnailImages;
     }
 
-    public int getCoverWidth() {
-        return coverWidth;
-    }
+    public static class Builder {
+        private Book product = new Book();
 
-    public int getCoverHeight() {
-        return coverHeight;
-    }
-
-    public RealmList<String> getPageThumbnailUrls() {
-        return pageThumbnailUrls;
-    }
-
-    public RealmList<String> getPageUrls() {
-        return pageUrls;
-    }
-
-    public static class MoshiAdapter {
-
-        @FromJson
-        Book from(BookJson json) {
-            return new Book(json);
+        public Builder setId(int id) {
+            product.id = id;
+            return this;
         }
 
-        @ToJson
-        BookJson from(Book book) {
-            // required by Moshi but should not be used
-            throw new RuntimeException("Book should not be transformed back into BookJson");
+        public Builder setWebUrl(String webUrl) {
+            product.webUrl = webUrl;
+            return this;
+        }
+
+        public Builder setTitle(String title) {
+            product.title = title;
+            return this;
+        }
+
+        public Builder setPageCount(int pageCount) {
+            product.pageCount = pageCount;
+            return this;
+        }
+
+        public Builder setParodyTags(RealmList<String> parodyTags) {
+            product.parodyTags = parodyTags;
+            return this;
+        }
+
+        public Builder setCharacterTags(RealmList<String> characterTags) {
+            product.characterTags = characterTags;
+            return this;
+        }
+
+        public Builder setGeneralTags(RealmList<String> generalTags) {
+            product.generalTags = generalTags;
+            return this;
+        }
+
+        public Builder setArtistTags(RealmList<String> artistTags) {
+            product.artistTags = artistTags;
+            return this;
+        }
+
+        public Builder setGroupTags(RealmList<String> groupTags) {
+            product.groupTags = groupTags;
+            return this;
+        }
+
+        public Builder setLanguageTags(RealmList<String> languageTags) {
+            product.languageTags = languageTags;
+            return this;
+        }
+
+        public Builder setCategoryTags(RealmList<String> categoryTags) {
+            product.categoryTags = categoryTags;
+            return this;
+        }
+
+        public Builder setCoverThumbnailImage(Image coverThumbnailImage) {
+            product.coverThumbnailImage = coverThumbnailImage;
+            return this;
+        }
+
+        public Builder setCoverImage(Image coverImage) {
+            product.coverImage = coverImage;
+            return this;
+        }
+
+        public Builder setPageImages(RealmList<Image> pageImages) {
+            product.pageImages = pageImages;
+            return this;
+        }
+
+        public Builder setPageThumbnailImages(RealmList<Image> pageThumbnailImages) {
+            product.pageThumbnailImages = pageThumbnailImages;
+            return this;
+        }
+
+        public Book make() {
+            return product;
         }
     }
 }

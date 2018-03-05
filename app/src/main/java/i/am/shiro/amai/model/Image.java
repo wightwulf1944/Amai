@@ -1,8 +1,5 @@
 package i.am.shiro.amai.model;
 
-import com.squareup.moshi.FromJson;
-import com.squareup.moshi.ToJson;
-
 import io.realm.RealmObject;
 
 /**
@@ -27,5 +24,28 @@ public class Image extends RealmObject {
 
     public int getHeight() {
         return height;
+    }
+
+    public static class Builder {
+        private Image product = new Image();
+
+        public Builder setUrl(String url) {
+            product.url = url;
+            return this;
+        }
+
+        public Builder setWidth(int width) {
+            product.width = width;
+            return this;
+        }
+
+        public Builder setHeight(int height) {
+            product.height = height;
+            return this;
+        }
+
+        public Image make() {
+            return product;
+        }
     }
 }

@@ -35,5 +35,7 @@ public class AmaiApplication extends Application {
                 .compactOnLaunch()
                 .build();
         Realm.setDefaultConfiguration(config);
+
+//        Preferences.setFirstRun(true);
     }
 }
