@@ -19,7 +19,7 @@ import i.am.shiro.amai.R;
  * TODO optimize by specifying item dimensions on bind
  */
 
-public class PreviewAdapter extends Adapter<PreviewAdapter.ViewHolder> {
+public class PreviewThumbnailAdapter extends Adapter<PreviewThumbnailAdapter.ViewHolder> {
 
     private final Activity parentActivity;
 
@@ -27,7 +27,7 @@ public class PreviewAdapter extends Adapter<PreviewAdapter.ViewHolder> {
 
     private final LayoutInflater inflater;
 
-    public PreviewAdapter(Activity parentActivity, List<String> previewUrls) {
+    public PreviewThumbnailAdapter(Activity parentActivity, List<String> previewUrls) {
         this.parentActivity = parentActivity;
         this.previewUrls = previewUrls;
         inflater = LayoutInflater.from(parentActivity);

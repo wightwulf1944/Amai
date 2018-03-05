@@ -20,7 +20,7 @@ import com.google.android.flexbox.FlexboxLayout;
 import java.util.List;
 
 import i.am.shiro.amai.R;
-import i.am.shiro.amai.adapter.PreviewAdapter;
+import i.am.shiro.amai.adapter.PreviewThumbnailAdapter;
 import i.am.shiro.amai.model.Book;
 import i.am.shiro.amai.service.DownloadService;
 import io.realm.Realm;
@@ -61,7 +61,7 @@ public class DetailActivity extends AppCompatActivity {
                 .load(book.getCoverUrl())
                 .into(coverImage);
 
-        PreviewAdapter adapter = new PreviewAdapter(this, book.getPageThumbnailUrls());
+        PreviewThumbnailAdapter adapter = new PreviewThumbnailAdapter(this, book.getPageThumbnailUrls());
 
         RecyclerView previewRecycler = findViewById(R.id.previewRecycler);
         previewRecycler.setHasFixedSize(true);

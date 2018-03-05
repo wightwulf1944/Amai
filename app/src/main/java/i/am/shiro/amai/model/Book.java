@@ -179,7 +179,7 @@ public class Book extends RealmObject {
         @ToJson
         BookJson from(Book book) {
             // required by Moshi but should not be used
-            return null;
+            throw new RuntimeException("Book should not be transformed back into BookJson");
         }
     }
 }
