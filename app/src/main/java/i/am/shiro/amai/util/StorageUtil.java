@@ -10,7 +10,6 @@ import com.annimon.stream.function.IndexedFunction;
 import com.annimon.stream.function.Predicate;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.List;
 
 import i.am.shiro.amai.model.StorageOption;
@@ -24,18 +23,6 @@ import static com.annimon.stream.Collectors.toList;
 public class StorageUtil {
 
     public static List<StorageOption> getStorageOptions(Context context) {
-        ArrayList<StorageOption> storageOptions = new ArrayList<>();
-        storageOptions.add(getInternalStorageOption(context));
-        storageOptions.addAll(getExternalStorageOptions(context));
-        return storageOptions;
-    }
-
-    private static StorageOption getInternalStorageOption(Context context) {
-        File internalDir = context.getFilesDir();
-        return new StorageOption("Internal", internalDir);
-    }
-
-    private static List<StorageOption> getExternalStorageOptions(Context context) {
         File[] externalDirs = ContextCompat.getExternalFilesDirs(context, null);
         return Stream.of(externalDirs)
                 .filter(isMounted())

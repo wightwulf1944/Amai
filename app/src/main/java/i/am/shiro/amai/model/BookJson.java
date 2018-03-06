@@ -20,8 +20,8 @@ public class BookJson {
     @Json(name = "images") public ImageBundle images;
 
     public static class Title {
-        @Json(name = "japanese") String japanese;
-        @Json(name = "pretty") String pretty;
+        @Json(name = "japanese") public String japanese;
+        @Json(name = "pretty") public String pretty;
         @Json(name = "english") public String english;
     }
 
@@ -38,10 +38,10 @@ public class BookJson {
     }
 
     public static class Tag {
-        @Json(name = "id") int id;
+        @Json(name = "id") public int id;
         @Json(name = "name") public String name;
         @Json(name = "type") public String type;
-        @Json(name = "url") String url;
-        @Json(name = "count") int count;
+        @Json(name = "url") public String url;
+        @Json(name = "count") public int count;
     }
 }

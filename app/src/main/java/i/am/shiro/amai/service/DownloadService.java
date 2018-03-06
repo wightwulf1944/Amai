@@ -1,10 +1,11 @@
 package i.am.shiro.amai.service;
 
 import android.app.IntentService;
+import android.app.Notification;
 import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.Nullable;
-import android.support.v4.content.ContextCompat;
+import android.support.v4.app.NotificationCompat;
 
 import com.bumptech.glide.Glide;
 
@@ -15,6 +16,7 @@ import java.io.File;
 import java.util.List;
 
 import i.am.shiro.amai.Preferences;
+import i.am.shiro.amai.R;
 import i.am.shiro.amai.model.Book;
 import i.am.shiro.amai.model.Image;
 import io.realm.Realm;
@@ -22,12 +24,16 @@ import timber.log.Timber;
 
 import static i.am.shiro.amai.constant.BookStatus.OFFLINE;
 import static i.am.shiro.amai.constant.BookStatus.QUEUED;
+import static i.am.shiro.amai.constant.Constants.DEFAULT_CHANNEL_ID;
 
 /**
  * Created by Shiro on 2/20/2018.
+ * TODO: create companion notification
  */
 
 public class DownloadService extends IntentService {
+
+    private static final int NOTIFICATION_ID = 1;
 
     public static void start(Context context, Book book) {
         try (Realm realm = Realm.getDefaultInstance()) {
@@ -37,12 +43,25 @@ public class DownloadService extends IntentService {
         }
 
         Intent intent = new Intent(context, DownloadService.class);
-        ContextCompat.startForegroundService(context, intent);
+        context.startService(intent);
     }
 
     public DownloadService() {
         super(DownloadService.class.getSimpleName());
         setIntentRedelivery(true);
+    }
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+
+        Notification notification = new NotificationCompat.Builder(this, DEFAULT_CHANNEL_ID)
+                .setSmallIcon(R.drawable.ic_download)
+                .setContentTitle("Downloading")
+                .setProgress(0, 0, true)
+                .build();
+
+        startForeground(NOTIFICATION_ID, notification);
     }
 
     @Override
@@ -60,11 +79,9 @@ public class DownloadService extends IntentService {
     }
 
     private List<Book> getQueue(Realm realm) {
-        List<Book> managedQueue = realm.where(Book.class)
+        return realm.where(Book.class)
                 .equalTo("status", QUEUED)
                 .findAll();
-
-        return realm.copyFromRealm(managedQueue);
     }
 
     private void downloadBook(Realm realm, Book book) throws Exception {

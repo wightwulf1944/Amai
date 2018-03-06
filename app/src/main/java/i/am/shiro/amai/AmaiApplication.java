@@ -1,10 +1,16 @@
 package i.am.shiro.amai;
 
 import android.app.Application;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.os.Build;
 
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
 import timber.log.Timber;
+
+import static android.app.NotificationManager.IMPORTANCE_DEFAULT;
+import static i.am.shiro.amai.constant.Constants.DEFAULT_CHANNEL_ID;
 
 /**
  * Created by Shiro on 1/5/2018.
@@ -35,6 +41,18 @@ public class AmaiApplication extends Application {
                 .compactOnLaunch()
                 .build();
         Realm.setDefaultConfiguration(config);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationChannel mChannel = new NotificationChannel(
+                    DEFAULT_CHANNEL_ID,
+                    getString(R.string.app_name),
+                    IMPORTANCE_DEFAULT);
+
+            NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+            if (notificationManager != null) {
+                notificationManager.createNotificationChannel(mChannel);
+            }
+        }
 
 //        Preferences.setFirstRun(true);
     }
