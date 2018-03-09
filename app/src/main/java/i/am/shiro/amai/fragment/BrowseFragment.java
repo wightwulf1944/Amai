@@ -74,7 +74,8 @@ public class BrowseFragment extends Fragment implements SearchView.OnQueryTextLi
 
     @Override
     public boolean onQueryTextSubmit(String query) {
-        return false;
+        viewModel.search(query);
+        return true;
     }
 
     @Override

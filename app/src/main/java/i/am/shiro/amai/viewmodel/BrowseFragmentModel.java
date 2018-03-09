@@ -41,6 +41,7 @@ public class BrowseFragmentModel extends ViewModel {
     }
 
     public void fetchBooks() {
+        cancel();
         disposable = Nhentai.api.getAll(1)
                 .flattenAsObservable(bookSearchJson -> bookSearchJson.results)
                 .toList()
@@ -49,6 +50,24 @@ public class BrowseFragmentModel extends ViewModel {
                         this::onBooksFetched,
                         throwable -> Timber.w("Failed to get data", throwable)
                 );
+    }
+
+    public void search(String query) {
+        cancel();
+        disposable = Nhentai.api.search(query, 1, null)
+                .flattenAsObservable(bookSearchJson -> bookSearchJson.results)
+                .toList()
+                .observeOn(mainThread())
+                .subscribe(
+                        this::onBooksFetched,
+                        throwable -> Timber.w("Failed to get data", throwable)
+                );
+    }
+
+    private void cancel() {
+        if (disposable != null) {
+            disposable.dispose();
+        }
     }
 
     private void onBooksFetched(List<Book> fetchedBooks) {

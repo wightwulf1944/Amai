@@ -1,6 +1,10 @@
 package i.am.shiro.amai.retrofit;
 
+import android.support.annotation.StringDef;
+
 import com.squareup.moshi.Moshi;
+
+import java.lang.annotation.Retention;
 
 import i.am.shiro.amai.model.Book;
 import i.am.shiro.amai.model.BookSearchJson;
@@ -12,6 +16,10 @@ import retrofit2.converter.moshi.MoshiConverterFactory;
 import retrofit2.http.GET;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
+
+import static i.am.shiro.amai.retrofit.Nhentai.SortOrder.DATE;
+import static i.am.shiro.amai.retrofit.Nhentai.SortOrder.POPULAR;
+import static java.lang.annotation.RetentionPolicy.SOURCE;
 
 /**
  * Created by Shiro on 1/10/2018.
@@ -49,19 +57,35 @@ public class Nhentai {
     public interface Api {
 
         @GET("gallery/{id}")
-        Single<Book> getBookDetails(@Path("id") int id);
+        Single<Book> getBookDetails(
+                @Path("id") int id);
 
         @GET("gallery/{id}/related")
-        Single<Book> getRelatedBooks(@Path("id") int id);
+        Single<Book> getRelatedBooks(
+                @Path("id") int id);
 
         @GET("galleries/search")
-        Single<BookSearchJson> search(@Query("query") String query, @Query("page") Integer page);
+        Single<BookSearchJson> search(
+                @Query("query") String query,
+                @Query("page") Integer page,
+                @Query("sort") @SortOrder String sortOrder);
 
         @GET("galleries/all")
-        Single<BookSearchJson> getAll(@Query("page") Integer page);
+        Single<BookSearchJson> getAll(
+                @Query("page") Integer page);
 
         @GET("galleries/tagged")
-        Single<BookSearchJson> getTagged(@Query("tag_id") int tagId, @Query("page") Integer page);
+        Single<BookSearchJson> getTagById(
+                @Query("tag_id") int tagId,
+                @Query("page") Integer page,
+                @Query("sort") @SortOrder String sortOrder);
+    }
+
+    @Retention(SOURCE)
+    @StringDef({POPULAR, DATE})
+    public @interface SortOrder {
+        String POPULAR = "popular";
+        String DATE = "date";
     }
 
     public static class QueryBuilder {
