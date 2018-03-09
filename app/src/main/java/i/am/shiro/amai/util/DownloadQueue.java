@@ -1,6 +1,9 @@
 package i.am.shiro.amai.util;
 
+import android.support.annotation.NonNull;
+
 import java.io.Closeable;
+import java.util.Iterator;
 
 import i.am.shiro.amai.constant.DownloadStatus;
 import i.am.shiro.amai.model.Book;
@@ -15,9 +18,10 @@ import static i.am.shiro.amai.constant.DownloadStatus.QUEUED;
 
 /**
  * Created by Shiro on 3/10/2018.
+ * TODO: allow a book to fail up to 3x before giving up
  */
 
-public class DownloadQueue implements Closeable {
+public class DownloadQueue implements Closeable, Iterable<Book> {
 
     private final Realm realm;
 
@@ -37,12 +41,10 @@ public class DownloadQueue implements Closeable {
         realm.close();
     }
 
-    public boolean hasNext() {
-        return queue.size() != 0;
-    }
-
-    public Book next() {
-        return queue.first();
+    @NonNull
+    @Override
+    public Iterator<Book> iterator() {
+        return queue.iterator();
     }
 
     public void notifyQueued(Book book) {

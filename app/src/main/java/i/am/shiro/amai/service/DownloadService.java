@@ -26,7 +26,6 @@ import static i.am.shiro.amai.constant.Constants.DEFAULT_CHANNEL_ID;
 /**
  * Created by Shiro on 2/20/2018.
  * TODO: create companion notification
- * TODO: allow a book to fail up to 3x before giving up
  */
 
 public class DownloadService extends IntentService {
@@ -64,8 +63,7 @@ public class DownloadService extends IntentService {
     protected void onHandleIntent(@Nullable Intent intent) {
         DownloadQueue downloadQueue = new DownloadQueue();
 
-        while (downloadQueue.hasNext()) {
-            Book book = downloadQueue.next();
+        for (Book book : downloadQueue) {
             try {
                 downloadBook(book);
                 downloadQueue.notifyDone(book);
