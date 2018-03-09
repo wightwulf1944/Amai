@@ -13,22 +13,20 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 
 import java.io.File;
-import java.util.List;
 
 import i.am.shiro.amai.Preferences;
 import i.am.shiro.amai.R;
 import i.am.shiro.amai.model.Book;
 import i.am.shiro.amai.model.Image;
-import io.realm.Realm;
+import i.am.shiro.amai.util.DownloadQueue;
 import timber.log.Timber;
 
-import static i.am.shiro.amai.constant.BookStatus.OFFLINE;
-import static i.am.shiro.amai.constant.BookStatus.QUEUED;
 import static i.am.shiro.amai.constant.Constants.DEFAULT_CHANNEL_ID;
 
 /**
  * Created by Shiro on 2/20/2018.
  * TODO: create companion notification
+ * TODO: allow a book to fail up to 3x before giving up
  */
 
 public class DownloadService extends IntentService {
@@ -36,10 +34,8 @@ public class DownloadService extends IntentService {
     private static final int NOTIFICATION_ID = 1;
 
     public static void start(Context context, Book book) {
-        try (Realm realm = Realm.getDefaultInstance()) {
-            realm.beginTransaction();
-            book.setStatus(QUEUED);
-            realm.commitTransaction();
+        try (DownloadQueue downloadQueue = new DownloadQueue()) {
+            downloadQueue.notifyQueued(book);
         }
 
         Intent intent = new Intent(context, DownloadService.class);
@@ -66,25 +62,24 @@ public class DownloadService extends IntentService {
 
     @Override
     protected void onHandleIntent(@Nullable Intent intent) {
-        Realm realm = Realm.getDefaultInstance();
-        for (Book book : getQueue(realm)) {
+        DownloadQueue downloadQueue = new DownloadQueue();
+
+        while (downloadQueue.hasNext()) {
+            Book book = downloadQueue.next();
             try {
-                downloadBook(realm, book);
+                downloadBook(book);
+                downloadQueue.notifyDone(book);
                 Timber.w("Book successfully downloaded: %s", book.getId());
             } catch (Exception e) {
+                downloadQueue.notifyFailed(book);
                 Timber.w(e, "Failed to download book: %s", book.getId());
             }
         }
-        realm.close();
+
+        downloadQueue.close();
     }
 
-    private List<Book> getQueue(Realm realm) {
-        return realm.where(Book.class)
-                .equalTo("status", QUEUED)
-                .findAll();
-    }
-
-    private void downloadBook(Realm realm, Book book) throws Exception {
+    private void downloadBook(Book book) throws Exception {
         File bookDir = getBookDir(book);
         for (Image pageImage : book.getPageImages()) {
             String pageImageUrl = pageImage.getUrl();
@@ -93,10 +88,6 @@ public class DownloadService extends IntentService {
             FileUtils.copyFile(srcPageFile, destPageFile);
             Timber.w("Page successfully downloaded: %s", pageImageUrl);
         }
-
-        realm.beginTransaction();
-        book.setStatus(OFFLINE);
-        realm.commitTransaction();
     }
 
     private File getBookDir(Book book) {
