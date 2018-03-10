@@ -5,8 +5,6 @@ import java.io.Closeable;
 import i.am.shiro.amai.model.Book;
 import i.am.shiro.amai.model.DownloadTask;
 import io.realm.Realm;
-import io.realm.RealmResults;
-import timber.log.Timber;
 
 import static i.am.shiro.amai.constant.DownloadStatus.DONE;
 import static i.am.shiro.amai.constant.DownloadStatus.FAILED;
@@ -21,18 +19,7 @@ public class DownloadManager implements Closeable {
 
     private static final int MAX_TRIES = 3;
 
-    private final Realm realm;
-
-    private final RealmResults<DownloadTask> queue;
-
-    public DownloadManager() {
-        realm = Realm.getDefaultInstance();
-        queue = realm.where(DownloadTask.class)
-                .equalTo("status", QUEUED)
-                .findAll();
-
-        Timber.w("queue size: %s", queue.size());
-    }
+    private final Realm realm = Realm.getDefaultInstance();
 
     @Override
     public void close() {
@@ -46,8 +33,10 @@ public class DownloadManager implements Closeable {
         realm.commitTransaction();
     }
 
-    public Iterable<DownloadTask> getQueue() {
-        return queue;
+    public Iterable<DownloadTask> getQueued() {
+        return realm.where(DownloadTask.class)
+                .equalTo("status", QUEUED)
+                .findAll();
     }
 
     public void notifyRunning(DownloadTask task) {

@@ -28,6 +28,23 @@ public class DownloadTask extends RealmObject {
         return status;
     }
 
+    public String getStatusString() {
+        switch (status) {
+            case DownloadStatus.QUEUED:
+                return "Queued";
+            case DownloadStatus.RUNNING:
+                return "Downloading";
+            case DownloadStatus.PAUSED:
+                return "Paused";
+            case DownloadStatus.DONE:
+                return "Done";
+            case DownloadStatus.FAILED:
+                return "Failed";
+            default:
+                return "";
+        }
+    }
+
     public void setStatus(@DownloadStatus int status) {
         this.status = status;
     }
@@ -38,9 +55,5 @@ public class DownloadTask extends RealmObject {
 
     public void incrementTries() {
         tries++;
-    }
-
-    public void resetTries() {
-        tries = 0;
     }
 }

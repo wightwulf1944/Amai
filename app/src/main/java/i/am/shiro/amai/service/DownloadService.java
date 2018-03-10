@@ -64,7 +64,7 @@ public class DownloadService extends IntentService {
     protected void onHandleIntent(@Nullable Intent intent) {
         DownloadManager downloadManager = new DownloadManager();
 
-        for (DownloadTask task : downloadManager.getQueue()) {
+        for (DownloadTask task : downloadManager.getQueued()) {
             downloadManager.notifyRunning(task);
             Book book = task.getBook();
             try {
