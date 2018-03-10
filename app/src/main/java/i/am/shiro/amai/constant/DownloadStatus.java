@@ -4,10 +4,6 @@ import android.support.annotation.IntDef;
 
 import java.lang.annotation.Retention;
 
-import static i.am.shiro.amai.constant.DownloadStatus.DEFAULT;
-import static i.am.shiro.amai.constant.DownloadStatus.DONE;
-import static i.am.shiro.amai.constant.DownloadStatus.FAILED;
-import static i.am.shiro.amai.constant.DownloadStatus.QUEUED;
 import static java.lang.annotation.RetentionPolicy.SOURCE;
 
 /**
@@ -15,10 +11,17 @@ import static java.lang.annotation.RetentionPolicy.SOURCE;
  */
 
 @Retention(SOURCE)
-@IntDef({DEFAULT, QUEUED, DONE, FAILED})
+@IntDef({
+        DownloadStatus.QUEUED,
+        DownloadStatus.RUNNING,
+        DownloadStatus.PAUSED,
+        DownloadStatus.DONE,
+        DownloadStatus.FAILED
+})
 public @interface DownloadStatus {
-    int DEFAULT = 0;
-    int QUEUED = 1;
-    int DONE = 2;
-    int FAILED = 3;
+    int QUEUED = 0;
+    int RUNNING = 1;
+    int PAUSED = 2;
+    int DONE = 3;
+    int FAILED = 4;
 }

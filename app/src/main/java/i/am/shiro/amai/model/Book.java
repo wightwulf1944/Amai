@@ -1,6 +1,5 @@
 package i.am.shiro.amai.model;
 
-import i.am.shiro.amai.constant.DownloadStatus;
 import io.realm.RealmList;
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
@@ -13,9 +12,6 @@ public class Book extends RealmObject {
 
     @PrimaryKey
     private int id;
-
-    @DownloadStatus
-    private int downloadStatus;
 
     private boolean isDownloaded;
 
@@ -49,14 +45,6 @@ public class Book extends RealmObject {
 
     public int getId() {
         return id;
-    }
-
-    public int getDownloadStatus() {
-        return downloadStatus;
-    }
-
-    public void setDownloadStatus(int downloadStatus) {
-        this.downloadStatus = downloadStatus;
     }
 
     public boolean isDownloaded() {

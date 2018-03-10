@@ -17,8 +17,9 @@ import java.io.File;
 import i.am.shiro.amai.Preferences;
 import i.am.shiro.amai.R;
 import i.am.shiro.amai.model.Book;
+import i.am.shiro.amai.model.DownloadTask;
 import i.am.shiro.amai.model.Image;
-import i.am.shiro.amai.util.DownloadQueue;
+import i.am.shiro.amai.util.DownloadManager;
 import timber.log.Timber;
 
 import static i.am.shiro.amai.constant.Constants.DEFAULT_CHANNEL_ID;
@@ -33,8 +34,8 @@ public class DownloadService extends IntentService {
     private static final int NOTIFICATION_ID = 1;
 
     public static void start(Context context, Book book) {
-        try (DownloadQueue downloadQueue = new DownloadQueue()) {
-            downloadQueue.notifyQueued(book);
+        try (DownloadManager downloadManager = new DownloadManager()) {
+            downloadManager.addToQueue(book);
         }
 
         Intent intent = new Intent(context, DownloadService.class);
@@ -61,20 +62,22 @@ public class DownloadService extends IntentService {
 
     @Override
     protected void onHandleIntent(@Nullable Intent intent) {
-        DownloadQueue downloadQueue = new DownloadQueue();
+        DownloadManager downloadManager = new DownloadManager();
 
-        for (Book book : downloadQueue) {
+        for (DownloadTask task : downloadManager.getQueue()) {
+            downloadManager.notifyRunning(task);
+            Book book = task.getBook();
             try {
                 downloadBook(book);
-                downloadQueue.notifyDone(book);
+                downloadManager.notifyDone(task);
                 Timber.w("Book successfully downloaded: %s", book.getId());
             } catch (Exception e) {
-                downloadQueue.notifyFailed(book);
+                downloadManager.notifyFailed(task);
                 Timber.w(e, "Failed to download book: %s", book.getId());
             }
         }
 
-        downloadQueue.close();
+        downloadManager.close();
     }
 
     private void downloadBook(Book book) throws Exception {
