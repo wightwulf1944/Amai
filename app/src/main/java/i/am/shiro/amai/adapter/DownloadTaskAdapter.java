@@ -9,7 +9,6 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import i.am.shiro.amai.R;
-import i.am.shiro.amai.constant.DownloadStatus;
 import i.am.shiro.amai.model.DownloadTask;
 import io.realm.RealmResults;
 

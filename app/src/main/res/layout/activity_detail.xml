@@ -44,8 +44,8 @@
             android:orientation="horizontal"
             app:layoutManager="LinearLayoutManager" />
 
-        <com.google.android.flexbox.FlexboxLayout
-            android:id="@+id/tagFlexbox"
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/tagRecycler"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             tools:layout_height="80dp" />

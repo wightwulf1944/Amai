@@ -10,26 +10,23 @@ import android.support.constraint.ConstraintLayout;
 import android.support.constraint.ConstraintSet;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.google.android.flexbox.FlexboxLayout;
-
-import java.util.List;
+import com.google.android.flexbox.FlexWrap;
+import com.google.android.flexbox.FlexboxLayoutManager;
 
 import i.am.shiro.amai.R;
 import i.am.shiro.amai.adapter.PreviewThumbnailAdapter;
+import i.am.shiro.amai.adapter.TagAdapter;
 import i.am.shiro.amai.model.Book;
 import i.am.shiro.amai.service.DownloadService;
 import io.realm.Realm;
-import timber.log.Timber;
 
 import static android.content.Intent.ACTION_VIEW;
-import static com.google.android.flexbox.FlexWrap.WRAP;
 
 /**
  * Created by Shiro on 1/20/2018.
@@ -83,15 +80,15 @@ public class DetailActivity extends AppCompatActivity {
         TextView titleText = findViewById(R.id.titleText);
         titleText.setText(book.getTitle());
 
-        FlexboxLayout tagFlexbox = findViewById(R.id.tagFlexbox);
-        tagFlexbox.setFlexWrap(WRAP);
-        populateFlexboxWithTags(tagFlexbox, "Parodies:", book.getParodyTags());
-        populateFlexboxWithTags(tagFlexbox, "Characters:", book.getCharacterTags());
-        populateFlexboxWithTags(tagFlexbox, "Tags:", book.getGeneralTags());
-        populateFlexboxWithTags(tagFlexbox, "Artists:", book.getArtistTags());
-        populateFlexboxWithTags(tagFlexbox, "Groups:", book.getGroupTags());
-        populateFlexboxWithTags(tagFlexbox, "Language:", book.getLanguageTags());
-        populateFlexboxWithTags(tagFlexbox, "Categories:", book.getCategoryTags());
+        TagAdapter tagAdapter = new TagAdapter(book);
+
+        FlexboxLayoutManager layoutManager = new FlexboxLayoutManager(this);
+        layoutManager.setFlexWrap(FlexWrap.WRAP);
+
+        RecyclerView tagRecycler = findViewById(R.id.tagRecycler);
+        tagRecycler.setAdapter(tagAdapter);
+        tagRecycler.setLayoutManager(layoutManager);
+        tagRecycler.setHasFixedSize(true);
     }
 
     private Book extractBook(Intent intent) {
@@ -102,23 +99,6 @@ public class DetailActivity extends AppCompatActivity {
 
         if (book == null) throw new NullPointerException();
         else return book;
-    }
-
-    private void populateFlexboxWithTags(FlexboxLayout flexboxLayout, String label, List<String> tags) {
-        Timber.w("LOAD TAGS" + label);
-        if (tags.isEmpty()) return;
-
-        LayoutInflater inflater = getLayoutInflater();
-
-        TextView labelText = (TextView) inflater.inflate(R.layout.item_label, flexboxLayout, false);
-        labelText.setText(label);
-        flexboxLayout.addView(labelText);
-
-        for (String generalTag : tags) {
-            TextView tagText = (TextView) inflater.inflate(R.layout.item_tag, flexboxLayout, false);
-            tagText.setText(generalTag);
-            flexboxLayout.addView(tagText);
-        }
     }
 
     @Override
