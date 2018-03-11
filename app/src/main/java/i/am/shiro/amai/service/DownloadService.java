@@ -16,10 +16,11 @@ import java.io.File;
 
 import i.am.shiro.amai.Preferences;
 import i.am.shiro.amai.R;
+import i.am.shiro.amai.dao.DownloadQueue;
+import i.am.shiro.amai.dao.DownloadQueueManager;
 import i.am.shiro.amai.model.Book;
 import i.am.shiro.amai.model.DownloadTask;
 import i.am.shiro.amai.model.Image;
-import i.am.shiro.amai.util.DownloadManager;
 import timber.log.Timber;
 
 import static i.am.shiro.amai.constant.Constants.DEFAULT_CHANNEL_ID;
@@ -34,8 +35,8 @@ public class DownloadService extends IntentService {
     private static final int NOTIFICATION_ID = 1;
 
     public static void start(Context context, Book book) {
-        try (DownloadManager downloadManager = new DownloadManager()) {
-            downloadManager.addToQueue(book);
+        try (DownloadQueueManager queueManager = new DownloadQueueManager()) {
+            queueManager.addToQueue(book);
         }
 
         Intent intent = new Intent(context, DownloadService.class);
@@ -62,22 +63,22 @@ public class DownloadService extends IntentService {
 
     @Override
     protected void onHandleIntent(@Nullable Intent intent) {
-        DownloadManager downloadManager = new DownloadManager();
+        DownloadQueue downloadQueue = new DownloadQueue();
 
-        for (DownloadTask task : downloadManager.getQueued()) {
-            downloadManager.notifyRunning(task);
+        for (DownloadTask task : downloadQueue) {
+            downloadQueue.notifyRunning(task);
             Book book = task.getBook();
             try {
                 downloadBook(book);
-                downloadManager.notifyDone(task);
+                downloadQueue.notifyDone(task);
                 Timber.w("Book successfully downloaded: %s", book.getId());
             } catch (Exception e) {
-                downloadManager.notifyFailed(task);
+                downloadQueue.notifyFailed(task);
                 Timber.w(e, "Failed to download book: %s", book.getId());
             }
         }
 
-        downloadManager.close();
+        downloadQueue.close();
     }
 
     private void downloadBook(Book book) throws Exception {

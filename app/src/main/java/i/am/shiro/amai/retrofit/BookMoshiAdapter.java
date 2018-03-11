@@ -1,4 +1,4 @@
-package i.am.shiro.amai.model.adapter;
+package i.am.shiro.amai.retrofit;
 
 import com.squareup.moshi.FromJson;
 import com.squareup.moshi.ToJson;
@@ -10,7 +10,7 @@ import i.am.shiro.amai.model.BookJson;
  * Created by Shiro on 3/5/2018.
  */
 
-public class BookMoshiAdapter {
+class BookMoshiAdapter {
 
     @ToJson
     BookJson from(Book book) {

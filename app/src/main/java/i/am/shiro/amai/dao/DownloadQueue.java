@@ -1,8 +1,10 @@
-package i.am.shiro.amai.util;
+package i.am.shiro.amai.dao;
+
+import android.support.annotation.NonNull;
 
 import java.io.Closeable;
+import java.util.Iterator;
 
-import i.am.shiro.amai.model.Book;
 import i.am.shiro.amai.model.DownloadTask;
 import io.realm.Realm;
 
@@ -13,9 +15,12 @@ import static i.am.shiro.amai.constant.DownloadStatus.RUNNING;
 
 /**
  * Created by Shiro on 3/10/2018.
+ * responsible for maintaining the download queue for DownloadService
+ * also acts as a Realm DAO to reduce Realm code in DownloadService
+ * methods to manage the queue is implemented by DownloadQueueManager
  */
 
-public class DownloadManager implements Closeable {
+public class DownloadQueue implements Closeable, Iterable<DownloadTask> {
 
     private static final int MAX_TRIES = 3;
 
@@ -26,17 +31,15 @@ public class DownloadManager implements Closeable {
         realm.close();
     }
 
-    public void addToQueue(Book book) {
-        realm.beginTransaction();
-        DownloadTask task = realm.createObject(DownloadTask.class);
-        task.setBook(book);
-        realm.commitTransaction();
-    }
-
-    public Iterable<DownloadTask> getQueued() {
+    @NonNull
+    @Override
+    public Iterator<DownloadTask> iterator() {
         return realm.where(DownloadTask.class)
                 .equalTo("status", QUEUED)
-                .findAll();
+                .or()
+                .equalTo("status", RUNNING)
+                .findAll()
+                .iterator();
     }
 
     public void notifyRunning(DownloadTask task) {
