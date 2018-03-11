@@ -43,6 +43,28 @@ public class Book extends RealmObject {
 
     private RealmList<Image> pageThumbnailImages;
 
+    public Book() {
+        // Realm required no argument constructor
+    }
+
+    public Book(Adapter adapter) {
+        id = adapter.getId();
+        webUrl = adapter.getWebUrl();
+        title = adapter.getTitle();
+        pageCount = adapter.getPageCount();
+        parodyTags = adapter.getParodyTags();
+        characterTags = adapter.getCharacterTags();
+        generalTags = adapter.getGeneralTags();
+        artistTags = adapter.getArtistTags();
+        groupTags = adapter.getGroupTags();
+        languageTags = adapter.getLanguageTags();
+        categoryTags = adapter.getCategoryTags();
+        coverThumbnailImage = adapter.getCoverThumbnailImage();
+        coverImage = adapter.getCoverImage();
+        pageImages = adapter.getPageImages();
+        pageThumbnailImages = adapter.getPageThumbnailImages();
+    }
+
     public int getId() {
         return id;
     }
@@ -111,86 +133,35 @@ public class Book extends RealmObject {
         return pageThumbnailImages;
     }
 
-    public static class Builder {
-        private Book product = new Book();
+    public interface Adapter {
+        int getId();
 
-        public Builder setId(int id) {
-            product.id = id;
-            return this;
-        }
+        String getWebUrl();
 
-        public Builder setWebUrl(String webUrl) {
-            product.webUrl = webUrl;
-            return this;
-        }
+        String getTitle();
 
-        public Builder setTitle(String title) {
-            product.title = title;
-            return this;
-        }
+        int getPageCount();
 
-        public Builder setPageCount(int pageCount) {
-            product.pageCount = pageCount;
-            return this;
-        }
+        RealmList<String> getParodyTags();
 
-        public Builder setParodyTags(RealmList<String> parodyTags) {
-            product.parodyTags = parodyTags;
-            return this;
-        }
+        RealmList<String> getCharacterTags();
 
-        public Builder setCharacterTags(RealmList<String> characterTags) {
-            product.characterTags = characterTags;
-            return this;
-        }
+        RealmList<String> getGeneralTags();
 
-        public Builder setGeneralTags(RealmList<String> generalTags) {
-            product.generalTags = generalTags;
-            return this;
-        }
+        RealmList<String> getArtistTags();
 
-        public Builder setArtistTags(RealmList<String> artistTags) {
-            product.artistTags = artistTags;
-            return this;
-        }
+        RealmList<String> getGroupTags();
 
-        public Builder setGroupTags(RealmList<String> groupTags) {
-            product.groupTags = groupTags;
-            return this;
-        }
+        RealmList<String> getLanguageTags();
 
-        public Builder setLanguageTags(RealmList<String> languageTags) {
-            product.languageTags = languageTags;
-            return this;
-        }
+        RealmList<String> getCategoryTags();
 
-        public Builder setCategoryTags(RealmList<String> categoryTags) {
-            product.categoryTags = categoryTags;
-            return this;
-        }
+        Image getCoverThumbnailImage();
 
-        public Builder setCoverThumbnailImage(Image coverThumbnailImage) {
-            product.coverThumbnailImage = coverThumbnailImage;
-            return this;
-        }
+        Image getCoverImage();
 
-        public Builder setCoverImage(Image coverImage) {
-            product.coverImage = coverImage;
-            return this;
-        }
+        RealmList<Image> getPageImages();
 
-        public Builder setPageImages(RealmList<Image> pageImages) {
-            product.pageImages = pageImages;
-            return this;
-        }
-
-        public Builder setPageThumbnailImages(RealmList<Image> pageThumbnailImages) {
-            product.pageThumbnailImages = pageThumbnailImages;
-            return this;
-        }
-
-        public Book make() {
-            return product;
-        }
+        RealmList<Image> getPageThumbnailImages();
     }
 }
