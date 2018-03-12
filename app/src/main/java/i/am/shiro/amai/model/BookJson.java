@@ -54,35 +54,29 @@ public class BookJson {
     }
 
     public Book.Adapter getBookAdapter() {
-        return new BookAdapter(this);
+        return new BookAdapter();
     }
 
     private class BookAdapter implements Book.Adapter {
 
-        private BookJson json;
-
-        private BookAdapter(BookJson json) {
-            this.json = json;
-        }
-
         @Override
         public int getId() {
-            return json.id;
+            return id;
         }
 
         @Override
         public String getWebUrl() {
-            return WEBPAGE_BASE_URL + json.id;
+            return WEBPAGE_BASE_URL + id;
         }
 
         @Override
         public String getTitle() {
-            return json.title.english;
+            return title.english;
         }
 
         @Override
         public int getPageCount() {
-            return json.pageCount;
+            return pageCount;
         }
 
         @Override
@@ -123,7 +117,7 @@ public class BookJson {
         @Override
         public Image getCoverImage() {
             String mediaUrl = getThumbnailImageMediaUrl();
-            ImageJson cover = json.images.cover;
+            ImageJson cover = images.cover;
             return new Image.Builder()
                     .setUrl(mediaUrl + "cover" + extension(cover))
                     .setWidth(cover.width)
@@ -134,7 +128,7 @@ public class BookJson {
         @Override
         public Image getCoverThumbnailImage() {
             String mediaUrl = getThumbnailImageMediaUrl();
-            ImageJson coverThumbnail = json.images.thumbnail;
+            ImageJson coverThumbnail = images.thumbnail;
             return new Image.Builder()
                     .setUrl(mediaUrl + "thumb" + extension(coverThumbnail))
                     .setWidth(coverThumbnail.width)
@@ -144,20 +138,20 @@ public class BookJson {
 
         @Override
         public RealmList<Image> getPageImages() {
-            return Stream.range(0, json.pageCount)
+            return Stream.range(0, pageCount)
                     .map(this::getPageImageFrom)
                     .collect(toCollection(RealmList::new));
         }
 
         @Override
         public RealmList<Image> getPageThumbnailImages() {
-            return Stream.range(0, json.pageCount)
+            return Stream.range(0, pageCount)
                     .map(this::getPageThumbnailImageFrom)
                     .collect(toCollection(RealmList::new));
         }
 
         private RealmList<String> getTagsByType(String type) {
-            return Stream.of(json.tags)
+            return Stream.of(tags)
                     .filter(tag -> tag.type.equals(type))
                     .map(tag -> tag.name)
                     .collect(toCollection(RealmList::new));
@@ -165,7 +159,7 @@ public class BookJson {
 
         private Image getPageImageFrom(int index) {
             String mediaUrl = getImageMediaUrl();
-            ImageJson page = json.images.pages.get(index);
+            ImageJson page = images.pages.get(index);
             return new Image.Builder()
                     .setUrl(mediaUrl + (index + 1) + extension(page))
                     .setWidth(page.width)
@@ -175,7 +169,7 @@ public class BookJson {
 
         private Image getPageThumbnailImageFrom(int index) {
             String mediaUrl = getThumbnailImageMediaUrl();
-            ImageJson page = json.images.pages.get(index);
+            ImageJson page = images.pages.get(index);
             return new Image.Builder()
                     .setUrl(mediaUrl + (index + 1) + "t" + extension(page))
                     .setWidth(page.width)
@@ -184,11 +178,11 @@ public class BookJson {
         }
 
         private String getImageMediaUrl() {
-            return IMAGE_BASE_URL + json.mediaId + "/";
+            return IMAGE_BASE_URL + mediaId + "/";
         }
 
         private String getThumbnailImageMediaUrl() {
-            return THUMBNAIL_BASE_URL + json.mediaId + "/";
+            return THUMBNAIL_BASE_URL + mediaId + "/";
         }
 
         private String extension(ImageJson imageJson) {

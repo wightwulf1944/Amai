@@ -65,16 +65,12 @@ public class Book extends RealmObject {
         pageThumbnailImages = adapter.getPageThumbnailImages();
     }
 
-    public int getId() {
-        return id;
-    }
-
-    public boolean isDownloaded() {
-        return isDownloaded;
-    }
-
     public void setDownloaded(boolean downloaded) {
         isDownloaded = downloaded;
+    }
+
+    public int getId() {
+        return id;
     }
 
     public String getWebUrl() {

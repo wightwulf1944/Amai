@@ -18,6 +18,9 @@ import static i.am.shiro.amai.constant.DownloadStatus.RUNNING;
  * responsible for maintaining the download queue for DownloadService
  * also acts as a Realm DAO to reduce Realm code in DownloadService
  * methods to manage the queue is implemented by DownloadQueueManager
+ *
+ * TODO:
+ * possibly should implement Iterator
  */
 
 public class DownloadQueue implements Closeable, Iterable<DownloadTask> {
