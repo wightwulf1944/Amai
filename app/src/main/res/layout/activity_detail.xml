@@ -10,13 +10,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="8dp">
+        android:padding="16dp">
 
         <TextView
             android:id="@+id/titleText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
+            android:layout_marginBottom="16dp"
             android:textAppearance="@style/TextAppearance.AppCompat.Title"
             tools:text="Lorem Ipsum Dolor Sit Amet" />
 
@@ -24,7 +24,7 @@
             android:id="@+id/coverImageConstraintLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="4dp"
+            android:layout_marginBottom="8dp"
             tools:layout_height="160dp">
 
             <ImageView
@@ -39,8 +39,8 @@
         <android.support.v7.widget.RecyclerView
             android:id="@+id/previewRecycler"
             android:layout_width="match_parent"
-            android:layout_height="130dp"
-            android:layout_marginBottom="8dp"
+            android:layout_height="140dp"
+            android:layout_marginBottom="16dp"
             android:orientation="horizontal"
             app:layoutManager="LinearLayoutManager" />
 

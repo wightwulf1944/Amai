@@ -45,7 +45,7 @@ public class BrowseFragment extends Fragment implements SearchView.OnQueryTextLi
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_source, container, false);
+        View view = inflater.inflate(R.layout.fragment_browse, container, false);
 
         BookAdapter adapter = new BookAdapter(this, inflater);
         adapter.setOnItemClickListener(this::onItemClicked);

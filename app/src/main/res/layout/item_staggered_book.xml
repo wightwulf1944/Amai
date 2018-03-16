@@ -5,7 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="4dp"
-    app:cardPreventCornerOverlap="false">
+    app:cardPreventCornerOverlap="false"
+    tools:layout_width="150dp">
 
     <android.support.constraint.ConstraintLayout
         android:id="@+id/constraintLayout"
@@ -20,25 +21,22 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@android:color/darker_gray"
-            tools:layout_constraintDimensionRatio="h,50:71"
-            tools:layout_height="250dp" />
+            tools:layout_constraintDimensionRatio="h,50:71" />
 
         <TextView
             android:id="@+id/titleText"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
-            android:layout_marginLeft="8dp"
-            android:layout_marginRight="8dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
+            android:layout_margin="8dp"
+            android:layout_marginBottom="0dp"
             android:ellipsize="end"
-            android:maxLines="4"
+            android:maxLines="3"
             android:singleLine="false"
-            android:text="Lorem Ipsum Dolor Sit Amet"
+            android:textSize="@dimen/textsize_main_bookcardtitle"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/thumbnailImage" />
+            app:layout_constraintTop_toBottomOf="@+id/thumbnailImage"
+            tools:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit quisque a." />
 
         <TextView
             android:id="@+id/pageText"
@@ -48,7 +46,8 @@
             android:layout_marginEnd="3sp"
             android:layout_marginRight="3sp"
             android:layout_marginTop="8dp"
-            android:textAppearance="@style/TextAppearance.AppCompat.Caption"
+            android:textColor="?android:textColorSecondary"
+            android:textSize="@dimen/textsize_main_bookcardcaption"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/textView2"
             app:layout_constraintTop_toBottomOf="@+id/titleText"
@@ -63,7 +62,8 @@
             android:layout_marginRight="8dp"
             android:layout_marginTop="8dp"
             android:text="pages"
-            android:textAppearance="@style/TextAppearance.AppCompat.Caption"
+            android:textColor="?android:textColorSecondary"
+            android:textSize="@dimen/textsize_main_bookcardcaption"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/titleText" />
