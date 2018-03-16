@@ -1,5 +1,6 @@
 package i.am.shiro.amai.adapter;
 
+import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
 import android.support.constraint.ConstraintSet;
 import android.support.v4.app.Fragment;
@@ -31,7 +32,7 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.ViewHolder> {
 
     private List<Book> data;
 
-    private Consumer<Integer> onItemClickListener;
+    private Consumer<Book> onItemClickListener;
 
     public BookAdapter(Fragment parentFragment, LayoutInflater inflater) {
         this.parentFragment = parentFragment;
@@ -44,7 +45,7 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.ViewHolder> {
         notifyDataSetChanged();
     }
 
-    public void setOnItemClickListener(Consumer<Integer> listener) {
+    public void setOnItemClickListener(Consumer<Book> listener) {
         onItemClickListener = listener;
     }
 
@@ -53,14 +54,15 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.ViewHolder> {
         return data.get(position).getId();
     }
 
+    @NonNull
     @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = inflater.inflate(R.layout.item_staggered_book, parent, false);
         return new ViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Book book = data.get(position);
         holder.bind(book);
     }
@@ -80,20 +82,24 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.ViewHolder> {
 
         private final TextView pageText;
 
+        private Book book;
+
         ViewHolder(View view) {
             super(view);
             constraintLayout = view.findViewById(R.id.constraintLayout);
             thumbnailImage = view.findViewById(R.id.thumbnailImage);
             titleText = view.findViewById(R.id.titleText);
             pageText = view.findViewById(R.id.pageText);
-            view.setOnClickListener(v -> onItemClicked());
+            view.setOnClickListener(v -> onItemClick());
         }
 
-        private void onItemClicked() {
-            onItemClickListener.accept(getAdapterPosition());
+        private void onItemClick() {
+            onItemClickListener.accept(book);
         }
 
         private void bind(Book book) {
+            this.book = book;
+
             titleText.setText(book.getTitle());
             pageText.setText(book.getPageCountStr());
 

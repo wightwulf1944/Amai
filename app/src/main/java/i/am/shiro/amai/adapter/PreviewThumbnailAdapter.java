@@ -1,6 +1,7 @@
 package i.am.shiro.amai.adapter;
 
 import android.app.Activity;
+import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
 import android.support.constraint.ConstraintSet;
 import android.support.v7.widget.RecyclerView;
@@ -10,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import com.annimon.stream.function.Consumer;
 import com.bumptech.glide.Glide;
 
 import java.util.List;
@@ -30,20 +32,27 @@ public class PreviewThumbnailAdapter extends Adapter<PreviewThumbnailAdapter.Vie
 
     private final LayoutInflater inflater;
 
+    private Consumer<Integer> onItemClickListener;
+
     public PreviewThumbnailAdapter(Activity parentActivity, List<Image> pageThumbnailImages) {
         this.parentActivity = parentActivity;
         this.pageThumbnailImages = pageThumbnailImages;
-        inflater = LayoutInflater.from(parentActivity);
+        inflater = parentActivity.getLayoutInflater();
     }
 
+    public void setOnItemClickListener(Consumer<Integer> listener) {
+        onItemClickListener = listener;
+    }
+
+    @NonNull
     @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = inflater.inflate(R.layout.item_preview_image, parent, false);
         return new ViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Image pageThumbnailImage = pageThumbnailImages.get(position);
         holder.bind(pageThumbnailImage);
     }
@@ -63,6 +72,11 @@ public class PreviewThumbnailAdapter extends Adapter<PreviewThumbnailAdapter.Vie
             super(itemView);
             constraintLayout = (ConstraintLayout) itemView;
             previewImage = itemView.findViewById(R.id.thumbnailImage);
+            itemView.setOnClickListener(v -> onItemClick());
+        }
+
+        private void onItemClick() {
+            onItemClickListener.accept(getAdapterPosition());
         }
 
         void bind(Image image) {

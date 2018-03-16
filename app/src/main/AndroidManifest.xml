@@ -3,6 +3,7 @@
     package="i.am.shiro.amai">
 
     <uses-permission android:name="android.permission.INTERNET" />
+
     <uses-permission
         android:name="android.permission.WRITE_EXTERNAL_STORAGE"
         android:maxSdkVersion="18" />
@@ -19,20 +20,29 @@
         <activity
             android:name=".activity.MainActivity"
             android:theme="@style/AppTheme.Launcher">
+
             <intent-filter>
+
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
+
             </intent-filter>
+
         </activity>
 
         <activity
             android:name=".activity.IntroActivity"
             android:theme="@style/AppTheme.Intro" />
 
+        <activity android:name=".activity.DetailActivity" />
+
         <activity
-            android:name=".activity.DetailActivity" />
+            android:name=".activity.ReadActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
 
         <service android:name=".service.DownloadService" />
+
     </application>
 
 </manifest>

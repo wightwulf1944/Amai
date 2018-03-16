@@ -3,6 +3,8 @@ package i.am.shiro.amai.fragment;
 
 import android.arch.lifecycle.ViewModelProvider;
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -17,7 +19,9 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import i.am.shiro.amai.R;
+import i.am.shiro.amai.activity.ReadActivity;
 import i.am.shiro.amai.adapter.BookAdapter;
+import i.am.shiro.amai.model.Book;
 import i.am.shiro.amai.viewmodel.DownloadsFragmentModel;
 
 import static android.support.v7.widget.StaggeredGridLayoutManager.GAP_HANDLING_NONE;
@@ -44,6 +48,7 @@ public class DownloadsFragment extends Fragment implements SearchView.OnQueryTex
         View view = inflater.inflate(R.layout.fragment_downloads, container, false);
 
         BookAdapter adapter = new BookAdapter(this, inflater);
+        adapter.setOnItemClickListener(this::invokeReadBook);
 
         StaggeredGridLayoutManager layoutManager = new StaggeredGridLayoutManager(getSpanCount(), VERTICAL);
         layoutManager.setGapStrategy(GAP_HANDLING_NONE);
@@ -79,5 +84,11 @@ public class DownloadsFragment extends Fragment implements SearchView.OnQueryTex
     @Override
     public boolean onQueryTextChange(String newText) {
         return false;
+    }
+
+    private void invokeReadBook(Book book) {
+        Context context = getContext();
+        Intent intent = ReadActivity.makeIntent(context, book, 0);
+        startActivity(intent);
     }
 }

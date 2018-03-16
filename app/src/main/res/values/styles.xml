@@ -7,9 +7,12 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
-    <style name="AppTheme.Intro">
+    <style name="AppTheme.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
+    </style>
+
+    <style name="AppTheme.Intro" parent="AppTheme.NoActionBar">
         <!--should match the window background-->
         <item name="colorPrimary">?android:attr/windowBackground</item>
         <item name="colorPrimaryDark">?android:attr/windowBackground</item>

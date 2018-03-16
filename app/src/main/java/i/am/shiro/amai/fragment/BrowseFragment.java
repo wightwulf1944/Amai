@@ -48,7 +48,7 @@ public class BrowseFragment extends Fragment implements SearchView.OnQueryTextLi
         View view = inflater.inflate(R.layout.fragment_browse, container, false);
 
         BookAdapter adapter = new BookAdapter(this, inflater);
-        adapter.setOnItemClickListener(this::onItemClicked);
+        adapter.setOnItemClickListener(this::invokeViewDetails);
 
         StaggeredGridLayoutManager layoutManager = new StaggeredGridLayoutManager(getSpanCount(), VERTICAL);
         layoutManager.setGapStrategy(GAP_HANDLING_NONE);
@@ -88,9 +88,8 @@ public class BrowseFragment extends Fragment implements SearchView.OnQueryTextLi
         return 2;
     }
 
-    private void onItemClicked(int position) {
+    private void invokeViewDetails(Book book) {
         Context context = getContext();
-        Book book = viewModel.getBooks().get(position);
         Intent intent = DetailActivity.makeIntent(context, book);
         startActivity(intent);
     }

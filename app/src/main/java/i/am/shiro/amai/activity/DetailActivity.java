@@ -47,11 +47,21 @@ public class DetailActivity extends AppCompatActivity {
         return intent;
     }
 
+    private static Book extractBook(Realm realm, Intent intent) {
+        int bookId = intent.getIntExtra(BOOK_ID, -1);
+        Book book = realm.where(Book.class)
+                .equalTo("id", bookId)
+                .findFirst();
+
+        if (book == null) throw new NullPointerException();
+        else return book;
+    }
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        book = extractBook(getIntent());
+        book = extractBook(realm, getIntent());
 
         setContentView(R.layout.activity_detail);
 
@@ -72,6 +82,7 @@ public class DetailActivity extends AppCompatActivity {
                 .into(coverImage);
 
         PreviewThumbnailAdapter adapter = new PreviewThumbnailAdapter(this, book.getPageThumbnailImages());
+        adapter.setOnItemClickListener(this::invokeReadBook);
 
         RecyclerView previewRecycler = findViewById(R.id.previewRecycler);
         previewRecycler.setHasFixedSize(true);
@@ -89,16 +100,6 @@ public class DetailActivity extends AppCompatActivity {
         tagRecycler.setAdapter(tagAdapter);
         tagRecycler.setLayoutManager(layoutManager);
         tagRecycler.setHasFixedSize(true);
-    }
-
-    private Book extractBook(Intent intent) {
-        int bookId = intent.getIntExtra(BOOK_ID, -1);
-        Book book = realm.where(Book.class)
-                .equalTo("id", bookId)
-                .findFirst();
-
-        if (book == null) throw new NullPointerException();
-        else return book;
     }
 
     @Override
@@ -131,6 +132,11 @@ public class DetailActivity extends AppCompatActivity {
         String webUrl = book.getWebUrl();
         Uri uri = Uri.parse(webUrl);
         Intent intent = new Intent(ACTION_VIEW, uri);
+        startActivity(intent);
+    }
+
+    private void invokeReadBook(int pageIndex) {
+        Intent intent = ReadActivity.makeIntent(this, book, pageIndex);
         startActivity(intent);
     }
 }

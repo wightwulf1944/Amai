@@ -2,4 +2,5 @@
 <resources>
     <dimen name="textsize_main_bookcardtitle">12sp</dimen>
     <dimen name="textsize_main_bookcardcaption">12sp</dimen>
+    <dimen name="textsize_read_pagenumber">30sp</dimen>
 </resources>
