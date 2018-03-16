@@ -73,8 +73,20 @@ public class BrowseFragmentModel extends ViewModel {
     private void onBooksFetched(List<Book> fetchedBooks) {
         books.setValue(fetchedBooks);
         realm.beginTransaction();
-        realm.insertOrUpdate(fetchedBooks);
+        for (Book fetchedBook : fetchedBooks) mergeBook(fetchedBook);
         realm.commitTransaction();
+    }
+
+    private void mergeBook(Book remoteBook) {
+        Book localBook = realm.where(Book.class)
+                .equalTo("id", remoteBook.getId())
+                .findFirst();
+
+        if (localBook == null) {
+            realm.insert(remoteBook);
+        } else {
+            localBook.mergeWith(remoteBook);
+        }
     }
 
     @Override
