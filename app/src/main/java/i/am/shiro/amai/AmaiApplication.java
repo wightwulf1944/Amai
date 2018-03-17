@@ -4,6 +4,9 @@ import android.app.Application;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.os.Build;
+import android.support.annotation.NonNull;
+
+import com.github.pedrovgs.lynx.LynxShakeDetector;
 
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
@@ -22,16 +25,7 @@ public class AmaiApplication extends Application {
     public void onCreate() {
         super.onCreate();
 
-        if (BuildConfig.DEBUG) {
-            Timber.plant(new Timber.DebugTree() {
-                @Override
-                protected String createStackElementTag(StackTraceElement element) {
-                    String tag = super.createStackElementTag(element);
-                    String method = element.getMethodName();
-                    return String.format("%s:%s", tag, method);
-                }
-            });
-        }
+        if (BuildConfig.DEBUG) initDebugTools();
 
         Preferences.init(this);
 
@@ -53,7 +47,21 @@ public class AmaiApplication extends Application {
                 notificationManager.createNotificationChannel(mChannel);
             }
         }
+    }
 
-//        Preferences.setFirstRun(true);
+    private void initDebugTools() {
+        Timber.plant(new Timber.DebugTree() {
+            @Override
+            protected String createStackElementTag(@NonNull StackTraceElement element) {
+                String tag = super.createStackElementTag(element);
+                String method = element.getMethodName();
+                return String.format("%s:%s", tag, method);
+            }
+        });
+
+        LynxShakeDetector lynxShakeDetector = new LynxShakeDetector(this);
+        lynxShakeDetector.init();
+
+        Preferences.setFirstRun(false);
     }
 }
