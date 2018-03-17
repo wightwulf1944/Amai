@@ -1,4 +1,4 @@
-package i.am.shiro.amai.experimental;
+package i.am.shiro.amai.dao;
 
 import android.support.annotation.NonNull;
 
@@ -6,6 +6,8 @@ import java.io.Closeable;
 import java.util.Iterator;
 
 import i.am.shiro.amai.model.Book;
+import i.am.shiro.amai.model.DownloadJob;
+import i.am.shiro.amai.model.DownloadTask;
 import io.realm.Realm;
 import timber.log.Timber;
 
@@ -18,7 +20,7 @@ import static i.am.shiro.amai.constant.DownloadStatus.RUNNING;
  * Created by Shiro on 3/18/2018.
  */
 
-public class DownloadTaskDispatcher implements Closeable, Iterable<DownloadTask2> {
+public class DownloadTaskDispatcher implements Closeable, Iterable<DownloadTask> {
 
     private static final int MAX_TRIES = 3;
 
@@ -29,14 +31,14 @@ public class DownloadTaskDispatcher implements Closeable, Iterable<DownloadTask2
         realm.close();
     }
 
-    public void notifyRunning(DownloadTask2 task) {
+    public void notifyRunning(DownloadTask task) {
         realm.beginTransaction();
         DownloadJob parentJob = task.getParentJob();
         parentJob.setStatus(RUNNING);
         realm.commitTransaction();
     }
 
-    public void notifyDone(DownloadTask2 task) {
+    public void notifyDone(DownloadTask task) {
         realm.beginTransaction();
         DownloadJob parentJob = task.getParentJob();
         parentJob.incrementTaskIndex();
@@ -51,7 +53,7 @@ public class DownloadTaskDispatcher implements Closeable, Iterable<DownloadTask2
         realm.commitTransaction();
     }
 
-    public void notifyFailed(DownloadTask2 task) {
+    public void notifyFailed(DownloadTask task) {
         realm.beginTransaction();
         DownloadJob parentJob = task.getParentJob();
         if (parentJob.getTries() < MAX_TRIES) {
@@ -75,7 +77,7 @@ public class DownloadTaskDispatcher implements Closeable, Iterable<DownloadTask2
         return new QueueIterator();
     }
 
-    private class QueueIterator implements Iterator<DownloadTask2> {
+    private class QueueIterator implements Iterator<DownloadTask> {
 
         @Override
         public boolean hasNext() {
@@ -89,7 +91,7 @@ public class DownloadTaskDispatcher implements Closeable, Iterable<DownloadTask2
         }
 
         @Override
-        public DownloadTask2 next() {
+        public DownloadTask next() {
             DownloadJob job = realm.where(DownloadJob.class)
                     .equalTo("status", RUNNING)
                     .or()

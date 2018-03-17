@@ -10,24 +10,19 @@ import android.support.v4.app.NotificationCompat;
 import com.bumptech.glide.Glide;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.FilenameUtils;
 
 import java.io.File;
 
-import i.am.shiro.amai.Preferences;
 import i.am.shiro.amai.R;
-import i.am.shiro.amai.dao.DownloadQueue;
 import i.am.shiro.amai.dao.DownloadQueueManager;
+import i.am.shiro.amai.dao.DownloadTaskDispatcher;
 import i.am.shiro.amai.model.Book;
 import i.am.shiro.amai.model.DownloadTask;
-import i.am.shiro.amai.model.Image;
-import timber.log.Timber;
 
 import static i.am.shiro.amai.constant.Constants.DEFAULT_CHANNEL_ID;
 
 /**
- * Created by Shiro on 2/20/2018.
- * TODO: create companion notification
+ * Created by Shiro on 3/18/2018.
  */
 
 public class DownloadService extends IntentService {
@@ -36,7 +31,7 @@ public class DownloadService extends IntentService {
 
     public static void start(Context context, Book book) {
         try (DownloadQueueManager queueManager = new DownloadQueueManager()) {
-            queueManager.addToQueue(book);
+            queueManager.add(book);
         }
 
         Intent intent = new Intent(context, DownloadService.class);
@@ -63,40 +58,27 @@ public class DownloadService extends IntentService {
 
     @Override
     protected void onHandleIntent(@Nullable Intent intent) {
-        DownloadQueue downloadQueue = new DownloadQueue();
-
-        for (DownloadTask task : downloadQueue) {
-            downloadQueue.notifyRunning(task);
-            Book book = task.getBook();
-            try {
-                downloadBook(book);
-                downloadQueue.notifyDone(task);
-                Timber.w("Book successfully downloaded: %s", book.getId());
-            } catch (Exception e) {
-                downloadQueue.notifyFailed(task);
-                Timber.w(e, "Failed to download book: %s", book.getId());
+        try (DownloadTaskDispatcher dispatcher = new DownloadTaskDispatcher()) {
+            for (DownloadTask task : dispatcher) {
+                dispatcher.notifyRunning(task);
+                try {
+                    runTask(task);
+                    dispatcher.notifyDone(task);
+                } catch (Exception e) {
+                    dispatcher.notifyFailed(task);
+                }
             }
         }
-
-        downloadQueue.close();
     }
 
-    private void downloadBook(Book book) throws Exception {
-        File bookDir = getBookDir(book);
-        for (Image pageImage : book.getPageImages()) {
-            String pageImageUrl = pageImage.getUrl();
-            File srcPageFile = downloadPage(pageImageUrl);
-            File destPageFile = getPageFile(bookDir, pageImageUrl);
-            FileUtils.copyFile(srcPageFile, destPageFile);
-            Timber.w("Page successfully downloaded: %s", pageImageUrl);
-        }
-    }
+    private void runTask(DownloadTask task) throws Exception {
+        String sourceUrl = task.getSourceUrl();
+        File sourceFile = downloadPage(sourceUrl);
 
-    private File getBookDir(Book book) {
-        String storagePath = Preferences.getStoragePath();
-        File storageDir = new File(storagePath);
-        String dirName = String.valueOf(book.getId());
-        return new File(storageDir, dirName);
+        String destinationUrl = task.getDestinationUrl();
+        File destinationFile = new File(destinationUrl);
+
+        FileUtils.copyFile(sourceFile, destinationFile);
     }
 
     private File downloadPage(String pageUrl) throws Exception {
@@ -104,10 +86,5 @@ public class DownloadService extends IntentService {
                 .download(pageUrl)
                 .submit()
                 .get();
-    }
-
-    private File getPageFile(File bookDir, String pageUrl) {
-        String pageFilePath = FilenameUtils.getName(pageUrl);
-        return new File(bookDir, pageFilePath);
     }
 }

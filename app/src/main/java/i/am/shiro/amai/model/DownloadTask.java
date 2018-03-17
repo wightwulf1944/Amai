@@ -1,59 +1,40 @@
 package i.am.shiro.amai.model;
 
-import i.am.shiro.amai.constant.DownloadStatus;
 import io.realm.RealmObject;
 
 /**
- * Created by Shiro on 3/10/2018.
+ * Created by Shiro on 3/17/2018.
  */
 
 public class DownloadTask extends RealmObject {
 
-    private Book book;
+    private DownloadJob parentJob;
 
-    private int status;
+    private String sourceUrl;
 
-    private int tries;
+    private String destinationUrl;
 
-    public Book getBook() {
-        return book;
+    public DownloadJob getParentJob() {
+        return parentJob;
     }
 
-    public void setBook(Book book) {
-        this.book = book;
+    public void setParentJob(DownloadJob parentJob) {
+        this.parentJob = parentJob;
     }
 
-    @DownloadStatus
-    public int getStatus() {
-        return status;
+    public String getSourceUrl() {
+        return sourceUrl;
     }
 
-    public String getStatusString() {
-        switch (status) {
-            case DownloadStatus.QUEUED:
-                return "Queued";
-            case DownloadStatus.RUNNING:
-                return "Downloading";
-            case DownloadStatus.PAUSED:
-                return "Paused";
-            case DownloadStatus.DONE:
-                return "Done";
-            case DownloadStatus.FAILED:
-                return "Failed";
-            default:
-                return "";
-        }
+    public void setSourceUrl(String sourceUrl) {
+        this.sourceUrl = sourceUrl;
     }
 
-    public void setStatus(@DownloadStatus int status) {
-        this.status = status;
+    public String getDestinationUrl() {
+        return destinationUrl;
     }
 
-    public int getTries() {
-        return tries;
-    }
-
-    public void incrementTries() {
-        tries++;
+    public void setDestinationUrl(String destinationUrl) {
+        this.destinationUrl = destinationUrl;
     }
 }

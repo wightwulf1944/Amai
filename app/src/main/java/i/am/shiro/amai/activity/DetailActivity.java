@@ -22,7 +22,7 @@ import com.google.android.flexbox.FlexboxLayoutManager;
 import i.am.shiro.amai.R;
 import i.am.shiro.amai.adapter.PreviewThumbnailAdapter;
 import i.am.shiro.amai.adapter.TagAdapter;
-import i.am.shiro.amai.experimental.DownloadService;
+import i.am.shiro.amai.service.DownloadService;
 import i.am.shiro.amai.model.Book;
 import io.realm.Realm;
 

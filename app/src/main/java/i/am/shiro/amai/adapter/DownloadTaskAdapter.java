@@ -9,7 +9,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import i.am.shiro.amai.R;
-import i.am.shiro.amai.model.DownloadTask;
+import i.am.shiro.amai.model.DownloadJob;
 import io.realm.RealmResults;
 
 /**
@@ -18,11 +18,11 @@ import io.realm.RealmResults;
 
 public class DownloadTaskAdapter extends RecyclerView.Adapter<DownloadTaskAdapter.ViewHolder> {
 
-    private RealmResults<DownloadTask> downloadTasks;
+    private RealmResults<DownloadJob> downloadJobs;
 
-    public DownloadTaskAdapter(RealmResults<DownloadTask> downloadTasks) {
-        this.downloadTasks = downloadTasks;
-        downloadTasks.addChangeListener(downloadTasks1 -> notifyDataSetChanged());
+    public DownloadTaskAdapter(RealmResults<DownloadJob> downloadJobs) {
+        this.downloadJobs = downloadJobs;
+        downloadJobs.addChangeListener(downloadTasks1 -> notifyDataSetChanged());
     }
 
     @NonNull
@@ -36,13 +36,13 @@ public class DownloadTaskAdapter extends RecyclerView.Adapter<DownloadTaskAdapte
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        DownloadTask task = downloadTasks.get(position);
-        holder.bindData(task);
+        DownloadJob job = downloadJobs.get(position);
+        holder.bindData(job);
     }
 
     @Override
     public int getItemCount() {
-        return downloadTasks.size();
+        return downloadJobs.size();
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {
@@ -57,9 +57,9 @@ public class DownloadTaskAdapter extends RecyclerView.Adapter<DownloadTaskAdapte
             statusText = itemView.findViewById(R.id.statusText);
         }
 
-        void bindData(DownloadTask task) {
-            titleText.setText(task.getBook().getTitle());
-            statusText.setText(task.getStatusString());
+        void bindData(DownloadJob job) {
+            titleText.setText(job.getTitle());
+            statusText.setText(job.getStatusString());
         }
     }
 }

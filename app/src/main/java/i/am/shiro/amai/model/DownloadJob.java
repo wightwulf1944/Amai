@@ -1,7 +1,8 @@
-package i.am.shiro.amai.experimental;
+package i.am.shiro.amai.model;
 
 import i.am.shiro.amai.constant.DownloadStatus;
 import i.am.shiro.amai.model.Book;
+import i.am.shiro.amai.model.DownloadTask;
 import io.realm.RealmList;
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
@@ -27,7 +28,7 @@ public class DownloadJob extends RealmObject {
 
     private int taskIndex;
 
-    private RealmList<DownloadTask2> taskList;
+    private RealmList<DownloadTask> taskList;
 
     public int getBookId() {
         return bookId;
@@ -86,11 +87,11 @@ public class DownloadJob extends RealmObject {
         taskIndex++;
     }
 
-    public RealmList<DownloadTask2> getTaskList() {
+    public RealmList<DownloadTask> getTaskList() {
         return taskList;
     }
 
-    public void setTaskList(RealmList<DownloadTask2> taskList) {
+    public void setTaskList(RealmList<DownloadTask> taskList) {
         this.taskList = taskList;
     }
 
@@ -121,7 +122,7 @@ public class DownloadJob extends RealmObject {
      *
      * @return the current task that needs to be done
      */
-    public DownloadTask2 getCurrentTask() {
+    public DownloadTask getCurrentTask() {
         return taskList.get(taskIndex);
     }
 }

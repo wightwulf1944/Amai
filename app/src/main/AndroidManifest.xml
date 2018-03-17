@@ -43,8 +43,6 @@
 
         <service android:name=".service.DownloadService" />
 
-        <service android:name=".experimental.DownloadService" />
-
     </application>
 
 </manifest>
