@@ -18,34 +18,26 @@ public class Image extends RealmObject {
         return url;
     }
 
+    public Image setUrl(String url) {
+        this.url = url;
+        return this;
+    }
+
     public int getWidth() {
         return width;
+    }
+
+    public Image setWidth(int width) {
+        this.width = width;
+        return this;
     }
 
     public int getHeight() {
         return height;
     }
 
-    public static class Builder {
-        private Image product = new Image();
-
-        public Builder setUrl(String url) {
-            product.url = url;
-            return this;
-        }
-
-        public Builder setWidth(int width) {
-            product.width = width;
-            return this;
-        }
-
-        public Builder setHeight(int height) {
-            product.height = height;
-            return this;
-        }
-
-        public Image make() {
-            return product;
-        }
+    public Image setHeight(int height) {
+        this.height = height;
+        return this;
     }
 }

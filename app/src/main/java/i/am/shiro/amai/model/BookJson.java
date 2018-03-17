@@ -118,22 +118,20 @@ public class BookJson {
         public Image getCoverImage() {
             String mediaUrl = getThumbnailImageMediaUrl();
             ImageJson cover = images.cover;
-            return new Image.Builder()
+            return new Image()
                     .setUrl(mediaUrl + "cover" + extension(cover))
                     .setWidth(cover.width)
-                    .setHeight(cover.height)
-                    .make();
+                    .setHeight(cover.height);
         }
 
         @Override
         public Image getCoverThumbnailImage() {
             String mediaUrl = getThumbnailImageMediaUrl();
             ImageJson coverThumbnail = images.thumbnail;
-            return new Image.Builder()
+            return new Image()
                     .setUrl(mediaUrl + "thumb" + extension(coverThumbnail))
                     .setWidth(coverThumbnail.width)
-                    .setHeight(coverThumbnail.height)
-                    .make();
+                    .setHeight(coverThumbnail.height);
         }
 
         @Override
@@ -160,21 +158,19 @@ public class BookJson {
         private Image getPageImageFrom(int index) {
             String mediaUrl = getImageMediaUrl();
             ImageJson page = images.pages.get(index);
-            return new Image.Builder()
+            return new Image()
                     .setUrl(mediaUrl + (index + 1) + extension(page))
                     .setWidth(page.width)
-                    .setHeight(page.height)
-                    .make();
+                    .setHeight(page.height);
         }
 
         private Image getPageThumbnailImageFrom(int index) {
             String mediaUrl = getThumbnailImageMediaUrl();
             ImageJson page = images.pages.get(index);
-            return new Image.Builder()
+            return new Image()
                     .setUrl(mediaUrl + (index + 1) + "t" + extension(page))
                     .setWidth(page.width)
-                    .setHeight(page.height)
-                    .make();
+                    .setHeight(page.height);
         }
 
         private String getImageMediaUrl() {

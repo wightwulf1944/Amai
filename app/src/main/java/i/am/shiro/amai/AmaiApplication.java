@@ -25,9 +25,9 @@ public class AmaiApplication extends Application {
     public void onCreate() {
         super.onCreate();
 
-        if (BuildConfig.DEBUG) initDebugTools();
-
         Preferences.init(this);
+
+        if (BuildConfig.DEBUG) initDebugTools();
 
         Realm.init(this);
         RealmConfiguration config = new RealmConfiguration.Builder()
