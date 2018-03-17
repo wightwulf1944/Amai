@@ -94,6 +94,11 @@ public class DownloadJob extends RealmObject {
         this.taskList = taskList;
     }
 
+    /**
+     * Convenience function
+     *
+     * @return display friendly String of the job status
+     */
     public String getStatusString() {
         switch (status) {
             case DownloadStatus.QUEUED:
@@ -109,5 +114,14 @@ public class DownloadJob extends RealmObject {
             default:
                 throw new RuntimeException(format("Unrecognized status %s", status));
         }
+    }
+
+    /**
+     * Convenience function
+     *
+     * @return the current task that needs to be done
+     */
+    public DownloadTask2 getCurrentTask() {
+        return taskList.get(taskIndex);
     }
 }

@@ -17,7 +17,7 @@ import static java.lang.String.valueOf;
  * Created by Shiro on 3/17/2018.
  */
 
-public class DownloadManager implements Closeable {
+public class DownloadQueueManager implements Closeable {
 
     private final Realm realm = Realm.getDefaultInstance();
 
@@ -26,15 +26,15 @@ public class DownloadManager implements Closeable {
         realm.close();
     }
 
-    public void download(Book book) {
+    public void add(Book book) {
         DownloadJob job = new DownloadJob();
         job.setBookId(book.getId());
         job.setTitle(book.getTitle());
         job.setStatus(QUEUED);
-        job.setTaskList(makeTaskList(book));
+        job.setTaskList(makeTaskListFrom(book));
     }
 
-    private RealmList<DownloadTask2> makeTaskList(Book book) {
+    private RealmList<DownloadTask2> makeTaskListFrom(Book book) {
         String storagePath = Preferences.getStoragePath();
         String bookPath = FilenameUtils.concat(storagePath, valueOf(book.getId()));
 
