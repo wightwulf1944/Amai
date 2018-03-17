@@ -55,14 +55,14 @@ public class DownloadService extends IntentService {
 
     @Override
     protected void onHandleIntent(@Nullable Intent intent) {
-        try (DownloadTaskDispatcher taskQueue = new DownloadTaskDispatcher()) {
-            for (DownloadTask2 task : taskQueue) {
-                taskQueue.notifyRunning(task);
+        try (DownloadTaskDispatcher dispatcher = new DownloadTaskDispatcher()) {
+            for (DownloadTask2 task : dispatcher) {
+                dispatcher.notifyRunning(task);
                 try {
                     runTask(task);
-                    taskQueue.notifyDone(task);
+                    dispatcher.notifyDone(task);
                 } catch (Exception e) {
-                    taskQueue.notifyFailed(task);
+                    dispatcher.notifyFailed(task);
                 }
             }
         }

@@ -28,13 +28,18 @@ public class DownloadQueueManager implements Closeable {
 
     public void add(Book book) {
         DownloadJob job = new DownloadJob();
+        job.setParentBook(book);
         job.setBookId(book.getId());
         job.setTitle(book.getTitle());
         job.setStatus(QUEUED);
-        job.setTaskList(makeTaskListFrom(book));
+        job.setTaskList(makeTaskList(book, job));
+
+        realm.beginTransaction();
+        realm.insertOrUpdate(job);
+        realm.commitTransaction();
     }
 
-    private RealmList<DownloadTask2> makeTaskListFrom(Book book) {
+    private RealmList<DownloadTask2> makeTaskList(Book book, DownloadJob job) {
         String storagePath = Preferences.getStoragePath();
         String bookPath = FilenameUtils.concat(storagePath, valueOf(book.getId()));
 
@@ -45,6 +50,7 @@ public class DownloadQueueManager implements Closeable {
             String destinationUrl = FilenameUtils.concat(bookPath, filename);
 
             DownloadTask2 task = new DownloadTask2();
+            task.setParentJob(job);
             task.setSourceUrl(sourceUrl);
             task.setDestinationUrl(destinationUrl);
 

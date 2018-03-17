@@ -7,6 +7,7 @@ import java.util.Iterator;
 
 import i.am.shiro.amai.model.Book;
 import io.realm.Realm;
+import timber.log.Timber;
 
 import static i.am.shiro.amai.constant.DownloadStatus.DONE;
 import static i.am.shiro.amai.constant.DownloadStatus.FAILED;
@@ -39,11 +40,13 @@ public class DownloadTaskDispatcher implements Closeable, Iterable<DownloadTask2
         realm.beginTransaction();
         DownloadJob parentJob = task.getParentJob();
         parentJob.incrementTaskIndex();
+        Timber.w("page downloaded %s", task.getSourceUrl());
 
-        if (parentJob.getTaskIndex() > parentJob.getTaskList().size()) {
+        if (parentJob.getTaskIndex() == parentJob.getTaskList().size()) {
             parentJob.setStatus(DONE);
             Book parentBook = parentJob.getParentBook();
-            updateBook(parentBook, parentJob);
+            updateBookUrls(parentBook, parentJob);
+            Timber.w("Book %s downloaded successfuly", parentJob.getBookId());
         }
         realm.commitTransaction();
     }
@@ -60,7 +63,7 @@ public class DownloadTaskDispatcher implements Closeable, Iterable<DownloadTask2
         realm.commitTransaction();
     }
 
-    private void updateBook(Book book, DownloadJob job) {
+    private void updateBookUrls(Book book, DownloadJob job) {
         book.setDownloaded(true);
 
         // TODO
