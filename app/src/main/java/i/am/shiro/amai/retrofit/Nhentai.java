@@ -9,6 +9,8 @@ import java.lang.annotation.Retention;
 import i.am.shiro.amai.model.Book;
 import i.am.shiro.amai.model.BookSearchJson;
 import io.reactivex.Single;
+import okhttp3.OkHttpClient;
+import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.moshi.MoshiConverterFactory;
@@ -19,6 +21,7 @@ import retrofit2.http.Query;
 import static i.am.shiro.amai.retrofit.Nhentai.SortOrder.DATE;
 import static i.am.shiro.amai.retrofit.Nhentai.SortOrder.POPULAR;
 import static java.lang.annotation.RetentionPolicy.SOURCE;
+import static okhttp3.logging.HttpLoggingInterceptor.Level.BASIC;
 
 /**
  * Created by Shiro on 1/10/2018.
@@ -47,10 +50,20 @@ public class Nhentai {
 
         return new Retrofit.Builder()
                 .baseUrl(API_URL)
+                .client(buildClient())
                 .addCallAdapterFactory(callAdapterFactory)
                 .addConverterFactory(converterFactory)
                 .build()
                 .create(Api.class);
+    }
+
+    private static OkHttpClient buildClient() {
+        HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor()
+                .setLevel(BASIC);
+
+        return new OkHttpClient.Builder()
+                .addInterceptor(interceptor)
+                .build();
     }
 
     public interface Api {
