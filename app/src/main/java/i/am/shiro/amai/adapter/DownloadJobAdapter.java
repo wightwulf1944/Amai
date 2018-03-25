@@ -2,6 +2,8 @@ package i.am.shiro.amai.adapter;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.v7.recyclerview.extensions.ListAdapter;
+import android.support.v7.util.DiffUtil;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,13 +18,12 @@ import io.realm.RealmResults;
  * Created by Shiro on 3/10/2018.
  */
 
-public class DownloadTaskAdapter extends RecyclerView.Adapter<DownloadTaskAdapter.ViewHolder> {
+public class DownloadJobAdapter extends ListAdapter<DownloadJob, DownloadJobAdapter.ViewHolder> {
 
-    private RealmResults<DownloadJob> downloadJobs;
-
-    public DownloadTaskAdapter(RealmResults<DownloadJob> downloadJobs) {
-        this.downloadJobs = downloadJobs;
-        downloadJobs.addChangeListener(downloadTasks1 -> notifyDataSetChanged());
+    public DownloadJobAdapter(RealmResults<DownloadJob> downloadJobs) {
+        super(new DiffCalback());
+        submitList(downloadJobs);
+        downloadJobs.addChangeListener(this::submitList);
     }
 
     @NonNull
@@ -36,16 +37,11 @@ public class DownloadTaskAdapter extends RecyclerView.Adapter<DownloadTaskAdapte
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        DownloadJob job = downloadJobs.get(position);
+        DownloadJob job = getItem(position);
         holder.bindData(job);
     }
 
-    @Override
-    public int getItemCount() {
-        return downloadJobs.size();
-    }
-
-    class ViewHolder extends RecyclerView.ViewHolder {
+    static class ViewHolder extends RecyclerView.ViewHolder {
 
         private final TextView titleText;
 
@@ -60,6 +56,19 @@ public class DownloadTaskAdapter extends RecyclerView.Adapter<DownloadTaskAdapte
         void bindData(DownloadJob job) {
             titleText.setText(job.getTitle());
             statusText.setText(job.getStatusString());
+        }
+    }
+
+    private static class DiffCalback extends DiffUtil.ItemCallback<DownloadJob> {
+
+        @Override
+        public boolean areItemsTheSame(DownloadJob oldItem, DownloadJob newItem) {
+            return oldItem.getBookId() == newItem.getBookId();
+        }
+
+        @Override
+        public boolean areContentsTheSame(DownloadJob oldItem, DownloadJob newItem) {
+            return oldItem.getStatus() == newItem.getStatus();
         }
     }
 }

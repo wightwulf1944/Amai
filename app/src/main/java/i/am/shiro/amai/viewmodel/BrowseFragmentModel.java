@@ -30,44 +30,30 @@ public class BrowseFragmentModel extends ViewModel {
 
     public BrowseFragmentModel() {
         books.setValue(Collections.emptyList());
-    }
-
-    public List<Book> getBooks() {
-        return books.getValue();
-    }
-
-    public void observeBooks(LifecycleOwner owner, Observer<List<Book>> observer) {
-        books.observe(owner, observer);
-    }
-
-    public void fetchBooks() {
-        cancel();
         disposable = Nhentai.api.getAll(1)
                 .flattenAsObservable(bookSearchJson -> bookSearchJson.results)
                 .toList()
                 .observeOn(mainThread())
                 .subscribe(
                         this::onBooksFetched,
-                        throwable -> Timber.w("Failed to get data", throwable)
+                        throwable -> Timber.w(throwable, "Failed to get data")
                 );
     }
 
+    public void observeBooks(LifecycleOwner owner, Observer<List<Book>> observer) {
+        books.observe(owner, observer);
+    }
+
     public void search(String query) {
-        cancel();
+        disposable.dispose();
         disposable = Nhentai.api.search(query, 1, null)
                 .flattenAsObservable(bookSearchJson -> bookSearchJson.results)
                 .toList()
                 .observeOn(mainThread())
                 .subscribe(
                         this::onBooksFetched,
-                        throwable -> Timber.w("Failed to get data", throwable)
+                        throwable -> Timber.w(throwable, "Failed to get data")
                 );
-    }
-
-    private void cancel() {
-        if (disposable != null) {
-            disposable.dispose();
-        }
     }
 
     private void onBooksFetched(List<Book> fetchedBooks) {
@@ -92,7 +78,7 @@ public class BrowseFragmentModel extends ViewModel {
     @Override
     protected void onCleared() {
         super.onCleared();
-        if (disposable != null) disposable.dispose();
+        disposable.dispose();
         realm.close();
     }
 }

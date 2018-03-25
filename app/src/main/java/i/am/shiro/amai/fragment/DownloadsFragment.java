@@ -58,7 +58,7 @@ public class DownloadsFragment extends Fragment implements SearchView.OnQueryTex
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(layoutManager);
 
-        viewModel.observeBooks(this, adapter::setData);
+        viewModel.observeBooks(this, adapter::submitList);
 
         return view;
     }

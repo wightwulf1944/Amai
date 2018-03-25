@@ -187,6 +187,8 @@ public class BookJson {
                     return ".jpg";
                 case "p":
                     return ".png";
+                case "g":
+                    return ".gif";
                 default:
                     throw new RuntimeException("Unknown type " + imageJson.type);
             }

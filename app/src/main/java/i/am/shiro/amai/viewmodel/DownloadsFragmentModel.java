@@ -23,7 +23,6 @@ public class DownloadsFragmentModel extends ViewModel {
 
     private final MutableLiveData<List<Book>> books = new MutableLiveData<>();
 
-
     public DownloadsFragmentModel() {
         RealmResults<Book> offlineBooks = realm.where(Book.class)
                 .equalTo("isDownloaded", true)
@@ -32,16 +31,11 @@ public class DownloadsFragmentModel extends ViewModel {
         Timber.w("offline %s", offlineBooks.size());
 
         books.setValue(offlineBooks);
-
-        offlineBooks.addChangeListener(this::onBooksUpdated);
+        offlineBooks.addChangeListener(books::setValue);
     }
 
     public void observeBooks(LifecycleOwner owner, Observer<List<Book>> observer) {
         books.observe(owner, observer);
-    }
-
-    private void onBooksUpdated(List<Book> books, OrderedCollectionChangeSet changeSet) {
-        // todo
     }
 
     @Override

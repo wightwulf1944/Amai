@@ -41,7 +41,10 @@ public class MainActivity extends AppCompatActivity {
 
         BottomNavigationView navigation = findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(this::onNavigationItemSelected);
-        navigation.setSelectedItemId(R.id.navigation_source);
+
+        if (savedInstanceState == null) {
+            navigation.setSelectedItemId(R.id.navigation_source);
+        }
     }
 
     @Override

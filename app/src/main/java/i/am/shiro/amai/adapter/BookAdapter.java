@@ -4,6 +4,8 @@ import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
 import android.support.constraint.ConstraintSet;
 import android.support.v4.app.Fragment;
+import android.support.v7.recyclerview.extensions.ListAdapter;
+import android.support.v7.util.DiffUtil;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,8 +16,6 @@ import android.widget.TextView;
 import com.annimon.stream.function.Consumer;
 import com.bumptech.glide.Glide;
 
-import java.util.List;
-
 import i.am.shiro.amai.R;
 import i.am.shiro.amai.model.Book;
 import i.am.shiro.amai.model.Image;
@@ -24,25 +24,19 @@ import i.am.shiro.amai.model.Image;
  * Created by Shiro on 1/6/2018.
  */
 
-public class BookAdapter extends RecyclerView.Adapter<BookAdapter.ViewHolder> {
+public class BookAdapter extends ListAdapter<Book, BookAdapter.ViewHolder> {
 
     private final Fragment parentFragment;
 
     private final LayoutInflater inflater;
 
-    private List<Book> data;
-
     private Consumer<Book> onItemClickListener;
 
     public BookAdapter(Fragment parentFragment, LayoutInflater inflater) {
+        super(new DiffCalback());
         this.parentFragment = parentFragment;
         this.inflater = inflater;
         setHasStableIds(true);
-    }
-
-    public void setData(List<Book> data) {
-        this.data = data;
-        notifyDataSetChanged();
     }
 
     public void setOnItemClickListener(Consumer<Book> listener) {
@@ -51,7 +45,7 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.ViewHolder> {
 
     @Override
     public long getItemId(int position) {
-        return data.get(position).getId();
+        return getItem(position).getId();
     }
 
     @NonNull
@@ -63,13 +57,8 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.ViewHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        Book book = data.get(position);
+        Book book = getItem(position);
         holder.bind(book);
-    }
-
-    @Override
-    public int getItemCount() {
-        return data.size();
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {
@@ -117,6 +106,19 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.ViewHolder> {
             Glide.with(parentFragment)
                     .load(coverThumbnailImage.getUrl())
                     .into(thumbnailImage);
+        }
+    }
+
+    private static class DiffCalback extends DiffUtil.ItemCallback<Book> {
+
+        @Override
+        public boolean areItemsTheSame(Book oldItem, Book newItem) {
+            return oldItem.getId() == newItem.getId();
+        }
+
+        @Override
+        public boolean areContentsTheSame(Book oldItem, Book newItem) {
+            return oldItem.isDownloaded() == newItem.isDownloaded();
         }
     }
 }

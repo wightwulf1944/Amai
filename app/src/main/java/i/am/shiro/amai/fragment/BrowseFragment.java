@@ -58,8 +58,7 @@ public class BrowseFragment extends Fragment implements SearchView.OnQueryTextLi
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(layoutManager);
 
-        viewModel.observeBooks(this, adapter::setData);
-        viewModel.fetchBooks();
+        viewModel.observeBooks(this, adapter::submitList);
 
         return view;
     }

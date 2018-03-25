@@ -11,7 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import i.am.shiro.amai.R;
-import i.am.shiro.amai.adapter.DownloadTaskAdapter;
+import i.am.shiro.amai.adapter.DownloadJobAdapter;
 import i.am.shiro.amai.model.DownloadJob;
 import io.realm.Realm;
 import io.realm.RealmResults;
@@ -44,7 +44,7 @@ public class QueueFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_queue, container, false);
 
-        DownloadTaskAdapter adapter = new DownloadTaskAdapter(downloadJobs);
+        DownloadJobAdapter adapter = new DownloadJobAdapter(downloadJobs);
 
         RecyclerView recyclerView = view.findViewById(R.id.recyclerView);
         recyclerView.setAdapter(adapter);
