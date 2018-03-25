@@ -32,6 +32,8 @@ public class BookAdapter extends ListAdapter<Book, BookAdapter.ViewHolder> {
 
     private Consumer<Book> onItemClickListener;
 
+    private Consumer<Integer> onPositionBindListener;
+
     public BookAdapter(Fragment parentFragment, LayoutInflater inflater) {
         super(new DiffCalback());
         this.parentFragment = parentFragment;
@@ -41,6 +43,10 @@ public class BookAdapter extends ListAdapter<Book, BookAdapter.ViewHolder> {
 
     public void setOnItemClickListener(Consumer<Book> listener) {
         onItemClickListener = listener;
+    }
+
+    public void setOnPositionBindListener(Consumer<Integer> listener) {
+        onPositionBindListener = listener;
     }
 
     @Override
@@ -59,6 +65,7 @@ public class BookAdapter extends ListAdapter<Book, BookAdapter.ViewHolder> {
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Book book = getItem(position);
         holder.bind(book);
+        onPositionBindListener.accept(position);
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {
