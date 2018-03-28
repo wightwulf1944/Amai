@@ -49,6 +49,9 @@ public class DownloadsFragment extends Fragment implements SearchView.OnQueryTex
 
         BookAdapter adapter = new BookAdapter(this, inflater);
         adapter.setOnItemClickListener(this::invokeReadBook);
+        adapter.setOnPositionBindListener(integer -> {
+            // do nothing
+        });
 
         StaggeredGridLayoutManager layoutManager = new StaggeredGridLayoutManager(getSpanCount(), VERTICAL);
         layoutManager.setGapStrategy(GAP_HANDLING_NONE);
