@@ -22,19 +22,22 @@ public class SearchDao implements Closeable {
         realm.close();
     }
 
-    public SearchModel getDefaultSearch() {
+    public SearchModel newSearch(String query) {
         realm.beginTransaction();
-        SearchModel defaultSearch = realm.createObject(SearchModel.class);
+
+        realm.where(SearchModel.class)
+                .findAll()
+                .deleteAllFromRealm();
+
+        SearchModel searchModel = realm.createObject(SearchModel.class);
+        searchModel.setQuery(query);
+
         realm.commitTransaction();
-        return defaultSearch;
+        return searchModel;
     }
 
-    public SearchModel getSearch(String query) {
-        realm.beginTransaction();
-        SearchModel search = realm.createObject(SearchModel.class);
-        search.setQuery(query);
-        realm.commitTransaction();
-        return search;
+    public SearchModel getSearch() {
+        return realm.where(SearchModel.class).findFirst();
     }
 
     public void onStartLoading(SearchModel searchModel) {
@@ -49,9 +52,13 @@ public class SearchDao implements Closeable {
 
         updateBookDB(newResults);
 
-        RealmList<Book> oldResults = searchModel.getResults();
-        RealmList<Book> mergedResults = mergeBookList(oldResults, newResults);
-        searchModel.setResults(mergedResults);
+        RealmList<Book> results = searchModel.getResults();
+        HashSet<Book> resultsSet = new HashSet<>(results);
+        for (Book newResult : newResults) {
+            if (!resultsSet.contains(newResult)) {
+                results.add(newResult);
+            }
+        }
 
         searchModel.setLoading(false);
 
@@ -63,20 +70,6 @@ public class SearchDao implements Closeable {
         searchModel.setCurrentPage(searchModel.getCurrentPage() - 1);
         searchModel.setLoading(false);
         realm.commitTransaction();
-    }
-
-    private RealmList<Book> mergeBookList(List<Book> listA, List<Book> listB) {
-        HashSet<Book> listASet = new HashSet<>(listA);
-
-        RealmList<Book> mergedBookList = new RealmList<>();
-        mergedBookList.addAll(listA);
-        for (Book book : listB) {
-            if (!listASet.contains(book)) {
-                mergedBookList.add(book);
-            }
-        }
-
-        return mergedBookList;
     }
 
     private void updateBookDB(List<Book> newBooks) {

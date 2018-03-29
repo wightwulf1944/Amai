@@ -4,7 +4,10 @@ import android.arch.lifecycle.LifecycleOwner;
 import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModel;
+import android.os.Bundle;
+import android.support.annotation.Nullable;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import i.am.shiro.amai.dao.SearchDao;
@@ -23,6 +26,8 @@ import static io.reactivex.android.schedulers.AndroidSchedulers.mainThread;
 
 public class BrowseFragmentModel2 extends ViewModel {
 
+    private static final int LOAD_MORE_THRESHHOLD = 10;
+
     private final SearchDao searchDao = new SearchDao();
 
     private final MutableLiveData<List<Book>> books = new MutableLiveData<>();
@@ -31,18 +36,16 @@ public class BrowseFragmentModel2 extends ViewModel {
 
     private Disposable disposable;
 
-    public BrowseFragmentModel2() {
-        setSearch(searchDao.getDefaultSearch());
-        loadSearchNextPage();
-    }
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        if (search != null) return;
 
-    private void setSearch(SearchModel newSearch) {
-        // TODO is this enough to remove listeners?
-        search.removeAllChangeListeners();
-        search = newSearch;
-        RealmList<Book> searchResults = search.getResults();
-        searchResults.addChangeListener(books::setValue);
-        books.setValue(searchResults);
+        if (savedInstanceState == null) {
+            search = searchDao.newSearch("language:english");
+        } else {
+            search = searchDao.getSearch();
+        }
+        updateBooks();
+        loadNextPage();
     }
 
     public void observeBooks(LifecycleOwner owner, Observer<List<Book>> observer) {
@@ -51,26 +54,32 @@ public class BrowseFragmentModel2 extends ViewModel {
 
     public void newSearch(String query) {
         disposable.dispose();
-        setSearch(searchDao.getSearch(query));
-        loadSearchNextPage();
-    }
-
-    public void clearSearch() {
-        disposable.dispose();
-        setSearch(searchDao.getDefaultSearch());
-        loadSearchNextPage();
+        search.getResults().removeAllChangeListeners();
+        search = searchDao.newSearch("language:english " + query);
+        updateBooks();
+        loadNextPage();
     }
 
     public void onPositionBind(int position) {
         if (search.isLoading() || search.isCompleted()) return;
 
-        int threshhold = 10;
-        if (position > search.getResults().size() - threshhold) {
-            loadSearchNextPage();
+        if (position > search.getResults().size() - LOAD_MORE_THRESHHOLD) {
+            loadNextPage();
         }
     }
 
-    private void loadSearchNextPage() {
+    private void updateBooks() {
+        RealmList<Book> results = search.getResults();
+        results.addChangeListener(this::notifyBookObserver);
+        notifyBookObserver(results);
+    }
+
+    private void notifyBookObserver(RealmList<Book> update) {
+        ArrayList<Book> list = new ArrayList<>(update);
+        books.setValue(list);
+    }
+
+    private void loadNextPage() {
         searchDao.onStartLoading(search);
         String query = search.getQuery();
         int currentPage = search.getCurrentPage();
