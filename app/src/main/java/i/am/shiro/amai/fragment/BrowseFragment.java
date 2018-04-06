@@ -22,7 +22,7 @@ import i.am.shiro.amai.R;
 import i.am.shiro.amai.activity.DetailActivity;
 import i.am.shiro.amai.adapter.BookAdapter;
 import i.am.shiro.amai.model.Book;
-import i.am.shiro.amai.viewmodel.BrowseFragmentModel2;
+import i.am.shiro.amai.viewmodel.BrowseFragmentModel;
 
 import static android.support.v7.widget.StaggeredGridLayoutManager.GAP_HANDLING_NONE;
 import static android.support.v7.widget.StaggeredGridLayoutManager.VERTICAL;
@@ -32,7 +32,7 @@ import static android.support.v7.widget.StaggeredGridLayoutManager.VERTICAL;
  */
 public class BrowseFragment extends Fragment implements SearchView.OnQueryTextListener {
 
-    private BrowseFragmentModel2 viewModel;
+    private BrowseFragmentModel viewModel;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -40,7 +40,7 @@ public class BrowseFragment extends Fragment implements SearchView.OnQueryTextLi
         setHasOptionsMenu(true);
 
         ViewModelProvider viewModelProvider = ViewModelProviders.of(this);
-        viewModel = viewModelProvider.get(BrowseFragmentModel2.class);
+        viewModel = viewModelProvider.get(BrowseFragmentModel.class);
         viewModel.onCreate(savedInstanceState);
     }
 
@@ -76,7 +76,7 @@ public class BrowseFragment extends Fragment implements SearchView.OnQueryTextLi
 
     @Override
     public boolean onQueryTextSubmit(String query) {
-        viewModel.newSearch(query);
+        viewModel.search(query);
         return true;
     }
 

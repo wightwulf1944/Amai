@@ -9,47 +9,46 @@ import i.am.shiro.amai.model.SearchModel;
 import io.realm.Realm;
 import io.realm.RealmList;
 
-/**
- * Created by Shiro on 3/26/2018.
- */
-
 public class SearchDao implements Closeable {
 
     private final Realm realm = Realm.getDefaultInstance();
 
-    @Override
-    public void close() {
-        realm.close();
+    private SearchModel searchModel;
+
+    public boolean isInit() {
+        return searchModel != null;
     }
 
-    public SearchModel newSearch(String query) {
+    public void newSearch(String query) {
         realm.beginTransaction();
-
-        realm.where(SearchModel.class)
-                .findAll()
-                .deleteAllFromRealm();
-
         SearchModel searchModel = realm.createObject(SearchModel.class);
         searchModel.setQuery(query);
-
         realm.commitTransaction();
-        return searchModel;
+
+        this.searchModel = searchModel;
     }
 
-    public SearchModel getSearch() {
-        return realm.where(SearchModel.class).findFirst();
+    public void loadSearch() {
+        SearchModel searchModel = realm.where(SearchModel.class).findFirst();
+        if (searchModel == null) throw new IllegalStateException();
+
+        this.searchModel = searchModel;
     }
 
-    public void onStartLoading(SearchModel searchModel) {
+    public String getQuery() {
+        return searchModel.getQuery();
+    }
+
+    public List<Book> getResults() {
+        return realm.copyFromRealm(searchModel.getResults());
+    }
+
+    public int getResultSize() {
+        return searchModel.getResults().size();
+    }
+
+    public void appendResults(List<Book> newResults) {
         realm.beginTransaction();
-        searchModel.setLoading(true);
-        searchModel.setCurrentPage(searchModel.getCurrentPage() + 1);
-        realm.commitTransaction();
-    }
-
-    public void onFinishLoading(SearchModel searchModel, List<Book> newResults) {
-        realm.beginTransaction();
-
         updateBookDB(newResults);
 
         RealmList<Book> results = searchModel.getResults();
@@ -60,14 +59,37 @@ public class SearchDao implements Closeable {
             }
         }
 
-        searchModel.setLoading(false);
-
         realm.commitTransaction();
     }
 
-    public void onErrorLoading(SearchModel searchModel) {
+    public int getCurrentPage() {
+        return searchModel.getCurrentPage();
+    }
+
+    public void incrementCurrentPage() {
+        realm.beginTransaction();
+        searchModel.setCurrentPage(searchModel.getCurrentPage() + 1);
+        realm.commitTransaction();
+    }
+
+    public void decrementCurrentPage() {
         realm.beginTransaction();
         searchModel.setCurrentPage(searchModel.getCurrentPage() - 1);
+        realm.commitTransaction();
+    }
+
+    public boolean isBusy() {
+        return searchModel.isLoading() || searchModel.isCompleted();
+    }
+
+    public void notifyLoadingStart() {
+        realm.beginTransaction();
+        searchModel.setLoading(true);
+        realm.commitTransaction();
+    }
+
+    public void notifyLoadingDone() {
+        realm.beginTransaction();
         searchModel.setLoading(false);
         realm.commitTransaction();
     }
@@ -84,5 +106,10 @@ public class SearchDao implements Closeable {
                 localBook.mergeWith(newBook);
             }
         }
+    }
+
+    @Override
+    public void close() {
+        realm.close();
     }
 }
