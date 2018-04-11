@@ -15,24 +15,19 @@ public class SearchDao implements Closeable {
 
     private SearchModel searchModel;
 
-    public boolean isInit() {
-        return searchModel != null;
+    public SearchDao() {
+        searchModel = realm.where(SearchModel.class).findFirst();
     }
 
     public void newSearch(String query) {
         realm.beginTransaction();
-        SearchModel searchModel = realm.createObject(SearchModel.class);
+
+        realm.where(SearchModel.class).findAll().deleteAllFromRealm();
+
+        searchModel = realm.createObject(SearchModel.class);
         searchModel.setQuery(query);
+
         realm.commitTransaction();
-
-        this.searchModel = searchModel;
-    }
-
-    public void loadSearch() {
-        SearchModel searchModel = realm.where(SearchModel.class).findFirst();
-        if (searchModel == null) throw new IllegalStateException();
-
-        this.searchModel = searchModel;
     }
 
     public String getQuery() {

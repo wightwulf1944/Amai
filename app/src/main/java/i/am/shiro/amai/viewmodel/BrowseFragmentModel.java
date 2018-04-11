@@ -4,8 +4,6 @@ import android.arch.lifecycle.LifecycleOwner;
 import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModel;
-import android.os.Bundle;
-import android.support.annotation.Nullable;
 
 import java.util.List;
 
@@ -27,15 +25,8 @@ public class BrowseFragmentModel extends ViewModel {
 
     private Disposable disposable;
 
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        if (searchDao.isInit()) return;
-
-        if (savedInstanceState == null) {
-            searchDao.newSearch("language:english");
-        } else {
-            searchDao.loadSearch();
-        }
-
+    public void init() {
+        searchDao.newSearch("language:english");
         books.setValue(searchDao.getResults());
         loadNextPage();
     }
