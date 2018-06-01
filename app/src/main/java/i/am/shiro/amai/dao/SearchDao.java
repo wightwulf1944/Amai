@@ -98,7 +98,7 @@ public class SearchDao implements Closeable {
             if (localBook == null) {
                 realm.insert(newBook);
             } else {
-                localBook.mergeWith(newBook);
+                localBook.updateFrom(newBook);
             }
         }
     }

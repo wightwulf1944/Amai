@@ -208,7 +208,7 @@ public class Book extends RealmObject {
      *
      * @param sourceBook
      */
-    public void mergeWith(Book sourceBook) {
+    public void updateFrom(Book sourceBook) {
         webUrl = sourceBook.webUrl;
         title = sourceBook.title;
         pageCount = sourceBook.pageCount;
