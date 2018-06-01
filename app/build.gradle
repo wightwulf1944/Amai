@@ -9,7 +9,6 @@ android {
         targetSdkVersion 27
         versionCode 1
         versionName "1.0"
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
     }
     buildTypes {
@@ -25,21 +24,17 @@ android {
 }
 
 dependencies {
-    testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'com.android.support.test:runner:1.0.1'
-    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
-
-    implementation 'com.android.support:support-v4:27.1.0'
-    implementation 'com.android.support:appcompat-v7:27.1.0'
-    implementation 'com.android.support:design:27.1.0'
-    implementation 'com.android.support:support-vector-drawable:27.1.0'
-    implementation 'com.android.support:cardview-v7:27.1.0'
-    implementation 'com.android.support.constraint:constraint-layout:1.0.2'
+    implementation 'com.android.support:support-v4:27.1.1'
+    implementation 'com.android.support:appcompat-v7:27.1.1'
+    implementation 'com.android.support:design:27.1.1'
+    implementation 'com.android.support:support-vector-drawable:27.1.1'
+    implementation 'com.android.support:cardview-v7:27.1.1'
+    implementation 'com.android.support.constraint:constraint-layout:1.1.0'
 
     implementation 'android.arch.lifecycle:extensions:1.1.1'
 
     //    https://github.com/JakeWharton/timber
-    implementation 'com.jakewharton.timber:timber:4.6.1'
+    implementation 'com.jakewharton.timber:timber:4.7.0'
 
     //    http://square.github.io/retrofit/
     implementation 'com.squareup.retrofit2:retrofit:2.4.0'
@@ -50,11 +45,11 @@ dependencies {
     implementation 'com.squareup.okhttp3:logging-interceptor:3.10.0'
 
     //    https://github.com/aNNiMON/Lightweight-Stream-API
-    implementation 'com.annimon:stream:1.1.9'
+    implementation 'com.annimon:stream:1.2.0'
 
     //    https://github.com/bumptech/glide
-    implementation 'com.github.bumptech.glide:glide:4.4.0'
-    annotationProcessor 'com.github.bumptech.glide:compiler:4.4.0'
+    implementation 'com.github.bumptech.glide:glide:4.7.1'
+    annotationProcessor 'com.github.bumptech.glide:compiler:4.7.1'
 
     //    https://github.com/ReactiveX/RxJava
     implementation 'io.reactivex.rxjava2:rxjava:2.1.12'
@@ -68,6 +63,15 @@ dependencies {
     //    https://mvnrepository.com/artifact/commons-io/commons-io
     implementation 'commons-io:commons-io:2.6'
 
-    //    https://github.com/pedrovgs/Lynx
-    implementation 'com.github.pedrovgs:lynx:1.1.0'
+    //    https://github.com/willowtreeapps/Hyperion-Android
+    debugImplementation 'com.willowtreeapps.hyperion:hyperion-core:0.9.23'
+    debugImplementation 'com.willowtreeapps.hyperion:hyperion-attr:0.9.23'
+    debugImplementation 'com.willowtreeapps.hyperion:hyperion-phoenix:0.9.23'
+    debugImplementation 'com.willowtreeapps.hyperion:hyperion-crash:0.9.23'
+    debugImplementation 'com.willowtreeapps.hyperion:hyperion-shared-preferences:0.9.23'
+    debugImplementation 'com.willowtreeapps.hyperion:hyperion-geiger-counter:0.9.23'
+    debugImplementation 'com.willowtreeapps.hyperion:hyperion-timber:0.9.23'
+//    debugImplementation 'com.willowtreeapps.hyperion:hyperion-measurement:0.9.23'
+//    debugImplementation 'com.willowtreeapps.hyperion:hyperion-disk:0.9.23'
+//    debugImplementation 'com.willowtreeapps.hyperion:hyperion-recorder:0.9.23'
 }

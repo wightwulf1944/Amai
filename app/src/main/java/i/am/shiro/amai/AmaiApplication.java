@@ -6,13 +6,11 @@ import android.app.NotificationManager;
 import android.os.Build;
 import android.support.annotation.NonNull;
 
-import com.github.pedrovgs.lynx.LynxShakeDetector;
-
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
 import timber.log.Timber;
 
-import static android.app.NotificationManager.IMPORTANCE_DEFAULT;
+import static android.support.v4.app.NotificationManagerCompat.IMPORTANCE_DEFAULT;
 import static i.am.shiro.amai.constant.Constants.DEFAULT_CHANNEL_ID;
 
 /**
@@ -58,9 +56,6 @@ public class AmaiApplication extends Application {
                 return String.format("%s:%s", tag, method);
             }
         });
-
-        LynxShakeDetector lynxShakeDetector = new LynxShakeDetector(this);
-        lynxShakeDetector.init();
 
         Preferences.setFirstRun(false);
     }
