@@ -17,40 +17,40 @@ import static i.am.shiro.amai.retrofit.Nhentai.WEBPAGE_BASE_URL;
  */
 
 public class BookJson {
-    @Json(name = "id") private int id;
-    @Json(name = "media_id") private String mediaId;
-    @Json(name = "upload_date") private long uploadDate;
-    @Json(name = "num_favorites") private int favCount;
-    @Json(name = "num_pages") private int pageCount;
-    @Json(name = "scanlator") private String scanlator;
-    @Json(name = "title") private Title title;
-    @Json(name = "tags") private List<Tag> tags;
-    @Json(name = "images") private ImageBundle images;
+    @Json(name = "id") public int id;
+    @Json(name = "media_id") public String mediaId;
+    @Json(name = "upload_date") public long uploadDate;
+    @Json(name = "num_favorites") public int favCount;
+    @Json(name = "num_pages") public int pageCount;
+    @Json(name = "scanlator") public String scanlator;
+    @Json(name = "title") public Title title;
+    @Json(name = "tags") public List<Tag> tags;
+    @Json(name = "images") public ImageBundle images;
 
-    private static class Title {
-        @Json(name = "japanese") private String japanese;
-        @Json(name = "pretty") private String pretty;
-        @Json(name = "english") private String english;
+    public static class Title {
+        @Json(name = "japanese") public String japanese;
+        @Json(name = "pretty") public String pretty;
+        @Json(name = "english") public String english;
     }
 
-    private static class ImageBundle {
-        @Json(name = "cover") private ImageJson cover;
-        @Json(name = "pages") private List<ImageJson> pages;
-        @Json(name = "thumbnail") private ImageJson thumbnail;
+    public static class ImageBundle {
+        @Json(name = "cover") public ImageJson cover;
+        @Json(name = "pages") public List<ImageJson> pages;
+        @Json(name = "thumbnail") public ImageJson thumbnail;
     }
 
-    private static class ImageJson {
-        @Json(name = "h") private int height;
-        @Json(name = "w") private int width;
-        @Json(name = "t") private String type;
+    public static class ImageJson {
+        @Json(name = "h") public int height;
+        @Json(name = "w") public int width;
+        @Json(name = "t") public String type;
     }
 
-    private static class Tag {
-        @Json(name = "id") private int id;
-        @Json(name = "name") private String name;
-        @Json(name = "type") private String type;
-        @Json(name = "url") private String url;
-        @Json(name = "count") private int count;
+    public static class Tag {
+        @Json(name = "id") public int id;
+        @Json(name = "name") public String name;
+        @Json(name = "type") public String type;
+        @Json(name = "url") public String url;
+        @Json(name = "count") public int count;
     }
 
     public Book.Adapter getBookAdapter() {
