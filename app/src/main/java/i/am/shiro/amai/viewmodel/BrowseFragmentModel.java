@@ -5,144 +5,76 @@ import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModel;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
 
+import i.am.shiro.amai.dao.SearchDao;
 import i.am.shiro.amai.model.Book;
 import i.am.shiro.amai.retrofit.Nhentai;
 import io.reactivex.disposables.Disposable;
-import io.realm.Realm;
 import timber.log.Timber;
 
 import static io.reactivex.android.schedulers.AndroidSchedulers.mainThread;
 
-/**
- * Created by Shiro on 1/20/2018.
- */
-
 public class BrowseFragmentModel extends ViewModel {
 
-    private final Realm realm = Realm.getDefaultInstance();
+    private static final int LOAD_MORE_THRESHHOLD = 10;
 
     private final MutableLiveData<List<Book>> books = new MutableLiveData<>();
 
+    private final SearchDao searchDao = new SearchDao();
+
     private Disposable disposable;
 
-    private int currentPage;
+    public void init() {
+        searchDao.newSearch("language:english");
+        books.setValue(searchDao.getResults());
+        loadNextPage();
+    }
 
-    private boolean isLoading;
+    public void onPositionBind(int position) {
+        if (searchDao.isBusy()) return;
 
-    private boolean isLastPageLoaded;
-
-    private String query;
-
-    public BrowseFragmentModel() {
-        books.setValue(Collections.emptyList());
-        loadAllNextPage();
+        if (position > searchDao.getResultSize() - LOAD_MORE_THRESHHOLD) {
+            loadNextPage();
+        }
     }
 
     public void observeBooks(LifecycleOwner owner, Observer<List<Book>> observer) {
         books.observe(owner, observer);
     }
 
-    public void newSearch(String query) {
+    public void search(String query) {
         disposable.dispose();
-        books.setValue(Collections.emptyList());
-        currentPage = 0;
-        isLastPageLoaded = false;
-        this.query = query;
-        loadSearchNextPage();
+        searchDao.newSearch("language:english " + query);
+        books.setValue(searchDao.getResults());
+        loadNextPage();
     }
 
-    public void clearSearch() {
-        disposable.dispose();
-        books.setValue(Collections.emptyList());
-        currentPage = 0;
-        isLastPageLoaded = false;
-        this.query = null;
-        loadAllNextPage();
-    }
+    private void loadNextPage() {
+        searchDao.notifyLoadingStart();
+        searchDao.incrementCurrentPage();
 
-    public void onPositionBind(int position) {
-        if (isLastPageLoaded || isLoading) return;
-
-        List<Book> loadedBooks = books.getValue();
-        int threshhold = 10;
-        if (position > loadedBooks.size() - threshhold) {
-            isLoading = true;
-            if (query == null) {
-                loadAllNextPage();
-            } else {
-                loadSearchNextPage();
-            }
-        }
-    }
-
-    private void loadSearchNextPage() {
-        currentPage = ++currentPage;
-        disposable = Nhentai.api.search(query, currentPage, null)
+        disposable = Nhentai.api.search(searchDao.getQuery(), searchDao.getCurrentPage(), null)
                 .map(bookSearchJson -> bookSearchJson.results)
                 .observeOn(mainThread())
-                .subscribe(
-                        this::onBooksFetched,
-                        throwable -> Timber.w(throwable, "Failed to get data")
-                );
+                .subscribe(this::onBooksFetched, this::onFailed);
     }
 
-    private void loadAllNextPage() {
-        currentPage = ++currentPage;
-        disposable = Nhentai.api.getAll(currentPage)
-                .map(bookSearchJson -> bookSearchJson.results)
-                .observeOn(mainThread())
-                .subscribe(
-                        this::onBooksFetched,
-                        throwable -> Timber.w(throwable, "Failed to get data")
-                );
+    private void onBooksFetched(List<Book> newResults) {
+        searchDao.appendResults(newResults);
+        searchDao.notifyLoadingDone();
+        books.setValue(searchDao.getResults());
     }
 
-    private void onBooksFetched(List<Book> fetchedBooks) {
-        List<Book> oldBooksList = books.getValue();
-        List<Book> newBooksList = mergeBookList(oldBooksList, fetchedBooks);
-        books.setValue(newBooksList);
-
-        realm.beginTransaction();
-        for (Book fetchedBook : fetchedBooks) updateBookDB(fetchedBook);
-        realm.commitTransaction();
-
-        isLoading = false;
-    }
-
-    private List<Book> mergeBookList(List<Book> listA, List<Book> listB) {
-        HashSet<Book> listASet = new HashSet<>(listA);
-
-        List<Book> mergedBookList = new ArrayList<>(listA);
-        for (Book book : listB) {
-            if (!listASet.contains(book)) {
-                mergedBookList.add(book);
-            }
-        }
-
-        return mergedBookList;
-    }
-
-    private void updateBookDB(Book remoteBook) {
-        Book localBook = realm.where(Book.class)
-                .equalTo("id", remoteBook.getId())
-                .findFirst();
-
-        if (localBook == null) {
-            realm.insert(remoteBook);
-        } else {
-            localBook.mergeWith(remoteBook);
-        }
+    private void onFailed(Throwable throwable) {
+        searchDao.decrementCurrentPage();
+        searchDao.notifyLoadingDone();
+        Timber.w(throwable, "Failed to get data");
     }
 
     @Override
     protected void onCleared() {
         super.onCleared();
-        disposable.dispose();
-        realm.close();
+        searchDao.close();
     }
 }

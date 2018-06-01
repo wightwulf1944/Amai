@@ -23,7 +23,6 @@ import i.am.shiro.amai.activity.DetailActivity;
 import i.am.shiro.amai.adapter.BookAdapter;
 import i.am.shiro.amai.model.Book;
 import i.am.shiro.amai.viewmodel.BrowseFragmentModel;
-import timber.log.Timber;
 
 import static android.support.v7.widget.StaggeredGridLayoutManager.GAP_HANDLING_NONE;
 import static android.support.v7.widget.StaggeredGridLayoutManager.VERTICAL;
@@ -39,8 +38,13 @@ public class BrowseFragment extends Fragment implements SearchView.OnQueryTextLi
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
+
         ViewModelProvider viewModelProvider = ViewModelProviders.of(this);
         viewModel = viewModelProvider.get(BrowseFragmentModel.class);
+
+        if (savedInstanceState == null) {
+            viewModel.init();
+        }
     }
 
     @Nullable
@@ -71,18 +75,11 @@ public class BrowseFragment extends Fragment implements SearchView.OnQueryTextLi
 
         SearchView searchView = (SearchView) menu.findItem(R.id.searchAction).getActionView();
         searchView.setOnQueryTextListener(this);
-        searchView.setOnCloseListener(this::onSearchClose);
-    }
-
-    private boolean onSearchClose() {
-        Timber.d("SEARCH CLOSED");
-        viewModel.clearSearch();
-        return true;
     }
 
     @Override
     public boolean onQueryTextSubmit(String query) {
-        viewModel.newSearch(query);
+        viewModel.search(query);
         return true;
     }
 
