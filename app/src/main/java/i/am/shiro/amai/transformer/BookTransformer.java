@@ -71,49 +71,40 @@ public class BookTransformer {
     private static Image coverImageOf(BookJson json) {
         String mediaPath = smallImageMediaPathOf(json);
         BookJson.ImageJson cover = json.images.cover;
-        return new Image()
-                .setUrl(mediaPath + "cover" + extensionOf(cover))
-                .setWidth(cover.width)
-                .setHeight(cover.height);
+        return imageOf(mediaPath + "cover", cover);
     }
 
     private static Image coverThumbnailImageOf(BookJson json) {
         String mediaPath = smallImageMediaPathOf(json);
         BookJson.ImageJson coverThumbnail = json.images.thumbnail;
-        return new Image()
-                .setUrl(mediaPath + "thumb" + extensionOf(coverThumbnail))
-                .setWidth(coverThumbnail.width)
-                .setHeight(coverThumbnail.height);
+        return imageOf(mediaPath + "thumb", coverThumbnail);
     }
 
     private static RealmList<Image> pageImagesOf(BookJson json) {
-        return Stream.range(0, json.pageCount)
-                .map(index -> pageImageOf(json, index))
-                .collect(toCollection(RealmList::new));
-    }
-
-    private static Image pageImageOf(BookJson json, int index) {
+        RealmList<Image> images = new RealmList<>();
         String mediaPath = largeImageMediaPathOf(json);
-        BookJson.ImageJson page = json.images.pages.get(index);
-        return new Image()
-                .setUrl(mediaPath + (index + 1) + extensionOf(page))
-                .setWidth(page.width)
-                .setHeight(page.height);
+        for (int i = 0; i < json.pageCount; i++) {
+            BookJson.ImageJson page = json.images.pages.get(i);
+            images.add(imageOf(mediaPath + (i + 1), page));
+        }
+        return images;
     }
 
     private static RealmList<Image> pageThumbnailImagesOf(BookJson json) {
-        return Stream.range(0, json.pageCount)
-                .map(index -> pageThumbnailImageOf(json, index))
-                .collect(toCollection(RealmList::new));
+        RealmList<Image> images = new RealmList<>();
+        String mediaPath = smallImageMediaPathOf(json);
+        for (int i = 0; i < json.pageCount; i++) {
+            BookJson.ImageJson page = json.images.pages.get(i);
+            images.add(imageOf(mediaPath + (i + 1) + "t", page));
+        }
+        return images;
     }
 
-    private static Image pageThumbnailImageOf(BookJson json, int index) {
-        String mediaPath = smallImageMediaPathOf(json);
-        BookJson.ImageJson page = json.images.pages.get(index);
+    private static Image imageOf(String url, BookJson.ImageJson imageJson) {
         return new Image()
-                .setUrl(mediaPath + (index + 1) + "t" + extensionOf(page))
-                .setWidth(page.width)
-                .setHeight(page.height);
+                .setUrl(url + extensionOf(imageJson))
+                .setWidth(imageJson.width)
+                .setHeight(imageJson.height);
     }
 
     private static String smallImageMediaPathOf(BookJson json) {
