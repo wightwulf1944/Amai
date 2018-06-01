@@ -42,11 +42,7 @@ public class Nhentai {
     private static Api buildApi() {
         RxJava2CallAdapterFactory callAdapterFactory = RxJava2CallAdapterFactory.createAsync();
 
-        Moshi moshi = new Moshi.Builder()
-                .add(new BookMoshiAdapter())
-                .build();
-
-        MoshiConverterFactory converterFactory = MoshiConverterFactory.create(moshi);
+        MoshiConverterFactory converterFactory = MoshiConverterFactory.create();
 
         return new Retrofit.Builder()
                 .baseUrl(API_URL)
