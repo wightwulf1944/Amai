@@ -43,28 +43,6 @@ public class Book extends RealmObject {
 
     private RealmList<Image> pageThumbnailImages;
 
-    public Book() {
-        // Realm required no argument constructor
-    }
-
-    public Book(Adapter adapter) {
-        id = adapter.getId();
-        webUrl = adapter.getWebUrl();
-        title = adapter.getTitle();
-        pageCount = adapter.getPageCount();
-        parodyTags = adapter.getParodyTags();
-        characterTags = adapter.getCharacterTags();
-        generalTags = adapter.getGeneralTags();
-        artistTags = adapter.getArtistTags();
-        groupTags = adapter.getGroupTags();
-        languageTags = adapter.getLanguageTags();
-        categoryTags = adapter.getCategoryTags();
-        coverThumbnailImage = adapter.getCoverThumbnailImage();
-        coverImage = adapter.getCoverImage();
-        pageImages = adapter.getPageImages();
-        pageThumbnailImages = adapter.getPageThumbnailImages();
-    }
-
     public int getId() {
         return id;
     }
@@ -235,37 +213,5 @@ public class Book extends RealmObject {
         groupTags = sourceBook.groupTags;
         languageTags = sourceBook.languageTags;
         categoryTags = sourceBook.categoryTags;
-    }
-
-    public interface Adapter {
-        int getId();
-
-        String getWebUrl();
-
-        String getTitle();
-
-        int getPageCount();
-
-        RealmList<String> getParodyTags();
-
-        RealmList<String> getCharacterTags();
-
-        RealmList<String> getGeneralTags();
-
-        RealmList<String> getArtistTags();
-
-        RealmList<String> getGroupTags();
-
-        RealmList<String> getLanguageTags();
-
-        RealmList<String> getCategoryTags();
-
-        Image getCoverThumbnailImage();
-
-        Image getCoverImage();
-
-        RealmList<Image> getPageImages();
-
-        RealmList<Image> getPageThumbnailImages();
     }
 }
