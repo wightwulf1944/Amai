@@ -1,71 +1,37 @@
 package i.am.shiro.amai.transformer;
 
-import com.annimon.stream.Stream;
-
 import i.am.shiro.amai.model.Book;
 import i.am.shiro.amai.model.BookJson;
 import i.am.shiro.amai.model.Image;
 import i.am.shiro.amai.retrofit.Nhentai;
 import io.realm.RealmList;
 
-import static com.annimon.stream.Collectors.toCollection;
 import static i.am.shiro.amai.retrofit.Nhentai.IMAGE_BASE_URL;
 import static i.am.shiro.amai.retrofit.Nhentai.THUMBNAIL_BASE_URL;
 
+/**
+ * Responsible for transforming BookJson into Book
+ */
 public class BookTransformer {
 
     public static Book transform(BookJson json) {
+        SortedTags sortedTags = new SortedTags(json);
         return new Book()
                 .setId(json.id)
                 .setWebUrl(Nhentai.WEBPAGE_BASE_URL + json.id)
                 .setTitle(json.title.english)
                 .setPageCount(json.pageCount)
-                .setParodyTags(parodyTagsOf(json))
-                .setCharacterTags(characterTagsOf(json))
-                .setGeneralTags(generalTagsOf(json))
-                .setArtistTags(artistTagsOf(json))
-                .setGroupTags(groupTagsOf(json))
-                .setLanguageTags(languageTagsOf(json))
-                .setCategoryTags(categoryTagsOf(json))
+                .setParodyTags(sortedTags.parodyTags)
+                .setCharacterTags(sortedTags.characterTags)
+                .setGeneralTags(sortedTags.generalTags)
+                .setArtistTags(sortedTags.artistTags)
+                .setGroupTags(sortedTags.groupTags)
+                .setLanguageTags(sortedTags.languageTags)
+                .setCategoryTags(sortedTags.categoryTags)
                 .setCoverImage(coverImageOf(json))
                 .setCoverThumbnailImage(coverThumbnailImageOf(json))
                 .setPageImages(pageImagesOf(json))
                 .setPageThumbnailImages(pageThumbnailImagesOf(json));
-    }
-
-    private static RealmList<String> parodyTagsOf(BookJson json) {
-        return getTagsByType(json, "parody");
-    }
-
-    private static RealmList<String> characterTagsOf(BookJson json) {
-        return getTagsByType(json, "character");
-    }
-
-    private static RealmList<String> generalTagsOf(BookJson json) {
-        return getTagsByType(json, "tag");
-    }
-
-    private static RealmList<String> artistTagsOf(BookJson json) {
-        return getTagsByType(json, "artist");
-    }
-
-    private static RealmList<String> groupTagsOf(BookJson json) {
-        return getTagsByType(json, "group");
-    }
-
-    private static RealmList<String> languageTagsOf(BookJson json) {
-        return getTagsByType(json, "language");
-    }
-
-    private static RealmList<String> categoryTagsOf(BookJson json) {
-        return getTagsByType(json, "category");
-    }
-
-    private static RealmList<String> getTagsByType(BookJson json, String type) {
-        return Stream.of(json.tags)
-                .filter(tag -> tag.type.equals(type))
-                .map(tag -> tag.name)
-                .collect(toCollection(RealmList::new));
     }
 
     private static Image coverImageOf(BookJson json) {
@@ -125,6 +91,44 @@ public class BookTransformer {
                 return ".gif";
             default:
                 throw new RuntimeException("Unknown type " + imageJson.type);
+        }
+    }
+
+    private static class SortedTags {
+
+        private final RealmList<String> parodyTags = new RealmList<>();
+        private final RealmList<String> characterTags = new RealmList<>();
+        private final RealmList<String> generalTags = new RealmList<>();
+        private final RealmList<String> artistTags = new RealmList<>();
+        private final RealmList<String> groupTags = new RealmList<>();
+        private final RealmList<String> languageTags = new RealmList<>();
+        private final RealmList<String> categoryTags = new RealmList<>();
+
+        private SortedTags(BookJson json) {
+            for (BookJson.Tag tag : json.tags) {
+                getListOfType(tag.type).add(tag.name);
+            }
+        }
+
+        private RealmList<String> getListOfType(String type) {
+            switch (type) {
+                case "parody":
+                    return parodyTags;
+                case "character":
+                    return characterTags;
+                case "tag":
+                    return generalTags;
+                case "artist":
+                    return artistTags;
+                case "group":
+                    return groupTags;
+                case "language":
+                    return languageTags;
+                case "category":
+                    return categoryTags;
+                default:
+                    throw new IllegalArgumentException(type);
+            }
         }
     }
 }
