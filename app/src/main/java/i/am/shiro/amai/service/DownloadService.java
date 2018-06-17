@@ -18,6 +18,7 @@ import i.am.shiro.amai.dao.DownloadQueueManager;
 import i.am.shiro.amai.dao.DownloadTaskDispatcher;
 import i.am.shiro.amai.model.Book;
 import i.am.shiro.amai.model.DownloadTask;
+import timber.log.Timber;
 
 import static i.am.shiro.amai.constant.Constants.DEFAULT_CHANNEL_ID;
 
@@ -65,6 +66,7 @@ public class DownloadService extends IntentService {
                     runTask(task);
                     dispatcher.notifyDone(task);
                 } catch (Exception e) {
+                    Timber.w(e);
                     dispatcher.notifyFailed(task);
                 }
             }
