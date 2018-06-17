@@ -1,6 +1,5 @@
 package i.am.shiro.amai.activity;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -49,8 +48,6 @@ public class IntroActivity extends AppCompatActivity {
             viewPager.setCurrentItem(nextItem);
         } else {
             Preferences.setFirstRunDone();
-            Intent intent = new Intent(this, MainActivity.class);
-            startActivity(intent);
             finish();
         }
     }

@@ -5,6 +5,7 @@ import android.os.Environment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.os.EnvironmentCompat;
 
+import com.annimon.stream.Objects;
 import com.annimon.stream.Stream;
 import com.annimon.stream.function.IndexedFunction;
 import com.annimon.stream.function.Predicate;
@@ -25,6 +26,7 @@ public class StorageUtil {
     public static List<StorageOption> getStorageOptions(Context context) {
         File[] externalDirs = ContextCompat.getExternalFilesDirs(context, null);
         return Stream.of(externalDirs)
+                .filter(Objects::nonNull)
                 .filter(isMounted())
                 .mapIndexed(externalStorageOptionFrom())
                 .collect(toList());
