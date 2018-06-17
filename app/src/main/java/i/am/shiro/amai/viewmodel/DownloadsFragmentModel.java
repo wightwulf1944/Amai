@@ -8,7 +8,6 @@ import android.arch.lifecycle.ViewModel;
 import java.util.List;
 
 import i.am.shiro.amai.model.Book;
-import io.realm.OrderedCollectionChangeSet;
 import io.realm.Realm;
 import io.realm.RealmResults;
 import timber.log.Timber;

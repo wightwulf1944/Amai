@@ -49,10 +49,9 @@ public class DownloadsFragment extends Fragment implements SearchView.OnQueryTex
 
         BookAdapter adapter = new BookAdapter(this, inflater);
         adapter.setOnItemClickListener(this::invokeReadBook);
-        adapter.setOnPositionBindListener(integer -> {
-            // do nothing
-        });
 
+        // TODO: 6/7/2018 try removing gap handling and observe behavior
+        // TODO: 6/7/2018 declare layoutmanager and span count in xml
         StaggeredGridLayoutManager layoutManager = new StaggeredGridLayoutManager(getSpanCount(), VERTICAL);
         layoutManager.setGapStrategy(GAP_HANDLING_NONE);
 
@@ -66,7 +65,7 @@ public class DownloadsFragment extends Fragment implements SearchView.OnQueryTex
         return view;
     }
 
-    //TODO
+    // TODO: 6/7/2018 get variable value from xml
     private int getSpanCount() {
         return 2;
     }

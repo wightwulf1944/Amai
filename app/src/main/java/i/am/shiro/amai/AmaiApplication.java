@@ -57,6 +57,6 @@ public class AmaiApplication extends Application {
             }
         });
 
-        Preferences.setFirstRun(false);
+//        Preferences.setFirstRun(true);
     }
 }

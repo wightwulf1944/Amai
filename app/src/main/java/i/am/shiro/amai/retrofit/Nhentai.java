@@ -2,8 +2,6 @@ package i.am.shiro.amai.retrofit;
 
 import android.support.annotation.StringDef;
 
-import com.squareup.moshi.Moshi;
-
 import java.lang.annotation.Retention;
 
 import i.am.shiro.amai.model.Book;

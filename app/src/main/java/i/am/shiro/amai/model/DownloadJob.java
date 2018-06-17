@@ -1,8 +1,6 @@
 package i.am.shiro.amai.model;
 
 import i.am.shiro.amai.constant.DownloadStatus;
-import i.am.shiro.amai.model.Book;
-import i.am.shiro.amai.model.DownloadTask;
 import io.realm.RealmList;
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;

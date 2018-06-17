@@ -14,6 +14,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.annimon.stream.function.Consumer;
+import com.annimon.stream.function.IntConsumer;
 import com.bumptech.glide.Glide;
 
 import i.am.shiro.amai.R;
@@ -32,7 +33,7 @@ public class BookAdapter extends ListAdapter<Book, BookAdapter.ViewHolder> {
 
     private Consumer<Book> onItemClickListener;
 
-    private Consumer<Integer> onPositionBindListener;
+    private IntConsumer onPositionBindListener;
 
     public BookAdapter(Fragment parentFragment, LayoutInflater inflater) {
         super(new DiffCalback());
@@ -45,7 +46,7 @@ public class BookAdapter extends ListAdapter<Book, BookAdapter.ViewHolder> {
         onItemClickListener = listener;
     }
 
-    public void setOnPositionBindListener(Consumer<Integer> listener) {
+    public void setOnPositionBindListener(IntConsumer listener) {
         onPositionBindListener = listener;
     }
 
@@ -65,7 +66,9 @@ public class BookAdapter extends ListAdapter<Book, BookAdapter.ViewHolder> {
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Book book = getItem(position);
         holder.bind(book);
-        onPositionBindListener.accept(position);
+        if (onPositionBindListener != null) {
+            onPositionBindListener.accept(position);
+        }
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {
