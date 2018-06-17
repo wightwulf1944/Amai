@@ -48,7 +48,7 @@ public class DownloadService extends IntentService {
         super.onCreate();
 
         Notification notification = new NotificationCompat.Builder(this, DEFAULT_CHANNEL_ID)
-                .setSmallIcon(R.drawable.ic_download)
+                .setSmallIcon(R.drawable.ic_notification_download)
                 .setContentTitle("Downloading")
                 .setProgress(0, 0, true)
                 .build();
