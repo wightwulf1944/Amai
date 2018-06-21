@@ -11,7 +11,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
-import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -23,9 +22,6 @@ import i.am.shiro.amai.activity.DetailActivity;
 import i.am.shiro.amai.adapter.BookAdapter;
 import i.am.shiro.amai.model.Book;
 import i.am.shiro.amai.viewmodel.BrowseFragmentModel;
-
-import static android.support.v7.widget.StaggeredGridLayoutManager.GAP_HANDLING_NONE;
-import static android.support.v7.widget.StaggeredGridLayoutManager.VERTICAL;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -56,13 +52,9 @@ public class BrowseFragment extends Fragment implements SearchView.OnQueryTextLi
         adapter.setOnItemClickListener(this::invokeViewDetails);
         adapter.setOnPositionBindListener(viewModel::onPositionBind);
 
-        StaggeredGridLayoutManager layoutManager = new StaggeredGridLayoutManager(getSpanCount(), VERTICAL);
-        layoutManager.setGapStrategy(GAP_HANDLING_NONE);
-
         RecyclerView recyclerView = view.findViewById(R.id.recyclerView);
         recyclerView.setHasFixedSize(true);
         recyclerView.setAdapter(adapter);
-        recyclerView.setLayoutManager(layoutManager);
 
         viewModel.observeBooks(this, adapter::submitList);
 
@@ -86,11 +78,6 @@ public class BrowseFragment extends Fragment implements SearchView.OnQueryTextLi
     @Override
     public boolean onQueryTextChange(String newText) {
         return false;
-    }
-
-    //TODO
-    private int getSpanCount() {
-        return 2;
     }
 
     private void invokeViewDetails(Book book) {

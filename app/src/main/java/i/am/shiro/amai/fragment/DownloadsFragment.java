@@ -11,7 +11,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
-import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -23,9 +22,6 @@ import i.am.shiro.amai.activity.ReadActivity;
 import i.am.shiro.amai.adapter.BookAdapter;
 import i.am.shiro.amai.model.Book;
 import i.am.shiro.amai.viewmodel.DownloadsFragmentModel;
-
-import static android.support.v7.widget.StaggeredGridLayoutManager.GAP_HANDLING_NONE;
-import static android.support.v7.widget.StaggeredGridLayoutManager.VERTICAL;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -50,24 +46,13 @@ public class DownloadsFragment extends Fragment implements SearchView.OnQueryTex
         BookAdapter adapter = new BookAdapter(this, inflater);
         adapter.setOnItemClickListener(this::invokeReadBook);
 
-        // TODO: 6/7/2018 try removing gap handling and observe behavior
-        // TODO: 6/7/2018 declare layoutmanager and span count in xml
-        StaggeredGridLayoutManager layoutManager = new StaggeredGridLayoutManager(getSpanCount(), VERTICAL);
-        layoutManager.setGapStrategy(GAP_HANDLING_NONE);
-
         RecyclerView recyclerView = view.findViewById(R.id.recyclerView);
         recyclerView.setHasFixedSize(true);
         recyclerView.setAdapter(adapter);
-        recyclerView.setLayoutManager(layoutManager);
 
         viewModel.observeBooks(this, adapter::submitList);
 
         return view;
-    }
-
-    // TODO: 6/7/2018 get variable value from xml
-    private int getSpanCount() {
-        return 2;
     }
 
     @Override
