@@ -35,6 +35,23 @@ public class StorageIntroFragment extends Fragment {
         storageOptions = StorageUtil.getStorageOptions(context);
     }
 
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (savedInstanceState == null) {
+            selectedIndex = 0;
+            Preferences.setStoragePath(storageOptions.get(0).getPath());
+        } else {
+            selectedIndex = savedInstanceState.getInt("selectedIndex", -1);
+        }
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt("selectedIndex", selectedIndex);
+    }
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -42,9 +59,18 @@ public class StorageIntroFragment extends Fragment {
 
         LinearLayout optionsLayout = view.findViewById(R.id.optionsLayout);
 
-        for (StorageOption storageOption : storageOptions) {
+        for (int i = 0; i < storageOptions.size(); i++) {
+            StorageOption storageOption = storageOptions.get(i);
+            int index = i;
+
             View storageOptionView = inflater.inflate(R.layout.item_storage_option, optionsLayout, false);
-            storageOptionView.setOnClickListener(this::setSelectedStorageOption);
+            storageOptionView.setSelected(selectedIndex == i);
+            storageOptionView.setOnClickListener(v -> {
+                optionsLayout.dispatchSetSelected(false);
+                storageOptionView.setSelected(true);
+                selectedIndex = index;
+                Preferences.setStoragePath(storageOption.getPath());
+            });
 
             TextView titleText = storageOptionView.findViewById(R.id.titleText);
             titleText.setText(storageOption.getTitle());
@@ -62,19 +88,6 @@ public class StorageIntroFragment extends Fragment {
             optionsLayout.addView(storageOptionView);
         }
 
-        View defaultSelection = optionsLayout.getChildAt(selectedIndex);
-        setSelectedStorageOption(defaultSelection);
-
         return view;
-    }
-
-    private void setSelectedStorageOption(View view) {
-        ViewGroup optionsLayout = (ViewGroup) view.getParent();
-        optionsLayout.dispatchSetSelected(false);
-        view.setSelected(true);
-        selectedIndex = optionsLayout.indexOfChild(view);
-
-        StorageOption storageOption = storageOptions.get(selectedIndex);
-        Preferences.setStoragePath(storageOption.getPath());
     }
 }

@@ -1,5 +1,6 @@
 package i.am.shiro.amai.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -12,12 +13,16 @@ import i.am.shiro.amai.R;
 import i.am.shiro.amai.adapter.IntroAdapter;
 import i.am.shiro.amai.fragment.AboutIntroFragment;
 import i.am.shiro.amai.fragment.StorageIntroFragment;
+import io.realm.Realm;
 
 /**
  * Created by Shiro on 1/6/2018.
  */
 
 public class IntroActivity extends AppCompatActivity {
+
+    // Needed to maintain at least one instance of Realm
+    private final Realm realm = Realm.getDefaultInstance();
 
     private final Fragment[] fragments = {
             new AboutIntroFragment(),
@@ -42,12 +47,20 @@ public class IntroActivity extends AppCompatActivity {
         button.setOnClickListener(v -> onNext());
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        realm.close();
+    }
+
     private void onNext() {
         int nextItem = viewPager.getCurrentItem() + 1;
         if (nextItem < fragments.length) {
             viewPager.setCurrentItem(nextItem);
         } else {
             Preferences.setFirstRunDone();
+            Intent intent = new Intent(this, MainActivity.class);
+            startActivity(intent);
             finish();
         }
     }

@@ -25,14 +25,14 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        setTheme(R.style.AppTheme);
-        super.onCreate(savedInstanceState);
-
         if (Preferences.isFirstRun()) {
             Intent intent = new Intent(this, IntroActivity.class);
             startActivity(intent);
+            finish();
         }
 
+        setTheme(R.style.AppTheme);
+        super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
         BottomNavigationView navigation = findViewById(R.id.navigation);
