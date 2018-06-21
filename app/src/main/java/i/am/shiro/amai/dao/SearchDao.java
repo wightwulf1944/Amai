@@ -95,11 +95,15 @@ public class SearchDao implements Closeable {
                     .equalTo("id", newBook.getId())
                     .findFirst();
 
-            if (localBook == null) {
-                realm.insert(newBook);
-            } else {
-                localBook.updateFrom(newBook);
+            if (localBook != null && localBook.isDownloaded()) {
+                newBook.setDownloaded(true)
+                        .setLocalCoverImage(localBook.getCoverImage())
+                        .setLocalCoverThumbnailImage(localBook.getCoverThumbnailImage())
+                        .setLocalPageImages(localBook.getPageImages())
+                        .setLocalPageThumbnailImages(localBook.getPageThumbnailImages());
             }
+
+            realm.insertOrUpdate(newBook);
         }
     }
 

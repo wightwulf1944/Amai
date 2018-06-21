@@ -28,10 +28,10 @@ public class BookTransformer {
                 .setGroupTags(sortedTags.groupTags)
                 .setLanguageTags(sortedTags.languageTags)
                 .setCategoryTags(sortedTags.categoryTags)
-                .setCoverImage(coverImageOf(json))
-                .setCoverThumbnailImage(coverThumbnailImageOf(json))
-                .setPageImages(pageImagesOf(json))
-                .setPageThumbnailImages(pageThumbnailImagesOf(json));
+                .setRemoteCoverImage(coverImageOf(json))
+                .setRemoteCoverThumbnailImage(coverThumbnailImageOf(json))
+                .setRemotePageImages(pageImagesOf(json))
+                .setRemotePageThumbnailImages(pageThumbnailImagesOf(json));
     }
 
     private static Image coverImageOf(BookJson json) {

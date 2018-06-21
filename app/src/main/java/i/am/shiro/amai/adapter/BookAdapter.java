@@ -21,6 +21,8 @@ import i.am.shiro.amai.R;
 import i.am.shiro.amai.model.Book;
 import i.am.shiro.amai.model.Image;
 
+import static java.lang.String.valueOf;
+
 /**
  * Created by Shiro on 1/6/2018.
  */
@@ -100,7 +102,7 @@ public class BookAdapter extends ListAdapter<Book, BookAdapter.ViewHolder> {
             this.book = book;
 
             titleText.setText(book.getTitle());
-            pageText.setText(book.getPageCountStr());
+            pageText.setText(valueOf(book.getPageCount()));
 
             Image coverThumbnailImage = book.getCoverThumbnailImage();
 

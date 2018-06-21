@@ -35,13 +35,21 @@ public class Book extends RealmObject {
 
     private RealmList<String> categoryTags;
 
-    private Image coverImage;
+    private Image remoteCoverImage;
 
-    private Image coverThumbnailImage;
+    private Image remoteCoverThumbnailImage;
 
-    private RealmList<Image> pageImages;
+    private RealmList<Image> remotePageImages;
 
-    private RealmList<Image> pageThumbnailImages;
+    private RealmList<Image> remotePageThumbnailImages;
+
+    private Image localCoverImage;
+
+    private Image localCoverThumbnailImage;
+
+    private RealmList<Image> localPageImages;
+
+    private RealmList<Image> localPageThumbnailImages;
 
     public int getId() {
         return id;
@@ -152,66 +160,58 @@ public class Book extends RealmObject {
     }
 
     public Image getCoverImage() {
-        return coverImage;
+        return isDownloaded ? localCoverImage : remoteCoverImage;
     }
 
-    public Book setCoverImage(Image coverImage) {
-        this.coverImage = coverImage;
+    public Book setLocalCoverImage(Image localCoverImage) {
+        this.localCoverImage = localCoverImage;
+        return this;
+    }
+
+    public Book setRemoteCoverImage(Image coverImage) {
+        this.remoteCoverImage = coverImage;
         return this;
     }
 
     public Image getCoverThumbnailImage() {
-        return coverThumbnailImage;
+        return isDownloaded ? localCoverThumbnailImage : remoteCoverThumbnailImage;
     }
 
-    public Book setCoverThumbnailImage(Image coverThumbnailImage) {
-        this.coverThumbnailImage = coverThumbnailImage;
+    public Book setLocalCoverThumbnailImage(Image localCoverThumbnailImage) {
+        this.localCoverThumbnailImage = localCoverThumbnailImage;
+        return this;
+    }
+
+    public Book setRemoteCoverThumbnailImage(Image coverThumbnailImage) {
+        this.remoteCoverThumbnailImage = coverThumbnailImage;
         return this;
     }
 
     public RealmList<Image> getPageImages() {
-        return pageImages;
+        return isDownloaded ? localPageImages : remotePageImages;
     }
 
-    public Book setPageImages(RealmList<Image> pageImages) {
-        this.pageImages = pageImages;
+    public Book setLocalPageImages(RealmList<Image> localPageImages) {
+        this.localPageImages = localPageImages;
+        return this;
+    }
+
+    public Book setRemotePageImages(RealmList<Image> pageImages) {
+        this.remotePageImages = pageImages;
         return this;
     }
 
     public RealmList<Image> getPageThumbnailImages() {
-        return pageThumbnailImages;
+        return isDownloaded ? localPageThumbnailImages : remotePageThumbnailImages;
     }
 
-    public Book setPageThumbnailImages(RealmList<Image> pageThumbnailImages) {
-        this.pageThumbnailImages = pageThumbnailImages;
+    public Book setLocalPageThumbnailImages(RealmList<Image> localPageThumbnailImages) {
+        this.localPageThumbnailImages = localPageThumbnailImages;
         return this;
     }
 
-    /**
-     * Convenience method
-     */
-    public String getPageCountStr() {
-        return String.valueOf(pageCount);
-    }
-
-    /**
-     * Updates some of this book's fields with the values from sourceBook.
-     * <p>
-     * If this book is a managed RealmObject, this method must be called
-     * within a Realm transaction
-     *
-     * @param sourceBook
-     */
-    public void updateFrom(Book sourceBook) {
-        webUrl = sourceBook.webUrl;
-        title = sourceBook.title;
-        pageCount = sourceBook.pageCount;
-        parodyTags = sourceBook.parodyTags;
-        characterTags = sourceBook.characterTags;
-        generalTags = sourceBook.generalTags;
-        artistTags = sourceBook.artistTags;
-        groupTags = sourceBook.groupTags;
-        languageTags = sourceBook.languageTags;
-        categoryTags = sourceBook.categoryTags;
+    public Book setRemotePageThumbnailImages(RealmList<Image> pageThumbnailImages) {
+        this.remotePageThumbnailImages = pageThumbnailImages;
+        return this;
     }
 }

@@ -30,6 +30,7 @@ public class TagAdapter extends RecyclerView.Adapter<TagAdapter.ViewHolder> {
 
     public TagAdapter(Book book) {
         addItems("Parodies:", book.getParodyTags());
+        addItems("Characters:", book.getCharacterTags());
         addItems("Tags:", book.getGeneralTags());
         addItems("Artists:", book.getArtistTags());
         addItems("Groups:", book.getGroupTags());
