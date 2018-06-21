@@ -20,9 +20,6 @@ import io.realm.Realm;
 
 public class MainActivity extends AppCompatActivity {
 
-    // Needed to maintain at least one instance of Realm
-    private final Realm realm = Realm.getDefaultInstance();
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         if (Preferences.isFirstRun()) {
@@ -41,12 +38,6 @@ public class MainActivity extends AppCompatActivity {
         if (savedInstanceState == null) {
             navigation.setSelectedItemId(R.id.navigation_browse);
         }
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        realm.close();
     }
 
     private boolean onNavigationItemSelected(@NonNull MenuItem item) {

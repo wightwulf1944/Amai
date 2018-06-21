@@ -21,9 +21,6 @@ import io.realm.Realm;
 
 public class IntroActivity extends AppCompatActivity {
 
-    // Needed to maintain at least one instance of Realm
-    private final Realm realm = Realm.getDefaultInstance();
-
     private final Fragment[] fragments = {
             new AboutIntroFragment(),
             new StorageIntroFragment()
@@ -45,12 +42,6 @@ public class IntroActivity extends AppCompatActivity {
 
         Button button = findViewById(R.id.nextButton);
         button.setOnClickListener(v -> onNext());
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        realm.close();
     }
 
     private void onNext() {

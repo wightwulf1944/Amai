@@ -10,7 +10,6 @@ import io.realm.Realm;
 import io.realm.RealmConfiguration;
 import timber.log.Timber;
 
-import static android.support.v4.app.NotificationManagerCompat.IMPORTANCE_DEFAULT;
 import static i.am.shiro.amai.constant.Constants.DEFAULT_CHANNEL_ID;
 
 /**
@@ -33,12 +32,13 @@ public class AmaiApplication extends Application {
                 .compactOnLaunch()
                 .build();
         Realm.setDefaultConfiguration(config);
+        Realm.compactRealm(config);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationChannel mChannel = new NotificationChannel(
                     DEFAULT_CHANNEL_ID,
                     getString(R.string.app_name),
-                    IMPORTANCE_DEFAULT);
+                    NotificationManager.IMPORTANCE_DEFAULT);
 
             NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
             if (notificationManager != null) {

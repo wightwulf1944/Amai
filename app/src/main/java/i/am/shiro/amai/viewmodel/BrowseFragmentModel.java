@@ -78,6 +78,7 @@ public class BrowseFragmentModel extends ViewModel {
     @Override
     protected void onCleared() {
         super.onCleared();
+        if (disposable != null) disposable.dispose();
         searchDao.close();
     }
 }
