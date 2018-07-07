@@ -8,7 +8,9 @@ import java.util.Iterator;
 import i.am.shiro.amai.model.Book;
 import i.am.shiro.amai.model.DownloadJob;
 import i.am.shiro.amai.model.DownloadTask;
+import i.am.shiro.amai.model.Image;
 import io.realm.Realm;
+import io.realm.RealmList;
 import timber.log.Timber;
 
 import static i.am.shiro.amai.constant.DownloadStatus.DONE;
@@ -46,8 +48,7 @@ public class DownloadTaskDispatcher implements Closeable, Iterable<DownloadTask>
 
         if (parentJob.getTaskIndex() == parentJob.getTaskList().size()) {
             parentJob.setStatus(DONE);
-            Book parentBook = parentJob.getParentBook();
-            updateBookUrls(parentBook, parentJob);
+            updateBookUrls(parentJob);
             Timber.w("Book %s downloaded successfuly", parentJob.getBookId());
         }
         realm.commitTransaction();
@@ -65,10 +66,34 @@ public class DownloadTaskDispatcher implements Closeable, Iterable<DownloadTask>
         realm.commitTransaction();
     }
 
-    private void updateBookUrls(Book book, DownloadJob job) {
-        book.setDownloaded(true);
+    private void updateBookUrls(DownloadJob job) {
+        RealmList<DownloadTask> taskList = job.getTaskList();
+        Book parentBook = job.getParentBook();
 
-        // TODO
+        Image remoteCoverImage = parentBook.getCoverImage();
+        Image localCoverImage = imageFrom(remoteCoverImage, taskList.get(0));
+
+        RealmList<Image> remotePageImages = parentBook.getPageImages();
+        RealmList<Image> localPageImages = new RealmList<>();
+        for (int i = 0; i < remotePageImages.size(); i++) {
+            Image remotePageImage = remotePageImages.get(i);
+            DownloadTask pageTask = taskList.get(i);
+            Image localPageImage = imageFrom(remotePageImage, pageTask);
+            localPageImages.add(localPageImage);
+        }
+
+        parentBook.setDownloaded(true)
+                .setLocalCoverImage(localCoverImage)
+                .setLocalCoverThumbnailImage(localCoverImage)
+                .setLocalPageImages(localPageImages)
+                .setLocalPageThumbnailImages(localPageImages);
+    }
+
+    private Image imageFrom(Image from, DownloadTask task) {
+        return realm.createObject(Image.class)
+                .setHeight(from.getHeight())
+                .setWidth(from.getWidth())
+                .setUrl(task.getDestinationUrl());
     }
 
     @NonNull
