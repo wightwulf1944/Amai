@@ -8,6 +8,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.PagerSnapHelper;
 import android.support.v7.widget.RecyclerView;
 
+import java.util.Objects;
+
 import i.am.shiro.amai.R;
 import i.am.shiro.amai.adapter.BookPageAdapter;
 import i.am.shiro.amai.model.Book;
@@ -29,27 +31,12 @@ public class ReadActivity extends AppCompatActivity {
         return intent;
     }
 
-    @NonNull
-    private static Book extractBook(Realm realm, Intent intent) {
-        int bookId = intent.getIntExtra(BOOK_ID, -1);
-        Book book = realm.where(Book.class)
-                .equalTo("id", bookId)
-                .findFirst();
-
-        if (book == null) throw new NullPointerException();
-        else return book;
-    }
-
-    private static int extractPageIndex(Intent intent) {
-        return intent.getIntExtra(PAGE_INDEX, 0);
-    }
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         Intent intent = getIntent();
-        Book book = extractBook(realm, intent);
+        Book book = extractBook(intent);
         int pageIndex = extractPageIndex(intent);
 
         setContentView(R.layout.activity_read);
@@ -63,6 +50,19 @@ public class ReadActivity extends AppCompatActivity {
 
         PagerSnapHelper pagerSnapHelper = new PagerSnapHelper();
         pagerSnapHelper.attachToRecyclerView(pageRecycler);
+    }
+
+    private Book extractBook(Intent intent) {
+        int bookId = intent.getIntExtra(BOOK_ID, -1);
+        Book book = realm.where(Book.class)
+                .equalTo("id", bookId)
+                .findFirst();
+
+        return Objects.requireNonNull(book);
+    }
+
+    private static int extractPageIndex(Intent intent) {
+        return intent.getIntExtra(PAGE_INDEX, 0);
     }
 
     @Override

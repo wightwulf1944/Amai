@@ -12,7 +12,6 @@ import android.widget.TextView;
 
 import i.am.shiro.amai.R;
 import i.am.shiro.amai.model.DownloadJob;
-import io.realm.RealmResults;
 
 /**
  * Created by Shiro on 3/10/2018.
@@ -20,10 +19,8 @@ import io.realm.RealmResults;
 
 public class DownloadJobAdapter extends ListAdapter<DownloadJob, DownloadJobAdapter.ViewHolder> {
 
-    public DownloadJobAdapter(RealmResults<DownloadJob> downloadJobs) {
+    public DownloadJobAdapter() {
         super(new DiffCalback());
-        submitList(downloadJobs);
-        downloadJobs.addChangeListener(this::submitList);
     }
 
     @NonNull

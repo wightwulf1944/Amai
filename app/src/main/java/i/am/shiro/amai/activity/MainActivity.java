@@ -16,7 +16,6 @@ import i.am.shiro.amai.R;
 import i.am.shiro.amai.fragment.BrowseFragment;
 import i.am.shiro.amai.fragment.DownloadsFragment;
 import i.am.shiro.amai.fragment.QueueFragment;
-import io.realm.Realm;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -76,8 +75,9 @@ public class MainActivity extends AppCompatActivity {
                 return BrowseFragment.class.getSimpleName();
             case R.id.navigation_queue:
                 return QueueFragment.class.getSimpleName();
+            default:
+                throw new IllegalArgumentException("No corresponding fragment for given itemId");
         }
-        throw new IllegalArgumentException("No corresponding fragment for given itemId");
     }
 
     private Fragment getFragment(@IdRes int itemId) {
@@ -88,7 +88,8 @@ public class MainActivity extends AppCompatActivity {
                 return new BrowseFragment();
             case R.id.navigation_queue:
                 return new QueueFragment();
+            default:
+                throw new IllegalArgumentException("No corresponding fragment for given itemId");
         }
-        throw new IllegalArgumentException("No corresponding fragment for given itemId");
     }
 }

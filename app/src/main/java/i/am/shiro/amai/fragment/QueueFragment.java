@@ -44,7 +44,9 @@ public class QueueFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_queue, container, false);
 
-        DownloadJobAdapter adapter = new DownloadJobAdapter(downloadJobs);
+        DownloadJobAdapter adapter = new DownloadJobAdapter();
+        adapter.submitList(downloadJobs);
+        downloadJobs.addChangeListener(adapter::submitList);
 
         RecyclerView recyclerView = view.findViewById(R.id.recyclerView);
         recyclerView.setAdapter(adapter);

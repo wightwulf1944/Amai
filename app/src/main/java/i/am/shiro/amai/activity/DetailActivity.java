@@ -19,6 +19,8 @@ import com.bumptech.glide.Glide;
 import com.google.android.flexbox.FlexWrap;
 import com.google.android.flexbox.FlexboxLayoutManager;
 
+import java.util.Objects;
+
 import i.am.shiro.amai.R;
 import i.am.shiro.amai.adapter.PreviewThumbnailAdapter;
 import i.am.shiro.amai.adapter.TagAdapter;
@@ -53,8 +55,7 @@ public class DetailActivity extends AppCompatActivity {
                 .equalTo("id", bookId)
                 .findFirst();
 
-        if (book == null) throw new NullPointerException();
-        else return book;
+        return Objects.requireNonNull(book);
     }
 
     @Override
