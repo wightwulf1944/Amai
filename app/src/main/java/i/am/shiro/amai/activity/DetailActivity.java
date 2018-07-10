@@ -6,41 +6,26 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.constraint.ConstraintLayout;
-import android.support.constraint.ConstraintSet;
+import android.support.design.widget.TabLayout;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.RecyclerView;
-import android.view.Menu;
+import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
-import android.widget.ImageView;
-import android.widget.TextView;
-
-import com.bumptech.glide.Glide;
-import com.google.android.flexbox.FlexWrap;
-import com.google.android.flexbox.FlexboxLayoutManager;
-
-import java.util.Objects;
 
 import i.am.shiro.amai.R;
-import i.am.shiro.amai.adapter.PreviewThumbnailAdapter;
-import i.am.shiro.amai.adapter.TagAdapter;
+import i.am.shiro.amai.fragment.AboutIntroFragment;
+import i.am.shiro.amai.fragment.InfoDetailFragment;
 import i.am.shiro.amai.model.Book;
 import i.am.shiro.amai.service.DownloadService;
 import io.realm.Realm;
 
 import static android.content.Intent.ACTION_VIEW;
 
-/**
- * Created by Shiro on 1/20/2018.
- */
-
 public class DetailActivity extends AppCompatActivity {
 
     private static final String BOOK_ID = "bookId";
-
-    private final Realm realm = Realm.getDefaultInstance();
-
-    private Book book;
 
     @NonNull
     public static Intent makeIntent(Context context, Book book) {
@@ -49,58 +34,30 @@ public class DetailActivity extends AppCompatActivity {
         return intent;
     }
 
-    private static Book extractBook(Realm realm, Intent intent) {
-        int bookId = intent.getIntExtra(BOOK_ID, -1);
-        Book book = realm.where(Book.class)
+    private final Realm realm = Realm.getDefaultInstance();
+
+    private Book book;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        int bookId = getIntent().getIntExtra(BOOK_ID, -1);
+        book = realm.where(Book.class)
                 .equalTo("id", bookId)
                 .findFirst();
 
-        return Objects.requireNonNull(book);
-    }
-
-    @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-        book = extractBook(realm, getIntent());
-
         setContentView(R.layout.activity_detail);
 
-        ConstraintLayout coverImageConstraintLayout = findViewById(R.id.coverImageConstraintLayout);
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        toolbar.inflateMenu(R.menu.detail_action);
+        toolbar.setOnMenuItemClickListener(this::onMenuItemClick);
 
-        String ratioStr = String.format("h,%s:%s",
-                book.getCoverImage().getWidth(),
-                book.getCoverImage().getHeight());
+        ViewPager viewPager = findViewById(R.id.view_pager);
+        viewPager.setAdapter(new Adapter());
 
-        ConstraintSet constraintSet = new ConstraintSet();
-        constraintSet.clone(coverImageConstraintLayout);
-        constraintSet.setDimensionRatio(R.id.coverImage, ratioStr);
-        constraintSet.applyTo(coverImageConstraintLayout);
-
-        ImageView coverImage = findViewById(R.id.coverImage);
-        Glide.with(this)
-                .load(book.getCoverImage().getUrl())
-                .into(coverImage);
-
-        PreviewThumbnailAdapter adapter = new PreviewThumbnailAdapter(this, book.getPageThumbnailImages());
-        adapter.setOnItemClickListener(this::invokeReadBook);
-
-        RecyclerView previewRecycler = findViewById(R.id.previewRecycler);
-        previewRecycler.setHasFixedSize(true);
-        previewRecycler.setAdapter(adapter);
-
-        TextView titleText = findViewById(R.id.titleText);
-        titleText.setText(book.getTitle());
-
-        TagAdapter tagAdapter = new TagAdapter(book);
-
-        FlexboxLayoutManager layoutManager = new FlexboxLayoutManager(this);
-        layoutManager.setFlexWrap(FlexWrap.WRAP);
-
-        RecyclerView tagRecycler = findViewById(R.id.tagRecycler);
-        tagRecycler.setAdapter(tagAdapter);
-        tagRecycler.setLayoutManager(layoutManager);
-        tagRecycler.setHasFixedSize(true);
+        TabLayout tabLayout = findViewById(R.id.tab_layout);
+        tabLayout.setupWithViewPager(viewPager);
     }
 
     @Override
@@ -109,14 +66,7 @@ public class DetailActivity extends AppCompatActivity {
         realm.close();
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.detail_action, menu);
-        return super.onCreateOptionsMenu(menu);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    private boolean onMenuItemClick(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.download:
                 DownloadService.start(this, book);
@@ -136,8 +86,49 @@ public class DetailActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    private void invokeReadBook(int pageIndex) {
+    public void invokeReadBook(int pageIndex) {
         Intent intent = ReadActivity.makeIntent(this, book, pageIndex);
         startActivity(intent);
+    }
+
+    public Book getBook() {
+        return book;
+    }
+
+    private class Adapter extends FragmentPagerAdapter {
+
+        private Adapter() {
+            super(getSupportFragmentManager());
+        }
+
+        @Override
+        public int getCount() {
+            return 2;
+        }
+
+        @Override
+        public Fragment getItem(int position) {
+            switch (position) {
+                case 0:
+                    return new InfoDetailFragment();
+                case 1:
+                    return new AboutIntroFragment();
+                default:
+                    return null;
+            }
+        }
+
+        @Nullable
+        @Override
+        public CharSequence getPageTitle(int position) {
+            switch (position) {
+                case 0:
+                    return "Info";
+                case 1:
+                    return "Preview";
+                default:
+                    return null;
+            }
+        }
     }
 }

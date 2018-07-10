@@ -1,9 +1,9 @@
 package i.am.shiro.amai.adapter;
 
-import android.app.Activity;
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
 import android.support.constraint.ConstraintSet;
+import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.RecyclerView.Adapter;
 import android.view.LayoutInflater;
@@ -24,9 +24,9 @@ import i.am.shiro.amai.model.Image;
  * TODO optimize by specifying item dimensions on bind
  */
 
-public class PreviewThumbnailAdapter extends Adapter<PreviewThumbnailAdapter.ViewHolder> {
+public class DetailThumbnailAdapter extends Adapter<DetailThumbnailAdapter.ViewHolder> {
 
-    private final Activity parentActivity;
+    private final Fragment parentFragment;
 
     private final List<Image> pageThumbnailImages;
 
@@ -34,10 +34,10 @@ public class PreviewThumbnailAdapter extends Adapter<PreviewThumbnailAdapter.Vie
 
     private Consumer<Integer> onItemClickListener;
 
-    public PreviewThumbnailAdapter(Activity parentActivity, List<Image> pageThumbnailImages) {
-        this.parentActivity = parentActivity;
+    public DetailThumbnailAdapter(Fragment parentFragment, List<Image> pageThumbnailImages) {
+        this.parentFragment = parentFragment;
         this.pageThumbnailImages = pageThumbnailImages;
-        inflater = parentActivity.getLayoutInflater();
+        inflater = parentFragment.getLayoutInflater();
     }
 
     public void setOnItemClickListener(Consumer<Integer> listener) {
@@ -89,7 +89,7 @@ public class PreviewThumbnailAdapter extends Adapter<PreviewThumbnailAdapter.Vie
             constraintSet.setDimensionRatio(R.id.thumbnailImage, ratioStr);
             constraintSet.applyTo(constraintLayout);
 
-            Glide.with(parentActivity)
+            Glide.with(parentFragment)
                     .load(image.getUrl())
                     .into(previewImage);
         }
