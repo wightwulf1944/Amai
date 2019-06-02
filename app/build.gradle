@@ -5,7 +5,7 @@ android {
     compileSdkVersion 27
     defaultConfig {
         applicationId "i.am.shiro.amai"
-        minSdkVersion 16
+        minSdkVersion 19
         targetSdkVersion 27
         versionCode 1
         versionName "1.0"
@@ -37,25 +37,25 @@ dependencies {
     implementation 'com.jakewharton.timber:timber:4.7.1'
 
     //    http://square.github.io/retrofit/
-    implementation 'com.squareup.retrofit2:retrofit:2.4.0'
-    implementation 'com.squareup.retrofit2:converter-moshi:2.4.0'
-    implementation 'com.squareup.retrofit2:adapter-rxjava2:2.4.0'
+    implementation 'com.squareup.retrofit2:retrofit:2.5.0'
+    implementation 'com.squareup.retrofit2:converter-moshi:2.5.0'
+    implementation 'com.squareup.retrofit2:adapter-rxjava2:2.5.0'
 
     // https://github.com/square/okhttp
-    implementation 'com.squareup.okhttp3:logging-interceptor:3.10.0'
+    implementation 'com.squareup.okhttp3:logging-interceptor:3.12.0'
 
     //    https://github.com/aNNiMON/Lightweight-Stream-API
-    implementation 'com.annimon:stream:1.2.0'
+    implementation 'com.annimon:stream:1.2.1'
 
     //    https://github.com/bumptech/glide
     implementation 'com.github.bumptech.glide:glide:4.8.0'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.8.0'
 
     //    https://github.com/ReactiveX/RxJava
-    implementation 'io.reactivex.rxjava2:rxjava:2.1.16'
+    implementation 'io.reactivex.rxjava2:rxjava:2.2.4'
 
     //    https://github.com/ReactiveX/RxAndroid
-    implementation 'io.reactivex.rxjava2:rxandroid:2.0.2'
+    implementation 'io.reactivex.rxjava2:rxandroid:2.1.0'
 
     //    https://github.com/google/flexbox-layout
     implementation 'com.google.android:flexbox:1.0.0'
@@ -64,13 +64,13 @@ dependencies {
     implementation 'commons-io:commons-io:2.6'
 
     //    https://github.com/willowtreeapps/Hyperion-Android
-    debugImplementation 'com.willowtreeapps.hyperion:hyperion-core:0.9.23'
-    debugImplementation 'com.willowtreeapps.hyperion:hyperion-attr:0.9.23'
-    debugImplementation 'com.willowtreeapps.hyperion:hyperion-phoenix:0.9.23'
-    debugImplementation 'com.willowtreeapps.hyperion:hyperion-crash:0.9.23'
-    debugImplementation 'com.willowtreeapps.hyperion:hyperion-shared-preferences:0.9.23'
-    debugImplementation 'com.willowtreeapps.hyperion:hyperion-geiger-counter:0.9.23'
-    debugImplementation 'com.willowtreeapps.hyperion:hyperion-timber:0.9.23'
+//    debugImplementation 'com.willowtreeapps.hyperion:hyperion-core:0.9.23'
+//    debugImplementation 'com.willowtreeapps.hyperion:hyperion-attr:0.9.23'
+//    debugImplementation 'com.willowtreeapps.hyperion:hyperion-phoenix:0.9.23'
+//    debugImplementation 'com.willowtreeapps.hyperion:hyperion-crash:0.9.23'
+//    debugImplementation 'com.willowtreeapps.hyperion:hyperion-shared-preferences:0.9.23'
+//    debugImplementation 'com.willowtreeapps.hyperion:hyperion-geiger-counter:0.9.23'
+//    debugImplementation 'com.willowtreeapps.hyperion:hyperion-timber:0.9.23'
 //    debugImplementation 'com.willowtreeapps.hyperion:hyperion-measurement:0.9.23'
 //    debugImplementation 'com.willowtreeapps.hyperion:hyperion-disk:0.9.23'
 //    debugImplementation 'com.willowtreeapps.hyperion:hyperion-recorder:0.9.23'
