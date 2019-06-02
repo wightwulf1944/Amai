@@ -1,7 +1,7 @@
 package i.am.shiro.amai.adapter;
 
-import android.app.Activity;
 import android.support.annotation.NonNull;
+import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,21 +16,17 @@ import java.util.List;
 import i.am.shiro.amai.R;
 import i.am.shiro.amai.model.Image;
 
-/**
- * Created by Shiro on 3/17/2018.
- */
+public final class BookPageAdapter extends RecyclerView.Adapter<BookPageAdapter.ViewHolder> {
 
-public class BookPageAdapter extends RecyclerView.Adapter<BookPageAdapter.ViewHolder> {
-
-    private final Activity parentActivity;
+    private final Fragment parentFragment;
 
     private final LayoutInflater inflater;
 
     private final List<Image> data;
 
-    public BookPageAdapter(Activity parentActivity, List<Image> data) {
-        this.parentActivity = parentActivity;
-        inflater = parentActivity.getLayoutInflater();
+    public BookPageAdapter(Fragment parentFragment, List<Image> data) {
+        this.parentFragment = parentFragment;
+        inflater = parentFragment.getLayoutInflater();
         this.data = data;
     }
 
@@ -67,7 +63,7 @@ public class BookPageAdapter extends RecyclerView.Adapter<BookPageAdapter.ViewHo
             String pageStr = String.valueOf(position + 1);
             pageText.setText(pageStr);
 
-            Glide.with(parentActivity)
+            Glide.with(parentFragment)
                     .load(url)
                     .into(pageImage);
         }

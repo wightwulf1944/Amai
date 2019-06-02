@@ -1,6 +1,5 @@
-package i.am.shiro.amai.activity;
+package i.am.shiro.amai.fragment;
 
-import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -10,66 +9,75 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
 
 import i.am.shiro.amai.R;
-import i.am.shiro.amai.fragment.AboutIntroFragment;
-import i.am.shiro.amai.fragment.InfoDetailFragment;
 import i.am.shiro.amai.model.Book;
 import i.am.shiro.amai.service.DownloadService;
 import io.realm.Realm;
 
 import static android.content.Intent.ACTION_VIEW;
+import static android.support.v4.view.ViewCompat.requireViewById;
 
-public class DetailActivity extends AppCompatActivity {
+public final class DetailFragment extends Fragment {
 
     private static final String BOOK_ID = "bookId";
 
-    @NonNull
-    public static Intent makeIntent(Context context, Book book) {
-        Intent intent = new Intent(context, DetailActivity.class);
-        intent.putExtra(BOOK_ID, book.getId());
-        return intent;
-    }
-
-    private final Realm realm = Realm.getDefaultInstance();
+    private Realm realm;
 
     private Book book;
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-        int bookId = getIntent().getIntExtra(BOOK_ID, -1);
-        book = realm.where(Book.class)
-                .equalTo("id", bookId)
-                .findFirst();
-
-        setContentView(R.layout.activity_detail);
-
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        toolbar.inflateMenu(R.menu.detail_action);
-        toolbar.setOnMenuItemClickListener(this::onMenuItemClick);
-
-        ViewPager viewPager = findViewById(R.id.view_pager);
-        viewPager.setAdapter(new Adapter());
-
-        TabLayout tabLayout = findViewById(R.id.tab_layout);
-        tabLayout.setupWithViewPager(viewPager);
+    @NonNull
+    public static Bundle makeArgs(Book book) {
+        Bundle args = new Bundle();
+        args.putInt(BOOK_ID, book.getId());
+        return args;
     }
 
     @Override
-    protected void onDestroy() {
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        realm = Realm.getDefaultInstance();
+
+        int bookId = getArguments().getInt(BOOK_ID, -1);
+        book = realm.where(Book.class)
+                .equalTo("id", bookId)
+                .findFirst();
+    }
+
+    @Override
+    public void onDestroy() {
         super.onDestroy();
         realm.close();
+    }
+
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        return inflater.inflate(R.layout.fragment_detail, container, false);
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        Toolbar toolbar = requireViewById(view, R.id.toolbar);
+        toolbar.inflateMenu(R.menu.detail_action);
+        toolbar.setOnMenuItemClickListener(this::onMenuItemClick);
+
+        ViewPager viewPager = requireViewById(view, R.id.view_pager);
+        viewPager.setAdapter(new Adapter());
+
+        TabLayout tabLayout = requireViewById(view, R.id.tab_layout);
+        tabLayout.setupWithViewPager(viewPager);
     }
 
     private boolean onMenuItemClick(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.download:
-                DownloadService.start(this, book);
+                DownloadService.start(requireContext(), book);
                 return true;
             case R.id.open_in_browser:
                 invokeOpenInBrowser();
@@ -87,8 +95,16 @@ public class DetailActivity extends AppCompatActivity {
     }
 
     public void invokeReadBook(int pageIndex) {
-        Intent intent = ReadActivity.makeIntent(this, book, pageIndex);
-        startActivity(intent);
+        Bundle args = ReadFragment.makeArgs(book, pageIndex);
+
+        ReadFragment readFragment = new ReadFragment();
+        readFragment.setArguments(args);
+
+        requireFragmentManager()
+                .beginTransaction()
+                .replace(android.R.id.content, readFragment)
+                .addToBackStack(null)
+                .commit();
     }
 
     public Book getBook() {
@@ -98,7 +114,7 @@ public class DetailActivity extends AppCompatActivity {
     private class Adapter extends FragmentPagerAdapter {
 
         private Adapter() {
-            super(getSupportFragmentManager());
+            super(getChildFragmentManager());
         }
 
         @Override

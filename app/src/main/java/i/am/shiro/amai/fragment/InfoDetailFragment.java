@@ -19,22 +19,21 @@ import com.google.android.flexbox.FlexWrap;
 import com.google.android.flexbox.FlexboxLayoutManager;
 
 import i.am.shiro.amai.R;
-import i.am.shiro.amai.activity.DetailActivity;
 import i.am.shiro.amai.adapter.DetailThumbnailAdapter;
 import i.am.shiro.amai.adapter.TagAdapter;
 import i.am.shiro.amai.model.Book;
 
 public class InfoDetailFragment extends Fragment {
 
-    private DetailActivity parentActivity;
+    private DetailFragment parentFragment;
 
     private Book book;
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        parentActivity = (DetailActivity) context;
-        book = parentActivity.getBook();
+        parentFragment = (DetailFragment) getParentFragment();
+        book = parentFragment.getBook();
     }
 
     @Nullable
@@ -62,7 +61,7 @@ public class InfoDetailFragment extends Fragment {
                 .into(coverImage);
 
         DetailThumbnailAdapter adapter = new DetailThumbnailAdapter(this, book.getPageThumbnailImages());
-        adapter.setOnItemClickListener(parentActivity::invokeReadBook);
+        adapter.setOnItemClickListener(parentFragment::invokeReadBook);
 
         RecyclerView previewRecycler = view.findViewById(R.id.previewRecycler);
         previewRecycler.setHasFixedSize(true);

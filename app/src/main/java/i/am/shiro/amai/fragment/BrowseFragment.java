@@ -1,10 +1,7 @@
 package i.am.shiro.amai.fragment;
 
 
-import android.arch.lifecycle.ViewModelProvider;
 import android.arch.lifecycle.ViewModelProviders;
-import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -18,7 +15,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import i.am.shiro.amai.R;
-import i.am.shiro.amai.activity.DetailActivity;
 import i.am.shiro.amai.adapter.BookAdapter;
 import i.am.shiro.amai.model.Book;
 import i.am.shiro.amai.viewmodel.BrowseFragmentModel;
@@ -80,8 +76,14 @@ public class BrowseFragment extends Fragment implements SearchView.OnQueryTextLi
     }
 
     private void invokeViewDetails(Book book) {
-        Context context = getContext();
-        Intent intent = DetailActivity.makeIntent(context, book);
-        startActivity(intent);
+        DetailFragment detailFragment = new DetailFragment();
+        detailFragment.setArguments(DetailFragment.makeArgs(book));
+
+        requireActivity()
+                .getSupportFragmentManager()
+                .beginTransaction()
+                .replace(android.R.id.content, detailFragment)
+                .addToBackStack(null)
+                .commit();
     }
 }
