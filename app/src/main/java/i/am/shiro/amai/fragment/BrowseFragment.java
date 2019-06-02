@@ -35,8 +35,7 @@ public class BrowseFragment extends Fragment implements SearchView.OnQueryTextLi
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
 
-        ViewModelProvider viewModelProvider = ViewModelProviders.of(this);
-        viewModel = viewModelProvider.get(BrowseFragmentModel.class);
+        viewModel = ViewModelProviders.of(this).get(BrowseFragmentModel.class);
 
         if (savedInstanceState == null) {
             viewModel.init();

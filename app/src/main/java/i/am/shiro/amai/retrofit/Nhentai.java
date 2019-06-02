@@ -4,6 +4,7 @@ import android.support.annotation.StringDef;
 
 import java.lang.annotation.Retention;
 
+import i.am.shiro.amai.BuildConfig;
 import i.am.shiro.amai.model.Book;
 import i.am.shiro.amai.model.BookSearchJson;
 import io.reactivex.Single;
@@ -19,11 +20,8 @@ import retrofit2.http.Query;
 import static i.am.shiro.amai.retrofit.Nhentai.SortOrder.DATE;
 import static i.am.shiro.amai.retrofit.Nhentai.SortOrder.POPULAR;
 import static java.lang.annotation.RetentionPolicy.SOURCE;
-import static okhttp3.logging.HttpLoggingInterceptor.Level.BASIC;
-
-/**
- * Created by Shiro on 1/10/2018.
- */
+import static okhttp3.logging.HttpLoggingInterceptor.Level.BODY;
+import static okhttp3.logging.HttpLoggingInterceptor.Level.NONE;
 
 public class Nhentai {
 
@@ -53,7 +51,7 @@ public class Nhentai {
 
     private static OkHttpClient buildClient() {
         HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor()
-                .setLevel(BASIC);
+                .setLevel(BuildConfig.DEBUG ? BODY : NONE);
 
         return new OkHttpClient.Builder()
                 .addInterceptor(interceptor)
