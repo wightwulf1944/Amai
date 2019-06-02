@@ -3,11 +3,11 @@ package i.am.shiro.amai.transformer;
 import i.am.shiro.amai.model.Book;
 import i.am.shiro.amai.model.BookJson;
 import i.am.shiro.amai.model.Image;
-import i.am.shiro.amai.retrofit.Nhentai;
+import i.am.shiro.amai.network.Nhentai;
 import io.realm.RealmList;
 
-import static i.am.shiro.amai.retrofit.Nhentai.IMAGE_BASE_URL;
-import static i.am.shiro.amai.retrofit.Nhentai.THUMBNAIL_BASE_URL;
+import static i.am.shiro.amai.network.Nhentai.IMAGE_BASE_URL;
+import static i.am.shiro.amai.network.Nhentai.THUMBNAIL_BASE_URL;
 
 /**
  * Responsible for transforming BookJson into Book

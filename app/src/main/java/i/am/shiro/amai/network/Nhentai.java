@@ -1,4 +1,4 @@
-package i.am.shiro.amai.retrofit;
+package i.am.shiro.amai.network;
 
 import android.support.annotation.StringDef;
 
@@ -17,8 +17,8 @@ import retrofit2.http.GET;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
 
-import static i.am.shiro.amai.retrofit.Nhentai.SortOrder.DATE;
-import static i.am.shiro.amai.retrofit.Nhentai.SortOrder.POPULAR;
+import static i.am.shiro.amai.network.Nhentai.SortOrder.DATE;
+import static i.am.shiro.amai.network.Nhentai.SortOrder.POPULAR;
 import static java.lang.annotation.RetentionPolicy.SOURCE;
 import static okhttp3.logging.HttpLoggingInterceptor.Level.BODY;
 import static okhttp3.logging.HttpLoggingInterceptor.Level.NONE;
@@ -33,27 +33,20 @@ public class Nhentai {
 
     private static final String API_URL = "https://nhentai.net/api/";
 
-    public static final Api api = buildApi();
-
-    private static Api buildApi() {
-        RxJava2CallAdapterFactory callAdapterFactory = RxJava2CallAdapterFactory.createAsync();
-
-        MoshiConverterFactory converterFactory = MoshiConverterFactory.create();
-
-        return new Retrofit.Builder()
-                .baseUrl(API_URL)
-                .client(buildClient())
-                .addCallAdapterFactory(callAdapterFactory)
-                .addConverterFactory(converterFactory)
-                .build()
-                .create(Api.class);
-    }
+    public static final Api API = new Retrofit.Builder()
+            .baseUrl(API_URL)
+            .client(buildClient())
+            .addCallAdapterFactory(RxJava2CallAdapterFactory.createAsync())
+            .addConverterFactory(MoshiConverterFactory.create())
+            .build()
+            .create(Api.class);
 
     private static OkHttpClient buildClient() {
         HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor()
                 .setLevel(BuildConfig.DEBUG ? BODY : NONE);
 
         return new OkHttpClient.Builder()
+                .addInterceptor(new UserAgentInterceptor())
                 .addInterceptor(interceptor)
                 .build();
     }

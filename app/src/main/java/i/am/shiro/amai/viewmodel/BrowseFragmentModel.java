@@ -9,7 +9,7 @@ import java.util.List;
 
 import i.am.shiro.amai.dao.SearchDao;
 import i.am.shiro.amai.model.Book;
-import i.am.shiro.amai.retrofit.Nhentai;
+import i.am.shiro.amai.network.Nhentai;
 import i.am.shiro.amai.transformer.BookTransformer;
 import io.reactivex.disposables.Disposable;
 import timber.log.Timber;
@@ -55,7 +55,7 @@ public class BrowseFragmentModel extends ViewModel {
         searchDao.notifyLoadingStart();
         searchDao.incrementCurrentPage();
 
-        disposable = Nhentai.api.search(searchDao.getQuery(), searchDao.getCurrentPage(), null)
+        disposable = Nhentai.API.search(searchDao.getQuery(), searchDao.getCurrentPage(), null)
                 .flattenAsObservable(bookSearchJson -> bookSearchJson.results)
                 .map(BookTransformer::transform)
                 .toList()
