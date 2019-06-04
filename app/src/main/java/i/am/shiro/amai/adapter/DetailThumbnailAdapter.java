@@ -19,11 +19,7 @@ import java.util.List;
 import i.am.shiro.amai.R;
 import i.am.shiro.amai.model.Image;
 
-/**
- * Created by Shiro on 2/19/2018.
- * TODO optimize by specifying item dimensions on bind
- */
-
+// TODO optimize by specifying item dimensions on bind
 public class DetailThumbnailAdapter extends Adapter<DetailThumbnailAdapter.ViewHolder> {
 
     private final Fragment parentFragment;

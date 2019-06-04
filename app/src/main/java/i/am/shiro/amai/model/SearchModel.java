@@ -3,10 +3,6 @@ package i.am.shiro.amai.model;
 import io.realm.RealmList;
 import io.realm.RealmObject;
 
-/**
- * Created by Shiro on 3/26/2018.
- */
-
 public class SearchModel extends RealmObject {
 
     private RealmList<Book> results;

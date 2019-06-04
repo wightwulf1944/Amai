@@ -13,10 +13,6 @@ import android.widget.TextView;
 import i.am.shiro.amai.R;
 import i.am.shiro.amai.model.DownloadJob;
 
-/**
- * Created by Shiro on 3/10/2018.
- */
-
 public class DownloadJobAdapter extends ListAdapter<DownloadJob, DownloadJobAdapter.ViewHolder> {
 
     public DownloadJobAdapter() {

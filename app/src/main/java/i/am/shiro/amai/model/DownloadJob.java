@@ -7,10 +7,6 @@ import io.realm.annotations.PrimaryKey;
 
 import static java.lang.String.format;
 
-/**
- * Created by Shiro on 3/17/2018.
- */
-
 public class DownloadJob extends RealmObject {
 
     @PrimaryKey

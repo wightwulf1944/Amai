@@ -10,10 +10,6 @@ import android.view.ViewGroup;
 
 import i.am.shiro.amai.R;
 
-/**
- * Created by Shiro on 1/15/2018.
- */
-
 public class AboutIntroFragment extends Fragment {
 
     @Nullable

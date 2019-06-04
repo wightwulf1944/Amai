@@ -4,10 +4,6 @@ import com.squareup.moshi.Json;
 
 import java.util.List;
 
-/**
- * Created by Shiro on 1/10/2018.
- */
-
 public class BookJson {
     @Json(name = "id") public int id;
     @Json(name = "media_id") public String mediaId;

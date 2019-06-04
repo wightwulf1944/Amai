@@ -15,10 +15,6 @@ import io.realm.RealmList;
 import static i.am.shiro.amai.constant.DownloadStatus.QUEUED;
 import static java.lang.String.valueOf;
 
-/**
- * Created by Shiro on 3/17/2018.
- */
-
 public class DownloadQueueManager implements Closeable {
 
     private final Realm realm = Realm.getDefaultInstance();

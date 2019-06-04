@@ -2,10 +2,6 @@ package i.am.shiro.amai.model;
 
 import io.realm.RealmObject;
 
-/**
- * Created by Shiro on 3/17/2018.
- */
-
 public class DownloadTask extends RealmObject {
 
     private DownloadJob parentJob;

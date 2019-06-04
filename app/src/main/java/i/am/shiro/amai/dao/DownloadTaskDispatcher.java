@@ -18,10 +18,6 @@ import static i.am.shiro.amai.constant.DownloadStatus.FAILED;
 import static i.am.shiro.amai.constant.DownloadStatus.QUEUED;
 import static i.am.shiro.amai.constant.DownloadStatus.RUNNING;
 
-/**
- * Created by Shiro on 3/18/2018.
- */
-
 public class DownloadTaskDispatcher implements Closeable, Iterable<DownloadTask> {
 
     private static final int MAX_TRIES = 3;

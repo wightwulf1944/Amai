@@ -19,10 +19,6 @@ import i.am.shiro.amai.R;
 import i.am.shiro.amai.model.StorageOption;
 import i.am.shiro.amai.util.StorageUtil;
 
-/**
- * Created by Shiro on 1/15/2018.
- */
-
 public class StorageIntroFragment extends Fragment {
 
     private List<StorageOption> storageOptions;

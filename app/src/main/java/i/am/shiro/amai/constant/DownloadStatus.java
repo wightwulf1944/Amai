@@ -6,10 +6,6 @@ import java.lang.annotation.Retention;
 
 import static java.lang.annotation.RetentionPolicy.SOURCE;
 
-/**
- * Created by Shiro on 3/10/2018.
- */
-
 @Retention(SOURCE)
 @IntDef({
         DownloadStatus.QUEUED,

@@ -4,10 +4,6 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
-/**
- * Created by Shiro on 1/8/2018.
- */
-
 public class Preferences {
 
     private static final String IS_FIRST_RUN = "isFirstRun";

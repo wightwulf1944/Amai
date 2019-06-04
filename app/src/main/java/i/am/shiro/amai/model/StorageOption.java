@@ -2,10 +2,6 @@ package i.am.shiro.amai.model;
 
 import java.io.File;
 
-/**
- * Created by Shiro on 1/15/2018.
- */
-
 public class StorageOption {
 
     private final String title;

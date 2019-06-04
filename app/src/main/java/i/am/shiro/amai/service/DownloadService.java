@@ -22,10 +22,6 @@ import timber.log.Timber;
 
 import static i.am.shiro.amai.constant.Constants.DEFAULT_CHANNEL_ID;
 
-/**
- * Created by Shiro on 3/18/2018.
- */
-
 public class DownloadService extends IntentService {
 
     private static final int NOTIFICATION_ID = 1;

@@ -17,10 +17,6 @@ import i.am.shiro.amai.model.StorageOption;
 
 import static com.annimon.stream.Collectors.toList;
 
-/**
- * Created by Shiro on 1/16/2018.
- */
-
 public class StorageUtil {
 
     public static List<StorageOption> getStorageOptions(Context context) {

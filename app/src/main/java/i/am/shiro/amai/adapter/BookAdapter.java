@@ -23,10 +23,6 @@ import i.am.shiro.amai.model.Image;
 
 import static java.lang.String.valueOf;
 
-/**
- * Created by Shiro on 1/6/2018.
- */
-
 public class BookAdapter extends ListAdapter<Book, BookAdapter.ViewHolder> {
 
     private final Fragment parentFragment;

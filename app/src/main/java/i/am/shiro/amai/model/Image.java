@@ -2,10 +2,6 @@ package i.am.shiro.amai.model;
 
 import io.realm.RealmObject;
 
-/**
- * Created by Shiro on 3/5/2018.
- */
-
 public class Image extends RealmObject {
 
     private String url;

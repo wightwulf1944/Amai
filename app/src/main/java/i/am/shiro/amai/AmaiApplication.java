@@ -12,10 +12,6 @@ import timber.log.Timber;
 
 import static i.am.shiro.amai.constant.Constants.DEFAULT_CHANNEL_ID;
 
-/**
- * Created by Shiro on 1/5/2018.
- */
-
 public class AmaiApplication extends Application {
 
     @Override

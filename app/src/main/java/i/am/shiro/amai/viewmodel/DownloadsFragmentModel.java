@@ -12,10 +12,6 @@ import io.realm.Realm;
 import io.realm.RealmResults;
 import timber.log.Timber;
 
-/**
- * Created by Shiro on 2/21/2018.
- */
-
 public class DownloadsFragmentModel extends ViewModel {
 
     private final Realm realm = Realm.getDefaultInstance();

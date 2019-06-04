@@ -18,10 +18,6 @@ import java.util.Set;
 import i.am.shiro.amai.R;
 import i.am.shiro.amai.model.Book;
 
-/**
- * Created by Shiro on 3/10/2018.
- */
-
 public class TagAdapter extends RecyclerView.Adapter<TagAdapter.ViewHolder> {
 
     private final List<String> items = new ArrayList<>();
