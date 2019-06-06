@@ -71,7 +71,8 @@ public class DownloadsFragment extends Fragment implements SearchView.OnQueryTex
         ReadFragment readFragment = new ReadFragment();
         readFragment.setArguments(args);
 
-        requireFragmentManager()
+        requireActivity()
+                .getSupportFragmentManager()
                 .beginTransaction()
                 .replace(android.R.id.content, readFragment)
                 .addToBackStack(null)
