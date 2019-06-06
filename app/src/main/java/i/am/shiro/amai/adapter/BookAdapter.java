@@ -62,9 +62,7 @@ public class BookAdapter extends ListAdapter<Book, BookAdapter.ViewHolder> {
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Book book = getItem(position);
         holder.bind(book);
-        if (onPositionBindListener != null) {
-            onPositionBindListener.accept(position);
-        }
+        onPositionBindListener.accept(position);
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {

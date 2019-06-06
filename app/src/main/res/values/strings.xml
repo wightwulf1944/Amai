@@ -7,4 +7,5 @@
     <string name="storage_note">
         Uninstalling this app will also delete your downloads. Changing the storage option will not transfer your downloads
     </string>
+    <string name="search">Search</string>
 </resources>

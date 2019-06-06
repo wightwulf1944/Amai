@@ -1,9 +1,16 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="i.am.shiro.amai.fragment.QueueFragment">
+    android:orientation="vertical"
+    tools:context=".MainActivity">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?actionBarSize"
+        android:background="?colorPrimary" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recyclerView"
@@ -12,4 +19,4 @@
         android:padding="4dp"
         app:layoutManager="LinearLayoutManager" />
 
-</FrameLayout>
+</LinearLayout>

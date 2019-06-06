@@ -1,11 +1,30 @@
-<android.support.v7.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/recyclerView"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:focusableInTouchMode="true"
     android:orientation="vertical"
-    android:padding="4dp"
-    app:layoutManager="android.support.v7.widget.StaggeredGridLayoutManager"
-    app:spanCount="@integer/span_count"
-    tools:context="i.am.shiro.amai.fragment.BrowseFragment" />
+    tools:context=".MainActivity">
+
+    <i.am.shiro.amai.widget.SearchInput
+        android:id="@+id/searchInput"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:hint="@string/search"
+        android:inputType="text" />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clipToPadding="false"
+        android:orientation="vertical"
+        android:padding="4dp"
+        app:layoutManager="android.support.v7.widget.StaggeredGridLayoutManager"
+        app:spanCount="@integer/span_count"
+        tools:listitem="@layout/item_staggered_book" />
+
+</LinearLayout>
