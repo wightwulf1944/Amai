@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#C24AD0</color>
-    <color name="colorPrimaryDark">#9841CB</color>
-    <color name="colorAccent">#45FFB6</color>
-    <color name="colorPrimary.Foreground">#70C24AD0</color>
-    <color name="colorBackgroundFloating">#424242</color>
+    <color name="primary">#C24AD0</color>
+    <color name="primaryDark">#9841CB</color>
+    <color name="primaryForeground">#70C24AD0</color>
+    <color name="secondary">#45FFB6</color>
+    <color name="backgroundFloating">#424242</color>
 </resources>

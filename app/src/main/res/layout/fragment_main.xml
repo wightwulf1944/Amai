@@ -5,7 +5,7 @@
     android:id="@+id/container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:theme="@style/AppTheme">
+    tools:theme="@style/MainTheme">
 
     <FrameLayout
         android:id="@+id/fragmentContainer"
