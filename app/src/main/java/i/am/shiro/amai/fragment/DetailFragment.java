@@ -31,10 +31,13 @@ public final class DetailFragment extends Fragment {
     private Book book;
 
     @NonNull
-    public static Bundle makeArgs(Book book) {
+    public static Fragment newInstance(Book book) {
         Bundle args = new Bundle();
         args.putInt(BOOK_ID, book.getId());
-        return args;
+
+        Fragment fragment = new DetailFragment();
+        fragment.setArguments(args);
+        return fragment;
     }
 
     @Override
@@ -94,14 +97,11 @@ public final class DetailFragment extends Fragment {
     }
 
     public void invokeReadBook(int pageIndex) {
-        Bundle args = ReadFragment.makeArgs(book, pageIndex);
-
-        ReadFragment readFragment = new ReadFragment();
-        readFragment.setArguments(args);
+        Fragment fragment = ReadFragment.newInstance(book, pageIndex);
 
         requireFragmentManager()
                 .beginTransaction()
-                .replace(android.R.id.content, readFragment)
+                .replace(android.R.id.content, fragment)
                 .addToBackStack(null)
                 .commit();
     }
@@ -127,7 +127,7 @@ public final class DetailFragment extends Fragment {
                 case 0:
                     return new InfoDetailFragment();
                 case 1:
-                    return new AboutIntroFragment();
+                    return new PreviewDetailFragment();
                 default:
                     return null;
             }

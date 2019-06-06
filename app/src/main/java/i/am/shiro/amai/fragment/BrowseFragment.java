@@ -1,6 +1,5 @@
 package i.am.shiro.amai.fragment;
 
-
 import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -14,9 +13,6 @@ import i.am.shiro.amai.adapter.BookAdapter;
 import i.am.shiro.amai.model.Book;
 import i.am.shiro.amai.viewmodel.BrowseFragmentModel;
 
-/**
- * A simple {@link Fragment} subclass.
- */
 public class BrowseFragment extends Fragment implements SearchView.OnQueryTextListener {
 
     private BrowseFragmentModel viewModel;
@@ -71,13 +67,12 @@ public class BrowseFragment extends Fragment implements SearchView.OnQueryTextLi
     }
 
     private void invokeViewDetails(Book book) {
-        DetailFragment detailFragment = new DetailFragment();
-        detailFragment.setArguments(DetailFragment.makeArgs(book));
+        Fragment fragment = DetailFragment.newInstance(book);
 
         requireActivity()
                 .getSupportFragmentManager()
                 .beginTransaction()
-                .replace(android.R.id.content, detailFragment)
+                .replace(android.R.id.content, fragment)
                 .addToBackStack(null)
                 .commit();
     }

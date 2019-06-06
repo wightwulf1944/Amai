@@ -1,6 +1,5 @@
 package i.am.shiro.amai.fragment;
 
-
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -15,9 +14,6 @@ import i.am.shiro.amai.model.DownloadJob;
 import io.realm.Realm;
 import io.realm.RealmResults;
 
-/**
- * A simple {@link Fragment} subclass.
- */
 public class QueueFragment extends Fragment {
 
     private Realm realm;

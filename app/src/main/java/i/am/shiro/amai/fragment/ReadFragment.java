@@ -27,11 +27,14 @@ public class ReadFragment extends Fragment {
     private Realm realm;
 
     @NonNull
-    public static Bundle makeArgs(Book book, int pageIndex) {
-        Bundle intent = new Bundle();
-        intent.putInt(BOOK_ID, book.getId());
-        intent.putInt(PAGE_INDEX, pageIndex);
-        return intent;
+    public static Fragment newInstance(Book book, int pageIndex) {
+        Bundle args = new Bundle();
+        args.putInt(BOOK_ID, book.getId());
+        args.putInt(PAGE_INDEX, pageIndex);
+
+        Fragment fragment = new ReadFragment();
+        fragment.setArguments(args);
+        return fragment;
     }
 
     @Override

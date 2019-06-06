@@ -1,6 +1,5 @@
 package i.am.shiro.amai.fragment;
 
-
 import android.arch.lifecycle.ViewModelProvider;
 import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
@@ -15,9 +14,6 @@ import i.am.shiro.amai.adapter.BookAdapter;
 import i.am.shiro.amai.model.Book;
 import i.am.shiro.amai.viewmodel.DownloadsFragmentModel;
 
-/**
- * A simple {@link Fragment} subclass.
- */
 public class DownloadsFragment extends Fragment implements SearchView.OnQueryTextListener {
 
     private DownloadsFragmentModel viewModel;
@@ -66,15 +62,12 @@ public class DownloadsFragment extends Fragment implements SearchView.OnQueryTex
     }
 
     private void invokeReadBook(Book book) {
-        Bundle args = ReadFragment.makeArgs(book, 0);
-
-        ReadFragment readFragment = new ReadFragment();
-        readFragment.setArguments(args);
+        Fragment fragment = ReadFragment.newInstance(book, 0);
 
         requireActivity()
                 .getSupportFragmentManager()
                 .beginTransaction()
-                .replace(android.R.id.content, readFragment)
+                .replace(android.R.id.content, fragment)
                 .addToBackStack(null)
                 .commit();
     }
