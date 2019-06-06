@@ -12,11 +12,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-
 import com.annimon.stream.function.Consumer;
 import com.annimon.stream.function.IntConsumer;
 import com.bumptech.glide.Glide;
-
 import i.am.shiro.amai.R;
 import i.am.shiro.amai.model.Book;
 import i.am.shiro.amai.model.Image;

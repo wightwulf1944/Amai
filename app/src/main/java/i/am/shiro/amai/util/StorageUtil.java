@@ -4,16 +4,14 @@ import android.content.Context;
 import android.os.Environment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.os.EnvironmentCompat;
-
 import com.annimon.stream.Objects;
 import com.annimon.stream.Stream;
 import com.annimon.stream.function.IndexedFunction;
 import com.annimon.stream.function.Predicate;
+import i.am.shiro.amai.model.StorageOption;
 
 import java.io.File;
 import java.util.List;
-
-import i.am.shiro.amai.model.StorageOption;
 
 import static com.annimon.stream.Collectors.toList;
 

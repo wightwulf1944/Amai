@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -15,7 +14,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textStyle="bold"
-        tools:text="Internal"/>
+        tools:text="Internal" />
 
     <TextView
         android:id="@+id/pathText"
@@ -23,19 +22,19 @@
         android:layout_height="wrap_content"
         android:ellipsize="marquee"
         android:textSize="12sp"
-        tools:text="/data/user/0/i.am.shiro.amai/files"/>
+        tools:text="/data/user/0/i.am.shiro.amai/files" />
 
     <TextView
         android:id="@+id/freeSpaceText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="12sp"
-        tools:text="123 MB free"/>
+        tools:text="123 MB free" />
 
     <ProgressBar
         android:id="@+id/gauge"
         style="?android:attr/progressBarStyleHorizontal"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content" />
 
 </LinearLayout>

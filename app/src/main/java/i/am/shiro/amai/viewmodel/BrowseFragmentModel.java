@@ -4,15 +4,14 @@ import android.arch.lifecycle.LifecycleOwner;
 import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModel;
-
-import java.util.List;
-
 import i.am.shiro.amai.dao.SearchDao;
 import i.am.shiro.amai.model.Book;
 import i.am.shiro.amai.network.Nhentai;
 import i.am.shiro.amai.transformer.BookTransformer;
 import io.reactivex.disposables.Disposable;
 import timber.log.Timber;
+
+import java.util.List;
 
 import static io.reactivex.android.schedulers.AndroidSchedulers.mainThread;
 

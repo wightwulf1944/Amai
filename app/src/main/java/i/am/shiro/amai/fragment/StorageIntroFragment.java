@@ -11,13 +11,12 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-
-import java.util.List;
-
 import i.am.shiro.amai.Preferences;
 import i.am.shiro.amai.R;
 import i.am.shiro.amai.model.StorageOption;
 import i.am.shiro.amai.util.StorageUtil;
+
+import java.util.List;
 
 public class StorageIntroFragment extends Fragment {
 

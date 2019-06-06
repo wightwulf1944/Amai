@@ -13,11 +13,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-
 import com.bumptech.glide.Glide;
 import com.google.android.flexbox.FlexWrap;
 import com.google.android.flexbox.FlexboxLayoutManager;
-
 import i.am.shiro.amai.R;
 import i.am.shiro.amai.adapter.DetailThumbnailAdapter;
 import i.am.shiro.amai.adapter.TagAdapter;

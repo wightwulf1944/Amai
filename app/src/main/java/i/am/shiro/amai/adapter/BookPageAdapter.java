@@ -8,13 +8,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-
 import com.bumptech.glide.Glide;
-
-import java.util.List;
-
 import i.am.shiro.amai.R;
 import i.am.shiro.amai.model.Image;
+
+import java.util.List;
 
 public final class BookPageAdapter extends RecyclerView.Adapter<BookPageAdapter.ViewHolder> {
 

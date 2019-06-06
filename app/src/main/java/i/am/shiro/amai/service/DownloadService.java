@@ -6,19 +6,16 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
-
 import com.bumptech.glide.Glide;
-
-import org.apache.commons.io.FileUtils;
-
-import java.io.File;
-
 import i.am.shiro.amai.R;
 import i.am.shiro.amai.dao.DownloadQueueManager;
 import i.am.shiro.amai.dao.DownloadTaskDispatcher;
 import i.am.shiro.amai.model.Book;
 import i.am.shiro.amai.model.DownloadTask;
+import org.apache.commons.io.FileUtils;
 import timber.log.Timber;
+
+import java.io.File;
 
 import static i.am.shiro.amai.constant.Constants.DEFAULT_CHANNEL_ID;
 

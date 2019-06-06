@@ -12,7 +12,6 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-
 import i.am.shiro.amai.R;
 
 import static android.support.v4.view.ViewCompat.requireViewById;
