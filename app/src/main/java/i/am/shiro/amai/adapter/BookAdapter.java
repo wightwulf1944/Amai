@@ -12,9 +12,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+
 import com.annimon.stream.function.Consumer;
 import com.annimon.stream.function.IntConsumer;
 import com.bumptech.glide.Glide;
+
 import i.am.shiro.amai.R;
 import i.am.shiro.amai.model.Book;
 import i.am.shiro.amai.model.Image;
@@ -62,7 +64,7 @@ public class BookAdapter extends ListAdapter<Book, BookAdapter.ViewHolder> {
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Book book = getItem(position);
         holder.bind(book);
-        onPositionBindListener.accept(position);
+        if (onPositionBindListener != null) onPositionBindListener.accept(position);
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {

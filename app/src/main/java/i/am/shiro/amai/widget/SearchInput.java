@@ -7,11 +7,14 @@ import android.util.AttributeSet;
 import android.view.KeyEvent;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
+
 import com.annimon.stream.function.Consumer;
 
 public final class SearchInput extends AppCompatEditText {
 
     private Consumer<String> onSubmitListener;
+
+    private Consumer<String> onTextChangedListener;
 
     public SearchInput(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -20,6 +23,10 @@ public final class SearchInput extends AppCompatEditText {
 
     public void setOnSubmitListener(Consumer<String> onSubmitListener) {
         this.onSubmitListener = onSubmitListener;
+    }
+
+    public void setOnTextChangedListener(Consumer<String> onTextChangedListener) {
+        this.onTextChangedListener = onTextChangedListener;
     }
 
     @Override
@@ -49,6 +56,11 @@ public final class SearchInput extends AppCompatEditText {
         }
 
         super.onFocusChanged(focused, direction, previouslyFocusedRect);
+    }
+
+    @Override
+    protected void onTextChanged(CharSequence text, int start, int lengthBefore, int lengthAfter) {
+        if (onTextChangedListener != null) onTextChangedListener.accept(text.toString());
     }
 
     private void dismiss() {

@@ -9,6 +9,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
 import i.am.shiro.amai.R;
 import i.am.shiro.amai.adapter.BookAdapter;
 import i.am.shiro.amai.model.Book;
@@ -38,6 +39,11 @@ public class BrowseFragment extends Fragment {
 
         SearchInput searchInput = view.findViewById(R.id.searchInput);
         searchInput.setOnSubmitListener(viewModel::search);
+
+        View clearButton = view.findViewById(R.id.clearButton);
+        clearButton.setOnClickListener(v -> searchInput.setText(null));
+
+        searchInput.setOnTextChangedListener(s -> clearButton.setVisibility(s.isEmpty() ? View.GONE : View.VISIBLE));
 
         BookAdapter adapter = new BookAdapter(this, inflater);
         adapter.setOnItemClickListener(this::invokeViewDetails);
