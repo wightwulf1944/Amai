@@ -2,7 +2,7 @@ package i.am.shiro.amai.widget;
 
 import android.content.Context;
 import android.graphics.Rect;
-import android.support.v7.widget.AppCompatEditText;
+import android.support.design.widget.TextInputEditText;
 import android.util.AttributeSet;
 import android.view.KeyEvent;
 import android.view.inputmethod.EditorInfo;
@@ -10,7 +10,7 @@ import android.view.inputmethod.InputMethodManager;
 
 import com.annimon.stream.function.Consumer;
 
-public final class SearchInput extends AppCompatEditText {
+public final class SearchInput extends TextInputEditText {
 
     private Consumer<String> onSubmitListener;
 

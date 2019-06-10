@@ -7,17 +7,25 @@
     android:orientation="vertical"
     tools:context=".MainActivity">
 
-    <i.am.shiro.amai.widget.SearchInput
-        android:id="@+id/searchInput"
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/textInputLayout"
         android:layout_width="0dp"
-        android:layout_height="56dp"
+        android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
         android:hint="@string/search"
-        android:inputType="text"
         app:layout_constraintEnd_toStartOf="@id/clearButton"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_goneMarginEnd="16dp" />
+        app:layout_goneMarginEnd="16dp">
+
+        <i.am.shiro.amai.widget.SearchInput
+            android:id="@+id/searchInput"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="text" />
+
+    </android.support.design.widget.TextInputLayout>
 
     <ImageButton
         android:id="@+id/clearButton"
@@ -43,7 +51,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/searchInput"
+        app:layout_constraintTop_toBottomOf="@id/textInputLayout"
         app:spanCount="@integer/span_count"
         tools:listitem="@layout/item_staggered_book" />
 
