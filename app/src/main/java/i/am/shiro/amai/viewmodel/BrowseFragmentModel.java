@@ -1,9 +1,9 @@
 package i.am.shiro.amai.viewmodel;
 
-import android.arch.lifecycle.LifecycleOwner;
-import android.arch.lifecycle.MutableLiveData;
-import android.arch.lifecycle.Observer;
-import android.arch.lifecycle.ViewModel;
+import androidx.lifecycle.LifecycleOwner;
+import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModel;
 import i.am.shiro.amai.dao.SearchDao;
 import i.am.shiro.amai.model.Book;
 import i.am.shiro.amai.network.Nhentai;

@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="MainTheme" parent="Theme.Design.NoActionBar">
+    <style name="MainTheme" parent="Theme.MaterialComponents.NoActionBar">
         <item name="colorPrimary">@color/primary</item>
-        <item name="colorPrimaryDark">@color/primaryDark</item>
-        <item name="colorAccent">@color/secondary</item>
+        <item name="colorPrimaryVariant">@color/primaryDark</item>
+        <item name="colorSecondary">@color/secondary</item>
     </style>
 
-    <style name="IntroTheme" parent="Theme.AppCompat.NoActionBar">
+    <style name="IntroTheme" parent="Theme.MaterialComponents.NoActionBar">
         <item name="colorPrimary">?android:attr/windowBackground</item>
         <item name="colorPrimaryDark">?android:attr/windowBackground</item>
         <item name="colorAccent">@color/secondary</item>
     </style>
 
-    <style name="LauncherTheme" parent="Theme.AppCompat.NoActionBar">
+    <style name="LauncherTheme" parent="Theme.MaterialComponents.NoActionBar">
         <item name="colorPrimary">@color/secondary</item>
         <item name="colorPrimaryDark">@color/secondary</item>
         <item name="colorAccent">@color/secondary</item>

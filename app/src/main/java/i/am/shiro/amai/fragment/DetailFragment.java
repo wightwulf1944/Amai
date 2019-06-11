@@ -3,13 +3,13 @@ package i.am.shiro.amai.fragment;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.design.widget.TabLayout;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.view.ViewPager;
-import android.support.v7.widget.Toolbar;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import com.google.android.material.tabs.TabLayout;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentPagerAdapter;
+import androidx.viewpager.widget.ViewPager;
+import androidx.appcompat.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -20,7 +20,7 @@ import i.am.shiro.amai.service.DownloadService;
 import io.realm.Realm;
 
 import static android.content.Intent.ACTION_VIEW;
-import static android.support.v4.view.ViewCompat.requireViewById;
+import static androidx.core.view.ViewCompat.requireViewById;
 
 public final class DetailFragment extends Fragment {
 

@@ -1,10 +1,10 @@
 package i.am.shiro.amai.fragment;
 
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.support.v4.view.ViewPager;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.viewpager.widget.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,7 +13,7 @@ import i.am.shiro.amai.Preferences;
 import i.am.shiro.amai.R;
 import i.am.shiro.amai.adapter.IntroAdapter;
 
-import static android.support.v4.view.ViewCompat.requireViewById;
+import static androidx.core.view.ViewCompat.requireViewById;
 
 public final class IntroFragment extends Fragment {
 

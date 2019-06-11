@@ -1,6 +1,6 @@
 package i.am.shiro.amai.network;
 
-import android.support.annotation.StringDef;
+import androidx.annotation.StringDef;
 import i.am.shiro.amai.BuildConfig;
 import i.am.shiro.amai.model.Book;
 import i.am.shiro.amai.model.BookSearchJson;

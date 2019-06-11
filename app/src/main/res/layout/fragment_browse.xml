@@ -1,23 +1,24 @@
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:focusableInTouchMode="true"
     android:orientation="vertical"
-    tools:context=".MainActivity">
+    android:theme="@style/MainTheme">
 
-    <android.support.design.widget.TextInputLayout
+    <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/textInputLayout"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
+        android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
         android:hint="@string/search"
-        app:layout_constraintEnd_toStartOf="@id/clearButton"
+        app:endIconMode="clear_text"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_goneMarginEnd="16dp">
+        app:layout_constraintTop_toTopOf="parent">
 
         <i.am.shiro.amai.widget.SearchInput
             android:id="@+id/searchInput"
@@ -25,29 +26,16 @@
             android:layout_height="wrap_content"
             android:inputType="text" />
 
-    </android.support.design.widget.TextInputLayout>
+    </com.google.android.material.textfield.TextInputLayout>
 
-    <ImageButton
-        android:id="@+id/clearButton"
-        android:layout_width="48dp"
-        android:layout_height="56dp"
-        android:layout_marginEnd="16dp"
-        android:background="@null"
-        android:contentDescription="@string/clear"
-        android:visibility="gone"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_clear"
-        tools:visibility="visible" />
-
-    <android.support.v7.widget.RecyclerView
+    <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:clipToPadding="false"
         android:orientation="vertical"
         android:padding="4dp"
-        app:layoutManager="android.support.v7.widget.StaggeredGridLayoutManager"
+        app:layoutManager="androidx.recyclerview.widget.StaggeredGridLayoutManager"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -55,4 +43,4 @@
         app:spanCount="@integer/span_count"
         tools:listitem="@layout/item_staggered_book" />
 
-</android.support.constraint.ConstraintLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

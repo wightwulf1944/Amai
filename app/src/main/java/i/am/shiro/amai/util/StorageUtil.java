@@ -2,8 +2,8 @@ package i.am.shiro.amai.util;
 
 import android.content.Context;
 import android.os.Environment;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.os.EnvironmentCompat;
+import androidx.core.content.ContextCompat;
+import androidx.core.os.EnvironmentCompat;
 import com.annimon.stream.Objects;
 import com.annimon.stream.Stream;
 import com.annimon.stream.function.IndexedFunction;

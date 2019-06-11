@@ -16,14 +16,14 @@
         android:hint="@string/search"
         android:inputType="text" />
 
-    <android.support.v7.widget.RecyclerView
+    <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:clipToPadding="false"
         android:orientation="vertical"
         android:padding="4dp"
-        app:layoutManager="android.support.v7.widget.StaggeredGridLayoutManager"
+        app:layoutManager="androidx.recyclerview.widget.StaggeredGridLayoutManager"
         app:spanCount="@integer/span_count" />
 
 </LinearLayout>

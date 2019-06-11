@@ -1,6 +1,6 @@
 package i.am.shiro.amai.dao;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 import i.am.shiro.amai.model.Book;
 import i.am.shiro.amai.model.DownloadJob;
 import i.am.shiro.amai.model.DownloadTask;
