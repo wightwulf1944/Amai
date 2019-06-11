@@ -4,9 +4,11 @@
     <string name="title_browse">Browse</string>
     <string name="title_queue">Queue</string>
 
-    <string name="storage_note">
-        Uninstalling this app will also delete your downloads. Changing the storage option will not transfer your downloads
-    </string>
+    <string name="storage_note_1">Uninstalling this app will also delete your downloads</string>
+    <string name="storage_note_2">Changing the storage option later will not transfer your downloads</string>
     <string name="search">Search</string>
-    <string name="clear">Clear</string>
+    <string name="next">Next</string>
+    <string name="skip">Skip</string>
+    <string name="finish">Finish</string>
+    <string name="choose_a_storage_option">Choose a storage option</string>
 </resources>

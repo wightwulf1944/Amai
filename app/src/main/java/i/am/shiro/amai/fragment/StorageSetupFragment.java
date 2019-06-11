@@ -2,30 +2,35 @@ package i.am.shiro.amai.fragment;
 
 import android.content.Context;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+
+import java.util.List;
+
 import i.am.shiro.amai.Preferences;
 import i.am.shiro.amai.R;
 import i.am.shiro.amai.model.StorageOption;
 import i.am.shiro.amai.util.StorageUtil;
 
-import java.util.List;
+public final class StorageSetupFragment extends Fragment {
 
-public class StorageIntroFragment extends Fragment {
+    private static final String KEY_SELECTED = "selectedIndex";
 
     private List<StorageOption> storageOptions;
 
     private int selectedIndex;
 
     @Override
-    public void onAttach(Context context) {
+    public void onAttach(@NonNull Context context) {
         super.onAttach(context);
         storageOptions = StorageUtil.getStorageOptions(context);
     }
@@ -37,20 +42,22 @@ public class StorageIntroFragment extends Fragment {
             selectedIndex = 0;
             Preferences.setStoragePath(storageOptions.get(0).getPath());
         } else {
-            selectedIndex = savedInstanceState.getInt("selectedIndex", -1);
+            selectedIndex = savedInstanceState.getInt(KEY_SELECTED, -1);
         }
     }
 
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putInt("selectedIndex", selectedIndex);
+        outState.putInt(KEY_SELECTED, selectedIndex);
     }
 
-    @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_intro_storage, container, false);
+        View view = inflater.inflate(R.layout.fragment_storage_setup, container, false);
+
+        view.findViewById(R.id.finishButton)
+                .setOnClickListener(v -> onFinish());
 
         LinearLayout optionsLayout = view.findViewById(R.id.optionsLayout);
 
@@ -84,5 +91,13 @@ public class StorageIntroFragment extends Fragment {
         }
 
         return view;
+    }
+
+    private void onFinish() {
+        FragmentManager fragmentManager = requireFragmentManager();
+        fragmentManager.popBackStack();
+        fragmentManager.beginTransaction()
+                .replace(android.R.id.content, new MainFragment())
+                .commit();
     }
 }

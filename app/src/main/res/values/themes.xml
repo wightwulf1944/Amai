@@ -7,12 +7,6 @@
         <item name="colorSecondary">@color/secondary</item>
     </style>
 
-    <style name="IntroTheme" parent="Theme.MaterialComponents.NoActionBar">
-        <item name="colorPrimary">?android:attr/windowBackground</item>
-        <item name="colorPrimaryDark">?android:attr/windowBackground</item>
-        <item name="colorAccent">@color/secondary</item>
-    </style>
-
     <style name="LauncherTheme" parent="Theme.MaterialComponents.NoActionBar">
         <item name="colorPrimary">@color/secondary</item>
         <item name="colorPrimaryDark">@color/secondary</item>

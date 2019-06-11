@@ -1,12 +1,13 @@
 package i.am.shiro.amai;
 
 import android.os.Bundle;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.appcompat.app.AppCompatActivity;
 
-import i.am.shiro.amai.fragment.IntroFragment;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+
 import i.am.shiro.amai.fragment.MainFragment;
+import i.am.shiro.amai.fragment.WelcomeFragment;
 
 public final class MainActivity extends AppCompatActivity {
 
@@ -25,7 +26,7 @@ public final class MainActivity extends AppCompatActivity {
 
     private Fragment getInitialFragment() {
         if (Preferences.isFirstRun()) {
-            return new IntroFragment();
+            return new WelcomeFragment();
         } else {
             return new MainFragment();
         }
