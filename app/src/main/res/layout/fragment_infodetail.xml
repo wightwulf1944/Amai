@@ -32,7 +32,8 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/titleText"
-            tools:layout_height="300dp" />
+            tools:layout_height="300dp"
+            android:contentDescription="@string/cover_image" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/previewRecycler"

@@ -78,7 +78,7 @@ public class TagAdapter extends RecyclerView.Adapter<TagAdapter.ViewHolder> {
 
     class ViewHolder extends RecyclerView.ViewHolder {
 
-        TextView textView;
+        final TextView textView;
 
         ViewHolder(View itemView) {
             super(itemView);

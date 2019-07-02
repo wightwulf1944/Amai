@@ -2,13 +2,15 @@ package i.am.shiro.amai.widget;
 
 import android.content.Context;
 import android.graphics.Rect;
-import com.google.android.material.textfield.TextInputEditText;
+import android.text.Editable;
 import android.util.AttributeSet;
 import android.view.KeyEvent;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 
+import com.annimon.stream.Optional;
 import com.annimon.stream.function.Consumer;
+import com.google.android.material.textfield.TextInputEditText;
 
 public final class SearchInput extends TextInputEditText {
 
@@ -43,7 +45,9 @@ public final class SearchInput extends TextInputEditText {
     public void onEditorAction(int actionCode) {
         if (actionCode == EditorInfo.IME_ACTION_SEARCH) {
             dismiss();
-            onSubmitListener.accept(getText().toString());
+            Optional.ofNullable(getText())
+                    .map(Editable::toString)
+                    .ifPresent(onSubmitListener);
         }
 
         super.onEditorAction(actionCode);

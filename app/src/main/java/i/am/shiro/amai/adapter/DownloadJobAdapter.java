@@ -54,12 +54,12 @@ public class DownloadJobAdapter extends ListAdapter<DownloadJob, DownloadJobAdap
     private static class DiffCalback extends DiffUtil.ItemCallback<DownloadJob> {
 
         @Override
-        public boolean areItemsTheSame(DownloadJob oldItem, DownloadJob newItem) {
+        public boolean areItemsTheSame(@NonNull DownloadJob oldItem, @NonNull DownloadJob newItem) {
             return oldItem.getBookId() == newItem.getBookId();
         }
 
         @Override
-        public boolean areContentsTheSame(DownloadJob oldItem, DownloadJob newItem) {
+        public boolean areContentsTheSame(@NonNull DownloadJob oldItem, @NonNull DownloadJob newItem) {
             return oldItem.getStatus() == newItem.getStatus();
         }
     }

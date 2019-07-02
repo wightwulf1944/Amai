@@ -3,17 +3,20 @@ package i.am.shiro.amai.fragment;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import com.google.android.material.tabs.TabLayout;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentPagerAdapter;
-import androidx.viewpager.widget.ViewPager;
-import androidx.appcompat.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentPagerAdapter;
+import androidx.viewpager.widget.ViewPager;
+
+import com.google.android.material.tabs.TabLayout;
+
 import i.am.shiro.amai.R;
 import i.am.shiro.amai.model.Book;
 import i.am.shiro.amai.service.DownloadService;
@@ -31,7 +34,7 @@ public final class DetailFragment extends Fragment {
     private Book book;
 
     @NonNull
-    public static Fragment newInstance(Book book) {
+    static Fragment newInstance(Book book) {
         Bundle args = new Bundle();
         args.putInt(BOOK_ID, book.getId());
 
@@ -113,7 +116,7 @@ public final class DetailFragment extends Fragment {
     private class Adapter extends FragmentPagerAdapter {
 
         private Adapter() {
-            super(getChildFragmentManager());
+            super(getChildFragmentManager(), BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
         }
 
         @Override
@@ -121,6 +124,7 @@ public final class DetailFragment extends Fragment {
             return 2;
         }
 
+        @NonNull
         @Override
         public Fragment getItem(int position) {
             switch (position) {
@@ -129,7 +133,7 @@ public final class DetailFragment extends Fragment {
                 case 1:
                     return new PreviewDetailFragment();
                 default:
-                    return null;
+                    throw new IllegalArgumentException();
             }
         }
 

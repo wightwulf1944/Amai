@@ -34,7 +34,7 @@ public class BookAdapter extends ListAdapter<Book, BookAdapter.ViewHolder> {
     private IntConsumer onPositionBindListener;
 
     public BookAdapter(Fragment parentFragment, LayoutInflater inflater) {
-        super(new DiffCalback());
+        super(new DiffCallback());
         this.parentFragment = parentFragment;
         this.inflater = inflater;
         setHasStableIds(true);
@@ -115,15 +115,15 @@ public class BookAdapter extends ListAdapter<Book, BookAdapter.ViewHolder> {
         }
     }
 
-    private static class DiffCalback extends DiffUtil.ItemCallback<Book> {
+    private static class DiffCallback extends DiffUtil.ItemCallback<Book> {
 
         @Override
-        public boolean areItemsTheSame(Book oldItem, Book newItem) {
+        public boolean areItemsTheSame(@NonNull Book oldItem, @NonNull Book newItem) {
             return oldItem.getId() == newItem.getId();
         }
 
         @Override
-        public boolean areContentsTheSame(Book oldItem, Book newItem) {
+        public boolean areContentsTheSame(@NonNull Book oldItem, @NonNull Book newItem) {
             return oldItem.isDownloaded() == newItem.isDownloaded();
         }
     }
