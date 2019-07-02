@@ -99,5 +99,7 @@ public final class StorageSetupFragment extends Fragment {
         fragmentManager.beginTransaction()
                 .replace(android.R.id.content, new MainFragment())
                 .commit();
+
+        Preferences.setFirstRunDone();
     }
 }
