@@ -28,7 +28,7 @@ public class BrowseFragment extends Fragment {
                 .get(BrowseFragmentModel.class);
 
         if (savedInstanceState == null) {
-            viewModel.init();
+            viewModel.onNewInstanceCreated();
         }
     }
 

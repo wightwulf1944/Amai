@@ -1,26 +1,26 @@
 package i.am.shiro.amai.fragment;
 
 import android.os.Bundle;
+import android.view.MenuItem;
+import android.view.View;
+
 import androidx.annotation.IdRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
-import android.view.LayoutInflater;
-import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
+
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+
 import i.am.shiro.amai.R;
 
 import static androidx.core.view.ViewCompat.requireViewById;
 
 public final class MainFragment extends Fragment {
 
-    @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_main, container, false);
+    public MainFragment() {
+        super(R.layout.fragment_main);
     }
 
     @Override

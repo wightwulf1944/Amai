@@ -25,7 +25,7 @@ public class BrowseFragmentModel extends ViewModel {
 
     private Disposable disposable;
 
-    public void init() {
+    public void onNewInstanceCreated() {
         searchDao.newSearch("language:english");
         books.setValue(searchDao.getResults());
         loadNextPage();
