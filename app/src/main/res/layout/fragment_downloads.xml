@@ -1,20 +1,9 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:focusableInTouchMode="true"
-    android:orientation="vertical"
-    tools:context=".MainActivity">
-
-    <i.am.shiro.amai.widget.SearchInput
-        android:id="@+id/searchInput"
-        android:layout_width="match_parent"
-        android:layout_height="56dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
-        android:hint="@string/search"
-        android:inputType="text" />
+    android:focusableInTouchMode="true">
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"
@@ -22,8 +11,27 @@
         android:layout_height="match_parent"
         android:clipToPadding="false"
         android:orientation="vertical"
-        android:padding="4dp"
+        android:paddingStart="4dp"
+        android:paddingTop="64dp"
+        android:paddingEnd="4dp"
+        android:paddingBottom="8dp"
         app:layoutManager="androidx.recyclerview.widget.StaggeredGridLayoutManager"
-        app:spanCount="@integer/span_count" />
+        app:spanCount="@integer/span_count"
+        tools:listitem="@layout/item_staggered_book" />
 
-</LinearLayout>
+    <i.am.shiro.amai.widget.SearchInput
+        android:id="@+id/searchInput"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="16dp"
+        android:background="@drawable/bg_floating"
+        android:elevation="4dp"
+        android:hint="@string/search"
+        android:inputType="text"
+        android:padding="8dp"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp" />
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

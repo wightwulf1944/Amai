@@ -5,4 +5,6 @@
     <color name="primaryForeground">#70C24AD0</color>
     <color name="secondary">#45FFB6</color>
     <color name="backgroundFloating">#424242</color>
+
+    <color name="colorSurface_elevated4dp">#272727</color>
 </resources>

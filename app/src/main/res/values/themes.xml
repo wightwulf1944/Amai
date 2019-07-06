@@ -4,7 +4,7 @@
     <style name="MainTheme" parent="Theme.MaterialComponents.NoActionBar">
         <item name="colorPrimary">@color/primary</item>
         <item name="colorPrimaryVariant">@color/primaryDark</item>
-        <item name="colorSecondary">@color/secondary</item>
+        <item name="colorSecondary">@color/primary</item>
     </style>
 
     <style name="LauncherTheme" parent="Theme.MaterialComponents.NoActionBar">
