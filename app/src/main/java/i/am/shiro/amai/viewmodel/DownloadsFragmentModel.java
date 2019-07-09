@@ -4,12 +4,13 @@ import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModel;
+
+import java.util.List;
+
 import i.am.shiro.amai.model.Book;
 import io.realm.Realm;
 import io.realm.RealmResults;
 import timber.log.Timber;
-
-import java.util.List;
 
 public class DownloadsFragmentModel extends ViewModel {
 

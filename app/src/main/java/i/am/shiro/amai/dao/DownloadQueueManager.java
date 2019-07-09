@@ -1,5 +1,9 @@
 package i.am.shiro.amai.dao;
 
+import org.apache.commons.io.FilenameUtils;
+
+import java.io.Closeable;
+
 import i.am.shiro.amai.Preferences;
 import i.am.shiro.amai.model.Book;
 import i.am.shiro.amai.model.DownloadJob;
@@ -7,9 +11,6 @@ import i.am.shiro.amai.model.DownloadTask;
 import i.am.shiro.amai.model.Image;
 import io.realm.Realm;
 import io.realm.RealmList;
-import org.apache.commons.io.FilenameUtils;
-
-import java.io.Closeable;
 
 import static i.am.shiro.amai.constant.DownloadStatus.QUEUED;
 import static java.lang.String.valueOf;

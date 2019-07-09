@@ -1,13 +1,13 @@
 package i.am.shiro.amai.dao;
 
+import java.io.Closeable;
+import java.util.HashSet;
+import java.util.List;
+
 import i.am.shiro.amai.model.Book;
 import i.am.shiro.amai.model.SearchModel;
 import io.realm.Realm;
 import io.realm.RealmList;
-
-import java.io.Closeable;
-import java.util.HashSet;
-import java.util.List;
 
 public class SearchDao implements Closeable {
 

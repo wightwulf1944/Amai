@@ -1,6 +1,10 @@
 package i.am.shiro.amai.dao;
 
 import androidx.annotation.NonNull;
+
+import java.io.Closeable;
+import java.util.Iterator;
+
 import i.am.shiro.amai.model.Book;
 import i.am.shiro.amai.model.DownloadJob;
 import i.am.shiro.amai.model.DownloadTask;
@@ -9,10 +13,10 @@ import io.realm.Realm;
 import io.realm.RealmList;
 import timber.log.Timber;
 
-import java.io.Closeable;
-import java.util.Iterator;
-
-import static i.am.shiro.amai.constant.DownloadStatus.*;
+import static i.am.shiro.amai.constant.DownloadStatus.DONE;
+import static i.am.shiro.amai.constant.DownloadStatus.FAILED;
+import static i.am.shiro.amai.constant.DownloadStatus.QUEUED;
+import static i.am.shiro.amai.constant.DownloadStatus.RUNNING;
 
 public class DownloadTaskDispatcher implements Closeable, Iterable<DownloadTask> {
 

@@ -1,21 +1,24 @@
 package i.am.shiro.amai.adapter;
 
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageView;
+
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.constraintlayout.widget.ConstraintSet;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.RecyclerView.Adapter;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ImageView;
+
 import com.annimon.stream.function.Consumer;
 import com.bumptech.glide.Glide;
-import i.am.shiro.amai.R;
-import i.am.shiro.amai.model.Image;
 
 import java.util.List;
+
+import i.am.shiro.amai.R;
+import i.am.shiro.amai.model.Image;
 
 // TODO optimize by specifying item dimensions on bind
 public class DetailThumbnailAdapter extends Adapter<DetailThumbnailAdapter.ViewHolder> {

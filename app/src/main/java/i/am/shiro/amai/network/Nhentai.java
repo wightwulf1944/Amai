@@ -1,6 +1,9 @@
 package i.am.shiro.amai.network;
 
 import androidx.annotation.StringDef;
+
+import java.lang.annotation.Retention;
+
 import i.am.shiro.amai.BuildConfig;
 import i.am.shiro.amai.model.Book;
 import i.am.shiro.amai.model.BookSearchJson;
@@ -13,8 +16,6 @@ import retrofit2.converter.moshi.MoshiConverterFactory;
 import retrofit2.http.GET;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
-
-import java.lang.annotation.Retention;
 
 import static i.am.shiro.amai.network.Nhentai.SortOrder.DATE;
 import static i.am.shiro.amai.network.Nhentai.SortOrder.POPULAR;

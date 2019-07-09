@@ -1,20 +1,23 @@
 package i.am.shiro.amai.adapter;
 
 import android.content.Context;
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.google.android.flexbox.FlexboxLayoutManager;
-import i.am.shiro.amai.R;
-import i.am.shiro.amai.model.Book;
 
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
+import i.am.shiro.amai.R;
+import i.am.shiro.amai.model.Book;
 
 public class TagAdapter extends RecyclerView.Adapter<TagAdapter.ViewHolder> {
 

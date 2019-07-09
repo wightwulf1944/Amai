@@ -4,7 +4,9 @@ import android.app.Application;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.os.Build;
+
 import androidx.annotation.NonNull;
+
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
 import timber.log.Timber;

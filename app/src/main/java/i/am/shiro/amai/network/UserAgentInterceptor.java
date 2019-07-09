@@ -1,11 +1,11 @@
 package i.am.shiro.amai.network;
 
+import java.io.IOException;
+
 import i.am.shiro.amai.BuildConfig;
 import okhttp3.Interceptor;
 import okhttp3.Request;
 import okhttp3.Response;
-
-import java.io.IOException;
 
 final class UserAgentInterceptor implements Interceptor {
 
