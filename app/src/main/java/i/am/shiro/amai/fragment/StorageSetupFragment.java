@@ -2,9 +2,7 @@ package i.am.shiro.amai.fragment;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -28,6 +26,10 @@ public final class StorageSetupFragment extends Fragment {
     private List<StorageOption> storageOptions;
 
     private int selectedIndex;
+
+    public StorageSetupFragment() {
+        super(R.layout.fragment_storage_setup);
+    }
 
     @Override
     public void onAttach(@NonNull Context context) {
@@ -53,9 +55,7 @@ public final class StorageSetupFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_storage_setup, container, false);
-
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         view.findViewById(R.id.finishButton)
                 .setOnClickListener(v -> onFinish());
 
@@ -65,7 +65,8 @@ public final class StorageSetupFragment extends Fragment {
             StorageOption storageOption = storageOptions.get(i);
             int index = i;
 
-            View storageOptionView = inflater.inflate(R.layout.item_storage_option, optionsLayout, false);
+            View storageOptionView = getLayoutInflater()
+                    .inflate(R.layout.item_storage_option, optionsLayout, false);
             storageOptionView.setSelected(selectedIndex == i);
             storageOptionView.setOnClickListener(v -> {
                 optionsLayout.dispatchSetSelected(false);
@@ -89,8 +90,6 @@ public final class StorageSetupFragment extends Fragment {
 
             optionsLayout.addView(storageOptionView);
         }
-
-        return view;
     }
 
     private void onFinish() {

@@ -1,20 +1,20 @@
 package i.am.shiro.amai.fragment;
 
 import android.os.Bundle;
+import android.view.View;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.PagerSnapHelper;
 import androidx.recyclerview.widget.RecyclerView;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
+
+import java.util.Objects;
+
 import i.am.shiro.amai.R;
 import i.am.shiro.amai.adapter.BookPageAdapter;
 import i.am.shiro.amai.model.Book;
 import io.realm.Realm;
-
-import java.util.Objects;
 
 import static androidx.core.view.ViewCompat.requireViewById;
 
@@ -26,8 +26,12 @@ public class ReadFragment extends Fragment {
 
     private Realm realm;
 
+    public ReadFragment() {
+        super(R.layout.fragment_read);
+    }
+
     @NonNull
-    public static Fragment newInstance(Book book, int pageIndex) {
+    static Fragment newInstance(Book book, int pageIndex) {
         Bundle args = new Bundle();
         args.putInt(BOOK_ID, book.getId());
         args.putInt(PAGE_INDEX, pageIndex);
@@ -47,12 +51,6 @@ public class ReadFragment extends Fragment {
     public void onDestroy() {
         super.onDestroy();
         realm.close();
-    }
-
-    @Nullable
-    @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_read, container, false);
     }
 
     @Override

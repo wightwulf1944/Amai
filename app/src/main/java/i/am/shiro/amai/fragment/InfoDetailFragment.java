@@ -2,20 +2,21 @@ package i.am.shiro.amai.fragment;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.constraintlayout.widget.ConstraintSet;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
+
 import com.bumptech.glide.Glide;
 import com.google.android.flexbox.FlexWrap;
 import com.google.android.flexbox.FlexboxLayoutManager;
+
 import i.am.shiro.amai.R;
 import i.am.shiro.amai.adapter.DetailThumbnailAdapter;
 import i.am.shiro.amai.adapter.TagAdapter;
@@ -27,6 +28,10 @@ public class InfoDetailFragment extends Fragment {
 
     private Book book;
 
+    public InfoDetailFragment() {
+        super(R.layout.fragment_infodetail);
+    }
+
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
@@ -34,11 +39,8 @@ public class InfoDetailFragment extends Fragment {
         book = parentFragment.getBook();
     }
 
-    @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_infodetail, container, false);
-
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         TextView titleText = view.findViewById(R.id.titleText);
         titleText.setText(book.getTitle());
 
@@ -74,7 +76,5 @@ public class InfoDetailFragment extends Fragment {
         tagRecycler.setAdapter(tagAdapter);
         tagRecycler.setLayoutManager(layoutManager);
         tagRecycler.setHasFixedSize(true);
-
-        return view;
     }
 }

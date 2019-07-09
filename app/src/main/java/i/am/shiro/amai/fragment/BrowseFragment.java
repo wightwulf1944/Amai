@@ -1,14 +1,13 @@
 package i.am.shiro.amai.fragment;
 
-import androidx.lifecycle.ViewModelProviders;
 import android.os.Bundle;
+import android.view.View;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.RecyclerView;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 
 import i.am.shiro.amai.R;
 import i.am.shiro.amai.adapter.BookAdapter;
@@ -19,6 +18,10 @@ import i.am.shiro.amai.widget.SearchInput;
 public class BrowseFragment extends Fragment {
 
     private BrowseFragmentModel viewModel;
+
+    public BrowseFragment() {
+        super(R.layout.fragment_browse);
+    }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -32,15 +35,12 @@ public class BrowseFragment extends Fragment {
         }
     }
 
-    @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_browse, container, false);
-
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         SearchInput searchInput = view.findViewById(R.id.searchInput);
         searchInput.setOnSubmitListener(viewModel::search);
 
-        BookAdapter adapter = new BookAdapter(this, inflater);
+        BookAdapter adapter = new BookAdapter(this, getLayoutInflater());
         adapter.setOnItemClickListener(this::invokeViewDetails);
         adapter.setOnPositionBindListener(viewModel::onPositionBind);
 
@@ -49,8 +49,6 @@ public class BrowseFragment extends Fragment {
         recyclerView.setAdapter(adapter);
 
         viewModel.observeBooks(this, adapter::submitList);
-
-        return view;
     }
 
     private void invokeViewDetails(Book book) {
