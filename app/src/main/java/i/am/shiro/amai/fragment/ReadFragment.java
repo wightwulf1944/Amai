@@ -7,13 +7,13 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.PagerSnapHelper;
-import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.Objects;
 
 import i.am.shiro.amai.R;
 import i.am.shiro.amai.adapter.BookPageAdapter;
 import i.am.shiro.amai.model.Book;
+import i.am.shiro.amai.widget.PageRecyclerView;
 import io.realm.Realm;
 
 import static androidx.core.view.ViewCompat.requireViewById;
@@ -60,10 +60,11 @@ public class ReadFragment extends Fragment {
 
         BookPageAdapter adapter = new BookPageAdapter(this, book.getPageImages());
 
-        RecyclerView pageRecycler = requireViewById(view, R.id.pageRecycler);
+        PageRecyclerView pageRecycler = requireViewById(view, R.id.pageRecycler);
         pageRecycler.setHasFixedSize(true);
         pageRecycler.scrollToPosition(pageIndex);
         pageRecycler.setAdapter(adapter);
+        pageRecycler.requestFocus();
 
         PagerSnapHelper pagerSnapHelper = new PagerSnapHelper();
         pagerSnapHelper.attachToRecyclerView(pageRecycler);
