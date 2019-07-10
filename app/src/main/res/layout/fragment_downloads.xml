@@ -32,6 +32,7 @@
         android:inputType="text"
         android:padding="8dp"
         android:paddingStart="16dp"
-        android:paddingEnd="16dp" />
+        android:paddingEnd="16dp"
+        app:layout_behavior=".widget.TopFloatingBehavior" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
