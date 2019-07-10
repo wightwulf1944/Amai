@@ -20,6 +20,7 @@ public final class PageRecyclerView extends RecyclerView {
         super(context, attrs);
     }
 
+    // TODO it might be possible to improve this by using postDelayed()
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         Runnable eventHandler;
