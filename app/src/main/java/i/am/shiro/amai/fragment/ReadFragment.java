@@ -1,5 +1,6 @@
 package i.am.shiro.amai.fragment;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.view.View;
 
@@ -16,6 +17,7 @@ import i.am.shiro.amai.model.Book;
 import i.am.shiro.amai.widget.PageRecyclerView;
 import io.realm.Realm;
 
+import static android.view.WindowManager.LayoutParams.FLAG_FULLSCREEN;
 import static androidx.core.view.ViewCompat.requireViewById;
 
 public class ReadFragment extends Fragment {
@@ -39,6 +41,22 @@ public class ReadFragment extends Fragment {
         Fragment fragment = new ReadFragment();
         fragment.setArguments(args);
         return fragment;
+    }
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        requireActivity()
+                .getWindow()
+                .addFlags(FLAG_FULLSCREEN);
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        requireActivity()
+                .getWindow()
+                .clearFlags(FLAG_FULLSCREEN);
     }
 
     @Override
