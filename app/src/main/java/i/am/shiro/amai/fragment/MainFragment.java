@@ -26,10 +26,17 @@ public final class MainFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         BottomNavigationView navigation = requireViewById(view, R.id.navigation);
+        navigation.setSelectedItemId(R.id.navigation_browse);
         navigation.setOnNavigationItemSelectedListener(this::onNavigationItemSelected);
 
-        if (savedInstanceState == null) {
-            navigation.setSelectedItemId(R.id.navigation_browse);
+        FragmentManager childFragmentManager = getChildFragmentManager();
+        if (childFragmentManager.findFragmentById(R.id.fragmentContainer) == null) {
+            BrowseFragment initialFragment = new BrowseFragment();
+            String fragmentTag = BrowseFragment.class.getSimpleName();
+            childFragmentManager.beginTransaction()
+                    .add(R.id.fragmentContainer, initialFragment, fragmentTag)
+                    .setPrimaryNavigationFragment(initialFragment)
+                    .commit();
         }
     }
 
@@ -57,7 +64,7 @@ public final class MainFragment extends Fragment {
         fragmentTransaction.setPrimaryNavigationFragment(attachingFragment);
 
         fragmentTransaction.setReorderingAllowed(true);
-        fragmentTransaction.commitNowAllowingStateLoss();
+        fragmentTransaction.commit();
         return true;
     }
 
