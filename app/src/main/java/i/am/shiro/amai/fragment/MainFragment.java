@@ -32,7 +32,7 @@ public final class MainFragment extends Fragment {
         FragmentManager childFragmentManager = getChildFragmentManager();
         if (childFragmentManager.findFragmentById(R.id.fragmentContainer) == null) {
             BrowseFragment initialFragment = new BrowseFragment();
-            String fragmentTag = BrowseFragment.class.getSimpleName();
+            String fragmentTag = BrowseFragment.class.getName();
             childFragmentManager.beginTransaction()
                     .add(R.id.fragmentContainer, initialFragment, fragmentTag)
                     .setPrimaryNavigationFragment(initialFragment)
@@ -40,6 +40,7 @@ public final class MainFragment extends Fragment {
         }
     }
 
+    // TODO explore alternative approach using replace() and Fragment.SavedState
     private boolean onNavigationItemSelected(@NonNull MenuItem item) {
         FragmentManager fragmentManager = getChildFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
@@ -71,11 +72,11 @@ public final class MainFragment extends Fragment {
     private String getFragmentTag(@IdRes int itemId) {
         switch (itemId) {
             case R.id.navigation_downloads:
-                return DownloadsFragment.class.getSimpleName();
+                return DownloadsFragment.class.getName();
             case R.id.navigation_browse:
-                return BrowseFragment.class.getSimpleName();
+                return BrowseFragment.class.getName();
             case R.id.navigation_queue:
-                return QueueFragment.class.getSimpleName();
+                return QueueFragment.class.getName();
             default:
                 throw new IllegalArgumentException("No corresponding fragment for given itemId");
         }
