@@ -32,6 +32,8 @@ public class BookAdapter extends ListAdapter<Book, BookAdapter.ViewHolder> {
 
     private Consumer<Book> onItemClickListener;
 
+    private Consumer<Book> onItemLongClickListener;
+
     private IntConsumer onPositionBindListener;
 
     public BookAdapter(Fragment parentFragment, LayoutInflater inflater) {
@@ -43,6 +45,10 @@ public class BookAdapter extends ListAdapter<Book, BookAdapter.ViewHolder> {
 
     public void setOnItemClickListener(Consumer<Book> listener) {
         onItemClickListener = listener;
+    }
+
+    public void setOnItemLongClickListener(Consumer<Book> listener) {
+        onItemLongClickListener = listener;
     }
 
     public void setOnPositionBindListener(IntConsumer listener) {
@@ -87,10 +93,19 @@ public class BookAdapter extends ListAdapter<Book, BookAdapter.ViewHolder> {
             titleText = view.findViewById(R.id.titleText);
             pageText = view.findViewById(R.id.pageText);
             view.setOnClickListener(v -> onItemClick());
+            view.setOnLongClickListener(v -> onItemLongClick());
         }
 
         private void onItemClick() {
             onItemClickListener.accept(book);
+        }
+
+        private boolean onItemLongClick() {
+            if (onItemLongClickListener != null) {
+                onItemLongClickListener.accept(book);
+                return true;
+            }
+            return false;
         }
 
         private void bind(Book book) {

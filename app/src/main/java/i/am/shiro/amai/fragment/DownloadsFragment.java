@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import i.am.shiro.amai.R;
 import i.am.shiro.amai.adapter.BookAdapter;
+import i.am.shiro.amai.fragment.dialog.DeleteBookDialogFragment;
 import i.am.shiro.amai.model.Book;
 import i.am.shiro.amai.viewmodel.DownloadsFragmentModel;
 import i.am.shiro.amai.widget.SearchInput;
@@ -29,6 +30,7 @@ public class DownloadsFragment extends Fragment {
 
         BookAdapter adapter = new BookAdapter(this, getLayoutInflater());
         adapter.setOnItemClickListener(this::invokeReadBook);
+        adapter.setOnItemLongClickListener(this::invokeDeleteBook);
 
         RecyclerView recyclerView = view.findViewById(R.id.recyclerView);
         recyclerView.setHasFixedSize(true);
@@ -48,5 +50,11 @@ public class DownloadsFragment extends Fragment {
                 .replace(android.R.id.content, fragment)
                 .addToBackStack(null)
                 .commit();
+    }
+
+    private void invokeDeleteBook(Book book) {
+        DeleteBookDialogFragment dialogFragment = new DeleteBookDialogFragment();
+        dialogFragment.setArguments(book);
+        dialogFragment.show(getChildFragmentManager(), null);
     }
 }

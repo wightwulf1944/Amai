@@ -19,4 +19,7 @@
     <string name="cover_image">cover image</string>
     <string name="amai_logo">Amai logo</string>
     <string name="page_image">page image</string>
+    <string name="dialog_title_delete">Delete this download?</string>
+    <string name="delete">Delete</string>
+    <string name="cancel">Cancel</string>
 </resources>

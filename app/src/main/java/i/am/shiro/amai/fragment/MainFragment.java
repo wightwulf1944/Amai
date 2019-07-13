@@ -40,7 +40,6 @@ public final class MainFragment extends Fragment {
         }
     }
 
-    // TODO explore alternative approach using replace() and Fragment.SavedState
     private boolean onNavigationItemSelected(@NonNull MenuItem item) {
         FragmentManager fragmentManager = getChildFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();

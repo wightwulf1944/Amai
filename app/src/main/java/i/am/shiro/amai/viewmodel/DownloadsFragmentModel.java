@@ -33,6 +33,13 @@ public class DownloadsFragmentModel extends ViewModel {
         books.observe(owner, observer);
     }
 
+    public void onBookDelete(int bookId) {
+        realm.executeTransaction(r -> r.where(Book.class)
+                .equalTo("id", bookId)
+                .findAll()
+                .deleteAllFromRealm());
+    }
+
     @Override
     protected void onCleared() {
         super.onCleared();
