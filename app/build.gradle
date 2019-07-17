@@ -24,6 +24,8 @@ android {
 }
 
 dependencies {
+    implementation project(":notification")
+
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation 'androidx.appcompat:appcompat:1.0.2'
     implementation 'androidx.vectordrawable:vectordrawable:1.0.1'
