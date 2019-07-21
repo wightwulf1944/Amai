@@ -9,8 +9,8 @@ import java.util.List;
 
 import i.am.shiro.amai.dao.SearchDao;
 import i.am.shiro.amai.model.Book;
-import i.am.shiro.amai.network.Nhentai;
 import i.am.shiro.amai.transformer.BookTransformer;
+import i.am.shiro.amai.network.Nhentai;
 import io.reactivex.disposables.Disposable;
 import timber.log.Timber;
 
