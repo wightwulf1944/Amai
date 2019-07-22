@@ -5,17 +5,24 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.constraintlayout.widget.ConstraintSet;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentPagerAdapter;
-import androidx.viewpager.widget.ViewPager;
+import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.material.tabs.TabLayout;
+import com.bumptech.glide.Glide;
+import com.google.android.flexbox.FlexWrap;
+import com.google.android.flexbox.FlexboxLayoutManager;
 
 import i.am.shiro.amai.R;
+import i.am.shiro.amai.adapter.DetailThumbnailAdapter;
+import i.am.shiro.amai.adapter.TagAdapter;
 import i.am.shiro.amai.model.Book;
 import i.am.shiro.amai.service.DownloadService;
 import io.realm.Realm;
@@ -53,8 +60,8 @@ public final class DetailFragment extends Fragment {
 
         int bookId = getArguments().getInt(BOOK_ID, -1);
         book = realm.where(Book.class)
-                .equalTo("id", bookId)
-                .findFirst();
+            .equalTo("id", bookId)
+            .findFirst();
     }
 
     @Override
@@ -69,11 +76,47 @@ public final class DetailFragment extends Fragment {
         toolbar.inflateMenu(R.menu.detail_action);
         toolbar.setOnMenuItemClickListener(this::onMenuItemClick);
 
-        ViewPager viewPager = requireViewById(view, R.id.view_pager);
-        viewPager.setAdapter(new Adapter());
+        TextView titleText = view.findViewById(R.id.titleText);
+        titleText.setText(book.getTitle());
 
-        TabLayout tabLayout = requireViewById(view, R.id.tab_layout);
-        tabLayout.setupWithViewPager(viewPager);
+        ConstraintLayout coverImageConstraintLayout = view.findViewById(R.id.constraint_layout);
+
+        String ratioStr = String.format("%s:%s",
+            book.getCoverImage()
+                .getWidth(),
+            book.getCoverImage()
+                .getHeight());
+
+        ConstraintSet constraintSet = new ConstraintSet();
+        constraintSet.clone(coverImageConstraintLayout);
+        constraintSet.setDimensionRatio(R.id.coverImage, ratioStr);
+        constraintSet.applyTo(coverImageConstraintLayout);
+
+        ImageView coverImage = view.findViewById(R.id.coverImage);
+
+        String coverImageUrl = book.getCoverImage()
+            .getUrl();
+
+        Glide.with(this)
+            .load(coverImageUrl)
+            .into(coverImage);
+
+        DetailThumbnailAdapter adapter = new DetailThumbnailAdapter(this, book.getPageThumbnailImages());
+        adapter.setOnItemClickListener(this::invokeReadBook);
+
+        RecyclerView previewRecycler = view.findViewById(R.id.previewRecycler);
+        previewRecycler.setHasFixedSize(true);
+        previewRecycler.setAdapter(adapter);
+
+        TagAdapter tagAdapter = new TagAdapter(book);
+
+        FlexboxLayoutManager layoutManager = new FlexboxLayoutManager(requireContext());
+        layoutManager.setFlexWrap(FlexWrap.WRAP);
+
+        RecyclerView tagRecycler = view.findViewById(R.id.tagRecycler);
+        tagRecycler.setAdapter(tagAdapter);
+        tagRecycler.setLayoutManager(layoutManager);
+        tagRecycler.setHasFixedSize(true);
     }
 
     private boolean onMenuItemClick(MenuItem item) {
@@ -100,51 +143,9 @@ public final class DetailFragment extends Fragment {
         Fragment fragment = ReadFragment.newInstance(book, pageIndex);
 
         requireFragmentManager()
-                .beginTransaction()
-                .replace(android.R.id.content, fragment)
-                .addToBackStack(null)
-                .commit();
-    }
-
-    public Book getBook() {
-        return book;
-    }
-
-    private class Adapter extends FragmentPagerAdapter {
-
-        private Adapter() {
-            super(getChildFragmentManager(), BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
-        }
-
-        @Override
-        public int getCount() {
-            return 2;
-        }
-
-        @NonNull
-        @Override
-        public Fragment getItem(int position) {
-            switch (position) {
-                case 0:
-                    return new InfoDetailFragment();
-                case 1:
-                    return new PreviewDetailFragment();
-                default:
-                    throw new IllegalArgumentException();
-            }
-        }
-
-        @Nullable
-        @Override
-        public CharSequence getPageTitle(int position) {
-            switch (position) {
-                case 0:
-                    return "Info";
-                case 1:
-                    return "Preview";
-                default:
-                    return null;
-            }
-        }
+            .beginTransaction()
+            .replace(android.R.id.content, fragment)
+            .addToBackStack(null)
+            .commit();
     }
 }
