@@ -12,7 +12,7 @@
         android:clipToPadding="false"
         android:orientation="vertical"
         android:paddingStart="4dp"
-        android:paddingTop="64dp"
+        android:paddingTop="60dp"
         android:paddingEnd="4dp"
         android:paddingBottom="8dp"
         app:layoutManager="androidx.recyclerview.widget.StaggeredGridLayoutManager"

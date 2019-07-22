@@ -3,32 +3,27 @@ package i.am.shiro.amai.fragment;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.view.MenuItem;
 import android.view.View;
-import android.widget.ImageView;
+import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.widget.Toolbar;
-import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.constraintlayout.widget.ConstraintSet;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.bumptech.glide.Glide;
-import com.google.android.flexbox.FlexWrap;
-import com.google.android.flexbox.FlexboxLayoutManager;
+import java.util.List;
 
 import i.am.shiro.amai.R;
 import i.am.shiro.amai.adapter.DetailThumbnailAdapter;
-import i.am.shiro.amai.adapter.TagAdapter;
 import i.am.shiro.amai.model.Book;
 import i.am.shiro.amai.service.DownloadService;
 import io.realm.Realm;
 
 import static android.content.Intent.ACTION_VIEW;
 import static androidx.core.view.ViewCompat.requireViewById;
+import static i.am.shiro.amai.util.LayoutUtil.addChild;
 
 public final class DetailFragment extends Fragment {
 
@@ -72,34 +67,21 @@ public final class DetailFragment extends Fragment {
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        Toolbar toolbar = requireViewById(view, R.id.toolbar);
-        toolbar.inflateMenu(R.menu.detail_action);
-        toolbar.setOnMenuItemClickListener(this::onMenuItemClick);
 
-        TextView titleText = view.findViewById(R.id.titleText);
+        requireViewById(view, R.id.button_back)
+            .setOnClickListener(v -> onBackClick());
+
+        requireViewById(view, R.id.button_download)
+            .setOnClickListener(v -> onDownloadClick());
+
+        requireViewById(view, R.id.button_browser)
+            .setOnClickListener(v -> onOpenBrowserClick());
+
+        TextView titleText = requireViewById(view, R.id.titleText);
         titleText.setText(book.getTitle());
 
-        ConstraintLayout coverImageConstraintLayout = view.findViewById(R.id.constraint_layout);
-
-        String ratioStr = String.format("%s:%s",
-            book.getCoverImage()
-                .getWidth(),
-            book.getCoverImage()
-                .getHeight());
-
-        ConstraintSet constraintSet = new ConstraintSet();
-        constraintSet.clone(coverImageConstraintLayout);
-        constraintSet.setDimensionRatio(R.id.coverImage, ratioStr);
-        constraintSet.applyTo(coverImageConstraintLayout);
-
-        ImageView coverImage = view.findViewById(R.id.coverImage);
-
-        String coverImageUrl = book.getCoverImage()
-            .getUrl();
-
-        Glide.with(this)
-            .load(coverImageUrl)
-            .into(coverImage);
+        TextView pagesText = requireViewById(view, R.id.text_pages);
+        pagesText.setText(getString(R.string.pages_format, book.getPageCount()));
 
         DetailThumbnailAdapter adapter = new DetailThumbnailAdapter(this, book.getPageThumbnailImages());
         adapter.setOnItemClickListener(this::invokeReadBook);
@@ -108,38 +90,46 @@ public final class DetailFragment extends Fragment {
         previewRecycler.setHasFixedSize(true);
         previewRecycler.setAdapter(adapter);
 
-        TagAdapter tagAdapter = new TagAdapter(book);
-
-        FlexboxLayoutManager layoutManager = new FlexboxLayoutManager(requireContext());
-        layoutManager.setFlexWrap(FlexWrap.WRAP);
-
-        RecyclerView tagRecycler = view.findViewById(R.id.tagRecycler);
-        tagRecycler.setAdapter(tagAdapter);
-        tagRecycler.setLayoutManager(layoutManager);
-        tagRecycler.setHasFixedSize(true);
+        LinearLayout tagsLayout = requireViewById(view, R.id.layout_tags);
+        addTagGroup(tagsLayout, "Artists", book.getArtistTags());
+        addTagGroup(tagsLayout, "Groups", book.getGroupTags());
+        addTagGroup(tagsLayout, "Parodies", book.getParodyTags());
+        addTagGroup(tagsLayout, "Characters", book.getCharacterTags());
+        addTagGroup(tagsLayout, "Language", book.getLanguageTags());
+        addTagGroup(tagsLayout, "Categories", book.getCategoryTags());
+        addTagGroup(tagsLayout, "Tags", book.getGeneralTags());
     }
 
-    private boolean onMenuItemClick(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.download:
-                DownloadService.start(requireContext(), book);
-                return true;
-            case R.id.open_in_browser:
-                invokeOpenInBrowser();
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
+    private void addTagGroup(ViewGroup tagsLayout, String label, List<String> tags) {
+        if (tags.isEmpty()) return;
+
+        ViewGroup tagGroupLayout = addChild(tagsLayout, R.layout.layout_taggroup);
+
+        TextView labelText = addChild(tagGroupLayout, R.layout.item_label);
+        labelText.setText(label);
+
+        for (String tag : tags) {
+            TextView tagText = addChild(tagGroupLayout, R.layout.item_tag);
+            tagText.setText(tag);
         }
     }
 
-    private void invokeOpenInBrowser() {
+    private void onBackClick() {
+        requireFragmentManager().popBackStack();
+    }
+
+    private void onDownloadClick() {
+        DownloadService.start(requireContext(), book);
+    }
+
+    private void onOpenBrowserClick() {
         String webUrl = book.getWebUrl();
         Uri uri = Uri.parse(webUrl);
         Intent intent = new Intent(ACTION_VIEW, uri);
         startActivity(intent);
     }
 
-    public void invokeReadBook(int pageIndex) {
+    private void invokeReadBook(int pageIndex) {
         Fragment fragment = ReadFragment.newInstance(book, pageIndex);
 
         requireFragmentManager()

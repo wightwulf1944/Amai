@@ -2,8 +2,8 @@ package i.am.shiro.amai.transformer;
 
 import i.am.shiro.amai.model.Book;
 import i.am.shiro.amai.model.Image;
-import i.am.shiro.amai.network.dto.BookJson;
 import i.am.shiro.amai.network.Nhentai;
+import i.am.shiro.amai.network.dto.BookJson;
 import i.am.shiro.amai.network.dto.ImageJson;
 import i.am.shiro.amai.network.dto.TagJson;
 import io.realm.RealmList;
@@ -21,7 +21,7 @@ public class BookTransformer {
         return new Book()
             .setId(json.id)
             .setWebUrl(Nhentai.WEBPAGE_BASE_URL + json.id)
-            .setTitle(json.title.english)
+            .setTitle(json.title.pretty)
             .setPageCount(json.pageCount)
             .setParodyTags(sortedTags.parodyTags)
             .setCharacterTags(sortedTags.characterTags)
