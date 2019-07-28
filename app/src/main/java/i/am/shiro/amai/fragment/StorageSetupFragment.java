@@ -19,6 +19,8 @@ import i.am.shiro.amai.R;
 import i.am.shiro.amai.model.StorageOption;
 import i.am.shiro.amai.util.StorageUtil;
 
+import static i.am.shiro.amai.util.LayoutUtil.addChild;
+
 public final class StorageSetupFragment extends Fragment {
 
     private static final String KEY_SELECTED = "selectedIndex";
@@ -42,7 +44,8 @@ public final class StorageSetupFragment extends Fragment {
         super.onCreate(savedInstanceState);
         if (savedInstanceState == null) {
             selectedIndex = 0;
-            Preferences.setStoragePath(storageOptions.get(0).getPath());
+            Preferences.setStoragePath(storageOptions.get(0)
+                .getPath());
         } else {
             selectedIndex = savedInstanceState.getInt(KEY_SELECTED, -1);
         }
@@ -57,7 +60,7 @@ public final class StorageSetupFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         view.findViewById(R.id.finishButton)
-                .setOnClickListener(v -> onFinish());
+            .setOnClickListener(v -> onFinish());
 
         LinearLayout optionsLayout = view.findViewById(R.id.optionsLayout);
 
@@ -65,8 +68,7 @@ public final class StorageSetupFragment extends Fragment {
             StorageOption storageOption = storageOptions.get(i);
             int index = i;
 
-            View storageOptionView = getLayoutInflater()
-                    .inflate(R.layout.item_storage_option, optionsLayout, false);
+            View storageOptionView = addChild(optionsLayout, R.layout.item_storage_option);
             storageOptionView.setSelected(selectedIndex == i);
             storageOptionView.setOnClickListener(v -> {
                 optionsLayout.dispatchSetSelected(false);
@@ -87,8 +89,6 @@ public final class StorageSetupFragment extends Fragment {
             ProgressBar gauge = storageOptionView.findViewById(R.id.gauge);
             gauge.setMax(storageOption.getTotalSpaceMb());
             gauge.setProgress(storageOption.getUsedSpaceMb());
-
-            optionsLayout.addView(storageOptionView);
         }
     }
 
@@ -96,8 +96,8 @@ public final class StorageSetupFragment extends Fragment {
         FragmentManager fragmentManager = requireFragmentManager();
         fragmentManager.popBackStack();
         fragmentManager.beginTransaction()
-                .replace(android.R.id.content, new MainFragment())
-                .commit();
+            .replace(android.R.id.content, new MainFragment())
+            .commit();
 
         Preferences.setFirstRunDone();
     }

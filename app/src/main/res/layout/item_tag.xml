@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     style="@style/DetailItem"
     android:background="@drawable/bg_item_tag"
-    android:textColor="?android:textColorSecondaryInverse" />
+    android:paddingStart="12dp"
+    android:paddingEnd="12dp"
+    tools:text="Lorem Ipsum" />

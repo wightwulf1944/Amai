@@ -3,25 +3,27 @@ package i.am.shiro.amai.fragment;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentPagerAdapter;
-import androidx.viewpager.widget.ViewPager;
+import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.material.tabs.TabLayout;
+import java.util.List;
 
 import i.am.shiro.amai.R;
+import i.am.shiro.amai.adapter.DetailThumbnailAdapter;
 import i.am.shiro.amai.model.Book;
 import i.am.shiro.amai.service.DownloadService;
 import io.realm.Realm;
 
 import static android.content.Intent.ACTION_VIEW;
 import static androidx.core.view.ViewCompat.requireViewById;
+import static i.am.shiro.amai.util.LayoutUtil.addChild;
 
 public final class DetailFragment extends Fragment {
 
@@ -53,8 +55,8 @@ public final class DetailFragment extends Fragment {
 
         int bookId = getArguments().getInt(BOOK_ID, -1);
         book = realm.where(Book.class)
-                .equalTo("id", bookId)
-                .findFirst();
+            .equalTo("id", bookId)
+            .findFirst();
     }
 
     @Override
@@ -65,86 +67,75 @@ public final class DetailFragment extends Fragment {
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        Toolbar toolbar = requireViewById(view, R.id.toolbar);
-        toolbar.inflateMenu(R.menu.detail_action);
-        toolbar.setOnMenuItemClickListener(this::onMenuItemClick);
 
-        ViewPager viewPager = requireViewById(view, R.id.view_pager);
-        viewPager.setAdapter(new Adapter());
+        requireViewById(view, R.id.button_back)
+            .setOnClickListener(v -> onBackClick());
 
-        TabLayout tabLayout = requireViewById(view, R.id.tab_layout);
-        tabLayout.setupWithViewPager(viewPager);
+        requireViewById(view, R.id.button_download)
+            .setOnClickListener(v -> onDownloadClick());
+
+        requireViewById(view, R.id.button_browser)
+            .setOnClickListener(v -> onOpenBrowserClick());
+
+        TextView titleText = requireViewById(view, R.id.titleText);
+        titleText.setText(book.getTitle());
+
+        TextView pagesText = requireViewById(view, R.id.text_pages);
+        pagesText.setText(getString(R.string.pages_format, book.getPageCount()));
+
+        DetailThumbnailAdapter adapter = new DetailThumbnailAdapter(this, book.getPageThumbnailImages());
+        adapter.setOnItemClickListener(this::invokeReadBook);
+
+        RecyclerView previewRecycler = view.findViewById(R.id.previewRecycler);
+        previewRecycler.setHasFixedSize(true);
+        previewRecycler.setAdapter(adapter);
+
+        LinearLayout tagsLayout = requireViewById(view, R.id.layout_tags);
+        addTagGroup(tagsLayout, "Artists", book.getArtistTags());
+        addTagGroup(tagsLayout, "Groups", book.getGroupTags());
+        addTagGroup(tagsLayout, "Parodies", book.getParodyTags());
+        addTagGroup(tagsLayout, "Characters", book.getCharacterTags());
+        addTagGroup(tagsLayout, "Language", book.getLanguageTags());
+        addTagGroup(tagsLayout, "Categories", book.getCategoryTags());
+        addTagGroup(tagsLayout, "Tags", book.getGeneralTags());
     }
 
-    private boolean onMenuItemClick(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.download:
-                DownloadService.start(requireContext(), book);
-                return true;
-            case R.id.open_in_browser:
-                invokeOpenInBrowser();
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
+    private void addTagGroup(ViewGroup tagsLayout, String label, List<String> tags) {
+        if (tags.isEmpty()) return;
+
+        ViewGroup tagGroupLayout = addChild(tagsLayout, R.layout.layout_taggroup);
+
+        TextView labelText = addChild(tagGroupLayout, R.layout.item_label);
+        labelText.setText(label);
+
+        for (String tag : tags) {
+            TextView tagText = addChild(tagGroupLayout, R.layout.item_tag);
+            tagText.setText(tag);
         }
     }
 
-    private void invokeOpenInBrowser() {
+    private void onBackClick() {
+        requireFragmentManager().popBackStack();
+    }
+
+    private void onDownloadClick() {
+        DownloadService.start(requireContext(), book);
+    }
+
+    private void onOpenBrowserClick() {
         String webUrl = book.getWebUrl();
         Uri uri = Uri.parse(webUrl);
         Intent intent = new Intent(ACTION_VIEW, uri);
         startActivity(intent);
     }
 
-    public void invokeReadBook(int pageIndex) {
+    private void invokeReadBook(int pageIndex) {
         Fragment fragment = ReadFragment.newInstance(book, pageIndex);
 
         requireFragmentManager()
-                .beginTransaction()
-                .replace(android.R.id.content, fragment)
-                .addToBackStack(null)
-                .commit();
-    }
-
-    public Book getBook() {
-        return book;
-    }
-
-    private class Adapter extends FragmentPagerAdapter {
-
-        private Adapter() {
-            super(getChildFragmentManager(), BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
-        }
-
-        @Override
-        public int getCount() {
-            return 2;
-        }
-
-        @NonNull
-        @Override
-        public Fragment getItem(int position) {
-            switch (position) {
-                case 0:
-                    return new InfoDetailFragment();
-                case 1:
-                    return new PreviewDetailFragment();
-                default:
-                    throw new IllegalArgumentException();
-            }
-        }
-
-        @Nullable
-        @Override
-        public CharSequence getPageTitle(int position) {
-            switch (position) {
-                case 0:
-                    return "Info";
-                case 1:
-                    return "Preview";
-                default:
-                    return null;
-            }
-        }
+            .beginTransaction()
+            .replace(android.R.id.content, fragment)
+            .addToBackStack(null)
+            .commit();
     }
 }

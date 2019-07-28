@@ -12,14 +12,15 @@
     <string name="finish">Finish</string>
     <string name="choose_a_storage_option">Choose a storage option</string>
     <string name="pages">pages</string>
+    <string name="pages_format">%1$d pages</string>
     <string name="thumbnail">thumbnail</string>
     <string name="download">Download</string>
     <string name="open_in_browser">Open In Browser</string>
     <string name="welcome">Welcome</string>
-    <string name="cover_image">cover image</string>
     <string name="amai_logo">Amai logo</string>
     <string name="page_image">page image</string>
     <string name="dialog_title_delete">Delete this download?</string>
     <string name="delete">Delete</string>
     <string name="cancel">Cancel</string>
+    <string name="back">back</string>
 </resources>
