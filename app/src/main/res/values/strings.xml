@@ -4,7 +4,12 @@
     <string name="title_browse">Browse</string>
     <string name="title_queue">Queue</string>
 
-    <string name="storage_note_1">Uninstalling this app will also delete your downloads</string>
+    <string name="storage_note">
+        <ul>
+            <li>Uninstalling this app will also delete your downloads\n</li>
+            <li>Changing the storage option later will not transfer your downloads\n</li>
+        </ul>
+    </string>
     <string name="storage_note_2">Changing the storage option later will not transfer your downloads</string>
     <string name="search">Search</string>
     <string name="next">Next</string>
