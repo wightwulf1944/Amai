@@ -1,6 +1,7 @@
 package i.am.shiro.amai.fragment;
 
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.view.MenuItem;
 import android.view.View;
 
@@ -12,12 +13,16 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.snackbar.Snackbar;
 
 import i.am.shiro.amai.R;
+import i.am.shiro.amai.widget.OnBackPressListener;
 
 import static androidx.core.view.ViewCompat.requireViewById;
 
 public final class MainFragment extends Fragment {
+
+    private long lastBackPressTime;
 
     public MainFragment() {
         super(R.layout.fragment_main);
@@ -25,6 +30,9 @@ public final class MainFragment extends Fragment {
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        view.requestFocus();
+        view.setOnKeyListener(new OnBackPressListener(this::onBackPress));
+
         BottomNavigationView navigation = requireViewById(view, R.id.navigation);
         navigation.setSelectedItemId(R.id.navigation_browse);
         navigation.setOnNavigationItemSelectedListener(this::onNavigationItemSelected);
@@ -37,6 +45,18 @@ public final class MainFragment extends Fragment {
                     .add(R.id.fragmentContainer, initialFragment, fragmentTag)
                     .setPrimaryNavigationFragment(initialFragment)
                     .commit();
+        }
+    }
+
+    private void onBackPress() {
+        long now = SystemClock.elapsedRealtime();
+        if (now > lastBackPressTime + 1000) {
+            lastBackPressTime = now;
+            Snackbar.make(requireView(), R.string.confirm_exit, Snackbar.LENGTH_SHORT)
+                .setAnchorView(R.id.navigation)
+                .show();
+        } else {
+            requireActivity().finish();
         }
     }
 
