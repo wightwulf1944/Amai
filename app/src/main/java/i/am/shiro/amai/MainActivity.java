@@ -13,7 +13,7 @@ public final class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
-        setTheme(R.style.MainTheme);
+        setTheme(R.style.AppTheme);
         super.onCreate(savedInstanceState);
 
         if (savedInstanceState == null) {
