@@ -58,6 +58,9 @@ dependencies {
     //    https://mvnrepository.com/artifact/commons-io/commons-io
     implementation 'commons-io:commons-io:2.6'
 
+    //    https://github.com/zhanghai/MaterialProgressBar
+    implementation 'me.zhanghai.android.materialprogressbar:library:1.6.1'
+
     //    https://github.com/willowtreeapps/Hyperion-Android
 //    debugImplementation 'com.willowtreeapps.hyperion:hyperion-core:0.9.23'
 //    debugImplementation 'com.willowtreeapps.hyperion:hyperion-attr:0.9.23'

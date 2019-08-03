@@ -1,6 +1,7 @@
 package i.am.shiro.amai.viewmodel;
 
 import androidx.lifecycle.LifecycleOwner;
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModel;
@@ -21,6 +22,8 @@ public class BrowseFragmentModel extends ViewModel {
     private static final int LOAD_MORE_THRESHHOLD = 10;
 
     private final MutableLiveData<List<Book>> books = new MutableLiveData<>();
+
+    private final MutableLiveData<Boolean> loadingState = new MutableLiveData<>();
 
     private final SearchDao searchDao = new SearchDao();
 
@@ -44,6 +47,10 @@ public class BrowseFragmentModel extends ViewModel {
         books.observe(owner, observer);
     }
 
+    public void observeLoadingState(LifecycleOwner owner, Observer<Boolean> observer) {
+        loadingState.observe(owner, observer);
+    }
+
     public void search(String query) {
         disposable.dispose();
         searchDao.newSearch("language:english " + query);
@@ -52,7 +59,7 @@ public class BrowseFragmentModel extends ViewModel {
     }
 
     private void loadNextPage() {
-        searchDao.notifyLoadingStart();
+        loadingState.setValue(true);
         searchDao.incrementCurrentPage();
 
         disposable = Nhentai.API.search(searchDao.getQuery(), searchDao.getCurrentPage(), null)
@@ -65,13 +72,13 @@ public class BrowseFragmentModel extends ViewModel {
 
     private void onBooksFetched(List<Book> newResults) {
         searchDao.appendResults(newResults);
-        searchDao.notifyLoadingDone();
+        loadingState.setValue(false);
         books.setValue(searchDao.getResults());
     }
 
     private void onFailed(Throwable throwable) {
         searchDao.decrementCurrentPage();
-        searchDao.notifyLoadingDone();
+        loadingState.setValue(false);
         Timber.w(throwable, "Failed to get data");
     }
 

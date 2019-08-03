@@ -25,7 +25,8 @@ public class AmaiApplication extends Application {
 
         Realm.init(this);
         RealmConfiguration config = new RealmConfiguration.Builder()
-                .deleteRealmIfMigrationNeeded()
+                .schemaVersion(1)
+                .migration(new Migration())
                 .compactOnLaunch()
                 .build();
         Realm.setDefaultConfiguration(config);

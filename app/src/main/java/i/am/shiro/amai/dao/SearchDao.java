@@ -74,19 +74,7 @@ public class SearchDao implements Closeable {
     }
 
     public boolean isBusy() {
-        return searchModel.isLoading() || searchModel.isCompleted();
-    }
-
-    public void notifyLoadingStart() {
-        realm.beginTransaction();
-        searchModel.setLoading(true);
-        realm.commitTransaction();
-    }
-
-    public void notifyLoadingDone() {
-        realm.beginTransaction();
-        searchModel.setLoading(false);
-        realm.commitTransaction();
+        return searchModel.isCompleted();
     }
 
     private void updateBookDB(List<Book> newBooks) {

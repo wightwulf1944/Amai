@@ -2,6 +2,7 @@ package i.am.shiro.amai.fragment;
 
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ProgressBar;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -48,7 +49,11 @@ public class BrowseFragment extends Fragment {
         recyclerView.setHasFixedSize(true);
         recyclerView.setAdapter(adapter);
 
+        ProgressBar loadingProgress = view.findViewById(R.id.progress);
+
         viewModel.observeBooks(this, adapter::submitList);
+        viewModel.observeLoadingState(this, isLoading ->
+            loadingProgress.setVisibility(isLoading ? View.VISIBLE : View.GONE));
     }
 
     private void invokeViewDetails(Book book) {

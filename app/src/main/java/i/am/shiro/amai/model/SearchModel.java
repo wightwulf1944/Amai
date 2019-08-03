@@ -9,8 +9,6 @@ public class SearchModel extends RealmObject {
 
     private int currentPage;
 
-    private boolean isLoading;
-
     private boolean isCompleted;
 
     private String query;
@@ -29,14 +27,6 @@ public class SearchModel extends RealmObject {
 
     public void setCurrentPage(int currentPage) {
         this.currentPage = currentPage;
-    }
-
-    public boolean isLoading() {
-        return isLoading;
-    }
-
-    public void setLoading(boolean loading) {
-        isLoading = loading;
     }
 
     public boolean isCompleted() {
