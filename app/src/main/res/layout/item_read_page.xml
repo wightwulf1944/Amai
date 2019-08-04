@@ -1,18 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-
-    <TextView
-        android:id="@+id/pageText"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:textSize="@dimen/textsize_read_pagenumber" />
 
     <ImageView
         android:id="@+id/pageImage"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:contentDescription="@string/page_image" />
+        android:contentDescription="@string/page_image"
+        tools:src="@android:color/white" />
 
-</RelativeLayout>
+    <TextView
+        android:id="@+id/pageText"
+        android:layout_width="wrap_content"
+        android:layout_height="24dp"
+        android:layout_gravity="bottom|center_horizontal"
+        android:layout_marginBottom="16dp"
+        android:background="@drawable/bg_page_number"
+        android:gravity="center"
+        android:paddingStart="6dp"
+        android:paddingEnd="6dp"
+        android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
+        tools:text="123" />
+
+</FrameLayout>
