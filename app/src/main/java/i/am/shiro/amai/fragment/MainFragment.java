@@ -34,13 +34,13 @@ public final class MainFragment extends Fragment {
         view.setOnKeyListener(new OnBackPressListener(this::onBackPress));
 
         BottomNavigationView navigation = requireViewById(view, R.id.navigation);
-        navigation.setSelectedItemId(R.id.navigation_browse);
+        navigation.setSelectedItemId(R.id.navigation_nhentai);
         navigation.setOnNavigationItemSelectedListener(this::onNavigationItemSelected);
 
         FragmentManager childFragmentManager = getChildFragmentManager();
         if (childFragmentManager.findFragmentById(R.id.fragmentContainer) == null) {
-            BrowseFragment initialFragment = new BrowseFragment();
-            String fragmentTag = BrowseFragment.class.getName();
+            NhentaiFragment initialFragment = new NhentaiFragment();
+            String fragmentTag = NhentaiFragment.class.getName();
             childFragmentManager.beginTransaction()
                     .add(R.id.fragmentContainer, initialFragment, fragmentTag)
                     .setPrimaryNavigationFragment(initialFragment)
@@ -90,12 +90,12 @@ public final class MainFragment extends Fragment {
 
     private String getFragmentTag(@IdRes int itemId) {
         switch (itemId) {
+            case R.id.navigation_saved:
+                return SavedFragment.class.getName();
+            case R.id.navigation_nhentai:
+                return NhentaiFragment.class.getName();
             case R.id.navigation_downloads:
                 return DownloadsFragment.class.getName();
-            case R.id.navigation_browse:
-                return BrowseFragment.class.getName();
-            case R.id.navigation_queue:
-                return QueueFragment.class.getName();
             default:
                 throw new IllegalArgumentException("No corresponding fragment for given itemId");
         }
@@ -103,12 +103,12 @@ public final class MainFragment extends Fragment {
 
     private Fragment getFragment(@IdRes int itemId) {
         switch (itemId) {
+            case R.id.navigation_saved:
+                return new SavedFragment();
+            case R.id.navigation_nhentai:
+                return new NhentaiFragment();
             case R.id.navigation_downloads:
                 return new DownloadsFragment();
-            case R.id.navigation_browse:
-                return new BrowseFragment();
-            case R.id.navigation_queue:
-                return new QueueFragment();
             default:
                 throw new IllegalArgumentException("No corresponding fragment for given itemId");
         }

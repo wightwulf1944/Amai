@@ -11,7 +11,7 @@ import androidx.lifecycle.ViewModelProviders;
 
 import i.am.shiro.amai.R;
 import i.am.shiro.amai.model.Book;
-import i.am.shiro.amai.viewmodel.DownloadsFragmentModel;
+import i.am.shiro.amai.viewmodel.SavedFragmentModel;
 
 public final class DeleteBookDialogFragment extends DialogFragment {
 
@@ -52,7 +52,7 @@ public final class DeleteBookDialogFragment extends DialogFragment {
 
     private void onConfirmClick() {
         ViewModelProviders.of(requireParentFragment())
-                .get(DownloadsFragmentModel.class)
+                .get(SavedFragmentModel.class)
                 .onBookDelete(bookId);
     }
 }

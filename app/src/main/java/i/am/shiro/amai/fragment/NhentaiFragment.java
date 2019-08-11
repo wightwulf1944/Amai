@@ -13,15 +13,15 @@ import androidx.recyclerview.widget.RecyclerView;
 import i.am.shiro.amai.R;
 import i.am.shiro.amai.adapter.BookAdapter;
 import i.am.shiro.amai.model.Book;
-import i.am.shiro.amai.viewmodel.BrowseFragmentModel;
+import i.am.shiro.amai.viewmodel.NhentaiFragmentModel;
 import i.am.shiro.amai.widget.SearchInput;
 
-public class BrowseFragment extends Fragment {
+public class NhentaiFragment extends Fragment {
 
-    private BrowseFragmentModel viewModel;
+    private NhentaiFragmentModel viewModel;
 
-    public BrowseFragment() {
-        super(R.layout.fragment_browse);
+    public NhentaiFragment() {
+        super(R.layout.fragment_nhentai);
     }
 
     @Override
@@ -29,7 +29,7 @@ public class BrowseFragment extends Fragment {
         super.onCreate(savedInstanceState);
 
         viewModel = ViewModelProviders.of(this)
-                .get(BrowseFragmentModel.class);
+                .get(NhentaiFragmentModel.class);
 
         if (savedInstanceState == null) {
             viewModel.onNewInstanceCreated();

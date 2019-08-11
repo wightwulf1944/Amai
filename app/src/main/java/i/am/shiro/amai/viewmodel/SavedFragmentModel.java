@@ -12,13 +12,13 @@ import io.realm.Realm;
 import io.realm.RealmResults;
 import timber.log.Timber;
 
-public class DownloadsFragmentModel extends ViewModel {
+public class SavedFragmentModel extends ViewModel {
 
     private final Realm realm = Realm.getDefaultInstance();
 
     private final MutableLiveData<List<Book>> books = new MutableLiveData<>();
 
-    public DownloadsFragmentModel() {
+    public SavedFragmentModel() {
         RealmResults<Book> offlineBooks = realm.where(Book.class)
                 .equalTo("isDownloaded", true)
                 .findAll();
