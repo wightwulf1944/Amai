@@ -37,6 +37,7 @@ public final class PageRecyclerView extends RecyclerView {
     }
 
     // TODO it might be possible to improve this by using postDelayed()
+    // TODO this should be moved to the fragment root view so it works regardless of view focus
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         Runnable eventHandler;
