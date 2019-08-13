@@ -23,11 +23,32 @@ public final class PageRecyclerView extends RecyclerView {
 
     private long nextNotifyTime;
 
+    private boolean wasScrolled = false;
+
     public PageRecyclerView(@NonNull Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
         tapDetector = new TapDetector(context, this::onSingleTapUp);
         pagerTapZoneWidth = context.getResources()
             .getDimensionPixelSize(R.dimen.tap_zone_width);
+    }
+
+    @Override
+    public void onScrolled(int dx, int dy) {
+        wasScrolled = dx != 0;
+        super.onScrolled(dx, dy);
+    }
+
+    @Override
+    public void onScrollStateChanged(int state) {
+        if (state == RecyclerView.SCROLL_STATE_IDLE && wasScrolled) {
+            wasScrolled = false;
+            int extent = computeHorizontalScrollExtent();
+            int currentOffset = computeHorizontalScrollOffset();
+            int currentPosition = Math.round((float) currentOffset / (float) extent);
+            int targetOffset = currentPosition * extent;
+            smoothScrollBy(targetOffset - currentOffset, 0);
+        }
+        super.onScrollStateChanged(state);
     }
 
     @Override
