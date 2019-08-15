@@ -4,6 +4,7 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
+import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -11,7 +12,11 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import i.am.shiro.amai.R;
 
+import static i.am.shiro.amai.util.LayoutUtil.forEachChild;
+
 public final class PageRecyclerView extends RecyclerView {
+
+    private static final float FLINGING_CHILD_SCALE = 0.9f;
 
     private static final int COOLDOWN = 1000;
 
@@ -25,6 +30,8 @@ public final class PageRecyclerView extends RecyclerView {
 
     private boolean wasScrolled = false;
 
+    private boolean isDragging = false;
+
     public PageRecyclerView(@NonNull Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
         tapDetector = new TapDetector(context, this::onSingleTapUp);
@@ -34,21 +41,44 @@ public final class PageRecyclerView extends RecyclerView {
 
     @Override
     public void onScrolled(int dx, int dy) {
-        wasScrolled = dx != 0;
         super.onScrolled(dx, dy);
+        wasScrolled = dx != 0;
     }
 
     @Override
     public void onScrollStateChanged(int state) {
-        if (state == RecyclerView.SCROLL_STATE_IDLE && wasScrolled) {
-            wasScrolled = false;
-            int extent = computeHorizontalScrollExtent();
-            int currentOffset = computeHorizontalScrollOffset();
-            int currentPosition = Math.round((float) currentOffset / (float) extent);
-            int targetOffset = currentPosition * extent;
-            smoothScrollBy(targetOffset - currentOffset, 0);
-        }
         super.onScrollStateChanged(state);
+        if (state == SCROLL_STATE_IDLE) {
+            if (wasScrolled) {
+                wasScrolled = false;
+                int extent = computeHorizontalScrollExtent();
+                int currentOffset = computeHorizontalScrollOffset();
+                int currentPosition = Math.round((float) currentOffset / (float) extent);
+                int targetOffset = currentPosition * extent;
+                smoothScrollBy(targetOffset - currentOffset, 0);
+            }
+            if (isDragging) {
+                isDragging = false;
+                forEachChild(this, child ->
+                    child.animate()
+                        .scaleX(1)
+                        .scaleY(1));
+            }
+        } else if (state == SCROLL_STATE_DRAGGING) {
+            isDragging = true;
+            forEachChild(this, child ->
+                child.animate()
+                    .scaleX(FLINGING_CHILD_SCALE)
+                    .scaleY(FLINGING_CHILD_SCALE));
+        }
+    }
+
+    @Override
+    public void onChildAttachedToWindow(@NonNull View child) {
+        super.onChildAttachedToWindow(child);
+        float scale = isDragging ? FLINGING_CHILD_SCALE : 1;
+        child.setScaleX(scale);
+        child.setScaleY(scale);
     }
 
     @Override
