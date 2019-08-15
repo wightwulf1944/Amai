@@ -40,8 +40,15 @@ public final class BookPageAdapter extends RecyclerView.Adapter<BookPageAdapter.
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        String url = data.get(position).getUrl();
+        String url = data.get(position)
+            .getUrl();
         holder.bind(position, url);
+    }
+
+    @Override
+    public void onViewRecycled(@NonNull ViewHolder holder) {
+        Glide.with(parentFragment)
+            .clear(holder.pageImage);
     }
 
     @Override
@@ -65,8 +72,9 @@ public final class BookPageAdapter extends RecyclerView.Adapter<BookPageAdapter.
             pageText.setText(pageStr);
 
             Glide.with(parentFragment)
-                    .load(url)
-                    .into(pageImage);
+                .load(url)
+                .thumbnail(0.1f)
+                .into(pageImage);
         }
     }
 }
