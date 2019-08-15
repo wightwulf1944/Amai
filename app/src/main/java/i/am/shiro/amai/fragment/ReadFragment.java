@@ -8,11 +8,12 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import java.util.Objects;
+import java.util.List;
 
 import i.am.shiro.amai.R;
 import i.am.shiro.amai.adapter.BookPageAdapter;
 import i.am.shiro.amai.model.Book;
+import i.am.shiro.amai.model.Image;
 import i.am.shiro.amai.widget.PageRecyclerView;
 import io.realm.Realm;
 
@@ -45,55 +46,49 @@ public class ReadFragment extends Fragment {
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
+
+        realm = Realm.getDefaultInstance();
+
         requireActivity()
-                .getWindow()
-                .addFlags(FLAG_FULLSCREEN);
+            .getWindow()
+            .addFlags(FLAG_FULLSCREEN);
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
-        requireActivity()
-                .getWindow()
-                .clearFlags(FLAG_FULLSCREEN);
-    }
 
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        realm = Realm.getDefaultInstance();
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
         realm.close();
+
+        requireActivity()
+            .getWindow()
+            .clearFlags(FLAG_FULLSCREEN);
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        Book book = extractBook();
-        int pageIndex = extractPageIndex();
-
-        BookPageAdapter adapter = new BookPageAdapter(this, book.getPageImages());
+        BookPageAdapter adapter = new BookPageAdapter(this, extractImages());
 
         PageRecyclerView pageRecycler = requireViewById(view, R.id.pageRecycler);
         pageRecycler.setHasFixedSize(true);
-        pageRecycler.scrollToPosition(pageIndex);
         pageRecycler.setAdapter(adapter);
         pageRecycler.requestFocus();
+
+        if (savedInstanceState == null) {
+            pageRecycler.scrollToPosition(extractPageIndex());
+        }
     }
 
-    private Book extractBook() {
+    private List<Image> extractImages() {
         int bookId = getArguments().getInt(BOOK_ID, -1);
-        Book book = realm.where(Book.class)
-                .equalTo("id", bookId)
-                .findFirst();
-
-        return Objects.requireNonNull(book);
+        return realm.where(Book.class)
+            .equalTo("id", bookId)
+            .findFirst()
+            .getPageImages();
     }
 
     private int extractPageIndex() {
-        return getArguments().getInt(PAGE_INDEX, 0);
+        return getArguments()
+            .getInt(PAGE_INDEX, 0);
     }
 }
