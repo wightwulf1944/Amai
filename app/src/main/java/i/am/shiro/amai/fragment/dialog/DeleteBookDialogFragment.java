@@ -5,9 +5,10 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.DialogFragment;
 import androidx.lifecycle.ViewModelProviders;
+
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import i.am.shiro.amai.R;
 import i.am.shiro.amai.model.Book;
@@ -42,17 +43,17 @@ public final class DeleteBookDialogFragment extends DialogFragment {
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
-        return new AlertDialog.Builder(requireContext())
-                .setTitle(R.string.dialog_title_delete)
-                .setMessage(bookTitle)
-                .setPositiveButton(R.string.delete, (dialog, which) -> onConfirmClick())
-                .setNegativeButton(R.string.cancel, (dialog, which) -> dismiss())
-                .create();
+        return new MaterialAlertDialogBuilder(requireContext())
+            .setTitle(R.string.dialog_title_delete)
+            .setMessage(bookTitle)
+            .setPositiveButton(R.string.delete, (dialog, which) -> onConfirmClick())
+            .setNegativeButton(R.string.cancel, (dialog, which) -> dismiss())
+            .create();
     }
 
     private void onConfirmClick() {
         ViewModelProviders.of(requireParentFragment())
-                .get(SavedFragmentModel.class)
-                .onBookDelete(bookId);
+            .get(SavedFragmentModel.class)
+            .onBookDelete(bookId);
     }
 }
