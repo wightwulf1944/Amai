@@ -34,5 +34,5 @@ dependencies {
     implementation 'com.squareup.retrofit2:adapter-rxjava2:2.6.1'
 
     // https://github.com/square/okhttp
-    implementation 'com.squareup.okhttp3:logging-interceptor:4.1.0'
+    implementation 'com.squareup.okhttp3:logging-interceptor:3.12.1'
 }
