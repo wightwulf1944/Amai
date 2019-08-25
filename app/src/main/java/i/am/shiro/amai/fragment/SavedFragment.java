@@ -12,6 +12,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import i.am.shiro.amai.R;
 import i.am.shiro.amai.adapter.BookAdapter;
 import i.am.shiro.amai.fragment.dialog.DeleteBookDialogFragment;
+import i.am.shiro.amai.fragment.dialog.PlaceholderDialogFragment;
+import i.am.shiro.amai.fragment.dialog.SortOrderDialogFragment;
 import i.am.shiro.amai.model.Book;
 import i.am.shiro.amai.viewmodel.SavedFragmentModel;
 import i.am.shiro.amai.widget.SearchInput;
@@ -25,8 +27,10 @@ public class SavedFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         SearchInput searchInput = view.findViewById(R.id.searchInput);
-        searchInput.setOnSubmitListener(s -> {
-        });
+        searchInput.setOnSubmitListener(s -> invokeSearch());
+
+        View sortButton = view.findViewById(R.id.button_sort);
+        sortButton.setOnClickListener(v -> invokeSort());
 
         BookAdapter adapter = new BookAdapter(this, getLayoutInflater());
         adapter.setOnItemClickListener(this::invokeReadBook);
@@ -39,6 +43,16 @@ public class SavedFragment extends Fragment {
         ViewModelProviders.of(this)
             .get(SavedFragmentModel.class)
             .observeBooks(this, adapter::submitList);
+    }
+
+    private void invokeSearch() {
+        PlaceholderDialogFragment dialogFragment = new PlaceholderDialogFragment();
+        dialogFragment.show(getChildFragmentManager(), null);
+    }
+
+    private void invokeSort() {
+        SortOrderDialogFragment dialogFragment = new SortOrderDialogFragment();
+        dialogFragment.show(getChildFragmentManager(), null);
     }
 
     private void invokeReadBook(Book book) {

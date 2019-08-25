@@ -29,4 +29,9 @@
     <string name="cancel">Cancel</string>
     <string name="back">back</string>
     <string name="confirm_exit">Press back again to exit</string>
+    <string name="sort">sort</string>
+    <string-array name="sort_items">
+        <item>Oldest first</item>
+        <item>Newest first</item>
+    </string-array>
 </resources>
