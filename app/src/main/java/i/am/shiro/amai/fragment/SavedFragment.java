@@ -13,7 +13,7 @@ import i.am.shiro.amai.R;
 import i.am.shiro.amai.adapter.BookAdapter;
 import i.am.shiro.amai.fragment.dialog.DeleteBookDialogFragment;
 import i.am.shiro.amai.fragment.dialog.PlaceholderDialogFragment;
-import i.am.shiro.amai.fragment.dialog.SortOrderDialogFragment;
+import i.am.shiro.amai.fragment.dialog.SavedSortOrderDialogFragment;
 import i.am.shiro.amai.model.Book;
 import i.am.shiro.amai.viewmodel.SavedFragmentModel;
 import i.am.shiro.amai.widget.SearchInput;
@@ -51,7 +51,7 @@ public class SavedFragment extends Fragment {
     }
 
     private void invokeSort() {
-        SortOrderDialogFragment dialogFragment = new SortOrderDialogFragment();
+        SavedSortOrderDialogFragment dialogFragment = new SavedSortOrderDialogFragment();
         dialogFragment.show(getChildFragmentManager(), null);
     }
 

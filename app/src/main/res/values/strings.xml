@@ -30,8 +30,12 @@
     <string name="back">back</string>
     <string name="confirm_exit">Press back again to exit</string>
     <string name="sort">sort</string>
-    <string-array name="sort_items">
-        <item>Oldest first</item>
+    <string-array name="sort_items_saved">
         <item>Newest first</item>
+        <item>Oldest first</item>
+    </string-array>
+    <string-array name="sort_items_nhentai">
+        <item>Newest first</item>
+        <item>Popular first</item>
     </string-array>
 </resources>

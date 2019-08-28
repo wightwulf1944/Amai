@@ -11,14 +11,14 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import i.am.shiro.amai.R;
 
-public final class SortOrderDialogFragment extends DialogFragment {
+public final class SavedSortOrderDialogFragment extends DialogFragment {
 
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
         return new MaterialAlertDialogBuilder(requireContext())
             .setTitle("Sort by")
-            .setItems(R.array.sort_items, (dialog, which) -> onItemClick(which))
+            .setItems(R.array.sort_items_saved, (dialog, which) -> onItemClick(which))
             .create();
     }
 

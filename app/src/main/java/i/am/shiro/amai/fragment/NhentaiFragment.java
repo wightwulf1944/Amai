@@ -12,6 +12,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import i.am.shiro.amai.R;
 import i.am.shiro.amai.adapter.BookAdapter;
+import i.am.shiro.amai.fragment.dialog.NhentaiSortOrderDialogFragment;
+import i.am.shiro.amai.fragment.dialog.SavedSortOrderDialogFragment;
 import i.am.shiro.amai.model.Book;
 import i.am.shiro.amai.viewmodel.NhentaiFragmentModel;
 import i.am.shiro.amai.widget.SearchInput;
@@ -41,6 +43,9 @@ public class NhentaiFragment extends Fragment {
         SearchInput searchInput = view.findViewById(R.id.searchInput);
         searchInput.setOnSubmitListener(viewModel::search);
 
+        View sortButton = view.findViewById(R.id.button_sort);
+        sortButton.setOnClickListener(v -> invokeSort());
+
         BookAdapter adapter = new BookAdapter(this, getLayoutInflater());
         adapter.setOnItemClickListener(this::invokeViewDetails);
         adapter.setOnPositionBindListener(viewModel::onPositionBind);
@@ -54,6 +59,11 @@ public class NhentaiFragment extends Fragment {
         viewModel.observeBooks(this, adapter::submitList);
         viewModel.observeLoadingState(this, isLoading ->
             loadingProgress.setVisibility(isLoading ? View.VISIBLE : View.GONE));
+    }
+
+    private void invokeSort() {
+        NhentaiSortOrderDialogFragment dialogFragment = new NhentaiSortOrderDialogFragment();
+        dialogFragment.show(getChildFragmentManager(), null);
     }
 
     private void invokeViewDetails(Book book) {
