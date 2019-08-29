@@ -46,7 +46,7 @@
             android:id="@+id/button_sort"
             android:layout_width="48dp"
             android:layout_height="48dp"
-            android:background="@null"
+            android:background="?selectableItemBackground"
             app:srcCompat="@drawable/ic_sort"
             android:contentDescription="@string/sort" />
 
