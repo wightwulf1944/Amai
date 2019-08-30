@@ -1,55 +1,58 @@
 package i.am.shiro.amai.model;
 
+import android.content.Context;
+import android.os.Environment;
+
+import com.annimon.stream.Stream;
+
 import java.io.File;
+import java.util.List;
+
+import static com.annimon.stream.Collectors.toList;
 
 public class StorageOption {
 
-    private final String title;
-
     private final String path;
 
-    private final long freeSpace;
+    private final boolean isMounted;
 
-    private final long totalSpace;
+    private final long spaceFree;
 
-    public StorageOption(String title, File dir) {
-        this.title = title;
+    private final int percentUsed;
+
+    private StorageOption(File dir) {
         path = dir.getPath();
-        freeSpace = dir.getFreeSpace();
-        totalSpace = dir.getTotalSpace();
-    }
 
-    public String getTitle() {
-        return title;
+        String state = Environment.getStorageState(dir);
+        isMounted = Environment.MEDIA_MOUNTED.equals(state);
+
+        spaceFree = dir.getFreeSpace();
+
+        long spaceTotal = dir.getTotalSpace();
+        long spaceUsed = spaceTotal - spaceFree;
+        percentUsed = (int) (spaceUsed / (spaceTotal / 100d));
     }
 
     public String getPath() {
         return path;
     }
 
-    public String getFreeSpaceStr() {
-        int freeSpaceMb = getFreeSpaceMb();
-        if (freeSpaceMb < 1024) {
-            return freeSpaceMb + " MB Free";
-        } else {
-            int freeSpaceGb = freeSpaceMb / 1024;
-            return freeSpaceGb + " GB Free";
-        }
+    public boolean isMounted() {
+        return isMounted;
     }
 
-    public int getUsedSpaceMb() {
-        return getTotalSpaceMb() - getFreeSpaceMb();
+    public long getSpaceFree() {
+        return spaceFree;
     }
 
-    public int getTotalSpaceMb() {
-        return getMbFromB(totalSpace);
+    public int getPercentUsed() {
+        return percentUsed;
     }
 
-    public int getFreeSpaceMb() {
-        return getMbFromB(freeSpace);
-    }
-
-    private int getMbFromB(long b) {
-        return (int) ((b / 1024L) / 1024L);
+    public static List<StorageOption> getList(Context context) {
+        File[] externalDirs = context.getExternalFilesDirs(null);
+        return Stream.of(externalDirs)
+            .map(StorageOption::new)
+            .collect(toList());
     }
 }

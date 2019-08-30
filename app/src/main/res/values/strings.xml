@@ -4,13 +4,15 @@
     <string name="nhentai">Nhentai</string>
     <string name="downloads">Downloads</string>
 
+    <string name="storage_label">External %1$d</string>
+    <string name="storage_free">%1$s Free</string>
     <string name="storage_note">
         <ul>
             <li>Uninstalling this app will also delete your downloads\n</li>
             <li>Changing the storage option later will not transfer your downloads\n</li>
         </ul>
     </string>
-    <string name="storage_note_2">Changing the storage option later will not transfer your downloads</string>
+
     <string name="search">Search</string>
     <string name="next">Next</string>
     <string name="skip">Skip</string>

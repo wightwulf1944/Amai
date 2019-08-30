@@ -2,6 +2,7 @@ package i.am.shiro.amai.fragment;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.text.format.Formatter;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -17,7 +18,6 @@ import java.util.List;
 import i.am.shiro.amai.Preferences;
 import i.am.shiro.amai.R;
 import i.am.shiro.amai.model.StorageOption;
-import i.am.shiro.amai.util.StorageUtil;
 
 import static i.am.shiro.amai.util.LayoutUtil.addChild;
 
@@ -36,7 +36,7 @@ public final class StorageSetupFragment extends Fragment {
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
-        storageOptions = StorageUtil.getStorageOptions(context);
+        storageOptions = StorageOption.getList(context);
     }
 
     @Override
@@ -78,17 +78,18 @@ public final class StorageSetupFragment extends Fragment {
             });
 
             TextView titleText = storageOptionView.findViewById(R.id.titleText);
-            titleText.setText(storageOption.getTitle());
+            titleText.setText(getString(R.string.storage_label, i));
 
             TextView pathText = storageOptionView.findViewById(R.id.pathText);
             pathText.setText(storageOption.getPath());
 
+            long spaceFree = storageOption.getSpaceFree();
+            String freeSpaceSize = Formatter.formatFileSize(requireContext(), spaceFree);
             TextView freeSpaceText = storageOptionView.findViewById(R.id.freeSpaceText);
-            freeSpaceText.setText(storageOption.getFreeSpaceStr());
+            freeSpaceText.setText(getString(R.string.storage_free, freeSpaceSize));
 
             ProgressBar gauge = storageOptionView.findViewById(R.id.gauge);
-            gauge.setMax(storageOption.getTotalSpaceMb());
-            gauge.setProgress(storageOption.getUsedSpaceMb());
+            gauge.setProgress(storageOption.getPercentUsed());
         }
     }
 
