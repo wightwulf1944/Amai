@@ -4,7 +4,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -42,7 +41,7 @@ public final class BookPageAdapter extends RecyclerView.Adapter<BookPageAdapter.
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         String url = data.get(position)
             .getUrl();
-        holder.bind(position, url);
+        holder.bind(url);
     }
 
     @Override
@@ -58,19 +57,14 @@ public final class BookPageAdapter extends RecyclerView.Adapter<BookPageAdapter.
 
     class ViewHolder extends RecyclerView.ViewHolder {
 
-        private final TextView pageText;
         private final ImageView pageImage;
 
         ViewHolder(View itemView) {
             super(itemView);
-            pageText = itemView.findViewById(R.id.pageText);
-            pageImage = itemView.findViewById(R.id.pageImage);
+            pageImage = (ImageView) itemView;
         }
 
-        void bind(int position, String url) {
-            String pageStr = String.valueOf(position + 1);
-            pageText.setText(pageStr);
-
+        void bind(String url) {
             Glide.with(parentFragment)
                 .load(url)
                 .thumbnail(0.1f)

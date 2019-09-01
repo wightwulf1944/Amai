@@ -3,6 +3,7 @@ package i.am.shiro.amai.fragment;
 import android.content.Context;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -67,15 +68,20 @@ public class ReadFragment extends Fragment {
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        TextView pageText = requireViewById(view, R.id.pageText);
+
         BookPageAdapter adapter = new BookPageAdapter(this, extractImages());
 
         PageRecyclerView pageRecycler = requireViewById(view, R.id.pageRecycler);
         pageRecycler.setHasFixedSize(true);
         pageRecycler.setAdapter(adapter);
         pageRecycler.requestFocus();
+        pageRecycler.setOnPageScrollListener(value -> pageText.setText(String.valueOf(value)));
 
         if (savedInstanceState == null) {
-            pageRecycler.scrollToPosition(extractPageIndex());
+            int position = extractPageIndex();
+            pageRecycler.scrollToPosition(position);
+            pageText.setText(String.valueOf(position + 1));
         }
     }
 
