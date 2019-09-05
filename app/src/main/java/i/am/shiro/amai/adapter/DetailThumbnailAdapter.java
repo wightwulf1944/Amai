@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView.Adapter;
 
 import com.annimon.stream.function.Consumer;
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.DecodeFormat;
 
 import java.util.List;
 
@@ -87,8 +88,9 @@ public class DetailThumbnailAdapter extends Adapter<DetailThumbnailAdapter.ViewH
             constraintSet.applyTo(constraintLayout);
 
             Glide.with(parentFragment)
-                    .load(image.getUrl())
-                    .into(previewImage);
+                .load(image.getUrl())
+                .format(DecodeFormat.PREFER_RGB_565)
+                .into(previewImage);
         }
     }
 }

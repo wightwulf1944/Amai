@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.annimon.stream.function.Consumer;
 import com.annimon.stream.function.IntConsumer;
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.DecodeFormat;
 
 import i.am.shiro.amai.R;
 import i.am.shiro.amai.model.Book;
@@ -126,8 +127,9 @@ public class BookAdapter extends ListAdapter<Book, BookAdapter.ViewHolder> {
             constraintSet.applyTo(constraintLayout);
 
             Glide.with(parentFragment)
-                    .load(coverThumbnailImage.getUrl())
-                    .into(thumbnailImage);
+                .load(coverThumbnailImage.getUrl())
+                .format(DecodeFormat.PREFER_RGB_565)
+                .into(thumbnailImage);
         }
     }
 
