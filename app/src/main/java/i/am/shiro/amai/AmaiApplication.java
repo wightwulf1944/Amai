@@ -4,8 +4,12 @@ import android.app.Application;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.os.Build;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
+
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.GlideBuilder;
 
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
@@ -54,6 +58,8 @@ public class AmaiApplication extends Application {
             }
         });
 
-//        Preferences.setFirstRun(true);
+        GlideBuilder glideBuilder = new GlideBuilder()
+            .setLogLevel(Log.VERBOSE);
+        Glide.init(this, glideBuilder);
     }
 }
