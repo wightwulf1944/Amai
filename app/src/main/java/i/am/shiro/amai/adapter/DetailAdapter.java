@@ -80,7 +80,7 @@ public class DetailAdapter extends Adapter<ViewHolder> {
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         if (holder instanceof ThumbnailViewHolder) {
-            Image pageThumbnailImage = pageThumbnailImages.get(position);
+            Image pageThumbnailImage = pageThumbnailImages.get(position - 1);
             ThumbnailViewHolder thumbnailHolder = (ThumbnailViewHolder) holder;
             thumbnailHolder.bind(pageThumbnailImage);
         }
@@ -137,7 +137,7 @@ public class DetailAdapter extends Adapter<ViewHolder> {
         }
 
         private void onItemClick() {
-            onThumbnailClickListener.accept(getAdapterPosition());
+            onThumbnailClickListener.accept(getAdapterPosition() - 1);
         }
 
         private void bind(Image image) {
