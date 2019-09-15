@@ -33,7 +33,7 @@ public class SavedFragment extends Fragment {
         sortButton.setOnClickListener(v -> invokeSort());
 
         BookAdapter adapter = new BookAdapter(this, getLayoutInflater());
-        adapter.setOnItemClickListener(this::invokeReadBook);
+        adapter.setOnItemClickListener(this::invokeViewDetails);
         adapter.setOnItemLongClickListener(this::invokeDeleteBook);
 
         RecyclerView recyclerView = view.findViewById(R.id.recyclerView);
@@ -55,8 +55,8 @@ public class SavedFragment extends Fragment {
         dialogFragment.show(getChildFragmentManager(), null);
     }
 
-    private void invokeReadBook(Book book) {
-        Fragment fragment = ReadFragment.newInstance(book, 0);
+    private void invokeViewDetails(Book book) {
+        Fragment fragment = DetailFragment.newInstance(book);
 
         requireActivity()
             .getSupportFragmentManager()
