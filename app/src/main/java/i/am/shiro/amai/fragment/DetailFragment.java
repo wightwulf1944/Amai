@@ -3,10 +3,12 @@ package i.am.shiro.amai.fragment;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -62,15 +64,9 @@ public final class DetailFragment extends Fragment {
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-
-        requireViewById(view, R.id.button_back)
-            .setOnClickListener(v -> onBackClick());
-
-        requireViewById(view, R.id.button_download)
-            .setOnClickListener(v -> onDownloadClick());
-
-        requireViewById(view, R.id.button_browser)
-            .setOnClickListener(v -> onOpenBrowserClick());
+        Toolbar toolbar = view.findViewById(R.id.toolbar);
+        toolbar.setNavigationOnClickListener(v -> onBackClick());
+        toolbar.setOnMenuItemClickListener(this::onActionClick);
 
         DetailAdapter adapter = new DetailAdapter(this, book);
         adapter.setOnThumbnailClickListener(this::invokeReadBook);
@@ -86,6 +82,18 @@ public final class DetailFragment extends Fragment {
                 return position == 0 ? 2 : 1;
             }
         });
+    }
+
+    private boolean onActionClick(MenuItem menuItem) {
+        switch (menuItem.getItemId()) {
+            case R.id.action_download:
+                onDownloadClick();
+                break;
+            case R.id.action_browser:
+                onOpenBrowserClick();
+                break;
+        }
+        return true;
     }
 
     private void onBackClick() {

@@ -72,7 +72,7 @@ public class NhentaiFragment extends Fragment {
                 invokeConstants();
                 break;
         }
-        return false;
+        return true;
     }
 
 
