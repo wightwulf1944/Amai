@@ -1,17 +1,17 @@
 package i.am.shiro.amai.viewmodel;
 
 import androidx.lifecycle.LifecycleOwner;
-import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModel;
 
 import java.util.List;
 
+import i.am.shiro.amai.Preferences;
 import i.am.shiro.amai.dao.SearchDao;
 import i.am.shiro.amai.model.Book;
-import i.am.shiro.amai.transformer.BookTransformer;
 import i.am.shiro.amai.network.Nhentai;
+import i.am.shiro.amai.transformer.BookTransformer;
 import io.reactivex.disposables.Disposable;
 import timber.log.Timber;
 
@@ -30,7 +30,8 @@ public class NhentaiFragmentModel extends ViewModel {
     private Disposable disposable;
 
     public void onNewInstanceCreated() {
-        searchDao.newSearch("language:english");
+        String searchConstants = Preferences.getSearchConstants();
+        searchDao.newSearch(searchConstants);
         books.setValue(searchDao.getResults());
         loadNextPage();
     }
@@ -53,7 +54,8 @@ public class NhentaiFragmentModel extends ViewModel {
 
     public void search(String query) {
         disposable.dispose();
-        searchDao.newSearch("language:english " + query);
+        String searchConstants = Preferences.getSearchConstants();
+        searchDao.newSearch(searchConstants + " " + query);
         books.setValue(searchDao.getResults());
         loadNextPage();
     }

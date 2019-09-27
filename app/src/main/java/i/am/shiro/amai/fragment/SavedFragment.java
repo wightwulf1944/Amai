@@ -1,10 +1,12 @@
 package i.am.shiro.amai.fragment;
 
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.RecyclerView;
@@ -26,11 +28,11 @@ public class SavedFragment extends Fragment {
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        Toolbar toolbar = view.findViewById(R.id.toolbar);
+        toolbar.setOnMenuItemClickListener(this::onActionClick);
+
         SearchInput searchInput = view.findViewById(R.id.searchInput);
         searchInput.setOnSubmitListener(s -> invokeSearch());
-
-        View sortButton = view.findViewById(R.id.button_sort);
-        sortButton.setOnClickListener(v -> invokeSort());
 
         BookAdapter adapter = new BookAdapter(this, getLayoutInflater());
         adapter.setOnItemClickListener(this::invokeViewDetails);
@@ -45,6 +47,18 @@ public class SavedFragment extends Fragment {
             .observeBooks(this, adapter::submitList);
     }
 
+    private boolean onActionClick(MenuItem menuItem) {
+        switch (menuItem.getItemId()) {
+            case R.id.action_sort:
+                invokeSort();
+                break;
+            case R.id.action_help:
+                invokeHelp();
+                break;
+        }
+        return true;
+    }
+
     private void invokeSearch() {
         PlaceholderDialogFragment dialogFragment = new PlaceholderDialogFragment();
         dialogFragment.show(getChildFragmentManager(), null);
@@ -52,6 +66,11 @@ public class SavedFragment extends Fragment {
 
     private void invokeSort() {
         SavedSortOrderDialogFragment dialogFragment = new SavedSortOrderDialogFragment();
+        dialogFragment.show(getChildFragmentManager(), null);
+    }
+
+    private void invokeHelp() {
+        PlaceholderDialogFragment dialogFragment = new PlaceholderDialogFragment();
         dialogFragment.show(getChildFragmentManager(), null);
     }
 

@@ -31,7 +31,9 @@
     <string name="cancel">Cancel</string>
     <string name="back">back</string>
     <string name="confirm_exit">Press back again to exit</string>
-    <string name="sort">sort</string>
+    <string name="sort">Sort</string>
+    <string name="search_constants">Search constants</string>
+    <string name="help">Help</string>
     <string-array name="sort_items_saved">
         <item>Newest first</item>
         <item>Oldest first</item>
