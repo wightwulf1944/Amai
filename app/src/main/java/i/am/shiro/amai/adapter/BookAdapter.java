@@ -23,6 +23,8 @@ import i.am.shiro.amai.R;
 import i.am.shiro.amai.model.Book;
 import i.am.shiro.amai.model.Image;
 
+import static android.view.View.INVISIBLE;
+import static android.view.View.VISIBLE;
 import static java.lang.String.valueOf;
 
 public class BookAdapter extends ListAdapter<Book, BookAdapter.ViewHolder> {
@@ -85,6 +87,8 @@ public class BookAdapter extends ListAdapter<Book, BookAdapter.ViewHolder> {
 
         private final TextView pageText;
 
+        private final ImageView savedBadge;
+
         private Book book;
 
         ViewHolder(View view) {
@@ -93,6 +97,7 @@ public class BookAdapter extends ListAdapter<Book, BookAdapter.ViewHolder> {
             thumbnailImage = view.findViewById(R.id.thumbnailImage);
             titleText = view.findViewById(R.id.titleText);
             pageText = view.findViewById(R.id.pageText);
+            savedBadge = view.findViewById(R.id.badgeSaved);
             view.setOnClickListener(v -> onItemClick());
             view.setOnLongClickListener(v -> onItemLongClick());
         }
@@ -112,6 +117,7 @@ public class BookAdapter extends ListAdapter<Book, BookAdapter.ViewHolder> {
         private void bind(Book book) {
             this.book = book;
 
+            savedBadge.setVisibility(book.isDownloaded() ? VISIBLE : INVISIBLE);
             titleText.setText(book.getTitle());
             pageText.setText(valueOf(book.getPageCount()));
 
