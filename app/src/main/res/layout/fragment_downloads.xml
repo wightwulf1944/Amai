@@ -13,7 +13,7 @@
         android:paddingTop="64dp"
         android:paddingEnd="8dp"
         app:layoutManager="LinearLayoutManager"
-        tools:listitem="@layout/item_queue_generic" />
+        tools:listitem="@layout/item_download_generic" />
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"

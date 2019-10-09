@@ -41,7 +41,7 @@ dependencies {
     implementation 'androidx.core:core-ktx:1.1.0'
     implementation 'androidx.fragment:fragment-ktx:1.1.0'
 
-    implementation 'com.google.android.material:material:1.1.0-alpha10'
+    implementation 'com.google.android.material:material:1.1.0-beta01'
 
     //    https://github.com/JakeWharton/timber
     implementation 'com.jakewharton.timber:timber:4.7.1'

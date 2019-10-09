@@ -34,6 +34,8 @@
     <string name="sort">Sort</string>
     <string name="search_constants">Search constants</string>
     <string name="help">Help</string>
+    <string name="done">Done</string>
+    <string name="dismiss">Dismiss</string>
     <string-array name="sort_items_saved">
         <item>Newest first</item>
         <item>Oldest first</item>
