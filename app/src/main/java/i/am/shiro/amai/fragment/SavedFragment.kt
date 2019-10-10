@@ -14,6 +14,7 @@ import i.am.shiro.amai.fragment.dialog.DeleteBookDialogFragment
 import i.am.shiro.amai.fragment.dialog.PlaceholderDialogFragment
 import i.am.shiro.amai.fragment.dialog.SavedSortOrderDialogFragment
 import i.am.shiro.amai.model.Book
+import i.am.shiro.amai.util.show
 import i.am.shiro.amai.viewmodel.SavedFragmentModel
 import kotlinx.android.synthetic.main.fragment_saved.*
 import timber.log.Timber
@@ -47,15 +48,15 @@ class SavedFragment : Fragment(R.layout.fragment_saved) {
     }
 
     private fun invokeSearch(s: String) {
-        PlaceholderDialogFragment().show(childFragmentManager, null)
+        PlaceholderDialogFragment().show(childFragmentManager)
     }
 
     private fun invokeSort() {
-        SavedSortOrderDialogFragment().show(childFragmentManager, null)
+        SavedSortOrderDialogFragment().show(childFragmentManager)
     }
 
     private fun invokeHelp() {
-        PlaceholderDialogFragment().show(childFragmentManager, null)
+        PlaceholderDialogFragment().show(childFragmentManager)
     }
 
     private fun invokeViewDetails(book: Book) {
@@ -70,6 +71,6 @@ class SavedFragment : Fragment(R.layout.fragment_saved) {
     private fun invokeDeleteBook(book: Book) {
         val dialogFragment = DeleteBookDialogFragment()
         dialogFragment.setArguments(book)
-        dialogFragment.show(childFragmentManager, null)
+        dialogFragment.show(childFragmentManager)
     }
 }

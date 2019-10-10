@@ -7,6 +7,7 @@ import androidx.fragment.app.DialogFragment
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
 import i.am.shiro.amai.R
+import i.am.shiro.amai.util.show
 
 class SavedSortOrderDialogFragment : DialogFragment() {
 
@@ -19,6 +20,6 @@ class SavedSortOrderDialogFragment : DialogFragment() {
 
     private fun onItemClick(which: Int) {
         dismiss()
-        PlaceholderDialogFragment().show(requireFragmentManager(), null)
+        PlaceholderDialogFragment().show(requireFragmentManager())
     }
 }
