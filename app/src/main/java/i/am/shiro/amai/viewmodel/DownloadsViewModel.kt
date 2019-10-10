@@ -30,6 +30,18 @@ class DownloadsViewModel : ViewModel() {
         realm.commitTransaction()
     }
 
+    fun retryJob(job: DownloadJob) {
+
+    }
+
+    fun cancelJob(job: DownloadJob) {
+
+    }
+
+    fun pauseJob(it: DownloadJob) {
+
+    }
+
     override fun onCleared() {
         super.onCleared()
         realm.close()

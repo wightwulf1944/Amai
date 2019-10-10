@@ -8,5 +8,9 @@
         <item name="android:layout_marginBottom">4dp</item>
         <item name="android:gravity">center</item>
     </style>
+    
+    <style name="DownloadItemStatusText">
+        <item name="android:textAppearance">@style/TextAppearance.MaterialComponents.Overline</item>
+    </style>
 
 </resources>

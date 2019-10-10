@@ -22,7 +22,19 @@ class DownloadsFragment : Fragment(R.layout.fragment_downloads) {
         toolbar.setOnMenuItemClickListener { onActionClick(it) }
 
         val adapter = DownloadJobAdapter(
-                onDismiss = { viewModel.dismissJob(it) }
+                onDismiss = { viewModel.dismissJob(it) },
+                onCancel = {
+                    viewModel.cancelJob(it)
+                    showPlaceholder()
+                },
+                onRetry = {
+                    viewModel.retryJob(it)
+                    showPlaceholder()
+                },
+                onPause = {
+                    viewModel.pauseJob(it)
+                    showPlaceholder()
+                }
         )
 
         recyclerView.adapter = adapter

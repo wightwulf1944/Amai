@@ -3,18 +3,22 @@ package i.am.shiro.amai.adapter
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.TextView
 import androidx.annotation.CallSuper
+import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.button.MaterialButton
 import i.am.shiro.amai.R
 import i.am.shiro.amai.constant.DownloadStatus
 import i.am.shiro.amai.model.DownloadJob
 
 class DownloadJobAdapter(
-        private val onDismiss: (DownloadJob) -> Unit
+        private val onDismiss: (DownloadJob) -> Unit,
+        private val onCancel: (DownloadJob) -> Unit,
+        private val onRetry: (DownloadJob) -> Unit,
+        private val onPause: (DownloadJob) -> Unit
 ) : ListAdapter<DownloadJob, DownloadJobAdapter.ViewHolder>(DiffCallback()) {
 
     override fun getItemViewType(position: Int): Int {
@@ -22,15 +26,24 @@ class DownloadJobAdapter(
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val inflater = LayoutInflater.from(parent.context)
-
-        return if (viewType == DownloadStatus.DONE) {
-            val view = inflater.inflate(R.layout.item_download_done, parent, false)
-            DoneViewHolder(view)
-        } else {
-            val view = inflater.inflate(R.layout.item_download_generic, parent, false)
-            GenericViewHolder(view)
+        return when (viewType) {
+            DownloadStatus.DONE -> {
+                DoneViewHolder(parent.inflateChild(R.layout.item_download_done))
+            }
+            DownloadStatus.FAILED -> {
+                FailedViewHolder(parent.inflateChild(R.layout.item_download_failed))
+            }
+            DownloadStatus.RUNNING -> {
+                DownloadingViewHolder(parent.inflateChild(R.layout.item_download_downloading))
+            }
+            else -> {
+                GenericViewHolder(parent.inflateChild(R.layout.item_download_generic))
+            }
         }
+    }
+
+    private fun ViewGroup.inflateChild(@LayoutRes layoutRes: Int): View {
+        return LayoutInflater.from(context).inflate(layoutRes, this, false)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
@@ -60,11 +73,37 @@ class DownloadJobAdapter(
 
     internal inner class DoneViewHolder(itemView: View) : ViewHolder(itemView) {
 
-        private val dismissButton: MaterialButton = itemView.findViewById(R.id.dismissButton)
+        private val dismissButton: Button = itemView.findViewById(R.id.dismissButton)
 
         override fun bindData(job: DownloadJob) {
             super.bindData(job)
             dismissButton.setOnClickListener { onDismiss(job) }
+        }
+    }
+
+    internal inner class FailedViewHolder(itemView: View) : ViewHolder(itemView) {
+
+        private val cancelButton: Button = itemView.findViewById(R.id.cancelButton)
+
+        private val retryButton: Button = itemView.findViewById(R.id.retryButton)
+
+        override fun bindData(job: DownloadJob) {
+            super.bindData(job)
+            cancelButton.setOnClickListener { onCancel(job) }
+            retryButton.setOnClickListener { onRetry(job) }
+        }
+    }
+
+    internal inner class DownloadingViewHolder(itemView: View) : ViewHolder(itemView) {
+
+        private val cancelButton: Button = itemView.findViewById(R.id.cancelButton)
+
+        private val pauseButton: Button = itemView.findViewById(R.id.pauseButton)
+
+        override fun bindData(job: DownloadJob) {
+            super.bindData(job)
+            cancelButton.setOnClickListener { onCancel(job) }
+            pauseButton.setOnClickListener { onPause(job) }
         }
     }
 
