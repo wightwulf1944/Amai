@@ -11,6 +11,7 @@ import androidx.annotation.NonNull;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.GlideBuilder;
 
+import i.am.shiro.amai.data.AmaiDatabase;
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
 import timber.log.Timber;
@@ -34,6 +35,8 @@ public class AmaiApplication extends Application {
                 .compactOnLaunch()
                 .build();
         Realm.setDefaultConfiguration(config);
+
+        AmaiDatabase.init(this);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationChannel mChannel = new NotificationChannel(
