@@ -5,6 +5,7 @@ import android.view.MenuItem
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 
@@ -17,26 +18,25 @@ import i.am.shiro.amai.model.Book
 import i.am.shiro.amai.util.show
 import i.am.shiro.amai.viewmodel.SavedFragmentModel
 import kotlinx.android.synthetic.main.fragment_saved.*
-import timber.log.Timber
 
 class SavedFragment : Fragment(R.layout.fragment_saved) {
+
+    private val viewModel by viewModels<SavedFragmentModel>()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         toolbar.setOnMenuItemClickListener { onActionClick(it) }
 
         searchInput.setOnSubmitListener { s -> invokeSearch(s) }
 
-        val bookAdapter = BookAdapter(this, layoutInflater).apply {
-            setOnItemClickListener { book -> invokeViewDetails(book) }
-            setOnItemLongClickListener { book -> invokeDeleteBook(book) }
-        }
+        val adapter = BookAdapter(this,
+                onItemClick = ::invokeViewDetails,
+                onItemLongClick = ::invokeDeleteBook
+        )
 
         recyclerView.setHasFixedSize(true)
-        recyclerView.adapter = bookAdapter
+        recyclerView.adapter = adapter
 
-        ViewModelProviders.of(this)
-                .get(SavedFragmentModel::class.java)
-                .observeBooks(this, Observer<List<Book>> { bookAdapter.submitList(it) })
+        viewModel.observeBooks(this, Observer(adapter::submitList))
     }
 
     private fun onActionClick(menuItem: MenuItem): Boolean {

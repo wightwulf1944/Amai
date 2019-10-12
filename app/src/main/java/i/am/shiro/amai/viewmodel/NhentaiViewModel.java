@@ -17,7 +17,7 @@ import timber.log.Timber;
 
 import static io.reactivex.android.schedulers.AndroidSchedulers.mainThread;
 
-public class NhentaiFragmentModel extends ViewModel {
+public class NhentaiViewModel extends ViewModel {
 
     private static final int LOAD_MORE_THRESHHOLD = 10;
 

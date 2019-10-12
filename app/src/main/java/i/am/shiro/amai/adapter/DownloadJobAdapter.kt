@@ -1,18 +1,17 @@
 package i.am.shiro.amai.adapter
 
-import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
 import androidx.annotation.CallSuper
-import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import i.am.shiro.amai.R
 import i.am.shiro.amai.constant.DownloadStatus
 import i.am.shiro.amai.model.DownloadJob
+import i.am.shiro.amai.util.inflateChild
 
 class DownloadJobAdapter(
         private val onDismiss: (DownloadJob) -> Unit,
@@ -40,10 +39,6 @@ class DownloadJobAdapter(
                 GenericViewHolder(parent.inflateChild(R.layout.item_download_generic))
             }
         }
-    }
-
-    private fun ViewGroup.inflateChild(@LayoutRes layoutRes: Int): View {
-        return LayoutInflater.from(context).inflate(layoutRes, this, false)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {

@@ -19,10 +19,10 @@ class DownloadsFragment : Fragment(R.layout.fragment_downloads) {
     private val viewModel by viewModels<DownloadsViewModel>()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        toolbar.setOnMenuItemClickListener { onActionClick(it) }
+        toolbar.setOnMenuItemClickListener(::onActionClick)
 
         val adapter = DownloadJobAdapter(
-                onDismiss = { viewModel.dismissJob(it) },
+                onDismiss = viewModel::dismissJob,
                 onCancel = {
                     viewModel.cancelJob(it)
                     showPlaceholder()
@@ -39,7 +39,7 @@ class DownloadsFragment : Fragment(R.layout.fragment_downloads) {
 
         recyclerView.adapter = adapter
 
-        viewModel.downloadJobsLive.observe(this, Observer<List<DownloadJob>> { adapter.submitList(it) })
+        viewModel.downloadJobsLive.observe(this, Observer(adapter::submitList))
     }
 
     private fun onActionClick(menuItem: MenuItem): Boolean {
