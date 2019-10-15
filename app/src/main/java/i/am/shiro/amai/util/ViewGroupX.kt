@@ -8,3 +8,9 @@ import androidx.annotation.LayoutRes
 fun ViewGroup.inflateChild(@LayoutRes layoutRes: Int): View {
     return LayoutInflater.from(context).inflate(layoutRes, this, false)
 }
+
+inline fun <reified T: View> ViewGroup.addChild(@LayoutRes layoutRes: Int, block: T.() -> Unit) {
+    val child = inflateChild(layoutRes)
+    block(child as T)
+    addView(child)
+}
