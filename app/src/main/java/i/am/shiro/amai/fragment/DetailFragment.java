@@ -97,7 +97,7 @@ public final class DetailFragment extends Fragment {
     }
 
     private void onBackClick() {
-        requireFragmentManager().popBackStack();
+        requireActivity().onBackPressed();
     }
 
     private void onDownloadClick() {

@@ -4,6 +4,7 @@ import androidx.annotation.StringDef;
 
 import java.lang.annotation.Retention;
 
+import i.am.shiro.amai.network.dto.BookJson;
 import i.am.shiro.amai.network.dto.SearchResponseJson;
 import io.reactivex.Single;
 import okhttp3.OkHttpClient;
@@ -12,6 +13,7 @@ import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.moshi.MoshiConverterFactory;
 import retrofit2.http.GET;
+import retrofit2.http.Path;
 import retrofit2.http.Query;
 
 import static java.lang.annotation.RetentionPolicy.SOURCE;
@@ -48,9 +50,9 @@ public class Nhentai {
 
     public interface Api {
 
-//        @GET("gallery/{id}")
-//        Single<Book> getBookDetails(
-//            @Path("id") int id);
+        @GET("gallery/{id}")
+        Single<BookJson> getBook(
+            @Path("id") int id);
 //
 //        @GET("gallery/{id}/related")
 //        Single<Book> getRelatedBooks(
