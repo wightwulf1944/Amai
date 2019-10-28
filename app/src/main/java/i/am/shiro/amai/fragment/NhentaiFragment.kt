@@ -33,12 +33,12 @@ class NhentaiFragment : Fragment(R.layout.fragment_nhentai) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         toolbar.setOnMenuItemClickListener(::onActionClick)
 
-        searchInput.setOnSubmitListener(viewModel::search)
+        searchInput.onSubmitListener = viewModel::search
 
         val adapter = BookAdapter(
-                parentFragment = this,
-                onItemClick = ::invokeViewDetails,
-                onPositionBind = viewModel::onPositionBind
+            parentFragment = this,
+            onItemClick = ::invokeViewDetails,
+            onPositionBind = viewModel::onPositionBind
         )
 
         recyclerView.setHasFixedSize(true)

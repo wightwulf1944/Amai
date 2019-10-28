@@ -12,7 +12,7 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import i.am.shiro.amai.R;
 import i.am.shiro.amai.model.Book;
-import i.am.shiro.amai.viewmodel.SavedFragmentModel;
+import i.am.shiro.amai.viewmodel.SavedViewModel;
 
 public final class DeleteBookDialogFragment extends DialogFragment {
 
@@ -53,7 +53,7 @@ public final class DeleteBookDialogFragment extends DialogFragment {
 
     private void onConfirmClick() {
         ViewModelProviders.of(requireParentFragment())
-            .get(SavedFragmentModel.class)
+            .get(SavedViewModel.class)
             .onBookDelete(bookId);
     }
 }

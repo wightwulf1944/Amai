@@ -7,7 +7,6 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
 
 import i.am.shiro.amai.R
 import i.am.shiro.amai.adapter.BookAdapter
@@ -16,27 +15,27 @@ import i.am.shiro.amai.fragment.dialog.PlaceholderDialogFragment
 import i.am.shiro.amai.fragment.dialog.SavedSortOrderDialogFragment
 import i.am.shiro.amai.model.Book
 import i.am.shiro.amai.util.show
-import i.am.shiro.amai.viewmodel.SavedFragmentModel
+import i.am.shiro.amai.viewmodel.SavedViewModel
 import kotlinx.android.synthetic.main.fragment_saved.*
 
 class SavedFragment : Fragment(R.layout.fragment_saved) {
 
-    private val viewModel by viewModels<SavedFragmentModel>()
+    private val viewModel by viewModels<SavedViewModel>()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        toolbar.setOnMenuItemClickListener { onActionClick(it) }
+        toolbar.setOnMenuItemClickListener(::onActionClick)
 
-        searchInput.setOnSubmitListener { s -> invokeSearch(s) }
+        searchInput.onSubmitListener = viewModel::filterBooks
 
         val adapter = BookAdapter(this,
-                onItemClick = ::invokeViewDetails,
-                onItemLongClick = ::invokeDeleteBook
+            onItemClick = ::invokeViewDetails,
+            onItemLongClick = ::invokeDeleteBook
         )
 
         recyclerView.setHasFixedSize(true)
         recyclerView.adapter = adapter
 
-        viewModel.observeBooks(this, Observer(adapter::submitList))
+        viewModel.booksLive.observe(this, Observer(adapter::submitList))
     }
 
     private fun onActionClick(menuItem: MenuItem): Boolean {
@@ -45,10 +44,6 @@ class SavedFragment : Fragment(R.layout.fragment_saved) {
             R.id.action_help -> invokeHelp()
         }
         return true
-    }
-
-    private fun invokeSearch(s: String) {
-        PlaceholderDialogFragment().show(childFragmentManager)
     }
 
     private fun invokeSort() {
