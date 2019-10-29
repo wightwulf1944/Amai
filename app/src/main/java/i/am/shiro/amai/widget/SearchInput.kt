@@ -17,7 +17,6 @@ class SearchInput(context: Context, attrs: AttributeSet) : TextInputEditText(con
     var onTextChangedListener: ((String) -> Unit)? = null
 
     init {
-        Timber.wtf("RABBIT 123")
         imeOptions = EditorInfo.IME_ACTION_SEARCH
     }
 
