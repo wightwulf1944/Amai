@@ -3,6 +3,7 @@ package i.am.shiro.amai.adapter
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.annotation.CallSuper
 import androidx.recyclerview.widget.DiffUtil
@@ -12,6 +13,7 @@ import i.am.shiro.amai.R
 import i.am.shiro.amai.constant.DownloadStatus
 import i.am.shiro.amai.model.DownloadJob
 import i.am.shiro.amai.util.inflateChild
+import kotlinx.android.synthetic.main.fragment_nhentai.view.*
 
 class DownloadJobAdapter(
         private val onDismiss: (DownloadJob) -> Unit,
@@ -91,12 +93,16 @@ class DownloadJobAdapter(
 
     internal inner class DownloadingViewHolder(itemView: View) : ViewHolder(itemView) {
 
+        private val progressBar: ProgressBar = itemView.findViewById(R.id.progressBar)
+
         private val cancelButton: Button = itemView.findViewById(R.id.cancelButton)
 
         private val pauseButton: Button = itemView.findViewById(R.id.pauseButton)
 
         override fun bindData(job: DownloadJob) {
             super.bindData(job)
+            progressBar.max = job.taskList.size
+            progressBar.progress = job.taskIndex
             cancelButton.setOnClickListener { onCancel(job) }
             pauseButton.setOnClickListener { onPause(job) }
         }
@@ -109,7 +115,7 @@ class DownloadJobAdapter(
         }
 
         override fun areContentsTheSame(oldItem: DownloadJob, newItem: DownloadJob): Boolean {
-            return oldItem.status == newItem.status
+            return oldItem.status == newItem.status && oldItem.taskIndex == newItem.taskIndex
         }
     }
 }

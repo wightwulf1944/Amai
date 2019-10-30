@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import i.am.shiro.amai.model.DownloadJob
 import io.realm.Realm
+import io.realm.kotlin.where
 
 class DownloadsViewModel : ViewModel() {
 
@@ -12,21 +13,28 @@ class DownloadsViewModel : ViewModel() {
 
     private val _downloadJobsLive = MutableLiveData<List<DownloadJob>>()
 
+    private val disposable = realm.where<DownloadJob>()
+        .findAllAsync()
+        .asFlowable()
+        .filter { it.isLoaded }
+        .map { realm.copyFromRealm(it) }
+        .subscribe { _downloadJobsLive.postValue(it) }
+
     val downloadJobsLive: LiveData<List<DownloadJob>>
         get() = _downloadJobsLive
 
-
-    init {
-        val downloadJobs = realm.where(DownloadJob::class.java)
-                .findAll()
-                .createSnapshot()
-
-        _downloadJobsLive.value = downloadJobs
+    override fun onCleared() {
+        super.onCleared()
+        disposable.dispose()
+        realm.close()
     }
 
     fun dismissJob(job: DownloadJob) {
         realm.beginTransaction()
-        job.deleteFromRealm()
+        realm.where<DownloadJob>()
+            .equalTo("bookId", job.bookId)
+            .findFirst()
+            ?.deleteFromRealm()
         realm.commitTransaction()
     }
 
@@ -35,15 +43,11 @@ class DownloadsViewModel : ViewModel() {
     }
 
     fun cancelJob(job: DownloadJob) {
-
+        // TODO also delete downloaded files here
+        dismissJob(job)
     }
 
     fun pauseJob(it: DownloadJob) {
 
-    }
-
-    override fun onCleared() {
-        super.onCleared()
-        realm.close()
     }
 }

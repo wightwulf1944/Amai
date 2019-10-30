@@ -23,10 +23,7 @@ class DownloadsFragment : Fragment(R.layout.fragment_downloads) {
 
         val adapter = DownloadJobAdapter(
                 onDismiss = viewModel::dismissJob,
-                onCancel = {
-                    viewModel.cancelJob(it)
-                    showPlaceholder()
-                },
+                onCancel = viewModel::cancelJob,
                 onRetry = {
                     viewModel.retryJob(it)
                     showPlaceholder()
