@@ -31,7 +31,6 @@ android {
 }
 
 dependencies {
-    implementation project(":notification")
     implementation project(':network')
 
     implementation "org.jetbrains.kotlin:kotlin-stdlib"
