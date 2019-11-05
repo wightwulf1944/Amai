@@ -94,7 +94,7 @@ public class DownloadTaskDispatcher implements Closeable, Iterable<DownloadTask>
 
     @NonNull
     @Override
-    public QueueIterator iterator() {
+    public Iterator<DownloadTask> iterator() {
         return new QueueIterator();
     }
 

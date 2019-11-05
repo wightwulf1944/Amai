@@ -16,11 +16,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import i.am.shiro.amai.R;
 import i.am.shiro.amai.adapter.DetailAdapter;
 import i.am.shiro.amai.model.Book;
-import i.am.shiro.amai.service.DownloadService;
+import i.am.shiro.amai.service.DownloadServiceKt;
 import io.realm.Realm;
 
 import static android.content.Intent.ACTION_VIEW;
-import static androidx.core.view.ViewCompat.requireViewById;
 
 public final class DetailFragment extends Fragment {
 
@@ -101,7 +100,7 @@ public final class DetailFragment extends Fragment {
     }
 
     private void onDownloadClick() {
-        DownloadService.start(requireContext(), book);
+        DownloadServiceKt.addToQueue(requireContext(), book);
     }
 
     private void onOpenBrowserClick() {
