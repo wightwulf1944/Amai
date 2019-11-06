@@ -6,6 +6,7 @@ import android.app.NotificationManager
 import android.content.Context
 import android.os.Build
 import android.util.Log
+import androidx.room.Room
 import com.bumptech.glide.Glide
 import com.bumptech.glide.GlideBuilder
 import i.am.shiro.amai.constant.Constants.DEFAULT_CHANNEL_ID
@@ -13,6 +14,9 @@ import i.am.shiro.amai.data.AmaiDatabase
 import io.realm.Realm
 import io.realm.RealmConfiguration
 import timber.log.Timber
+
+lateinit var DATABASE: AmaiDatabase
+    private set
 
 class AmaiApplication : Application() {
 
@@ -31,7 +35,9 @@ class AmaiApplication : Application() {
             .build()
         Realm.setDefaultConfiguration(config)
 
-        AmaiDatabase.init(this)
+        DATABASE = Room.databaseBuilder(this, AmaiDatabase::class.java, "books")
+            .fallbackToDestructiveMigration()
+            .build()
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val mChannel = NotificationChannel(
