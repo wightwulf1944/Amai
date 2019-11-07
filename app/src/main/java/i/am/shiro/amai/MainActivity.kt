@@ -21,11 +21,9 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun getInitialFragment() = when (intent.action) {
-        Intent.ACTION_MAIN ->
-            if (Preferences.isFirstRun()) WelcomeFragment()
-            else MainFragment()
-        Intent.ACTION_VIEW -> LoadingFragment()
-        else -> throw RuntimeException()
+    private fun getInitialFragment() = when {
+        intent.action == Intent.ACTION_VIEW -> LoadingFragment()
+        Preferences.isFirstRun() -> WelcomeFragment()
+        else -> MainFragment()
     }
 }
