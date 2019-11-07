@@ -45,8 +45,7 @@ class AmaiApplication : Application() {
                 getString(R.string.app_name),
                 NotificationManager.IMPORTANCE_DEFAULT)
 
-            val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-            notificationManager.createNotificationChannel(mChannel)
+            getSystemService(NotificationManager::class.java).createNotificationChannel(mChannel)
         }
     }
 
