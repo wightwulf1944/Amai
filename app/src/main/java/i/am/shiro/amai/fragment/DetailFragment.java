@@ -111,7 +111,7 @@ public final class DetailFragment extends Fragment {
     }
 
     private void invokeReadBook(int pageIndex) {
-        Fragment fragment = ReadFragment.newInstance(book, pageIndex);
+        ReadFragment fragment = new ReadFragment(book.getId(), pageIndex);
 
         requireFragmentManager()
             .beginTransaction()
