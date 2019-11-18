@@ -1,8 +1,7 @@
 package i.am.shiro.amai.viewmodel;
 
-import androidx.lifecycle.LifecycleOwner;
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModel;
 
 import java.util.List;
@@ -21,9 +20,9 @@ public class NhentaiViewModel extends ViewModel {
 
     private static final int LOAD_MORE_THRESHHOLD = 10;
 
-    private final MutableLiveData<List<Book>> books = new MutableLiveData<>();
+    private final MutableLiveData<List<Book>> booksLive = new MutableLiveData<>();
 
-    private final MutableLiveData<Boolean> loadingState = new MutableLiveData<>();
+    private final MutableLiveData<Boolean> isLoadingLive = new MutableLiveData<>();
 
     private final SearchDao searchDao = new SearchDao();
 
@@ -32,7 +31,7 @@ public class NhentaiViewModel extends ViewModel {
     public void onNewInstanceCreated() {
         String searchConstants = Preferences.getSearchConstants();
         searchDao.newSearch(searchConstants);
-        books.setValue(searchDao.getResults());
+        booksLive.setValue(searchDao.getResults());
         loadNextPage();
     }
 
@@ -44,24 +43,24 @@ public class NhentaiViewModel extends ViewModel {
         }
     }
 
-    public void observeBooks(LifecycleOwner owner, Observer<List<Book>> observer) {
-        books.observe(owner, observer);
+    public LiveData<List<Book>> getBooksLive() {
+        return booksLive;
     }
 
-    public void observeLoadingState(LifecycleOwner owner, Observer<Boolean> observer) {
-        loadingState.observe(owner, observer);
+    public LiveData<Boolean> getIsLoadingLive() {
+        return isLoadingLive;
     }
 
     public void search(String query) {
         disposable.dispose();
         String searchConstants = Preferences.getSearchConstants();
         searchDao.newSearch(searchConstants + " " + query);
-        books.setValue(searchDao.getResults());
+        booksLive.setValue(searchDao.getResults());
         loadNextPage();
     }
 
     private void loadNextPage() {
-        loadingState.setValue(true);
+        isLoadingLive.setValue(true);
         searchDao.incrementCurrentPage();
 
         disposable = Nhentai.API.search(searchDao.getQuery(), searchDao.getCurrentPage(), null)
@@ -74,13 +73,13 @@ public class NhentaiViewModel extends ViewModel {
 
     private void onBooksFetched(List<Book> newResults) {
         searchDao.appendResults(newResults);
-        loadingState.setValue(false);
-        books.setValue(searchDao.getResults());
+        isLoadingLive.setValue(false);
+        booksLive.setValue(searchDao.getResults());
     }
 
     private void onFailed(Throwable throwable) {
         searchDao.decrementCurrentPage();
-        loadingState.setValue(false);
+        isLoadingLive.setValue(false);
         Timber.w(throwable, "Failed to get data");
     }
 

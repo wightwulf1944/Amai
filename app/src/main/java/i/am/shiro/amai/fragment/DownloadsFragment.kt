@@ -5,11 +5,10 @@ import android.view.MenuItem
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
+import androidx.lifecycle.observe
 import i.am.shiro.amai.R
 import i.am.shiro.amai.adapter.DownloadJobAdapter
 import i.am.shiro.amai.fragment.dialog.PlaceholderDialogFragment
-import i.am.shiro.amai.model.DownloadJob
 import i.am.shiro.amai.util.show
 import i.am.shiro.amai.viewmodel.DownloadsViewModel
 import kotlinx.android.synthetic.main.fragment_downloads.*
@@ -36,7 +35,7 @@ class DownloadsFragment : Fragment(R.layout.fragment_downloads) {
 
         recyclerView.adapter = adapter
 
-        viewModel.downloadJobsLive.observe(this, Observer(adapter::submitList))
+        viewModel.downloadJobsLive.observe(this, adapter::submitList)
     }
 
     private fun onActionClick(menuItem: MenuItem): Boolean {

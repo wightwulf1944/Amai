@@ -8,7 +8,7 @@ import android.view.View.VISIBLE
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
+import androidx.lifecycle.observe
 import i.am.shiro.amai.R
 import i.am.shiro.amai.adapter.BookAdapter
 import i.am.shiro.amai.fragment.dialog.NhentaiSortOrderDialogFragment
@@ -44,10 +44,10 @@ class NhentaiFragment : Fragment(R.layout.fragment_nhentai) {
         recyclerView.setHasFixedSize(true)
         recyclerView.adapter = adapter
 
-        viewModel.observeBooks(this, Observer(adapter::submitList))
-        viewModel.observeLoadingState(this, Observer { isLoading ->
+        viewModel.booksLive.observe(this, adapter::submitList)
+        viewModel.isLoadingLive.observe(this) { isLoading ->
             progress.visibility = if (isLoading) VISIBLE else GONE
-        })
+        }
     }
 
     private fun onActionClick(menuItem: MenuItem): Boolean {

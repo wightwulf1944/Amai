@@ -6,7 +6,7 @@ import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
+import androidx.lifecycle.observe
 
 import i.am.shiro.amai.R
 import i.am.shiro.amai.adapter.BookAdapter
@@ -35,7 +35,7 @@ class SavedFragment : Fragment(R.layout.fragment_saved) {
         recyclerView.setHasFixedSize(true)
         recyclerView.adapter = adapter
 
-        viewModel.booksLive.observe(this, Observer(adapter::submitList))
+        viewModel.booksLive.observe(this, adapter::submitList)
     }
 
     private fun onActionClick(menuItem: MenuItem): Boolean {
