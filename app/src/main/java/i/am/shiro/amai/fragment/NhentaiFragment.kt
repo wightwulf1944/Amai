@@ -64,7 +64,7 @@ class NhentaiFragment : Fragment(R.layout.fragment_nhentai) {
 
 
     private fun invokeViewDetails(book: Book) {
-        val fragment = DetailFragment.newInstance(book)
+        val fragment = DetailFragment(book.id)
 
         requireActivity().supportFragmentManager.commit {
             replace(android.R.id.content, fragment)

@@ -22,15 +22,13 @@ import kotlin.math.min
 const val HEADER = 0
 const val THUMBNAIL = 1
 
-class DetailAdapter(private val parentFragment: Fragment, private val book: Book) : Adapter<ViewHolder>() {
+class DetailAdapter(
+    private val parentFragment: Fragment,
+    private val book: Book,
+    private val onThumbnailClickListener: (Int) -> Unit
+) : Adapter<ViewHolder>() {
 
     private val pageThumbnailImages: List<Image> = book.pageThumbnailImages
-
-    private var onThumbnailClickListener: Consumer<Int> = Consumer {}
-
-    fun setOnThumbnailClickListener(listener: Consumer<Int>) {
-        onThumbnailClickListener = listener
-    }
 
     override fun getItemCount() = pageThumbnailImages.size + 1
 
@@ -96,7 +94,7 @@ class DetailAdapter(private val parentFragment: Fragment, private val book: Book
 
         init {
             itemView.setOnClickListener {
-                onThumbnailClickListener.accept(adapterPosition - 1)
+                onThumbnailClickListener(adapterPosition - 1)
             }
         }
 

@@ -55,7 +55,7 @@ class SavedFragment : Fragment(R.layout.fragment_saved) {
     }
 
     private fun invokeViewDetails(book: Book) {
-        val fragment = DetailFragment.newInstance(book)
+        val fragment = DetailFragment(book.id)
 
         requireActivity().supportFragmentManager.commit {
             replace(android.R.id.content, fragment)
