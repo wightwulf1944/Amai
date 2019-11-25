@@ -20,6 +20,6 @@ class NhentaiSortOrderDialogFragment : DialogFragment() {
 
     private fun onItemClick(which: Int) {
         dismiss()
-        PlaceholderDialogFragment().show(requireFragmentManager())
+        PlaceholderDialogFragment().show(parentFragmentManager)
     }
 }

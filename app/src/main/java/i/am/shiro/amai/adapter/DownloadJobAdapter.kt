@@ -13,7 +13,6 @@ import i.am.shiro.amai.R
 import i.am.shiro.amai.constant.DownloadStatus
 import i.am.shiro.amai.model.DownloadJob
 import i.am.shiro.amai.util.inflateChild
-import kotlinx.android.synthetic.main.fragment_nhentai.view.*
 
 class DownloadJobAdapter(
         private val onDismiss: (DownloadJob) -> Unit,

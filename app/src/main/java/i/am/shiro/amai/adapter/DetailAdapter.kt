@@ -9,7 +9,6 @@ import androidx.core.view.updateLayoutParams
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView.Adapter
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
-import com.annimon.stream.function.Consumer
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DecodeFormat
 import i.am.shiro.amai.R

@@ -17,7 +17,7 @@ class WelcomeFragment : Fragment(R.layout.fragment_welcome) {
     }
 
     private fun onSkip() {
-        requireFragmentManager().commit {
+        parentFragmentManager.commit {
             replace(android.R.id.content, MainFragment())
         }
 
@@ -25,7 +25,7 @@ class WelcomeFragment : Fragment(R.layout.fragment_welcome) {
     }
 
     private fun onNext() {
-        requireFragmentManager().commit {
+        parentFragmentManager.commit {
             replace(android.R.id.content, StorageSetupFragment())
         }
     }

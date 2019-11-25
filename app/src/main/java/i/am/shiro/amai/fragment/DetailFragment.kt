@@ -89,7 +89,7 @@ class DetailFragment() : Fragment(R.layout.fragment_detail) {
     private fun invokeReadBook(pageIndex: Int) {
         val fragment = ReadFragment(book.id, pageIndex)
 
-        requireFragmentManager().commit {
+        parentFragmentManager.commit {
             replace(android.R.id.content, fragment)
             addToBackStack(null)
         }

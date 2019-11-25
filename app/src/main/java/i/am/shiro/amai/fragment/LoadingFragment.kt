@@ -59,7 +59,7 @@ class LoadingFragment : Fragment(R.layout.fragment_loading) {
         realm.close()
 
         val fragment = DetailFragment(newBook.id)
-        requireFragmentManager().commit {
+        parentFragmentManager.commit {
             replace(android.R.id.content, fragment)
         }
     }

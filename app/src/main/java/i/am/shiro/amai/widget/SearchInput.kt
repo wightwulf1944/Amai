@@ -7,7 +7,6 @@ import android.view.KeyEvent
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import com.google.android.material.textfield.TextInputEditText
-import timber.log.Timber
 
 class SearchInput(context: Context, attrs: AttributeSet) : TextInputEditText(context, attrs) {
 

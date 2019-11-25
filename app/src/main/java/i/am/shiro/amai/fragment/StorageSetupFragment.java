@@ -94,7 +94,7 @@ public final class StorageSetupFragment extends Fragment {
     }
 
     private void onFinish() {
-        FragmentManager fragmentManager = requireFragmentManager();
+        FragmentManager fragmentManager = getParentFragmentManager();
         fragmentManager.popBackStack();
         fragmentManager.beginTransaction()
             .replace(android.R.id.content, new MainFragment())
