@@ -4,7 +4,5 @@ import android.os.Bundle
 import androidx.fragment.app.Fragment
 
 fun Fragment.buildArguments(bundleBlock: Bundle.() -> Unit) {
-    val bundle = Bundle()
-    bundle.bundleBlock()
-    arguments = bundle
+    arguments = Bundle().apply(bundleBlock)
 }

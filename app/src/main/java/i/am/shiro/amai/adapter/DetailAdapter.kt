@@ -18,8 +18,8 @@ import i.am.shiro.amai.util.addChild
 import i.am.shiro.amai.util.inflateChild
 import kotlin.math.min
 
-const val HEADER = 0
-const val THUMBNAIL = 1
+private const val HEADER = 0
+private const val THUMBNAIL = 1
 
 class DetailAdapter(
     private val parentFragment: Fragment,
