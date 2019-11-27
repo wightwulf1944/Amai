@@ -10,7 +10,6 @@ fun ViewGroup.inflateChild(@LayoutRes layoutRes: Int): View {
 }
 
 inline fun <reified T : View> ViewGroup.addChild(@LayoutRes layoutRes: Int, block: T.() -> Unit) {
-    val child = inflateChild(layoutRes)
-    block(child as T)
-    addView(child)
+    val child = inflateChild(layoutRes) as T
+    addView(child.apply(block))
 }
