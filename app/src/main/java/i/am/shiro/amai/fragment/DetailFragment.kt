@@ -13,11 +13,9 @@ import i.am.shiro.amai.R
 import i.am.shiro.amai.adapter.DetailAdapter
 import i.am.shiro.amai.model.Book
 import i.am.shiro.amai.service.addToQueue
-import i.am.shiro.amai.util.buildArguments
+import i.am.shiro.amai.util.argument
 import io.realm.Realm
 import kotlinx.android.synthetic.main.fragment_detail.*
-
-private const val BOOK_ID = "bookId"
 
 class DetailFragment() : Fragment(R.layout.fragment_detail) {
 
@@ -25,17 +23,16 @@ class DetailFragment() : Fragment(R.layout.fragment_detail) {
 
     private lateinit var book: Book
 
+    private var bookId: Int by argument()
+
     constructor(bookId: Int) : this() {
-        buildArguments {
-            putInt(BOOK_ID, bookId)
-        }
+        this.bookId = bookId
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         realm = Realm.getDefaultInstance()
 
-        val bookId = arguments!!.getInt(BOOK_ID, -1)
         book = realm.where(Book::class.java)
             .equalTo("id", bookId)
             .findFirst()!!

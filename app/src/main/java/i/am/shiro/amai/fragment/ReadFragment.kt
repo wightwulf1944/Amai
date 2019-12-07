@@ -9,23 +9,21 @@ import i.am.shiro.amai.R
 import i.am.shiro.amai.adapter.BookPageAdapter
 import i.am.shiro.amai.model.Book
 import i.am.shiro.amai.model.Image
-import i.am.shiro.amai.util.buildArguments
+import i.am.shiro.amai.util.argument
 import io.realm.Realm
 import kotlinx.android.synthetic.main.fragment_read.*
-
-private const val BOOK_ID = "bookId"
-
-private const val PAGE_INDEX = "pageIndex"
 
 class ReadFragment() : Fragment(R.layout.fragment_read) {
 
     private lateinit var realm: Realm
 
+    private var bookId: Int by argument()
+
+    private var pageIndex: Int by argument()
+
     constructor(bookId: Int, pageIndex: Int) : this() {
-        buildArguments {
-            putInt(BOOK_ID, bookId)
-            putInt(PAGE_INDEX, pageIndex)
-        }
+        this.bookId = bookId
+        this.pageIndex = pageIndex
     }
 
     override fun onAttach(context: Context) {
@@ -55,21 +53,16 @@ class ReadFragment() : Fragment(R.layout.fragment_read) {
         pageRecycler.setOnPageScrollListener { value -> pageText.text = value.toString() }
 
         if (savedInstanceState == null) {
-            val position = extractPageIndex()
+            val position = pageIndex
             pageRecycler.scrollToPosition(position)
             pageText.text = (position + 1).toString()
         }
     }
 
     private fun extractImages(): List<Image> {
-        val bookId = arguments!!.getInt(BOOK_ID, -1)
         return realm.where(Book::class.java)
             .equalTo("id", bookId)
             .findFirst()!!
             .pageImages
-    }
-
-    private fun extractPageIndex(): Int {
-        return arguments!!.getInt(PAGE_INDEX, 0)
     }
 }
