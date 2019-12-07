@@ -64,8 +64,6 @@ class SavedFragment : Fragment(R.layout.fragment_saved) {
     }
 
     private fun invokeDeleteBook(book: Book) {
-        val dialogFragment = DeleteBookDialogFragment()
-        dialogFragment.setArguments(book)
-        dialogFragment.show(childFragmentManager)
+        DeleteBookDialogFragment(book).show(childFragmentManager)
     }
 }
