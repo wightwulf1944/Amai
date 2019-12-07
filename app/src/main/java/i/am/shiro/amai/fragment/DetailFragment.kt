@@ -23,7 +23,7 @@ class DetailFragment() : Fragment(R.layout.fragment_detail) {
 
     private lateinit var book: Book
 
-    private var bookId: Int by argument()
+    private var bookId by argument<Int>()
 
     constructor(bookId: Int) : this() {
         this.bookId = bookId

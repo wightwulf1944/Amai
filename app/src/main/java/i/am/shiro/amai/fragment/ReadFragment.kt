@@ -17,9 +17,9 @@ class ReadFragment() : Fragment(R.layout.fragment_read) {
 
     private lateinit var realm: Realm
 
-    private var bookId: Int by argument()
+    private var bookId by argument<Int>()
 
-    private var pageIndex: Int by argument()
+    private var pageIndex by argument<Int>()
 
     constructor(bookId: Int, pageIndex: Int) : this() {
         this.bookId = bookId
