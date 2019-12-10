@@ -7,10 +7,8 @@
     <string name="storage_label">External %1$d</string>
     <string name="storage_free">%1$s Free</string>
     <string name="storage_note">
-        <ul>
-            <li>Uninstalling this app will also delete your downloads\n</li>
-            <li>Changing the storage option later will not transfer your downloads\n</li>
-        </ul>
+        • Uninstalling this app will also delete your downloads
+        \n• Changing the storage option later will not transfer your downloads
     </string>
 
     <string name="search">Search</string>
