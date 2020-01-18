@@ -6,6 +6,7 @@ import android.util.AttributeSet
 import android.view.KeyEvent
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
+import androidx.core.content.getSystemService
 import com.google.android.material.textfield.TextInputEditText
 
 class SearchInput(context: Context, attrs: AttributeSet) : TextInputEditText(context, attrs) {
@@ -55,7 +56,7 @@ class SearchInput(context: Context, attrs: AttributeSet) : TextInputEditText(con
     }
 
     private fun hideKeyboard() {
-        val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-        imm.hideSoftInputFromWindow(windowToken, 0)
+        context.getSystemService<InputMethodManager>()!!
+            .hideSoftInputFromWindow(windowToken, 0)
     }
 }

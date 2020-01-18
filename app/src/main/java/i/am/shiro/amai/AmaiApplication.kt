@@ -5,6 +5,7 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.os.Build
 import android.util.Log
+import androidx.core.content.getSystemService
 import com.bumptech.glide.Glide
 import com.bumptech.glide.GlideBuilder
 import i.am.shiro.amai.constant.Constants.DEFAULT_CHANNEL_ID
@@ -35,7 +36,7 @@ class AmaiApplication : Application() {
                 getString(R.string.app_name),
                 NotificationManager.IMPORTANCE_DEFAULT)
 
-            getSystemService(NotificationManager::class.java).createNotificationChannel(mChannel)
+            getSystemService<NotificationManager>()!!.createNotificationChannel(mChannel)
         }
     }
 
