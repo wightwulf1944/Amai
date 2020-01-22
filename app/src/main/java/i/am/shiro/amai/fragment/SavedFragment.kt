@@ -35,7 +35,10 @@ class SavedFragment : Fragment(R.layout.fragment_saved) {
         recyclerView.setHasFixedSize(true)
         recyclerView.adapter = adapter
 
-        viewModel.booksLive.observe(this, adapter::submitList)
+        viewModel.booksLive.observe(viewLifecycleOwner) {
+            recyclerView.scrollToPosition(0)
+            adapter.submitList(it)
+        }
     }
 
     private fun onActionClick(menuItem: MenuItem): Boolean {

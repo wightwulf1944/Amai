@@ -1,7 +1,9 @@
 package i.am.shiro.amai.widget;
 
 import android.content.Context;
+import android.graphics.Rect;
 import android.util.AttributeSet;
+import android.view.MotionEvent;
 import android.view.View;
 
 import androidx.annotation.NonNull;
@@ -11,8 +13,24 @@ import androidx.core.view.ViewCompat;
 
 public final class TopFloatingBehavior extends CoordinatorLayout.Behavior<View> {
 
+    /**
+     * cached for recycling
+     */
+    private final Rect childRect = new Rect();
+
     public TopFloatingBehavior(Context context, AttributeSet attrs) {
         super(context, attrs);
+    }
+
+    @Override
+    public boolean onInterceptTouchEvent(@NonNull CoordinatorLayout parent, @NonNull View child, @NonNull MotionEvent ev) {
+        child.getHitRect(childRect);
+
+        if (childRect.contains((int) ev.getX(), (int) ev.getY())) {
+            child.animate().translationY(0);
+        }
+
+        return super.onInterceptTouchEvent(parent, child, ev);
     }
 
     @Override
