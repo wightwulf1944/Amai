@@ -12,7 +12,7 @@ import i.am.shiro.amai.adapter.SavedPreviewAdapter
 import i.am.shiro.amai.data.view.SavedPreviewView
 import i.am.shiro.amai.fragment.dialog.DeleteBookDialogFragment
 import i.am.shiro.amai.fragment.dialog.PlaceholderDialogFragment
-import i.am.shiro.amai.fragment.dialog.SavedSortOrderDialogFragment
+import i.am.shiro.amai.fragment.dialog.SavedSortDialog
 import i.am.shiro.amai.util.show
 import i.am.shiro.amai.viewmodel.SavedViewModel
 import kotlinx.android.synthetic.main.fragment_saved.*
@@ -25,10 +25,7 @@ class SavedFragment : Fragment(R.layout.fragment_saved) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         toolbar.setOnMenuItemClickListener(::onActionClick)
 
-        searchInput.onSubmitListener = { query: String ->
-            recyclerView.scrollToPosition(0)
-            viewModel.onSearch(query)
-        }
+        searchInput.onSubmitListener = viewModel::onSearch
 
         val adapter = SavedPreviewAdapter(
             parentFragment = this,
@@ -39,7 +36,11 @@ class SavedFragment : Fragment(R.layout.fragment_saved) {
         recyclerView.setHasFixedSize(true)
         recyclerView.adapter = adapter
 
-        viewModel.booksLive.observe(viewLifecycleOwner, adapter::submitList)
+        viewModel.booksLive.observe(viewLifecycleOwner) { books ->
+            adapter.submitList(books) {
+                recyclerView.scrollToPosition(0)
+            }
+        }
     }
 
     private fun onActionClick(menuItem: MenuItem): Boolean {
@@ -51,7 +52,7 @@ class SavedFragment : Fragment(R.layout.fragment_saved) {
     }
 
     private fun invokeSort() {
-        SavedSortOrderDialogFragment().show(childFragmentManager)
+        SavedSortDialog().show(childFragmentManager)
     }
 
     private fun invokeHelp() {
