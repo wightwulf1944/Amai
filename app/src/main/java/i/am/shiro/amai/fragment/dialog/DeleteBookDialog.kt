@@ -9,7 +9,7 @@ import i.am.shiro.amai.util.argument
 import io.reactivex.Completable
 import io.reactivex.schedulers.Schedulers.io
 
-class DeleteBookDialogFragment() : DialogFragment() {
+class DeleteBookDialog() : DialogFragment() {
 
     private var bookId by argument<Int>()
 

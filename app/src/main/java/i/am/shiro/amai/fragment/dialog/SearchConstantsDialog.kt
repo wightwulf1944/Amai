@@ -9,7 +9,7 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
 import i.am.shiro.amai.Preferences
 
-class SearchConstantsDialogFragment : DialogFragment() {
+class SearchConstantsDialog : DialogFragment() {
 
     private lateinit var editText: AppCompatEditText
 

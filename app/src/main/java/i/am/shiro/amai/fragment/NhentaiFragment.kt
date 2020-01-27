@@ -12,8 +12,8 @@ import androidx.lifecycle.observe
 import i.am.shiro.amai.R
 import i.am.shiro.amai.adapter.CachedPreviewAdapter
 import i.am.shiro.amai.data.view.CachedPreviewView
-import i.am.shiro.amai.fragment.dialog.NhentaiSortOrderDialogFragment
-import i.am.shiro.amai.fragment.dialog.SearchConstantsDialogFragment
+import i.am.shiro.amai.fragment.dialog.NhentaiSortDialog
+import i.am.shiro.amai.fragment.dialog.SearchConstantsDialog
 import i.am.shiro.amai.util.show
 import i.am.shiro.amai.viewmodel.NhentaiViewModel
 import kotlinx.android.synthetic.main.fragment_nhentai.*
@@ -27,7 +27,7 @@ class NhentaiFragment : Fragment(R.layout.fragment_nhentai) {
 
         searchInput.onSubmitListener = { query: String ->
             recyclerView.scrollToPosition(0)
-            viewModel.search(query)
+            viewModel.onSearch(query)
         }
 
         val adapter = CachedPreviewAdapter(
@@ -47,12 +47,8 @@ class NhentaiFragment : Fragment(R.layout.fragment_nhentai) {
 
     private fun onActionClick(menuItem: MenuItem): Boolean {
         when (menuItem.itemId) {
-            R.id.action_sort -> {
-                NhentaiSortOrderDialogFragment().show(childFragmentManager)
-            }
-            R.id.action_constants -> {
-                SearchConstantsDialogFragment().show(childFragmentManager)
-            }
+            R.id.action_sort -> NhentaiSortDialog().show(childFragmentManager)
+            R.id.action_constants -> SearchConstantsDialog().show(childFragmentManager)
         }
         return true
     }

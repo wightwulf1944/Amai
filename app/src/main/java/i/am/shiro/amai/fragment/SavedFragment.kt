@@ -10,8 +10,8 @@ import androidx.lifecycle.observe
 import i.am.shiro.amai.R
 import i.am.shiro.amai.adapter.SavedPreviewAdapter
 import i.am.shiro.amai.data.view.SavedPreviewView
-import i.am.shiro.amai.fragment.dialog.DeleteBookDialogFragment
-import i.am.shiro.amai.fragment.dialog.PlaceholderDialogFragment
+import i.am.shiro.amai.fragment.dialog.DeleteBookDialog
+import i.am.shiro.amai.fragment.dialog.PlaceholderDialog
 import i.am.shiro.amai.fragment.dialog.SavedSortDialog
 import i.am.shiro.amai.util.show
 import i.am.shiro.amai.viewmodel.SavedViewModel
@@ -56,7 +56,7 @@ class SavedFragment : Fragment(R.layout.fragment_saved) {
     }
 
     private fun invokeHelp() {
-        PlaceholderDialogFragment().show(childFragmentManager)
+        PlaceholderDialog().show(childFragmentManager)
     }
 
     private fun invokeViewDetails(preview: SavedPreviewView) {
@@ -69,6 +69,6 @@ class SavedFragment : Fragment(R.layout.fragment_saved) {
     }
 
     private fun invokeDeleteBook(preview: SavedPreviewView) {
-        DeleteBookDialogFragment(preview.bookId, preview.title).show(childFragmentManager)
+        DeleteBookDialog(preview.bookId, preview.title).show(childFragmentManager)
     }
 }

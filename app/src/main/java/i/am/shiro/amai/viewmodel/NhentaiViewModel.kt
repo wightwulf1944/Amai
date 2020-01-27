@@ -66,7 +66,7 @@ class NhentaiViewModel(handle: SavedStateHandle) : ViewModel() {
         if (position > booksLive.value!!.size - PAGING_THRESHOLD) fetchRemotePage()
     }
 
-    fun onSortOrderChanged(sort: NhentaiSort) {
+    fun onSort(sort: NhentaiSort) {
         page = 0
         this.sort = sort
 
@@ -76,7 +76,7 @@ class NhentaiViewModel(handle: SavedStateHandle) : ViewModel() {
         }
     }
 
-    fun search(query: String) {
+    fun onSearch(query: String) {
         page = 0
         this.query = query
 
@@ -130,11 +130,13 @@ class NhentaiViewModel(handle: SavedStateHandle) : ViewModel() {
             imageEntities += book.imageEntities()
         }
 
-        DATABASE.runInTransaction {
-            DATABASE.cachedDao.insert(cachedEntities)
-            DATABASE.bookDao.insert(bookEntities)
-            DATABASE.tagDao.insert(tagEntities)
-            DATABASE.remoteImageDao.insert(imageEntities)
+        with(DATABASE) {
+            runInTransaction {
+                cachedDao.insert(cachedEntities)
+                bookDao.insert(bookEntities)
+                tagDao.insert(tagEntities)
+                remoteImageDao.insert(imageEntities)
+            }
         }
 
         if (page < searchResponseJson.pageTotal) ++page
