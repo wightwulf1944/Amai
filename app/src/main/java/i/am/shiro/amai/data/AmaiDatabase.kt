@@ -23,7 +23,7 @@ import i.am.shiro.amai.data.view.*
         PageView::class,
         DownloadDetailView::class
     ],
-    version = 16,
+    version = 18,
     exportSchema = false)
 abstract class AmaiDatabase : RoomDatabase() {
 

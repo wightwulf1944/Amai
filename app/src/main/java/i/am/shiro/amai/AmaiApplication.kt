@@ -33,7 +33,7 @@ class AmaiApplication : Application() {
         Stetho.initializeWithDefaults(this)
 
         DATABASE = Room.databaseBuilder(this, AmaiDatabase::class.java, "amai")
-            .fallbackToDestructiveMigration()
+            .fallbackToDestructiveMigrationOnDowngrade()
             .build()
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
