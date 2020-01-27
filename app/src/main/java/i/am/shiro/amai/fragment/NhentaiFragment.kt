@@ -25,7 +25,10 @@ class NhentaiFragment : Fragment(R.layout.fragment_nhentai) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         toolbar.setOnMenuItemClickListener(::onActionClick)
 
-        searchInput.onSubmitListener = viewModel::search
+        searchInput.onSubmitListener = { query: String ->
+            recyclerView.scrollToPosition(0)
+            viewModel.search(query)
+        }
 
         val adapter = CachedPreviewAdapter(
             parentFragment = this,

@@ -25,7 +25,10 @@ class SavedFragment : Fragment(R.layout.fragment_saved) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         toolbar.setOnMenuItemClickListener(::onActionClick)
 
-        searchInput.onSubmitListener = viewModel::onSearch
+        searchInput.onSubmitListener = { query: String ->
+            recyclerView.scrollToPosition(0)
+            viewModel.onSearch(query)
+        }
 
         val adapter = SavedPreviewAdapter(
             parentFragment = this,
@@ -36,10 +39,7 @@ class SavedFragment : Fragment(R.layout.fragment_saved) {
         recyclerView.setHasFixedSize(true)
         recyclerView.adapter = adapter
 
-        viewModel.booksLive.observe(viewLifecycleOwner) {
-            recyclerView.scrollToPosition(0)
-            adapter.submitList(it)
-        }
+        viewModel.booksLive.observe(viewLifecycleOwner, adapter::submitList)
     }
 
     private fun onActionClick(menuItem: MenuItem): Boolean {
