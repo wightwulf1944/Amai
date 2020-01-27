@@ -6,29 +6,35 @@ import android.app.NotificationManager
 import android.os.Build
 import android.util.Log
 import androidx.core.content.getSystemService
+import androidx.room.Room
 import com.bumptech.glide.Glide
 import com.bumptech.glide.GlideBuilder
+import com.facebook.stetho.Stetho
 import i.am.shiro.amai.constant.Constants.DEFAULT_CHANNEL_ID
-import io.realm.Realm
-import io.realm.RealmConfiguration
+import i.am.shiro.amai.data.AmaiDatabase
 import timber.log.Timber
+
+lateinit var APPLICATION: AmaiApplication
+    private set
+
+lateinit var DATABASE: AmaiDatabase
+    private set
 
 class AmaiApplication : Application() {
 
     override fun onCreate() {
         super.onCreate()
+        APPLICATION = this
 
         Preferences.init(this)
 
         if (BuildConfig.DEBUG) initDebugTools()
 
-        Realm.init(this)
-        val config = RealmConfiguration.Builder()
-            .schemaVersion(1)
-            .migration(Migration())
-            .compactOnLaunch()
+        Stetho.initializeWithDefaults(this)
+
+        DATABASE = Room.databaseBuilder(this, AmaiDatabase::class.java, "amai")
+            .fallbackToDestructiveMigration()
             .build()
-        Realm.setDefaultConfiguration(config)
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val mChannel = NotificationChannel(

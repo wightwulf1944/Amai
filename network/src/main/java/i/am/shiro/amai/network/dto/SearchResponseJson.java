@@ -8,7 +8,7 @@ public class SearchResponseJson {
     @Json(name = "result")
     public List<BookJson> results;
     @Json(name = "num_pages")
-    int pageTotal;
+    public int pageTotal;
     @Json(name = "per_page")
-    int booksPerPage;
+    public int booksPerPage;
 }

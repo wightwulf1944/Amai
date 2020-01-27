@@ -1,8 +1,6 @@
 package i.am.shiro.amai.adapter
 
 import android.view.View
-import android.view.View.INVISIBLE
-import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
@@ -15,23 +13,21 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DecodeFormat
 import i.am.shiro.amai.R
-import i.am.shiro.amai.model.Book
+import i.am.shiro.amai.adapter.CachedPreviewAdapter.ViewHolder
+import i.am.shiro.amai.data.view.CachedPreviewView
 import i.am.shiro.amai.util.inflateChild
 
-class BookAdapter(
-        private val parentFragment: Fragment,
-        private val onItemClick: (Book) -> Unit,
-        private val onItemLongClick: (Book) -> Unit = {},
-        private val onPositionBind: (Int) -> Unit = {}
-) : ListAdapter<Book, BookAdapter.ViewHolder>(DiffCallback()) {
+class CachedPreviewAdapter(
+    private val parentFragment: Fragment,
+    private val onItemClick: (CachedPreviewView) -> Unit,
+    private val onPositionBind: (Int) -> Unit
+) : ListAdapter<CachedPreviewView, ViewHolder>(DiffCallback()) {
 
     init {
         setHasStableIds(true)
     }
 
-    override fun getItemId(position: Int): Long {
-        return getItem(position).id.toLong()
-    }
+    override fun getItemId(position: Int) = getItem(position).bookId.toLong()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(parent.inflateChild(R.layout.item_staggered_book))
@@ -43,7 +39,6 @@ class BookAdapter(
     }
 
     inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-
         private val thumbnailImage = view.findViewById<ImageView>(R.id.thumbnailImage)
 
         private val titleText = view.findViewById<TextView>(R.id.titleText)
@@ -52,48 +47,40 @@ class BookAdapter(
 
         private val savedBadge = view.findViewById<ImageView>(R.id.badgeSaved)
 
-        private lateinit var book: Book
+        private lateinit var book: CachedPreviewView
 
         init {
             view.setOnClickListener { onItemClick(book) }
-            view.setOnLongClickListener { onItemLongClick() }
-        }
-
-        private fun onItemLongClick(): Boolean {
-            onItemLongClick(book)
-            return true
         }
 
         fun bind(position: Int) {
             book = getItem(position)
 
-            savedBadge.visibility = if (book.isDownloaded) VISIBLE else INVISIBLE
+            savedBadge.visibility = if (book.isSaved) View.VISIBLE else View.INVISIBLE
             titleText.text = book.title
             pageText.text = book.pageCount.toString()
 
-            val coverThumbnailImage = book.coverThumbnailImage
-
             thumbnailImage.updateLayoutParams<ConstraintLayout.LayoutParams> {
-                val width = coverThumbnailImage.width
-                val height = coverThumbnailImage.height
+                val width = book.thumbnailWidth
+                val height = book.thumbnailHeight
                 dimensionRatio = "h,$width:$height"
             }
 
             Glide.with(parentFragment)
-                    .load(coverThumbnailImage.url)
-                    .format(DecodeFormat.PREFER_RGB_565)
-                    .into(thumbnailImage)
+                .load(book.thumbnailUrl)
+                .format(DecodeFormat.PREFER_RGB_565)
+                .into(thumbnailImage)
         }
     }
 
-    private class DiffCallback : DiffUtil.ItemCallback<Book>() {
+    private class DiffCallback : DiffUtil.ItemCallback<CachedPreviewView>() {
 
-        override fun areItemsTheSame(oldItem: Book, newItem: Book): Boolean {
-            return oldItem.id == newItem.id
+        override fun areItemsTheSame(oldItem: CachedPreviewView, newItem: CachedPreviewView): Boolean {
+            return oldItem.bookId == newItem.bookId
         }
 
-        override fun areContentsTheSame(oldItem: Book, newItem: Book): Boolean {
-            return oldItem.isDownloaded == newItem.isDownloaded
+        override fun areContentsTheSame(oldItem: CachedPreviewView, newItem: CachedPreviewView): Boolean {
+            return oldItem.isSaved == newItem.isSaved
         }
     }
 }

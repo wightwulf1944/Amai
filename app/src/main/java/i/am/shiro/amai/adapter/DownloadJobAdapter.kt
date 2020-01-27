@@ -9,24 +9,22 @@ import androidx.annotation.CallSuper
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import i.am.shiro.amai.DownloadStatus
 import i.am.shiro.amai.R
-import i.am.shiro.amai.constant.DownloadStatus
-import i.am.shiro.amai.model.DownloadJob
+import i.am.shiro.amai.data.model.Download
 import i.am.shiro.amai.util.inflateChild
 
 class DownloadJobAdapter(
-        private val onDismiss: (DownloadJob) -> Unit,
-        private val onCancel: (DownloadJob) -> Unit,
-        private val onRetry: (DownloadJob) -> Unit,
-        private val onPause: (DownloadJob) -> Unit
-) : ListAdapter<DownloadJob, DownloadJobAdapter.ViewHolder>(DiffCallback()) {
+    private val onDismiss: (Download) -> Unit,
+    private val onCancel: (Download) -> Unit,
+    private val onRetry: (Download) -> Unit,
+    private val onPause: (Download) -> Unit
+) : ListAdapter<Download, DownloadJobAdapter.ViewHolder>(DiffCallback()) {
 
-    override fun getItemViewType(position: Int): Int {
-        return getItem(position).status
-    }
+    override fun getItemViewType(position: Int) = getItem(position).status.ordinal
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        return when (viewType) {
+        return when (DownloadStatus.values()[viewType]) {
             DownloadStatus.DONE -> {
                 DoneViewHolder(parent.inflateChild(R.layout.item_download_done))
             }
@@ -52,7 +50,7 @@ class DownloadJobAdapter(
         private val titleText: TextView = itemView.findViewById(R.id.titleText)
 
         @CallSuper
-        internal open fun bindData(job: DownloadJob) {
+        internal open fun bindData(job: Download) {
             titleText.text = job.title
         }
     }
@@ -61,9 +59,9 @@ class DownloadJobAdapter(
 
         private val statusText: TextView = itemView.findViewById(R.id.statusText)
 
-        override fun bindData(job: DownloadJob) {
+        override fun bindData(job: Download) {
             super.bindData(job)
-            statusText.text = job.statusString
+            statusText.text = job.status.toString()
         }
     }
 
@@ -71,7 +69,7 @@ class DownloadJobAdapter(
 
         private val dismissButton: Button = itemView.findViewById(R.id.dismissButton)
 
-        override fun bindData(job: DownloadJob) {
+        override fun bindData(job: Download) {
             super.bindData(job)
             dismissButton.setOnClickListener { onDismiss(job) }
         }
@@ -83,7 +81,7 @@ class DownloadJobAdapter(
 
         private val retryButton: Button = itemView.findViewById(R.id.retryButton)
 
-        override fun bindData(job: DownloadJob) {
+        override fun bindData(job: Download) {
             super.bindData(job)
             cancelButton.setOnClickListener { onCancel(job) }
             retryButton.setOnClickListener { onRetry(job) }
@@ -98,23 +96,21 @@ class DownloadJobAdapter(
 
         private val pauseButton: Button = itemView.findViewById(R.id.pauseButton)
 
-        override fun bindData(job: DownloadJob) {
+        override fun bindData(job: Download) {
             super.bindData(job)
-            progressBar.max = job.taskList.size
-            progressBar.progress = job.taskIndex
+            progressBar.max = job.progressMax
+            progressBar.progress = job.progress
             cancelButton.setOnClickListener { onCancel(job) }
             pauseButton.setOnClickListener { onPause(job) }
         }
     }
 
-    private class DiffCallback : DiffUtil.ItemCallback<DownloadJob>() {
+    private class DiffCallback : DiffUtil.ItemCallback<Download>() {
 
-        override fun areItemsTheSame(oldItem: DownloadJob, newItem: DownloadJob): Boolean {
-            return oldItem.bookId == newItem.bookId
-        }
+        override fun areItemsTheSame(oldItem: Download, newItem: Download): Boolean =
+            oldItem.bookId == newItem.bookId
 
-        override fun areContentsTheSame(oldItem: DownloadJob, newItem: DownloadJob): Boolean {
-            return oldItem.status == newItem.status && oldItem.taskIndex == newItem.taskIndex
-        }
+        override fun areContentsTheSame(oldItem: Download, newItem: Download): Boolean =
+            oldItem.status == newItem.status && oldItem.progress == newItem.progress
     }
 }

@@ -1,50 +1,46 @@
 package i.am.shiro.amai.viewmodel
 
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
-import i.am.shiro.amai.model.Book
+import i.am.shiro.amai.DATABASE
+import i.am.shiro.amai.SavedSort
+import i.am.shiro.amai.data.view.SavedPreviewView
+import i.am.shiro.amai.util.delegate
 import io.reactivex.disposables.Disposables
-import io.realm.Case
-import io.realm.Realm
-import io.realm.kotlin.where
 
-class SavedViewModel : ViewModel() {
-
-    private val realm = Realm.getDefaultInstance()
+class SavedViewModel(handle: SavedStateHandle) : ViewModel() {
 
     private var disposable = Disposables.disposed()
 
-    val booksLive = MutableLiveData<List<Book>>()
+    private var query by handle.delegate("%")
+
+    private var sort by handle.delegate(SavedSort.New)
+
+    val booksLive = MutableLiveData<List<SavedPreviewView>>()
 
     init {
-        filterBooks("")
+        fetchLocal()
+    }
+
+    fun onSearch(query: String) {
+        this.query = "%$query%"
+        fetchLocal()
+    }
+
+    fun onSort(sort: SavedSort) {
+        this.sort = sort
+        fetchLocal()
+    }
+
+    private fun fetchLocal() {
+        disposable.dispose()
+        disposable = DATABASE.savedPreviewDao
+            .findSorted(query, sort)
+            .subscribe(booksLive::postValue)
     }
 
     override fun onCleared() {
-        super.onCleared()
         disposable.dispose()
-        realm.close()
-    }
-
-    fun filterBooks(s: String) {
-        disposable.dispose()
-
-        disposable = realm.where<Book>()
-            .equalTo("isDownloaded", true)
-            .contains("title", s, Case.INSENSITIVE)
-            .findAllAsync()
-            .asFlowable()
-            .filter { it.isLoaded }
-            .map { realm.copyFromRealm(it) }
-            .subscribe { booksLive.postValue(it) }
-    }
-
-    fun onBookDelete(bookId: Int) {
-        realm.executeTransaction {
-            it.where<Book>()
-                .equalTo("id", bookId)
-                .findAll()
-                .deleteAllFromRealm()
-        }
     }
 }

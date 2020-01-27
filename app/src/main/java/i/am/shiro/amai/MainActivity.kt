@@ -22,8 +22,14 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun getInitialFragment() = when {
-        intent.action == Intent.ACTION_VIEW -> LoadingFragment()
-        Preferences.isFirstRun() -> WelcomeFragment()
-        else -> MainFragment()
+        intent.action == Intent.ACTION_VIEW -> {
+            LoadingFragment(intent.data!!.pathSegments[1].toInt())
+        }
+        Preferences.isFirstRun() -> {
+            WelcomeFragment()
+        }
+        else -> {
+            MainFragment()
+        }
     }
 }

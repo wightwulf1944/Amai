@@ -7,17 +7,17 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.observe
-
 import i.am.shiro.amai.R
-import i.am.shiro.amai.adapter.BookAdapter
+import i.am.shiro.amai.adapter.SavedPreviewAdapter
+import i.am.shiro.amai.data.view.SavedPreviewView
 import i.am.shiro.amai.fragment.dialog.DeleteBookDialogFragment
 import i.am.shiro.amai.fragment.dialog.PlaceholderDialogFragment
 import i.am.shiro.amai.fragment.dialog.SavedSortOrderDialogFragment
-import i.am.shiro.amai.model.Book
 import i.am.shiro.amai.util.show
 import i.am.shiro.amai.viewmodel.SavedViewModel
 import kotlinx.android.synthetic.main.fragment_saved.*
 
+// TODO implement sorting
 class SavedFragment : Fragment(R.layout.fragment_saved) {
 
     private val viewModel by viewModels<SavedViewModel>()
@@ -25,9 +25,10 @@ class SavedFragment : Fragment(R.layout.fragment_saved) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         toolbar.setOnMenuItemClickListener(::onActionClick)
 
-        searchInput.onSubmitListener = viewModel::filterBooks
+        searchInput.onSubmitListener = viewModel::onSearch
 
-        val adapter = BookAdapter(this,
+        val adapter = SavedPreviewAdapter(
+            parentFragment = this,
             onItemClick = ::invokeViewDetails,
             onItemLongClick = ::invokeDeleteBook
         )
@@ -57,8 +58,8 @@ class SavedFragment : Fragment(R.layout.fragment_saved) {
         PlaceholderDialogFragment().show(childFragmentManager)
     }
 
-    private fun invokeViewDetails(book: Book) {
-        val fragment = DetailFragment(book.id)
+    private fun invokeViewDetails(preview: SavedPreviewView) {
+        val fragment = DetailFragment(preview.bookId)
 
         requireActivity().supportFragmentManager.commit {
             replace(android.R.id.content, fragment)
@@ -66,7 +67,7 @@ class SavedFragment : Fragment(R.layout.fragment_saved) {
         }
     }
 
-    private fun invokeDeleteBook(book: Book) {
-        DeleteBookDialogFragment(book).show(childFragmentManager)
+    private fun invokeDeleteBook(preview: SavedPreviewView) {
+        DeleteBookDialogFragment(preview.bookId, preview.title).show(childFragmentManager)
     }
 }

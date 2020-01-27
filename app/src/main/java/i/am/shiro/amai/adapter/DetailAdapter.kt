@@ -12,8 +12,8 @@ import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DecodeFormat
 import i.am.shiro.amai.R
-import i.am.shiro.amai.model.Book
-import i.am.shiro.amai.model.Image
+import i.am.shiro.amai.data.view.ThumbnailView
+import i.am.shiro.amai.model.DetailModel
 import i.am.shiro.amai.util.addChild
 import i.am.shiro.amai.util.inflateChild
 import kotlin.math.min
@@ -23,13 +23,11 @@ private const val THUMBNAIL = 1
 
 class DetailAdapter(
     private val parentFragment: Fragment,
-    private val book: Book,
+    private val model: DetailModel,
     private val onThumbnailClickListener: (Int) -> Unit
 ) : Adapter<ViewHolder>() {
 
-    private val pageThumbnailImages: List<Image> = book.pageThumbnailImages
-
-    override fun getItemCount() = pageThumbnailImages.size + 1
+    override fun getItemCount() = model.pageImages.size + 1
 
     override fun getItemViewType(position: Int) = if (position == 0) HEADER else THUMBNAIL
 
@@ -37,7 +35,7 @@ class DetailAdapter(
         return when (viewType) {
             HEADER -> {
                 val view = parent.inflateChild(R.layout.item_detail_header)
-                HeaderViewHolder(view, book)
+                HeaderViewHolder(view)
             }
             THUMBNAIL -> {
                 val view = parent.inflateChild(R.layout.item_preview_image)
@@ -49,26 +47,26 @@ class DetailAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         if (holder is ThumbnailViewHolder) {
-            holder.bind(pageThumbnailImages[position - 1])
+            holder.bind(model.pageImages[position - 1])
         }
     }
 
-    private class HeaderViewHolder(itemView: View, book: Book) : ViewHolder(itemView) {
+    private inner class HeaderViewHolder(itemView: View) : ViewHolder(itemView) {
 
         init {
-            itemView.findViewById<TextView>(R.id.titleText).text = book.title
+            itemView.findViewById<TextView>(R.id.titleText).text = model.book.title
 
-            val pageCount = itemView.resources.getString(R.string.pages_format, book.pageCount)
+            val pageCount = itemView.resources.getString(R.string.pages_format, model.book.pageCount)
             itemView.findViewById<TextView>(R.id.text_pages).text = pageCount
 
             val tagsLayout = itemView.findViewById<ViewGroup>(R.id.layout_tags)
-            tagsLayout.addTagGroup("Artists", book.artistTags)
-            tagsLayout.addTagGroup("Groups", book.groupTags)
-            tagsLayout.addTagGroup("Parodies", book.parodyTags)
-            tagsLayout.addTagGroup("Characters", book.characterTags)
-            tagsLayout.addTagGroup("Language", book.languageTags)
-            tagsLayout.addTagGroup("Categories", book.categoryTags)
-            tagsLayout.addTagGroup("Tags", book.generalTags)
+            tagsLayout.addTagGroup("Artists", model.artistTags)
+            tagsLayout.addTagGroup("Groups", model.groupTags)
+            tagsLayout.addTagGroup("Parodies", model.parodyTags)
+            tagsLayout.addTagGroup("Characters", model.characterTags)
+            tagsLayout.addTagGroup("Language", model.languageTags)
+            tagsLayout.addTagGroup("Categories", model.categoryTags)
+            tagsLayout.addTagGroup("Tags", model.generalTags)
         }
 
         private fun ViewGroup.addTagGroup(label: String, tags: List<String>) {
@@ -97,7 +95,7 @@ class DetailAdapter(
             }
         }
 
-        fun bind(image: Image) {
+        fun bind(image: ThumbnailView) {
             val width = image.width
             val maxHeight = (width / 200.0 * 364.0).toInt()
             val height = min(image.height, maxHeight)
@@ -107,9 +105,9 @@ class DetailAdapter(
             }
 
             Glide.with(parentFragment)
-                    .load(image.url)
-                    .format(DecodeFormat.PREFER_RGB_565)
-                    .into(previewImage)
+                .load(image.url)
+                .format(DecodeFormat.PREFER_RGB_565)
+                .into(previewImage)
         }
     }
 }

@@ -2,12 +2,12 @@ package i.am.shiro.amai.fragment.dialog
 
 import android.os.Bundle
 import androidx.fragment.app.DialogFragment
-import androidx.lifecycle.ViewModelProviders
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import i.am.shiro.amai.DATABASE
 import i.am.shiro.amai.R
-import i.am.shiro.amai.model.Book
 import i.am.shiro.amai.util.argument
-import i.am.shiro.amai.viewmodel.SavedViewModel
+import io.reactivex.Completable
+import io.reactivex.schedulers.Schedulers.io
 
 class DeleteBookDialogFragment() : DialogFragment() {
 
@@ -15,9 +15,9 @@ class DeleteBookDialogFragment() : DialogFragment() {
 
     private var bookTitle by argument<String>()
 
-    constructor(book: Book) : this() {
-        bookId = book.id
-        bookTitle = book.title
+    constructor(bookId: Int, bookTitle: String) : this() {
+        this.bookId = bookId
+        this.bookTitle = bookTitle
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?) =
@@ -29,8 +29,13 @@ class DeleteBookDialogFragment() : DialogFragment() {
             .create()
 
     private fun onConfirmClick() {
-        ViewModelProviders.of(requireParentFragment())
-            .get(SavedViewModel::class.java)
-            .onBookDelete(bookId)
+        Completable
+            .concatArray(
+                DATABASE.savedDao.deleteById(bookId),
+                DATABASE.localImageDao.deleteById(bookId),
+                DATABASE.bookDao.deleteOrphan()
+            )
+            .subscribeOn(io())
+            .subscribe()
     }
 }

@@ -1,77 +1,132 @@
 package i.am.shiro.amai.service
 
-import android.app.IntentService
 import android.app.Notification
-import android.content.Context
+import android.app.NotificationManager
+import android.app.Service
 import android.content.Intent
+import android.os.IBinder
 import androidx.core.app.NotificationCompat
+import androidx.core.content.getSystemService
 import com.bumptech.glide.Glide
+import i.am.shiro.amai.DATABASE
+import i.am.shiro.amai.Preferences
 import i.am.shiro.amai.R
 import i.am.shiro.amai.constant.Constants
-import i.am.shiro.amai.dao.DownloadQueueManager
-import i.am.shiro.amai.dao.DownloadTaskDispatcher
-import i.am.shiro.amai.model.Book
-import i.am.shiro.amai.model.DownloadTask
-import i.am.shiro.amai.util.startLocalService
-import org.apache.commons.io.FileUtils
-import timber.log.Timber
+import i.am.shiro.amai.data.entity.LocalImageEntity
+import i.am.shiro.amai.data.entity.SavedEntity
 import java.io.File
+import java.util.concurrent.Executors
 
-fun Context.addToQueue(book: Book) {
-    DownloadQueueManager().use { queueManager -> queueManager.add(book) }
-    startLocalService<DownloadService>()
-}
+private const val ID_PROGRESS = 1
+private const val ID_DONE = 2
+private const val ID_ERROR = 3
 
-class DownloadService : IntentService(DownloadService::class.java.simpleName) {
+class DownloadService : Service() {
 
-    init {
-        setIntentRedelivery(true)
-    }
+    private val notifManager by lazy { getSystemService<NotificationManager>()!! }
+
+    private val executor = Executors.newSingleThreadExecutor()
+
+    override fun onBind(intent: Intent?): IBinder? = null
+
+    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int = START_STICKY
 
     override fun onCreate() {
         super.onCreate()
-        startForeground(1, progressNotification())
+        startForeground(ID_PROGRESS, buildForegroundNotification())
+        executor.execute(::work)
     }
 
-    override fun onHandleIntent(intent: Intent?) {
-        DownloadTaskDispatcher().use { dispatcher ->
-            for (task in dispatcher) {
-                dispatcher.notifyRunning(task)
-                try {
-                    runTask(task)
-                    dispatcher.notifyDone(task)
-                } catch (e: Exception) {
-                    Timber.w(e)
-                    dispatcher.notifyFailed(task)
-                }
+    // TODO resize downloaded image as thumbnail and save it
+    private fun work() {
+        val download = DATABASE.downloadDao.findAvailableJob() ?: return stopSelf()
+        val book = DATABASE.bookDao.findById(download.bookId)
+        val remoteImage = DATABASE.remoteImageDao.findByBookIdAndPageIndex(
+            download.bookId,
+            download.progressIndex
+        )
 
+        DATABASE.downloadDao.setIsDownloading(download.bookId, true)
+
+        postDownloadProgressNotification(book.title, book.pageCount, download.progressIndex)
+
+        val localFile = File(Preferences.getStoragePath())
+            .resolve(remoteImage.bookId.toString())
+            .resolve(remoteImage.url.substringAfterLast('/'))
+
+        try {
+            downloadPage(remoteImage.url).copyTo(localFile, true)
+            val localImage = LocalImageEntity(
+                download.bookId,
+                download.progressIndex,
+                remoteImage.width,
+                remoteImage.height,
+                localFile.path,
+                remoteImage.thumbnailWidth,
+                remoteImage.thumbnailWidth,
+                remoteImage.thumbnailUrl
+            )
+            DATABASE.localImageDao.insert(localImage)
+            DATABASE.downloadDao.incrementProgress(download.bookId)
+
+            if (download.progressIndex == book.pageCount - 1) {
+                DATABASE.savedDao.insert(SavedEntity(download.bookId))
+                DATABASE.downloadDao.setIsDone(download.bookId, true)
+                postDownloadDoneNotification(book.title)
+            }
+        } catch (e: Exception) {
+            DATABASE.downloadDao.incrementErrorCount(download.bookId)
+
+            if (download.errorCount + 1 == 3) {
+                postDownloadFailedNotification(book.title)
             }
         }
+
+        val nextJob = DATABASE.downloadDao.findAvailableJob()
+        if (nextJob?.bookId != download.bookId) {
+            DATABASE.downloadDao.setIsDownloading(download.bookId, false)
+        }
+
+        executor.execute(::work)
     }
 
     @Throws(Exception::class)
-    private fun runTask(task: DownloadTask) {
-        val sourceUrl = task.sourceUrl
-        val sourceFile = downloadPage(sourceUrl)
-
-        val destinationUrl = task.destinationUrl
-        val destinationFile = File(destinationUrl)
-
-        FileUtils.copyFile(sourceFile, destinationFile)
-    }
-
-    @Throws(Exception::class)
-    private fun downloadPage(pageUrl: String): File {
-        return Glide.with(this)
+    private fun downloadPage(pageUrl: String): File =
+        Glide.with(this)
             .download(pageUrl)
             .submit()
             .get()
+
+    private fun buildForegroundNotification(): Notification =
+        NotificationCompat.Builder(this, Constants.DEFAULT_CHANNEL_ID)
+            .setSmallIcon(R.drawable.ic_notification_download)
+            .setContentTitle("Downloading")
+            .setProgress(0, 0, true)
+            .build()
+
+    private fun postDownloadProgressNotification(title: String, max: Int, progress: Int) {
+        NotificationCompat.Builder(this, Constants.DEFAULT_CHANNEL_ID)
+            .setSmallIcon(R.drawable.ic_notification_download)
+            .setContentTitle("Downloading")
+            .setContentText(title)
+            .setProgress(max, progress, false)
+            .post(ID_PROGRESS)
     }
+
+    private fun postDownloadDoneNotification(title: String) {
+        NotificationCompat.Builder(this, Constants.DEFAULT_CHANNEL_ID)
+            .setContentTitle("Download done")
+            .setContentText(title)
+            .post(ID_DONE)
+    }
+
+    private fun postDownloadFailedNotification(title: String) {
+        NotificationCompat.Builder(this, Constants.DEFAULT_CHANNEL_ID)
+            .setContentTitle("Download failed")
+            .setContentText(title)
+            .post(ID_ERROR)
+    }
+
+    private fun NotificationCompat.Builder.post(id: Int) = notifManager.notify(id, build())
 }
 
-private fun Context.progressNotification(): Notification =
-    NotificationCompat.Builder(this, Constants.DEFAULT_CHANNEL_ID)
-        .setSmallIcon(R.drawable.ic_notification_download)
-        .setContentTitle("Downloading")
-        .setProgress(0, 0, true)
-        .build()

@@ -10,10 +10,10 @@ import androidx.fragment.app.commit
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.observe
 import i.am.shiro.amai.R
-import i.am.shiro.amai.adapter.BookAdapter
+import i.am.shiro.amai.adapter.CachedPreviewAdapter
+import i.am.shiro.amai.data.view.CachedPreviewView
 import i.am.shiro.amai.fragment.dialog.NhentaiSortOrderDialogFragment
 import i.am.shiro.amai.fragment.dialog.SearchConstantsDialogFragment
-import i.am.shiro.amai.model.Book
 import i.am.shiro.amai.util.show
 import i.am.shiro.amai.viewmodel.NhentaiViewModel
 import kotlinx.android.synthetic.main.fragment_nhentai.*
@@ -22,20 +22,12 @@ class NhentaiFragment : Fragment(R.layout.fragment_nhentai) {
 
     private val viewModel by viewModels<NhentaiViewModel>()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        if (savedInstanceState == null) {
-            viewModel.onNewInstanceCreated()
-        }
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         toolbar.setOnMenuItemClickListener(::onActionClick)
 
         searchInput.onSubmitListener = viewModel::search
 
-        val adapter = BookAdapter(
+        val adapter = CachedPreviewAdapter(
             parentFragment = this,
             onItemClick = ::invokeViewDetails,
             onPositionBind = viewModel::onPositionBind
@@ -44,8 +36,8 @@ class NhentaiFragment : Fragment(R.layout.fragment_nhentai) {
         recyclerView.setHasFixedSize(true)
         recyclerView.adapter = adapter
 
-        viewModel.booksLive.observe(this, adapter::submitList)
-        viewModel.isLoadingLive.observe(this) { isLoading ->
+        viewModel.booksLive.observe(viewLifecycleOwner, adapter::submitList)
+        viewModel.isLoadingLive.observe(viewLifecycleOwner) { isLoading ->
             progress.visibility = if (isLoading) VISIBLE else GONE
         }
     }
@@ -63,8 +55,8 @@ class NhentaiFragment : Fragment(R.layout.fragment_nhentai) {
     }
 
 
-    private fun invokeViewDetails(book: Book) {
-        val fragment = DetailFragment(book.id)
+    private fun invokeViewDetails(book: CachedPreviewView) {
+        val fragment = DetailFragment(book.bookId)
 
         requireActivity().supportFragmentManager.commit {
             replace(android.R.id.content, fragment)

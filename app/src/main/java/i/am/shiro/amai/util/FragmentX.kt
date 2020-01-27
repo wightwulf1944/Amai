@@ -1,5 +1,6 @@
 package i.am.shiro.amai.util
 
+import android.app.Service
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import kotlin.properties.ReadWriteProperty
@@ -14,4 +15,8 @@ inline fun <reified T> Fragment.argument() = object : ReadWriteProperty<Any, T> 
         val arguments = arguments ?: Bundle().also(::setArguments)
         arguments.put(property.name, value)
     }
+}
+
+inline fun <reified T : Service> Fragment.startLocalService() {
+    requireContext().startLocalService<T>()
 }

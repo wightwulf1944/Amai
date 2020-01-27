@@ -13,12 +13,12 @@
         android:id="@+id/thumbnailImage"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:background="@android:color/darker_gray"
         android:contentDescription="@string/thumbnail"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:background="#808080"
         tools:layout_constraintDimensionRatio="3:4" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

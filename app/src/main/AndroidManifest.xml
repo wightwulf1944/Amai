@@ -43,7 +43,7 @@
 
         </activity>
 
-        <service android:name=".service.DownloadService" />
+        <service android:name=".service.DownloadService"/>
 
     </application>
 

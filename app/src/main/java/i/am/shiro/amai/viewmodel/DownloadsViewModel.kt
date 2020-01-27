@@ -1,53 +1,64 @@
 package i.am.shiro.amai.viewmodel
 
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import i.am.shiro.amai.model.DownloadJob
-import io.realm.Realm
-import io.realm.kotlin.where
+import i.am.shiro.amai.DATABASE
+import i.am.shiro.amai.DownloadStatus
+import i.am.shiro.amai.data.model.Download
+import io.reactivex.disposables.Disposables
+import io.reactivex.schedulers.Schedulers.io
 
 class DownloadsViewModel : ViewModel() {
 
-    private val realm = Realm.getDefaultInstance()
+    private var disposable = Disposables.disposed()
 
-    private val _downloadJobsLive = MutableLiveData<List<DownloadJob>>()
+    val downloadJobsLive = MutableLiveData<List<Download>>()
 
-    private val disposable = realm.where<DownloadJob>()
-        .findAllAsync()
-        .asFlowable()
-        .filter { it.isLoaded }
-        .map { realm.copyFromRealm(it) }
-        .subscribe { _downloadJobsLive.postValue(it) }
-
-    val downloadJobsLive: LiveData<List<DownloadJob>>
-        get() = _downloadJobsLive
-
-    override fun onCleared() {
-        super.onCleared()
-        disposable.dispose()
-        realm.close()
+    init {
+        disposable = DATABASE.downloadDetailDao.getAll()
+            .subscribeOn(io())
+            .map { list ->
+                list.map { item ->
+                    Download(
+                        bookId = item.bookId,
+                        title = item.title,
+                        progress = item.progress,
+                        progressMax = item.progressMax,
+                        status = DownloadStatus.QUEUED // TODO status should be derived from other factors
+                    )
+                }
+            }
+            .subscribe(downloadJobsLive::postValue)
     }
 
-    fun dismissJob(job: DownloadJob) {
-        realm.beginTransaction()
-        realm.where<DownloadJob>()
-            .equalTo("bookId", job.bookId)
-            .findFirst()
-            ?.deleteFromRealm()
-        realm.commitTransaction()
+    override fun onCleared() = disposable.dispose()
+
+    fun dismiss(download: Download) {
+        DATABASE.downloadDao.delete(download.bookId).subscribe()
     }
 
-    fun retryJob(job: DownloadJob) {
-
+    fun retry(download: Download) {
+        DATABASE.downloadDao.resetErrorCount(download.bookId).subscribe()
     }
 
-    fun cancelJob(job: DownloadJob) {
+    fun cancel(download: Download) {
         // TODO also delete downloaded files here
-        dismissJob(job)
+        dismiss(download)
     }
 
-    fun pauseJob(it: DownloadJob) {
+    fun pause(download: Download) {
+        DATABASE.downloadDao.setPaused(download.bookId, true).subscribe()
+    }
 
+    fun resume(download: Download) {
+        DATABASE.downloadDao.setPaused(download.bookId, false).subscribe()
+    }
+
+    fun pauseAll() {
+        DATABASE.downloadDao.setAllPaused(true).subscribe()
+    }
+
+    fun resumeAll() {
+        DATABASE.downloadDao.setAllPaused(false).subscribe()
     }
 }
