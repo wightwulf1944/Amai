@@ -71,7 +71,6 @@ class NhentaiViewModel(handle: SavedStateHandle) : ViewModel() {
         this.sort = sort
 
         deleteLocalThen {
-            fetchLocal()
             fetchRemotePage()
         }
     }
@@ -100,8 +99,7 @@ class NhentaiViewModel(handle: SavedStateHandle) : ViewModel() {
     private fun fetchLocal() {
         localDisposable.dispose()
         localDisposable = DATABASE.cachedPreviewDao
-            .getAllSorted(sort)
-            .doOnNext { Timber.d("$it") }
+            .getAll()
             .subscribe(booksLive::postValue)
     }
 
@@ -124,7 +122,7 @@ class NhentaiViewModel(handle: SavedStateHandle) : ViewModel() {
         val imageEntities = LinkedList<RemoteImageEntity>()
 
         for (book in searchResponseJson.results) {
-            cachedEntities += CachedEntity(book.id)
+            cachedEntities += CachedEntity(0, book.id)
             bookEntities += book.toEntity()
             tagEntities += book.tagEntities()
             imageEntities += book.imageEntities()

@@ -5,9 +5,7 @@ import androidx.room.PrimaryKey
 
 @Entity
 class CachedEntity(
-    @PrimaryKey
-    val bookId: Int,
-
-    @Deprecated("")
-    val cacheDate: Long = System.currentTimeMillis()
+    @PrimaryKey(autoGenerate = true)
+    val id: Int,
+    val bookId: Int
 )

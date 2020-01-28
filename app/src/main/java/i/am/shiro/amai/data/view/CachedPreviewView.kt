@@ -4,9 +4,7 @@ import androidx.room.DatabaseView
 
 @DatabaseView("""
     SELECT 
-        bookId, 
-        uploadDate, 
-        favCount, 
+        bookId,
         title, 
         pageCount, 
         width AS thumbnailWidth, 
@@ -19,11 +17,10 @@ import androidx.room.DatabaseView
     LEFT JOIN BookEntity USING(bookId) 
     LEFT JOIN (SELECT * FROM ThumbnailView WHERE pageIndex = 0) USING(bookId)
     LEFT JOIN SavedEntity USING(bookId)
+    ORDER BY id
 """)
 class CachedPreviewView(
     val bookId: Int,
-    val uploadDate: Long,
-    val favCount: Int,
     val title: String,
     val pageCount: Int,
     val thumbnailWidth: Int,
