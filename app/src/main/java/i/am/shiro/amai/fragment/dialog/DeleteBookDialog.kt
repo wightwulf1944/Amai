@@ -4,10 +4,12 @@ import android.os.Bundle
 import androidx.fragment.app.DialogFragment
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import i.am.shiro.amai.DATABASE
+import i.am.shiro.amai.Preferences
 import i.am.shiro.amai.R
 import i.am.shiro.amai.util.argument
 import io.reactivex.Completable
 import io.reactivex.schedulers.Schedulers.io
+import java.io.File
 
 class DeleteBookDialog() : DialogFragment() {
 
@@ -29,6 +31,10 @@ class DeleteBookDialog() : DialogFragment() {
             .create()
 
     private fun onConfirmClick() {
+        File(Preferences.getStoragePath())
+            .resolve(bookId.toString())
+            .deleteRecursively()
+
         Completable
             .concatArray(
                 DATABASE.savedDao.deleteById(bookId),
