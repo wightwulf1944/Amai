@@ -115,6 +115,7 @@ class DownloadService : Service() {
 
     private fun postDownloadDoneNotification(title: String) {
         NotificationCompat.Builder(this, Constants.DEFAULT_CHANNEL_ID)
+            .setSmallIcon(R.drawable.ic_notification_download)
             .setContentTitle("Download done")
             .setContentText(title)
             .post(ID_DONE)
@@ -122,6 +123,7 @@ class DownloadService : Service() {
 
     private fun postDownloadFailedNotification(title: String) {
         NotificationCompat.Builder(this, Constants.DEFAULT_CHANNEL_ID)
+            .setSmallIcon(R.drawable.ic_notification_download)
             .setContentTitle("Download failed")
             .setContentText(title)
             .post(ID_ERROR)
