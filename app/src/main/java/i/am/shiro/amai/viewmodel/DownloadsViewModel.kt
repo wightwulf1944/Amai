@@ -7,6 +7,7 @@ import i.am.shiro.amai.DownloadStatus
 import i.am.shiro.amai.data.model.Download
 import io.reactivex.disposables.Disposables
 import io.reactivex.schedulers.Schedulers.io
+import timber.log.Timber
 
 class DownloadsViewModel : ViewModel() {
 
@@ -28,7 +29,7 @@ class DownloadsViewModel : ViewModel() {
                     )
                 }
             }
-            .subscribe(downloadJobsLive::postValue)
+            .subscribe(downloadJobsLive::postValue, Timber::e)
     }
 
     override fun onCleared() = disposable.dispose()

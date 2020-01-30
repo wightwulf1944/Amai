@@ -7,7 +7,7 @@ import io.reactivex.Completable
 @Dao
 interface DownloadDao {
 
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(job: DownloadJobEntity): Completable
 
     @Query("DELETE FROM DownloadJobEntity WHERE bookId = :bookId")
