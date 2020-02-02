@@ -8,24 +8,33 @@ import androidx.fragment.app.commit
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.observe
 import i.am.shiro.amai.R
+import i.am.shiro.amai.SavedSort
 import i.am.shiro.amai.adapter.SavedPreviewAdapter
 import i.am.shiro.amai.data.view.SavedPreviewView
 import i.am.shiro.amai.fragment.dialog.DeleteBookDialog
 import i.am.shiro.amai.fragment.dialog.PlaceholderDialog
 import i.am.shiro.amai.fragment.dialog.SavedSortDialog
+import i.am.shiro.amai.util.getBoolean
+import i.am.shiro.amai.util.putBoolean
 import i.am.shiro.amai.util.show
 import i.am.shiro.amai.viewmodel.SavedViewModel
 import kotlinx.android.synthetic.main.fragment_saved.*
 
-// TODO implement sorting
 class SavedFragment : Fragment(R.layout.fragment_saved) {
 
     private val viewModel by viewModels<SavedViewModel>()
 
+    private var shouldScrollToTop = false
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        savedInstanceState?.getBoolean(::shouldScrollToTop)
+
         toolbar.setOnMenuItemClickListener(::onActionClick)
 
-        searchInput.onSubmitListener = viewModel::onSearch
+        searchInput.onSubmitListener = { searchQuery ->
+            shouldScrollToTop = true
+            viewModel.onSearch(searchQuery)
+        }
 
         val adapter = SavedPreviewAdapter(
             parentFragment = this,
@@ -38,9 +47,22 @@ class SavedFragment : Fragment(R.layout.fragment_saved) {
 
         viewModel.booksLive.observe(viewLifecycleOwner) { books ->
             adapter.submitList(books) {
-                recyclerView.scrollToPosition(0)
+                if (shouldScrollToTop) {
+                    recyclerView.scrollToPosition(0)
+                    shouldScrollToTop = false
+                }
             }
         }
+    }
+
+    fun onSort(sort: SavedSort) {
+        shouldScrollToTop = true
+        viewModel.onSort(sort)
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putBoolean(::shouldScrollToTop)
     }
 
     private fun onActionClick(menuItem: MenuItem): Boolean {

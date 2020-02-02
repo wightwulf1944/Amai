@@ -3,6 +3,7 @@ package i.am.shiro.amai.util
 import android.os.Bundle
 import android.os.Parcelable
 import java.io.Serializable
+import kotlin.reflect.KMutableProperty0
 
 fun <T> Bundle.put(key: String, value: T) {
     when (value) {
@@ -22,4 +23,13 @@ fun <T> Bundle.put(key: String, value: T) {
         is Serializable -> putSerializable(key, value)
         else -> throw IllegalStateException("Type of property $key is not supported")
     }
+}
+
+fun Bundle.getBoolean(booleanProperty: KMutableProperty0<Boolean>) {
+    val key = booleanProperty.name
+    if (containsKey(key)) booleanProperty.set(getBoolean(key))
+}
+
+fun Bundle.putBoolean(booleanProperty: KMutableProperty0<Boolean>) {
+    putBoolean(booleanProperty.name, booleanProperty.get())
 }

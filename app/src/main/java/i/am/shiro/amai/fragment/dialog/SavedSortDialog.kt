@@ -3,12 +3,10 @@ package i.am.shiro.amai.fragment.dialog
 import android.app.Dialog
 import android.os.Bundle
 import androidx.fragment.app.DialogFragment
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.get
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import i.am.shiro.amai.R
 import i.am.shiro.amai.SavedSort
-import i.am.shiro.amai.viewmodel.SavedViewModel
+import i.am.shiro.amai.fragment.SavedFragment
 
 class SavedSortDialog : DialogFragment() {
 
@@ -20,12 +18,12 @@ class SavedSortDialog : DialogFragment() {
     }
 
     private fun onItemClick(which: Int) {
-        val sort = when (which) {
+        val parent = parentFragment as SavedFragment
+        parent.onSort(when (which) {
             0 -> SavedSort.New
             1 -> SavedSort.Old
             else -> throw RuntimeException()
-        }
-        ViewModelProvider(parentFragment!!).get<SavedViewModel>().onSort(sort)
+        })
         dismiss()
     }
 }
