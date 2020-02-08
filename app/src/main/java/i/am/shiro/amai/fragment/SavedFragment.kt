@@ -84,7 +84,7 @@ class SavedFragment : Fragment(R.layout.fragment_saved) {
     private fun invokeViewDetails(preview: SavedPreviewView) {
         val fragment = DetailFragment(preview.bookId)
 
-        requireActivity().supportFragmentManager.commit {
+        parentFragmentManager.commit {
             replace(android.R.id.content, fragment)
             addToBackStack(null)
         }

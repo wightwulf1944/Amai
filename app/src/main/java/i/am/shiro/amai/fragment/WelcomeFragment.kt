@@ -28,6 +28,7 @@ class WelcomeFragment : Fragment(R.layout.fragment_welcome) {
     private fun onNext() {
         parentFragmentManager.commit {
             replace(android.R.id.content, StorageSetupFragment())
+            addToBackStack(null)
         }
     }
 }

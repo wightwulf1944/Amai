@@ -24,7 +24,9 @@ class LoadingFragment() : Fragment(R.layout.fragment_loading) {
 
         viewModel.load(bookId).observe(this) {
             val fragment = DetailFragment(bookId)
-            parentFragmentManager.commit { replace(android.R.id.content, fragment) }
+            parentFragmentManager.commit {
+                replace(android.R.id.content, fragment)
+            }
         }
     }
 }

@@ -57,7 +57,7 @@ class NhentaiFragment : Fragment(R.layout.fragment_nhentai) {
     private fun invokeViewDetails(book: CachedPreviewView) {
         val fragment = DetailFragment(book.bookId)
 
-        requireActivity().supportFragmentManager.commit {
+        parentFragmentManager.commit {
             replace(android.R.id.content, fragment)
             addToBackStack(null)
         }
