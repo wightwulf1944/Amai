@@ -14,7 +14,7 @@ import com.annimon.stream.function.IntConsumer;
 
 import i.am.shiro.amai.R;
 
-import static i.am.shiro.amai.util.LayoutUtil.forEachChild;
+import static i.am.shiro.amai.util.ViewGroupXKt.forEach;
 
 public final class PageRecyclerView extends RecyclerView {
 
@@ -67,17 +67,19 @@ public final class PageRecyclerView extends RecyclerView {
         if (state == SCROLL_STATE_IDLE) {
             smoothScrollBy(snapOffset, 0);
 
-            forEachChild(this, child ->
+            forEach(this, child ->
                 child.animate()
                     .scaleX(1)
-                    .scaleY(1));
+                    .scaleY(1)
+            );
 
             childScale = 1;
         } else if (state == SCROLL_STATE_DRAGGING) {
-            forEachChild(this, child ->
+            forEach(this, child ->
                 child.animate()
                     .scaleX(FLINGING_CHILD_SCALE)
-                    .scaleY(FLINGING_CHILD_SCALE));
+                    .scaleY(FLINGING_CHILD_SCALE)
+            );
 
             childScale = FLINGING_CHILD_SCALE;
         }
