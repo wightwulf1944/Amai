@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.commit
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.observe
 import androidx.recyclerview.widget.GridLayoutManager
@@ -18,6 +17,7 @@ import i.am.shiro.amai.data.entity.DownloadJobEntity
 import i.am.shiro.amai.model.DetailModel
 import i.am.shiro.amai.service.DownloadService
 import i.am.shiro.amai.util.argument
+import i.am.shiro.amai.util.goToRead
 import i.am.shiro.amai.util.startLocalService
 import i.am.shiro.amai.viewmodel.DetailViewModel
 import io.reactivex.schedulers.Schedulers.io
@@ -96,11 +96,6 @@ class DetailFragment() : Fragment(R.layout.fragment_detail) {
     }
 
     private fun invokeReadBook(pageIndex: Int) {
-        val fragment = ReadFragment(model.book.bookId, pageIndex)
-
-        parentFragmentManager.commit {
-            replace(android.R.id.content, fragment)
-            addToBackStack(null)
-        }
+        goToRead(model.book.bookId, pageIndex)
     }
 }

@@ -6,7 +6,6 @@ import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.commit
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.observe
 import i.am.shiro.amai.R
@@ -14,6 +13,7 @@ import i.am.shiro.amai.adapter.CachedPreviewAdapter
 import i.am.shiro.amai.data.view.CachedPreviewView
 import i.am.shiro.amai.fragment.dialog.NhentaiSortDialog
 import i.am.shiro.amai.fragment.dialog.SearchConstantsDialog
+import i.am.shiro.amai.util.goToDetail
 import i.am.shiro.amai.util.show
 import i.am.shiro.amai.viewmodel.NhentaiViewModel
 import kotlinx.android.synthetic.main.fragment_nhentai.*
@@ -55,11 +55,6 @@ class NhentaiFragment : Fragment(R.layout.fragment_nhentai) {
 
 
     private fun invokeViewDetails(book: CachedPreviewView) {
-        val fragment = DetailFragment(book.bookId)
-
-        parentFragmentManager.commit {
-            replace(android.R.id.content, fragment)
-            addToBackStack(null)
-        }
+        goToDetail(book.bookId)
     }
 }

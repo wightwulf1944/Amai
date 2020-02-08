@@ -15,6 +15,7 @@ import i.am.shiro.amai.fragment.dialog.DeleteBookDialog
 import i.am.shiro.amai.fragment.dialog.PlaceholderDialog
 import i.am.shiro.amai.fragment.dialog.SavedSortDialog
 import i.am.shiro.amai.util.getBoolean
+import i.am.shiro.amai.util.goToDetail
 import i.am.shiro.amai.util.putBoolean
 import i.am.shiro.amai.util.show
 import i.am.shiro.amai.viewmodel.SavedViewModel
@@ -82,12 +83,7 @@ class SavedFragment : Fragment(R.layout.fragment_saved) {
     }
 
     private fun invokeViewDetails(preview: SavedPreviewView) {
-        val fragment = DetailFragment(preview.bookId)
-
-        parentFragmentManager.commit {
-            replace(android.R.id.content, fragment)
-            addToBackStack(null)
-        }
+        goToDetail(preview.bookId)
     }
 
     private fun invokeDeleteBook(preview: SavedPreviewView) {

@@ -12,6 +12,7 @@ import i.am.shiro.amai.Preferences
 import i.am.shiro.amai.R
 import i.am.shiro.amai.model.StorageOption
 import i.am.shiro.amai.util.addChild
+import i.am.shiro.amai.util.goToMain
 import kotlinx.android.synthetic.main.fragment_storage_setup.*
 
 private const val KEY_SELECTED = "selectedIndex"
@@ -70,8 +71,7 @@ class StorageSetupFragment : Fragment(R.layout.fragment_storage_setup) {
     }
 
     private fun onFinish() {
-        parentFragmentManager.popBackStack()
-        parentFragmentManager.commit { replace(android.R.id.content, MainFragment()) }
+        goToMain()
 
         Preferences.setStoragePath(storageOptions[selectedIndex].path)
         Preferences.setFirstRunDone()

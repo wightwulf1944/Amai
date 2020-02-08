@@ -2,10 +2,10 @@ package i.am.shiro.amai.fragment
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.commit
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.observe
 import i.am.shiro.amai.R
+import i.am.shiro.amai.util.goToDetail
 import i.am.shiro.amai.util.argument
 import i.am.shiro.amai.viewmodel.LoadingViewModel
 
@@ -23,10 +23,7 @@ class LoadingFragment() : Fragment(R.layout.fragment_loading) {
         val viewModel by viewModels<LoadingViewModel>()
 
         viewModel.load(bookId).observe(this) {
-            val fragment = DetailFragment(bookId)
-            parentFragmentManager.commit {
-                replace(android.R.id.content, fragment)
-            }
+            goToDetail(bookId)
         }
     }
 }
