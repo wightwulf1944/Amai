@@ -1,6 +1,7 @@
 package i.am.shiro.amai.widget;
 
 import android.content.Context;
+import android.os.Handler;
 import android.util.AttributeSet;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
@@ -18,19 +19,19 @@ import static i.am.shiro.amai.util.ViewGroupXKt.forEach;
 
 public final class PageRecyclerView extends RecyclerView {
 
+    private static final int TURBO_INTERVAL = 350;
+
+    private static final int TURBO_DELAY = TURBO_INTERVAL * 2;
+
     private static final float FLINGING_CHILD_SCALE = 0.9f;
-
-    private static final int COOLDOWN = 1000;
-
-    private static final int COOLDOWN_TURBO = 500;
 
     private final TapDetector tapDetector;
 
     private final int pagerTapZoneWidth;
 
-    private IntConsumer onPageScrollListener;
+    private final Handler pageFlipHandler = new Handler();
 
-    private long nextNotifyTime;
+    private IntConsumer onPageScrollListener;
 
     private int snapOffset;
 
@@ -97,38 +98,56 @@ public final class PageRecyclerView extends RecyclerView {
         return super.onTouchEvent(e);
     }
 
-    // TODO it might be possible to improve this by using postDelayed()
+    private void onSingleTapUp(MotionEvent e) {
+        if (e.getX() < pagerTapZoneWidth) {
+            flipPreviousPage();
+        } else if (e.getX() > getWidth() - pagerTapZoneWidth) {
+            flipNextPage();
+        }
+    }
+
     // TODO this should be moved to the fragment root view so it works regardless of view focus
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        Runnable eventHandler;
         if (keyCode == KeyEvent.KEYCODE_VOLUME_DOWN) {
-            eventHandler = this::previousPage;
+            if (event.getRepeatCount() == 0) {
+                flipPreviousPage();
+                pageFlipHandler.removeCallbacksAndMessages(null);
+                pageFlipHandler.postDelayed(this::flipPreviousPageTurbo, TURBO_DELAY);
+            }
+            return true;
         } else if (keyCode == KeyEvent.KEYCODE_VOLUME_UP) {
-            eventHandler = this::nextPage;
+            if (event.getRepeatCount() == 0) {
+                flipNextPage();
+                pageFlipHandler.removeCallbacksAndMessages(null);
+                pageFlipHandler.postDelayed(this::flipNextPageTurbo, TURBO_DELAY);
+            }
+            return true;
         } else {
             return false;
         }
-
-        if (event.getRepeatCount() == 0) {
-            eventHandler.run();
-            nextNotifyTime = event.getEventTime() + COOLDOWN;
-        } else if (event.getEventTime() >= nextNotifyTime) {
-            eventHandler.run();
-            nextNotifyTime = event.getEventTime() + COOLDOWN_TURBO;
-        }
-        return true;
     }
 
-    private void onSingleTapUp(MotionEvent e) {
-        if (e.getX() < pagerTapZoneWidth) {
-            previousPage();
-        } else if (e.getX() > getWidth() - pagerTapZoneWidth) {
-            nextPage();
+    @Override
+    public boolean onKeyUp(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_VOLUME_DOWN || keyCode == KeyEvent.KEYCODE_VOLUME_UP) {
+            pageFlipHandler.removeCallbacksAndMessages(null);
+            return true;
         }
+        return false;
     }
 
-    private void nextPage() {
+    private void flipPreviousPageTurbo() {
+        flipPreviousPage();
+        pageFlipHandler.postDelayed(this::flipPreviousPageTurbo, TURBO_INTERVAL);
+    }
+
+    private void flipNextPageTurbo() {
+        flipNextPage();
+        pageFlipHandler.postDelayed(this::flipNextPageTurbo, TURBO_INTERVAL);
+    }
+
+    private void flipNextPage() {
         int extent = computeHorizontalScrollExtent();
         int currentPosition = computeHorizontalScrollOffset() / extent;
         int maxPosition = computeHorizontalScrollRange() / extent;
@@ -137,7 +156,7 @@ public final class PageRecyclerView extends RecyclerView {
         }
     }
 
-    private void previousPage() {
+    private void flipPreviousPage() {
         int currentPosition = computeHorizontalScrollOffset() / computeHorizontalScrollExtent();
         if (currentPosition > 0) {
             smoothScrollToPosition(currentPosition - 1);
