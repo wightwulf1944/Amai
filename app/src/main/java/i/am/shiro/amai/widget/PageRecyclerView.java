@@ -50,15 +50,15 @@ public final class PageRecyclerView extends RecyclerView {
     @Override
     public void onScrolled(int dx, int dy) {
         super.onScrolled(dx, dy);
-        if (dx != 0) {
-            int extent = computeHorizontalScrollExtent();
-            int currentOffset = computeHorizontalScrollOffset();
-            int currentPosition = Math.round((float) currentOffset / (float) extent);
-            onPageScrollListener.accept(currentPosition + 1);
+        if (dx == 0) return;
 
-            int targetOffset = currentPosition * extent;
-            snapOffset = targetOffset - currentOffset;
-        }
+        int extent = computeHorizontalScrollExtent();
+        int currentOffset = computeHorizontalScrollOffset();
+        int currentPosition = Math.round((float) currentOffset / (float) extent);
+        onPageScrollListener.accept(currentPosition + 1);
+
+        int targetOffset = currentPosition * extent;
+        snapOffset = targetOffset - currentOffset;
     }
 
     @Override
