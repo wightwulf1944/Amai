@@ -54,18 +54,18 @@ private fun FragmentActivity.setFragment(fragment: Fragment) {
 }
 
 private fun Fragment.replaceFragment(fragment: Fragment) {
-    parentFragmentManager.commit {
+    requireActivity().supportFragmentManager.commit {
         replace(android.R.id.content, fragment)
     }
 }
 
 private fun Fragment.pushFragment(fragment: Fragment) {
-    parentFragmentManager.commit {
+    requireActivity().supportFragmentManager.commit {
         replace(android.R.id.content, fragment)
         addToBackStack(null)
     }
 }
 
 private fun Fragment.popFragment() {
-    parentFragmentManager.popBackStack()
+    requireActivity().supportFragmentManager.popBackStack()
 }
