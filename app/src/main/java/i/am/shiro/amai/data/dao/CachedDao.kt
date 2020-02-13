@@ -10,7 +10,7 @@ import io.reactivex.Completable
 @Dao
 interface CachedDao {
 
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(entities: List<CachedEntity>)
 
     @Query("DELETE FROM CachedEntity")
