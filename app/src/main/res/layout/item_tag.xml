@@ -1,8 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- autoSizeMinTextSize is set to 13sp assuming the default is 14sp -->
 <TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     style="@style/DetailItem"
     android:background="@drawable/bg_item_tag"
+    android:ellipsize="end"
+    android:lines="1"
     android:paddingStart="12dp"
     android:paddingEnd="12dp"
+    app:autoSizeMinTextSize="13sp"
+    app:autoSizeTextType="uniform"
     tools:text="Lorem Ipsum" />
