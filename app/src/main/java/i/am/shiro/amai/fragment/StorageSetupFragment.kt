@@ -7,15 +7,14 @@ import android.view.View
 import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.commit
 import i.am.shiro.amai.Preferences
 import i.am.shiro.amai.R
 import i.am.shiro.amai.model.StorageOption
 import i.am.shiro.amai.util.addChild
 import i.am.shiro.amai.util.goToMain
+import i.am.shiro.amai.util.loadInt
+import i.am.shiro.amai.util.saveInt
 import kotlinx.android.synthetic.main.fragment_storage_setup.*
-
-private const val KEY_SELECTED = "selectedIndex"
 
 class StorageSetupFragment : Fragment(R.layout.fragment_storage_setup) {
 
@@ -31,15 +30,12 @@ class StorageSetupFragment : Fragment(R.layout.fragment_storage_setup) {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        if (savedInstanceState != null) {
-            selectedIndex = savedInstanceState.getInt(KEY_SELECTED, -1)
-        }
+        savedInstanceState?.loadInt(::selectedIndex)
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        outState.putInt(KEY_SELECTED, selectedIndex)
+        outState.saveInt(::selectedIndex)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

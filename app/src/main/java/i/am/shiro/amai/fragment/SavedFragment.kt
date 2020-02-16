@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.commit
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.observe
 import i.am.shiro.amai.R
@@ -14,9 +13,9 @@ import i.am.shiro.amai.data.view.SavedPreviewView
 import i.am.shiro.amai.fragment.dialog.DeleteBookDialog
 import i.am.shiro.amai.fragment.dialog.PlaceholderDialog
 import i.am.shiro.amai.fragment.dialog.SavedSortDialog
-import i.am.shiro.amai.util.getBoolean
+import i.am.shiro.amai.util.loadBoolean
 import i.am.shiro.amai.util.goToDetail
-import i.am.shiro.amai.util.putBoolean
+import i.am.shiro.amai.util.saveBoolean
 import i.am.shiro.amai.util.show
 import i.am.shiro.amai.viewmodel.SavedViewModel
 import kotlinx.android.synthetic.main.fragment_saved.*
@@ -28,7 +27,7 @@ class SavedFragment : Fragment(R.layout.fragment_saved) {
     private var shouldScrollToTop = false
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        savedInstanceState?.getBoolean(::shouldScrollToTop)
+        savedInstanceState?.loadBoolean(::shouldScrollToTop)
 
         toolbar.setOnMenuItemClickListener(::onActionClick)
 
@@ -63,7 +62,7 @@ class SavedFragment : Fragment(R.layout.fragment_saved) {
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        outState.putBoolean(::shouldScrollToTop)
+        outState.saveBoolean(::shouldScrollToTop)
     }
 
     private fun onActionClick(menuItem: MenuItem): Boolean {

@@ -25,11 +25,18 @@ fun <T> Bundle.put(key: String, value: T) {
     }
 }
 
-fun Bundle.getBoolean(booleanProperty: KMutableProperty0<Boolean>) {
-    val key = booleanProperty.name
-    if (containsKey(key)) booleanProperty.set(getBoolean(key))
+fun Bundle.loadBoolean(property: KMutableProperty0<Boolean>) {
+    property.set(getBoolean(property.name))
 }
 
-fun Bundle.putBoolean(booleanProperty: KMutableProperty0<Boolean>) {
-    putBoolean(booleanProperty.name, booleanProperty.get())
+fun Bundle.saveBoolean(property: KMutableProperty0<Boolean>) {
+    putBoolean(property.name, property.get())
+}
+
+fun Bundle.loadInt(property: KMutableProperty0<Int>) {
+    property.set(getInt(property.name))
+}
+
+fun Bundle.saveInt(property: KMutableProperty0<Int>) {
+    putInt(property.name, property.get())
 }
