@@ -95,17 +95,17 @@ class DetailAdapter(
             }
         }
 
-        fun bind(image: ThumbnailView) {
-            val width = image.width
+        fun bind(thumbnail: ThumbnailView) {
+            val width = thumbnail.width
             val maxHeight = (width / 200.0 * 364.0).toInt()
-            val height = min(image.height, maxHeight)
+            val height = min(thumbnail.height, maxHeight)
 
             previewImage.updateLayoutParams<ConstraintLayout.LayoutParams> {
                 dimensionRatio = "$width:$height"
             }
 
             Glide.with(parentFragment)
-                .load(image.url)
+                .load(thumbnail.url)
                 .format(DecodeFormat.PREFER_RGB_565)
                 .into(previewImage)
         }

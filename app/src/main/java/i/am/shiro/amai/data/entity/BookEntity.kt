@@ -12,4 +12,4 @@ class BookEntity(
     val pageCount: Int,
     val uploadDate: Long,
     val favCount: Int
-    )
+)
