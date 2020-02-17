@@ -57,14 +57,14 @@ class DownloadService : Service() {
         try {
             downloadPage(remoteImage.url).copyTo(localFile, true)
             val localImage = LocalImageEntity(
-                download.bookId,
-                download.progressIndex,
-                remoteImage.width,
-                remoteImage.height,
-                localFile.path,
-                remoteImage.thumbnailWidth,
-                remoteImage.thumbnailWidth,
-                remoteImage.thumbnailUrl
+                bookId = download.bookId,
+                pageIndex = download.progressIndex,
+                width = remoteImage.width,
+                height = remoteImage.height,
+                url = localFile.path,
+                thumbnailWidth = remoteImage.thumbnailWidth,
+                thumbnailHeight = remoteImage.thumbnailHeight,
+                thumbnailUrl = remoteImage.thumbnailUrl
             )
             DATABASE.localImageDao.insert(localImage)
             DATABASE.downloadDao.incrementProgress(download.bookId)

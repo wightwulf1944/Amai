@@ -39,6 +39,7 @@ class CachedPreviewAdapter(
     }
 
     inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+
         private val thumbnailImage = view.findViewById<ImageView>(R.id.thumbnailImage)
 
         private val titleText = view.findViewById<TextView>(R.id.titleText)
@@ -47,14 +48,10 @@ class CachedPreviewAdapter(
 
         private val savedBadge = view.findViewById<ImageView>(R.id.badgeSaved)
 
-        private lateinit var book: CachedPreviewView
-
-        init {
-            view.setOnClickListener { onItemClick(book) }
-        }
-
         fun bind(position: Int) {
-            book = getItem(position)
+            val book = getItem(position)
+
+            itemView.setOnClickListener { onItemClick(book) }
 
             savedBadge.visibility = if (book.isSaved) View.VISIBLE else View.INVISIBLE
             titleText.text = book.title
