@@ -7,14 +7,14 @@ import androidx.room.DatabaseView
         RemoteImageEntity.bookId,
         RemoteImageEntity.pageIndex,
         CASE
-            WHEN LocalImageEntity.width IS NULL
-            THEN RemoteImageEntity.width
-            ELSE LocalImageEntity.width
+            WHEN LocalImageEntity.thumbnailWidth IS NULL
+            THEN RemoteImageEntity.thumbnailWidth
+            ELSE LocalImageEntity.thumbnailWidth
         END AS width,
         CASE
-            WHEN LocalImageEntity.height IS NULL
-            THEN RemoteImageEntity.height
-            ELSE LocalImageEntity.height
+            WHEN LocalImageEntity.thumbnailHeight IS NULL
+            THEN RemoteImageEntity.thumbnailHeight
+            ELSE LocalImageEntity.thumbnailHeight
         END AS height,
         CASE 
             WHEN LocalImageEntity.thumbnailUrl IS NULL 
