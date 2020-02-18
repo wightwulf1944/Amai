@@ -4,7 +4,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 @Entity
-class BookEntity(
+data class BookEntity(
     @PrimaryKey
     val bookId: Int,
     val webUrl: String,

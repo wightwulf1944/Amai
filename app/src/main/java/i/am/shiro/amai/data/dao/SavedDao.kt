@@ -13,7 +13,7 @@ interface SavedDao {
     @Query("DELETE FROM SavedEntity WHERE bookId = :bookId")
     fun deleteById(bookId: Int): Completable
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(savedEntity: SavedEntity)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)

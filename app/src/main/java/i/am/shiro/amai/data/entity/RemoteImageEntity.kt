@@ -14,7 +14,7 @@ import androidx.room.ForeignKey
         )
     ]
 )
-class RemoteImageEntity(
+data class RemoteImageEntity(
     val bookId: Int,
     val pageIndex: Int,
     val width: Int,

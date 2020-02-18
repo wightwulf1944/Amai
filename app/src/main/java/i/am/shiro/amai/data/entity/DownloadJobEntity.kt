@@ -4,7 +4,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 @Entity
-class DownloadJobEntity(
+data class DownloadJobEntity(
     @PrimaryKey
     val bookId: Int,
     val createTime: Long,
