@@ -5,7 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import i.am.shiro.amai.DATABASE
 import i.am.shiro.amai.network.Nhentai
-import i.am.shiro.amai.network.dto.BookJson
+import i.am.shiro.amai.network.BookJson
 import i.am.shiro.amai.util.imageEntities
 import i.am.shiro.amai.util.tagEntities
 import i.am.shiro.amai.util.toEntity

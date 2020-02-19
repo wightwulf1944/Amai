@@ -7,9 +7,9 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.get
 
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import i.am.shiro.amai.NhentaiSort
 
 import i.am.shiro.amai.R
+import i.am.shiro.amai.network.Nhentai
 import i.am.shiro.amai.viewmodel.NhentaiViewModel
 
 class NhentaiSortDialog : DialogFragment() {
@@ -23,8 +23,8 @@ class NhentaiSortDialog : DialogFragment() {
 
     private fun onItemClick(which: Int) {
         val sort = when(which) {
-            0 -> NhentaiSort.New
-            1 -> NhentaiSort.Popular
+            0 -> Nhentai.Sort.DATE
+            1 -> Nhentai.Sort.POPULAR
             else -> throw RuntimeException()
         }
         ViewModelProvider(parentFragment!!).get<NhentaiViewModel>().onSort(sort)

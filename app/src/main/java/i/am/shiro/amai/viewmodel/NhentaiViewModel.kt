@@ -4,7 +4,6 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import i.am.shiro.amai.DATABASE
-import i.am.shiro.amai.NhentaiSort
 import i.am.shiro.amai.Preferences
 import i.am.shiro.amai.data.entity.BookEntity
 import i.am.shiro.amai.data.entity.CachedEntity
@@ -12,7 +11,7 @@ import i.am.shiro.amai.data.entity.RemoteImageEntity
 import i.am.shiro.amai.data.entity.TagEntity
 import i.am.shiro.amai.data.view.CachedPreviewView
 import i.am.shiro.amai.network.Nhentai
-import i.am.shiro.amai.network.dto.SearchResponseJson
+import i.am.shiro.amai.network.SearchJson
 import i.am.shiro.amai.util.delegate
 import i.am.shiro.amai.util.imageEntities
 import i.am.shiro.amai.util.tagEntities
@@ -38,7 +37,7 @@ class NhentaiViewModel(handle: SavedStateHandle) : ViewModel() {
 
     private var page by handle.delegate(0)
 
-    private var sort by handle.delegate(NhentaiSort.New)
+    private var sort by handle.delegate(Nhentai.Sort.DATE)
 
     val booksLive = MutableLiveData<List<CachedPreviewView>>()
 
@@ -66,7 +65,7 @@ class NhentaiViewModel(handle: SavedStateHandle) : ViewModel() {
         if (position > booksLive.value!!.size - PAGING_THRESHOLD) fetchRemotePage()
     }
 
-    fun onSort(sort: NhentaiSort) {
+    fun onSort(sort: Nhentai.Sort) {
         page = 0
         this.sort = sort
 
@@ -106,7 +105,6 @@ class NhentaiViewModel(handle: SavedStateHandle) : ViewModel() {
     private fun fetchRemotePage() {
         val query = "${Preferences.getSearchConstants()} $query"
         val page = page + 1
-        val sort = sort.toString()
 
         remoteDisposable.dispose()
         remoteDisposable = Nhentai.API.search(query, page, sort)
@@ -115,13 +113,13 @@ class NhentaiViewModel(handle: SavedStateHandle) : ViewModel() {
             .subscribe(::onRemoteSuccess, Timber::e)
     }
 
-    private fun onRemoteSuccess(searchResponseJson: SearchResponseJson) {
+    private fun onRemoteSuccess(searchJson: SearchJson) {
         val cachedEntities = LinkedList<CachedEntity>()
         val bookEntities = LinkedList<BookEntity>()
         val tagEntities = LinkedList<TagEntity>()
         val imageEntities = LinkedList<RemoteImageEntity>()
 
-        for (book in searchResponseJson.results) {
+        for (book in searchJson.result) {
             cachedEntities += CachedEntity(0, book.id)
             bookEntities += book.toEntity()
             tagEntities += book.tagEntities()
@@ -137,7 +135,7 @@ class NhentaiViewModel(handle: SavedStateHandle) : ViewModel() {
             }
         }
 
-        if (page < searchResponseJson.pageTotal) ++page
+        if (page < searchJson.num_pages) ++page
     }
 }
 
