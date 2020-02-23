@@ -12,10 +12,7 @@ import i.am.shiro.amai.data.entity.TagEntity
 import i.am.shiro.amai.data.view.CachedPreviewView
 import i.am.shiro.amai.network.Nhentai
 import i.am.shiro.amai.network.SearchJson
-import i.am.shiro.amai.util.delegate
-import i.am.shiro.amai.util.imageEntities
-import i.am.shiro.amai.util.tagEntities
-import i.am.shiro.amai.util.toEntity
+import i.am.shiro.amai.util.*
 import io.reactivex.Completable
 import io.reactivex.android.schedulers.AndroidSchedulers.mainThread
 import io.reactivex.disposables.Disposables
@@ -33,11 +30,11 @@ class NhentaiViewModel(handle: SavedStateHandle) : ViewModel() {
 
     private var remoteDisposable = Disposables.disposed()
 
-    private var query by handle.delegate("")
+    private var query by handle<String>("")
 
-    private var page by handle.delegate(0)
+    private var page by handle<Int>(0)
 
-    private var sort by handle.delegate(Nhentai.Sort.DATE)
+    private var sort by handle<Nhentai.Sort>(Nhentai.Sort.DATE)
 
     val booksLive = MutableLiveData<List<CachedPreviewView>>()
 

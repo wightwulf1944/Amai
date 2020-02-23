@@ -6,7 +6,7 @@ import kotlin.properties.ReadOnlyProperty
 import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty
 
-fun <T : Any> SavedStateHandle.delegate(default: T) = object : ReadWriteProperty<Any, T> {
+operator fun <T> SavedStateHandle.invoke(default: T) = object : ReadWriteProperty<Any, T> {
 
     override fun getValue(thisRef: Any, property: KProperty<*>): T =
         get(property.name) ?: default
@@ -16,17 +16,7 @@ fun <T : Any> SavedStateHandle.delegate(default: T) = object : ReadWriteProperty
     }
 }
 
-fun <T> SavedStateHandle.delegate() = object : ReadWriteProperty<Any, T?> {
-
-    override fun getValue(thisRef: Any, property: KProperty<*>): T? =
-        get(property.name)
-
-    override fun setValue(thisRef: Any, property: KProperty<*>, value: T?) {
-        set(property.name, value)
-    }
-}
-
-fun <T> SavedStateHandle.liveDelegate() = object : ReadOnlyProperty<Any, MutableLiveData<T>> {
+fun <T> SavedStateHandle.live() = object : ReadOnlyProperty<Any, MutableLiveData<T>> {
 
     override fun getValue(thisRef: Any, property: KProperty<*>): MutableLiveData<T> =
         getLiveData(property.name)

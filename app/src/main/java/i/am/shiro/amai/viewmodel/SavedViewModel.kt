@@ -6,16 +6,16 @@ import androidx.lifecycle.ViewModel
 import i.am.shiro.amai.DATABASE
 import i.am.shiro.amai.SavedSort
 import i.am.shiro.amai.data.view.SavedPreviewView
-import i.am.shiro.amai.util.delegate
+import i.am.shiro.amai.util.invoke
 import io.reactivex.disposables.Disposables
 
 class SavedViewModel(handle: SavedStateHandle) : ViewModel() {
 
     private var disposable = Disposables.disposed()
 
-    private var query by handle.delegate("%")
+    private var query by handle<String>("%")
 
-    private var sort by handle.delegate(SavedSort.New)
+    private var sort by handle<SavedSort>(SavedSort.New)
 
     val booksLive = MutableLiveData<List<SavedPreviewView>>()
 
