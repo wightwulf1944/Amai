@@ -7,6 +7,7 @@ import android.view.View
 import androidx.annotation.IdRes
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
+import androidx.fragment.app.findFragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.snackbar.Snackbar
 import i.am.shiro.amai.R
@@ -20,16 +21,10 @@ class MainFragment : Fragment(R.layout.fragment_main) {
         view.requestFocus()
         view.setOnBackKeyListener(::onBackPress)
 
-        navigation.selectedItemId = R.id.navigation_nhentai
         navigation.setOnNavigateListener(::onNavigate)
 
-        if (childFragmentManager.findFragmentById(R.id.fragmentContainer) == null) {
-            val initialFragment = NhentaiFragment()
-            val fragmentTag = NhentaiFragment::class.java.name
-            childFragmentManager.commit {
-                add(R.id.fragmentContainer, initialFragment, fragmentTag)
-                setPrimaryNavigationFragment(initialFragment)
-            }
+        if (savedInstanceState == null) {
+            navigation.selectedItemId = R.id.navigation_nhentai
         }
     }
 
