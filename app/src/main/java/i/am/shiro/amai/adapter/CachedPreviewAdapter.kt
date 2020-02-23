@@ -16,7 +16,6 @@ import i.am.shiro.amai.R
 import i.am.shiro.amai.adapter.CachedPreviewAdapter.ViewHolder
 import i.am.shiro.amai.data.view.CachedPreviewView
 import i.am.shiro.amai.util.inflateChild
-import kotlin.math.min
 
 class CachedPreviewAdapter(
     private val parentFragment: Fragment,
@@ -59,10 +58,7 @@ class CachedPreviewAdapter(
             pageText.text = book.pageCount.toString()
 
             thumbnailImage.updateLayoutParams<ConstraintLayout.LayoutParams> {
-                val width = book.thumbnailWidth
-                val maxHeight = (width / 200.0 * 364.0).toInt()
-                val height = min(book.thumbnailHeight, maxHeight)
-                dimensionRatio = "$width:$height"
+                dimensionRatio = "${book.thumbnailWidth}:${book.thumbnailHeight}"
             }
 
             Glide.with(parentFragment)

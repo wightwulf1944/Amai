@@ -59,9 +59,7 @@ class SavedPreviewAdapter(
             pageText.text = book.pageCount.toString()
 
             thumbnailImage.updateLayoutParams<ConstraintLayout.LayoutParams> {
-                val width = book.thumbnailWidth
-                val height = book.thumbnailHeight
-                dimensionRatio = "h,$width:$height"
+                dimensionRatio = "${book.thumbnailWidth}:${book.thumbnailHeight}"
             }
 
             Glide.with(parentFragment)

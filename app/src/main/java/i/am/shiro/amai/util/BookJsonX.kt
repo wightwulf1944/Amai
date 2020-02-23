@@ -6,6 +6,7 @@ import i.am.shiro.amai.data.entity.TagEntity
 import i.am.shiro.amai.network.Nhentai
 import i.am.shiro.amai.network.BookJson
 import i.am.shiro.amai.network.ImageJson
+import kotlin.math.min
 
 fun BookJson.toEntity() = BookEntity(
     bookId = id,
@@ -31,8 +32,8 @@ fun BookJson.imageEntities(): List<RemoteImageEntity> = images.pages.mapIndexed 
         width = page.w,
         height = page.h,
         url = "${Nhentai.IMAGE_BASE_URL}$media_id/${index + 1}${page.extension()}",
-        thumbnailWidth = page.w, // TODO this is actually wrong
-        thumbnailHeight = page.h, // TODO this is actually wrong
+        thumbnailWidth = page.w,
+        thumbnailHeight = min(page.h, (page.w / 200.0 * 364.0).toInt()),
         thumbnailUrl = "${Nhentai.THUMBNAIL_BASE_URL}$media_id/${index + 1}t${page.extension()}"
     )
 }

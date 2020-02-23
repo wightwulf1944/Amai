@@ -16,7 +16,6 @@ import i.am.shiro.amai.data.view.ThumbnailView
 import i.am.shiro.amai.model.DetailModel
 import i.am.shiro.amai.util.addChild
 import i.am.shiro.amai.util.inflateChild
-import kotlin.math.min
 
 private const val HEADER = 0
 private const val THUMBNAIL = 1
@@ -96,12 +95,8 @@ class DetailAdapter(
         }
 
         fun bind(thumbnail: ThumbnailView) {
-            val width = thumbnail.width
-            val maxHeight = (width / 200.0 * 364.0).toInt()
-            val height = min(thumbnail.height, maxHeight)
-
             previewImage.updateLayoutParams<ConstraintLayout.LayoutParams> {
-                dimensionRatio = "$width:$height"
+                dimensionRatio = "${thumbnail.width}:${thumbnail.height}"
             }
 
             Glide.with(parentFragment)
