@@ -2,8 +2,6 @@ package i.am.shiro.amai.adapter
 
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.updateLayoutParams
 import androidx.fragment.app.Fragment
@@ -16,6 +14,7 @@ import i.am.shiro.amai.R
 import i.am.shiro.amai.adapter.CachedPreviewAdapter.ViewHolder
 import i.am.shiro.amai.data.view.CachedPreviewView
 import i.am.shiro.amai.util.inflateChild
+import kotlinx.android.synthetic.main.item_staggered_book.view.*
 
 class CachedPreviewAdapter(
     private val parentFragment: Fragment,
@@ -40,13 +39,13 @@ class CachedPreviewAdapter(
 
     inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
-        private val thumbnailImage = view.findViewById<ImageView>(R.id.thumbnailImage)
+        private val thumbnailImage = view.thumbnailImage
 
-        private val titleText = view.findViewById<TextView>(R.id.titleText)
+        private val titleText = view.titleText
 
-        private val pageText = view.findViewById<TextView>(R.id.pageText)
+        private val pageText = view.pageText
 
-        private val savedBadge = view.findViewById<ImageView>(R.id.badgeSaved)
+        private val savedBadge = view.savedBadge
 
         fun bind(position: Int) {
             val book = getItem(position)
