@@ -5,6 +5,7 @@
         <item name="colorPrimary">@color/primary</item>
         <item name="colorPrimaryVariant">@color/primaryDark</item>
         <item name="colorSecondary">@color/primary</item>
+        <item name="android:navigationBarColor">?colorSurface</item>
     </style>
 
     <style name="AppTheme.Launcher">
