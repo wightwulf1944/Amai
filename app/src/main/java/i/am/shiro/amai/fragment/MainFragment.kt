@@ -23,7 +23,7 @@ class MainFragment : Fragment(R.layout.fragment_main) {
 
         navigation.setOnNavigateListener(::onNavigate)
 
-        if (savedInstanceState == null) {
+        if (childFragmentManager.findFragmentById(R.id.fragmentContainer) == null) {
             navigation.selectedItemId = R.id.navigation_nhentai
         }
     }
