@@ -20,12 +20,13 @@ import i.am.shiro.amai.data.view.*
         SavedPreviewView::class,
         CachedPreviewView::class,
         ThumbnailView::class,
-        PageView::class,
-        DownloadDetailView::class
+        PageView::class
     ],
-    version = 22,
+    version = 23,
     exportSchema = false)
 abstract class AmaiDatabase : RoomDatabase() {
+
+    abstract val multiTableDao: MultiTableDao
 
     abstract val bookDao: BookDao
 
@@ -48,6 +49,4 @@ abstract class AmaiDatabase : RoomDatabase() {
     abstract val thumbnailDao: ThumbnailDao
 
     abstract val pageDao: PageDao
-
-    abstract val downloadDetailDao: DownloadDetailDao
 }

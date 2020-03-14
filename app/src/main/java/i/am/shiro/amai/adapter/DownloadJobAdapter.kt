@@ -18,7 +18,8 @@ class DownloadJobAdapter(
     private val onDismiss: (Download) -> Unit,
     private val onCancel: (Download) -> Unit,
     private val onRetry: (Download) -> Unit,
-    private val onPause: (Download) -> Unit
+    private val onPause: (Download) -> Unit,
+    private val onResume: (Download) -> Unit
 ) : ListAdapter<Download, DownloadJobAdapter.ViewHolder>(DiffCallback()) {
 
     override fun getItemViewType(position: Int) = getItem(position).status.ordinal

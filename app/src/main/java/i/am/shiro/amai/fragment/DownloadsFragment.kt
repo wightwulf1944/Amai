@@ -22,12 +22,13 @@ class DownloadsFragment : Fragment(R.layout.fragment_downloads) {
             onDismiss = viewModel::dismiss,
             onCancel = viewModel::cancel,
             onRetry = viewModel::retry,
-            onPause = viewModel::pause
+            onPause = viewModel::pause,
+            onResume = viewModel::resume
         )
 
         recyclerView.adapter = adapter
 
-        viewModel.downloadJobsLive.observe(viewLifecycleOwner, adapter::submitList)
+        viewModel.downloadsLive.observe(viewLifecycleOwner, adapter::submitList)
     }
 
     private fun onActionClick(menuItem: MenuItem): Boolean {
