@@ -6,35 +6,28 @@ import android.app.NotificationManager
 import android.os.Build
 import android.util.Log
 import androidx.core.content.getSystemService
-import androidx.room.Room
 import com.bumptech.glide.Glide
 import com.bumptech.glide.GlideBuilder
 import com.facebook.stetho.Stetho
 import i.am.shiro.amai.constant.Constants.DEFAULT_CHANNEL_ID
-import i.am.shiro.amai.data.AmaiDatabase
+import i.am.shiro.amai.dagger.AmaiComponent
+import i.am.shiro.amai.dagger.DaggerAmaiComponent
 import timber.log.Timber
-
-lateinit var APPLICATION: AmaiApplication
-    private set
-
-lateinit var DATABASE: AmaiDatabase
-    private set
 
 class AmaiApplication : Application() {
 
+    val component: AmaiComponent by lazy {
+        DaggerAmaiComponent.factory().create(this)
+    }
+
     override fun onCreate() {
         super.onCreate()
-        APPLICATION = this
-
-        Preferences.init(this)
 
         if (BuildConfig.DEBUG) initDebugTools()
 
-        Stetho.initializeWithDefaults(this)
+        Preferences.init(this)
 
-        DATABASE = Room.databaseBuilder(this, AmaiDatabase::class.java, "amai")
-            .fallbackToDestructiveMigrationOnDowngrade()
-            .build()
+        Stetho.initializeWithDefaults(this)
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val mChannel = NotificationChannel(
@@ -55,8 +48,7 @@ class AmaiApplication : Application() {
             }
         })
 
-        val glideBuilder = GlideBuilder()
-            .setLogLevel(Log.VERBOSE)
+        val glideBuilder = GlideBuilder().setLogLevel(Log.VERBOSE)
         Glide.init(this, glideBuilder)
     }
 }

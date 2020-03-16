@@ -2,13 +2,13 @@ package i.am.shiro.amai.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
-import i.am.shiro.amai.DATABASE
+import i.am.shiro.amai.data.AmaiDatabase
 import i.am.shiro.amai.data.AmaiDownloadManager
 import i.am.shiro.amai.data.model.Download
 
-class DownloadsViewModel : ViewModel() {
+class DownloadsViewModel(database: AmaiDatabase) : ViewModel() {
 
-    private var downloadManager = AmaiDownloadManager(DATABASE)
+    private var downloadManager = AmaiDownloadManager(database)
 
     val downloadsLive: LiveData<List<Download>> = downloadManager.downloadsLive
 

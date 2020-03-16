@@ -3,8 +3,8 @@ package i.am.shiro.amai.viewmodel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
-import i.am.shiro.amai.DATABASE
 import i.am.shiro.amai.Preferences
+import i.am.shiro.amai.data.AmaiDatabase
 import i.am.shiro.amai.data.entity.BookEntity
 import i.am.shiro.amai.data.entity.CachedEntity
 import i.am.shiro.amai.data.entity.RemoteImageEntity
@@ -12,7 +12,10 @@ import i.am.shiro.amai.data.entity.TagEntity
 import i.am.shiro.amai.data.view.CachedPreviewView
 import i.am.shiro.amai.network.Nhentai
 import i.am.shiro.amai.network.SearchJson
-import i.am.shiro.amai.util.*
+import i.am.shiro.amai.util.imageEntities
+import i.am.shiro.amai.util.invoke
+import i.am.shiro.amai.util.tagEntities
+import i.am.shiro.amai.util.toEntity
 import io.reactivex.Completable
 import io.reactivex.android.schedulers.AndroidSchedulers.mainThread
 import io.reactivex.disposables.Disposables
@@ -22,7 +25,10 @@ import java.util.*
 
 private const val PAGING_THRESHOLD = 10
 
-class NhentaiViewModel(handle: SavedStateHandle) : ViewModel() {
+class NhentaiViewModel(
+    handle: SavedStateHandle,
+    private val database: AmaiDatabase
+) : ViewModel() {
 
     private var deleteDisposable = Disposables.disposed()
 
@@ -84,8 +90,8 @@ class NhentaiViewModel(handle: SavedStateHandle) : ViewModel() {
         deleteDisposable.dispose()
         deleteDisposable = Completable
             .concatArray(
-                DATABASE.cachedDao.deleteAll(),
-                DATABASE.bookDao.deleteOrphan()
+                database.cachedDao.deleteAll(),
+                database.bookDao.deleteOrphan()
             )
             .subscribeOn(io())
             .observeOn(mainThread())
@@ -94,7 +100,7 @@ class NhentaiViewModel(handle: SavedStateHandle) : ViewModel() {
 
     private fun fetchLocal() {
         localDisposable.dispose()
-        localDisposable = DATABASE.cachedPreviewDao
+        localDisposable = database.cachedPreviewDao
             .getAll()
             .subscribe(booksLive::postValue)
     }
@@ -123,7 +129,7 @@ class NhentaiViewModel(handle: SavedStateHandle) : ViewModel() {
             imageEntities += book.imageEntities()
         }
 
-        with(DATABASE) {
+        with(database) {
             runInTransaction {
                 cachedDao.insert(cachedEntities)
                 bookDao.insert(bookEntities)

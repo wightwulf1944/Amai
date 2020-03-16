@@ -5,17 +5,17 @@ import android.os.Bundle
 import android.view.View
 import android.view.WindowManager.LayoutParams.FLAG_FULLSCREEN
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.observe
 import i.am.shiro.amai.R
 import i.am.shiro.amai.adapter.BookPageAdapter
+import i.am.shiro.amai.util.amaiViewModels
 import i.am.shiro.amai.util.argument
 import i.am.shiro.amai.viewmodel.ReadViewModel
 import kotlinx.android.synthetic.main.fragment_read.*
 
 class ReadFragment() : Fragment(R.layout.fragment_read) {
 
-    private val viewModel by viewModels<ReadViewModel>()
+    private val viewModel by amaiViewModels<ReadViewModel>()
 
     private var bookId by argument<Int>()
 

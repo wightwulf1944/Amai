@@ -8,10 +8,10 @@ import android.os.IBinder
 import androidx.core.app.NotificationCompat
 import androidx.core.content.getSystemService
 import com.bumptech.glide.Glide
-import i.am.shiro.amai.DATABASE
 import i.am.shiro.amai.Preferences
 import i.am.shiro.amai.R
 import i.am.shiro.amai.constant.Constants
+import i.am.shiro.amai.dagger.component
 import i.am.shiro.amai.data.entity.LocalImageEntity
 import i.am.shiro.amai.data.entity.SavedEntity
 import java.io.File
@@ -22,6 +22,8 @@ private const val ID_DONE = 2
 private const val ID_ERROR = 3
 
 class DownloadService : Service() {
+
+    private val database by lazy { component.database }
 
     private val notifManager by lazy { getSystemService<NotificationManager>()!! }
 
@@ -39,14 +41,14 @@ class DownloadService : Service() {
 
     // TODO resize downloaded image as thumbnail and save it
     private fun work() {
-        val download = DATABASE.downloadDao.findAvailableJob() ?: return stopSelf()
-        val book = DATABASE.bookDao.findById(download.bookId)
-        val remoteImage = DATABASE.remoteImageDao.findByBookIdAndPageIndex(
+        val download = database.downloadDao.findAvailableJob() ?: return stopSelf()
+        val book = database.bookDao.findById(download.bookId)
+        val remoteImage = database.remoteImageDao.findByBookIdAndPageIndex(
             download.bookId,
             download.progressIndex
         )
 
-        DATABASE.downloadDao.setIsDownloading(download.bookId, true)
+        database.downloadDao.setIsDownloading(download.bookId, true)
 
         postDownloadProgressNotification(book.title, book.pageCount, download.progressIndex)
 
@@ -66,25 +68,25 @@ class DownloadService : Service() {
                 thumbnailHeight = remoteImage.thumbnailHeight,
                 thumbnailUrl = remoteImage.thumbnailUrl
             )
-            DATABASE.localImageDao.insert(localImage)
-            DATABASE.downloadDao.incrementProgress(download.bookId)
+            database.localImageDao.insert(localImage)
+            database.downloadDao.incrementProgress(download.bookId)
 
             if (download.progressIndex == book.pageCount - 1) {
-                DATABASE.savedDao.insert(SavedEntity(download.bookId))
-                DATABASE.downloadDao.setIsDone(download.bookId, true)
+                database.savedDao.insert(SavedEntity(download.bookId))
+                database.downloadDao.setIsDone(download.bookId, true)
                 postDownloadDoneNotification(book.title)
             }
         } catch (e: Exception) {
-            DATABASE.downloadDao.incrementErrorCount(download.bookId)
+            database.downloadDao.incrementErrorCount(download.bookId)
 
             if (download.errorCount + 1 == 3) {
                 postDownloadFailedNotification(book.title)
             }
         }
 
-        val nextJob = DATABASE.downloadDao.findAvailableJob()
+        val nextJob = database.downloadDao.findAvailableJob()
         if (nextJob?.bookId != download.bookId) {
-            DATABASE.downloadDao.setIsDownloading(download.bookId, false)
+            database.downloadDao.setIsDownloading(download.bookId, false)
         }
 
         executor.execute(::work)

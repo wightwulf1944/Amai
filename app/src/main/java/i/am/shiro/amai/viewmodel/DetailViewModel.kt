@@ -2,14 +2,14 @@ package i.am.shiro.amai.viewmodel
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import i.am.shiro.amai.DATABASE
+import i.am.shiro.amai.data.AmaiDatabase
 import i.am.shiro.amai.model.DetailModel
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers.mainThread
 import io.reactivex.disposables.Disposables
 import io.reactivex.schedulers.Schedulers.io
 
-class DetailViewModel : ViewModel() {
+class DetailViewModel(private val database: AmaiDatabase) : ViewModel() {
 
     private var disposable = Disposables.disposed()
 
@@ -29,15 +29,15 @@ class DetailViewModel : ViewModel() {
     }
 
     private fun getModel(bookId: Int) = DetailModel(
-        book = DATABASE.bookDao.findById(bookId),
-        artistTags = DATABASE.tagDao.findNameByIdAndType(bookId, "artist"),
-        groupTags = DATABASE.tagDao.findNameByIdAndType(bookId, "group"),
-        parodyTags = DATABASE.tagDao.findNameByIdAndType(bookId, "parody"),
-        characterTags = DATABASE.tagDao.findNameByIdAndType(bookId, "character"),
-        languageTags = DATABASE.tagDao.findNameByIdAndType(bookId, "language"),
-        categoryTags = DATABASE.tagDao.findNameByIdAndType(bookId, "category"),
-        generalTags = DATABASE.tagDao.findNameByIdAndType(bookId, "tag"),
-        pageImages = DATABASE.thumbnailDao.findByBookId(bookId)
+        book = database.bookDao.findById(bookId),
+        artistTags = database.tagDao.findNameByIdAndType(bookId, "artist"),
+        groupTags = database.tagDao.findNameByIdAndType(bookId, "group"),
+        parodyTags = database.tagDao.findNameByIdAndType(bookId, "parody"),
+        characterTags = database.tagDao.findNameByIdAndType(bookId, "character"),
+        languageTags = database.tagDao.findNameByIdAndType(bookId, "language"),
+        categoryTags = database.tagDao.findNameByIdAndType(bookId, "category"),
+        generalTags = database.tagDao.findNameByIdAndType(bookId, "tag"),
+        pageImages = database.thumbnailDao.findByBookId(bookId)
     )
 
     override fun onCleared() {

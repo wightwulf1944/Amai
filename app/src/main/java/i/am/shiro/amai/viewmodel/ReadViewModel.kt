@@ -2,14 +2,14 @@ package i.am.shiro.amai.viewmodel
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import i.am.shiro.amai.DATABASE
+import i.am.shiro.amai.data.AmaiDatabase
 import i.am.shiro.amai.data.view.PageView
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers.mainThread
 import io.reactivex.disposables.Disposables
 import io.reactivex.schedulers.Schedulers.io
 
-class ReadViewModel : ViewModel() {
+class ReadViewModel(private val database: AmaiDatabase) : ViewModel() {
 
     private var disposable = Disposables.disposed()
 
@@ -22,7 +22,7 @@ class ReadViewModel : ViewModel() {
         else isLoaded = true
 
         disposable = Single
-            .fromCallable { DATABASE.pageDao.findByBookId(bookId) }
+            .fromCallable { database.pageDao.findByBookId(bookId) }
             .subscribeOn(io())
             .observeOn(mainThread())
             .subscribe(pagesLive::setValue)

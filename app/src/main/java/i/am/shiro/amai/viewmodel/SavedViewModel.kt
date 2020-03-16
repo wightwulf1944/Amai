@@ -3,13 +3,16 @@ package i.am.shiro.amai.viewmodel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
-import i.am.shiro.amai.DATABASE
 import i.am.shiro.amai.SavedSort
+import i.am.shiro.amai.data.AmaiDatabase
 import i.am.shiro.amai.data.view.SavedPreviewView
 import i.am.shiro.amai.util.invoke
 import io.reactivex.disposables.Disposables
 
-class SavedViewModel(handle: SavedStateHandle) : ViewModel() {
+class SavedViewModel(
+    handle: SavedStateHandle,
+    private val database: AmaiDatabase
+) : ViewModel() {
 
     private var disposable = Disposables.disposed()
 
@@ -35,7 +38,7 @@ class SavedViewModel(handle: SavedStateHandle) : ViewModel() {
 
     private fun fetchLocal() {
         disposable.dispose()
-        disposable = DATABASE.savedPreviewDao
+        disposable = database.savedPreviewDao
             .findSorted(query, sort)
             .subscribe(booksLive::postValue)
     }

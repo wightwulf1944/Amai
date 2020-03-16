@@ -47,12 +47,16 @@ dependencies {
     implementation 'androidx.core:core-ktx:1.2.0'
     implementation 'androidx.fragment:fragment-ktx:1.2.1'
 
+    implementation 'com.google.android.material:material:1.2.0-alpha02'
+
     // Room
     implementation 'androidx.room:room-runtime:2.2.3'
     implementation 'androidx.room:room-rxjava2:2.2.3'
     kapt 'androidx.room:room-compiler:2.2.3'
 
-    implementation 'com.google.android.material:material:1.2.0-alpha02'
+    // Dagger
+    implementation 'com.google.dagger:dagger:2.27'
+    kapt 'com.google.dagger:dagger-compiler:2.27'
 
     //    https://github.com/google/flexbox-layout
     implementation 'com.google.android:flexbox:2.0.1'

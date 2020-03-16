@@ -3,6 +3,9 @@ package i.am.shiro.amai.util
 import android.app.Service
 import android.os.Bundle
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.ViewModel
+import i.am.shiro.amai.dagger.component
 import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty
 
@@ -19,4 +22,8 @@ inline fun <reified T> Fragment.argument() = object : ReadWriteProperty<Any, T> 
 
 inline fun <reified T : Service> Fragment.startLocalService() {
     requireContext().startLocalService<T>()
+}
+
+inline fun <reified T : ViewModel> Fragment.amaiViewModels() = viewModels<T> {
+    component.viewModelFactory
 }

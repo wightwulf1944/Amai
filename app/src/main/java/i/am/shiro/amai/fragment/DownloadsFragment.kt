@@ -8,12 +8,13 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.observe
 import i.am.shiro.amai.R
 import i.am.shiro.amai.adapter.DownloadJobAdapter
+import i.am.shiro.amai.util.amaiViewModels
 import i.am.shiro.amai.viewmodel.DownloadsViewModel
 import kotlinx.android.synthetic.main.fragment_downloads.*
 
 class DownloadsFragment : Fragment(R.layout.fragment_downloads) {
 
-    private val viewModel by viewModels<DownloadsViewModel>()
+    private val viewModel by amaiViewModels<DownloadsViewModel>()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         toolbar.setOnMenuItemClickListener(::onActionClick)
