@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "1037395000054",
+    "firebase_url": "https://amai-8e915.firebaseio.com",
+    "project_id": "amai-8e915",
+    "storage_bucket": "amai-8e915.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1037395000054:android:2f02ec919f053cc2e3cad7",
+        "android_client_info": {
+          "package_name": "i.am.shiro.amai"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1037395000054-7jri520ts33ulok9cl1ojq281mjtajn1.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC-Yfz6bVtlGFmYozNiuwvkhVX2jKeeY7s"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1037395000054-7jri520ts33ulok9cl1ojq281mjtajn1.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
