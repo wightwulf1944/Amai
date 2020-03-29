@@ -34,6 +34,13 @@ class NhentaiFragment : Fragment(R.layout.fragment_nhentai) {
             viewModel.onSearch(query)
         }
 
+        val offset = (64 * resources.displayMetrics.density).toInt()
+        swipeRefreshLayout.setProgressViewOffset(false, 0, offset)
+        swipeRefreshLayout.setOnRefreshListener {
+            swipeRefreshLayout.isRefreshing = false
+            viewModel.onRefresh()
+        }
+
         val adapter = CachedPreviewAdapter(
             parentFragment = this,
             onItemClick = ::invokeViewDetails,

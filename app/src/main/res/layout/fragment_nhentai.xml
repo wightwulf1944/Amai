@@ -5,19 +5,26 @@
     android:layout_height="match_parent"
     android:focusableInTouchMode="true">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerView"
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/swipeRefreshLayout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:clipToPadding="false"
-        android:orientation="vertical"
-        android:paddingStart="4dp"
-        android:paddingTop="60dp"
-        android:paddingEnd="4dp"
-        android:paddingBottom="8dp"
-        app:layoutManager="androidx.recyclerview.widget.StaggeredGridLayoutManager"
-        app:spanCount="@integer/span_count"
-        tools:listitem="@layout/item_staggered_book" />
+        android:layout_height="match_parent">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clipToPadding="false"
+            android:orientation="vertical"
+            android:paddingStart="4dp"
+            android:paddingTop="60dp"
+            android:paddingEnd="4dp"
+            android:paddingBottom="8dp"
+            app:layoutManager="androidx.recyclerview.widget.StaggeredGridLayoutManager"
+            app:spanCount="@integer/span_count"
+            tools:listitem="@layout/item_staggered_book" />
+
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"

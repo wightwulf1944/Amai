@@ -68,6 +68,14 @@ class NhentaiViewModel(
         if (position > booksLive.value!!.size - PAGING_THRESHOLD) fetchRemotePage()
     }
 
+    fun onRefresh() {
+        page = 0
+
+        deleteLocalThen {
+            fetchRemotePage()
+        }
+    }
+
     fun onSort(sort: Nhentai.Sort) {
         page = 0
         this.sort = sort
