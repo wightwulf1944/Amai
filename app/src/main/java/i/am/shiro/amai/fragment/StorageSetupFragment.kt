@@ -7,8 +7,8 @@ import android.view.View
 import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.fragment.app.Fragment
-import i.am.shiro.amai.Preferences
 import i.am.shiro.amai.R
+import i.am.shiro.amai.dagger.component
 import i.am.shiro.amai.model.StorageOption
 import i.am.shiro.amai.util.addChild
 import i.am.shiro.amai.util.goToMain
@@ -17,6 +17,8 @@ import i.am.shiro.amai.util.saveInt
 import kotlinx.android.synthetic.main.fragment_storage_setup.*
 
 class StorageSetupFragment : Fragment(R.layout.fragment_storage_setup) {
+
+    private val preferences by lazy { component.preferences }
 
     private lateinit var storageOptions: List<StorageOption>
 
@@ -69,8 +71,8 @@ class StorageSetupFragment : Fragment(R.layout.fragment_storage_setup) {
     private fun onFinish() {
         goToMain()
 
-        Preferences.setStoragePath(storageOptions[selectedIndex].path)
-        Preferences.setFirstRunDone()
+        preferences.storagePath = storageOptions[selectedIndex].path
+        preferences.isFirstRun = false
     }
 }
 

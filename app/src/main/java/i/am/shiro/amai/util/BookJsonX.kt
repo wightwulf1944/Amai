@@ -3,9 +3,9 @@ package i.am.shiro.amai.util
 import i.am.shiro.amai.data.entity.BookEntity
 import i.am.shiro.amai.data.entity.RemoteImageEntity
 import i.am.shiro.amai.data.entity.TagEntity
-import i.am.shiro.amai.network.Nhentai
 import i.am.shiro.amai.network.BookJson
 import i.am.shiro.amai.network.ImageJson
+import i.am.shiro.amai.network.Nhentai
 import kotlin.math.min
 
 fun BookJson.toEntity() = BookEntity(

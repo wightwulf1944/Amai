@@ -25,8 +25,6 @@ class AmaiApplication : Application() {
 
         if (BuildConfig.DEBUG) initDebugTools()
 
-        Preferences.init(this)
-
         Stetho.initializeWithDefaults(this)
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {

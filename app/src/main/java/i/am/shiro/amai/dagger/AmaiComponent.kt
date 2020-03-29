@@ -7,12 +7,13 @@ import androidx.fragment.app.Fragment
 import dagger.BindsInstance
 import dagger.Component
 import i.am.shiro.amai.AmaiApplication
+import i.am.shiro.amai.AmaiPreferences
 import i.am.shiro.amai.data.AmaiDatabase
 import i.am.shiro.amai.viewmodel.factory.ViewModelFactory
 import javax.inject.Singleton
 
 @Singleton
-@Component(modules = [DatabaseModule::class, ViewModelFactoryModule::class])
+@Component(modules = [AmaiModule::class])
 interface AmaiComponent {
 
     @Component.Factory
@@ -21,6 +22,8 @@ interface AmaiComponent {
     }
 
     val database: AmaiDatabase
+
+    val preferences: AmaiPreferences
 
     val viewModelFactory: ViewModelFactory
 }

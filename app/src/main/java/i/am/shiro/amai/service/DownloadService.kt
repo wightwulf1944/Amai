@@ -8,7 +8,6 @@ import android.os.IBinder
 import androidx.core.app.NotificationCompat
 import androidx.core.content.getSystemService
 import com.bumptech.glide.Glide
-import i.am.shiro.amai.Preferences
 import i.am.shiro.amai.R
 import i.am.shiro.amai.constant.Constants
 import i.am.shiro.amai.dagger.component
@@ -24,6 +23,8 @@ private const val ID_ERROR = 3
 class DownloadService : Service() {
 
     private val database by lazy { component.database }
+
+    private val preferences by lazy { component.preferences }
 
     private val notifManager by lazy { getSystemService<NotificationManager>()!! }
 
@@ -52,7 +53,7 @@ class DownloadService : Service() {
 
         postDownloadProgressNotification(book.title, book.pageCount, download.progressIndex)
 
-        val localFile = File(Preferences.getStoragePath())
+        val localFile = File(preferences.storagePath)
             .resolve(remoteImage.bookId.toString())
             .resolve(remoteImage.url.substringAfterLast('/'))
 

@@ -6,8 +6,6 @@ import android.view.KeyEvent
 import android.view.View
 import androidx.annotation.IdRes
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.commit
-import androidx.fragment.app.findFragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.snackbar.Snackbar
 import i.am.shiro.amai.R

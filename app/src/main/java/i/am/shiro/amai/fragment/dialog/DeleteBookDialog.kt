@@ -3,7 +3,6 @@ package i.am.shiro.amai.fragment.dialog
 import android.os.Bundle
 import androidx.fragment.app.DialogFragment
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import i.am.shiro.amai.Preferences
 import i.am.shiro.amai.R
 import i.am.shiro.amai.dagger.component
 import i.am.shiro.amai.util.argument
@@ -14,6 +13,8 @@ import java.io.File
 class DeleteBookDialog() : DialogFragment() {
 
     private val database by lazy { component.database }
+
+    private val preferences by lazy { component.preferences }
 
     private var bookId by argument<Int>()
 
@@ -33,7 +34,7 @@ class DeleteBookDialog() : DialogFragment() {
             .create()
 
     private fun onConfirmClick() {
-        File(Preferences.getStoragePath())
+        File(preferences.storagePath)
             .resolve(bookId.toString())
             .deleteRecursively()
 

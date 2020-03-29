@@ -3,7 +3,7 @@ package i.am.shiro.amai.viewmodel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
-import i.am.shiro.amai.Preferences
+import i.am.shiro.amai.AmaiPreferences
 import i.am.shiro.amai.data.AmaiDatabase
 import i.am.shiro.amai.data.entity.BookEntity
 import i.am.shiro.amai.data.entity.CachedEntity
@@ -27,7 +27,8 @@ private const val PAGING_THRESHOLD = 10
 
 class NhentaiViewModel(
     handle: SavedStateHandle,
-    private val database: AmaiDatabase
+    private val database: AmaiDatabase,
+    private val preferences: AmaiPreferences
 ) : ViewModel() {
 
     private var deleteDisposable = Disposables.disposed()
@@ -114,7 +115,7 @@ class NhentaiViewModel(
     }
 
     private fun fetchRemotePage() {
-        val query = "${Preferences.getSearchConstants()} $query"
+        val query = "${preferences.searchConstants} $query"
         val page = page + 1
 
         remoteDisposable.dispose()

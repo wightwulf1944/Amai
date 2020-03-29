@@ -4,7 +4,10 @@ import androidx.room.Database
 import androidx.room.RoomDatabase
 import i.am.shiro.amai.data.dao.*
 import i.am.shiro.amai.data.entity.*
-import i.am.shiro.amai.data.view.*
+import i.am.shiro.amai.data.view.CachedPreviewView
+import i.am.shiro.amai.data.view.PageView
+import i.am.shiro.amai.data.view.SavedPreviewView
+import i.am.shiro.amai.data.view.ThumbnailView
 
 @Database(
     entities = [
