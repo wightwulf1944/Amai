@@ -8,16 +8,10 @@ import dagger.Provides
 import dagger.Reusable
 import i.am.shiro.amai.AmaiPreferences
 import i.am.shiro.amai.data.AmaiDatabase
-import i.am.shiro.amai.viewmodel.factory.ViewModelFactory
 import javax.inject.Singleton
 
 @Module
 object AmaiModule {
-
-    @Provides
-    @Reusable
-    fun provideVmFactory(database: AmaiDatabase, preferences: AmaiPreferences) =
-        ViewModelFactory(database, preferences)
 
     @Provides
     @Singleton

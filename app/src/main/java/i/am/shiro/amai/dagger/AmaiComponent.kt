@@ -9,7 +9,6 @@ import dagger.Component
 import i.am.shiro.amai.AmaiApplication
 import i.am.shiro.amai.AmaiPreferences
 import i.am.shiro.amai.data.AmaiDatabase
-import i.am.shiro.amai.viewmodel.factory.ViewModelFactory
 import javax.inject.Singleton
 
 @Singleton
@@ -24,8 +23,6 @@ interface AmaiComponent {
     val database: AmaiDatabase
 
     val preferences: AmaiPreferences
-
-    val viewModelFactory: ViewModelFactory
 }
 
 val Service.component get() = (application as AmaiApplication).component

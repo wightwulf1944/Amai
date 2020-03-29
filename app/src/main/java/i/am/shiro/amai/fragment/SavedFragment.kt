@@ -4,29 +4,21 @@ import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.observe
 import i.am.shiro.amai.R
 import i.am.shiro.amai.SavedSort
 import i.am.shiro.amai.adapter.SavedPreviewAdapter
-import i.am.shiro.amai.dagger.component
 import i.am.shiro.amai.data.view.SavedPreviewView
 import i.am.shiro.amai.fragment.dialog.DeleteBookDialog
 import i.am.shiro.amai.fragment.dialog.PlaceholderDialog
 import i.am.shiro.amai.fragment.dialog.SavedSortDialog
-import i.am.shiro.amai.util.goToDetail
-import i.am.shiro.amai.util.loadBoolean
-import i.am.shiro.amai.util.saveBoolean
-import i.am.shiro.amai.util.show
+import i.am.shiro.amai.util.*
 import i.am.shiro.amai.viewmodel.SavedViewModel
-import i.am.shiro.amai.viewmodel.factory.SavedStateViewModelFactory
 import kotlinx.android.synthetic.main.fragment_saved.*
 
 class SavedFragment : Fragment(R.layout.fragment_saved) {
 
-    private val viewModel by viewModels<SavedViewModel> {
-        SavedStateViewModelFactory(this, component)
-    }
+    private val viewModel by amaiStatefulViewModels<SavedViewModel>()
 
     private var shouldScrollToTop = false
 

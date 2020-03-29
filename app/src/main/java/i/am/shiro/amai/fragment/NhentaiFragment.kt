@@ -6,25 +6,21 @@ import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.observe
 import i.am.shiro.amai.R
 import i.am.shiro.amai.adapter.CachedPreviewAdapter
-import i.am.shiro.amai.dagger.component
 import i.am.shiro.amai.data.view.CachedPreviewView
 import i.am.shiro.amai.fragment.dialog.NhentaiSortDialog
 import i.am.shiro.amai.fragment.dialog.SearchConstantsDialog
+import i.am.shiro.amai.util.amaiStatefulViewModels
 import i.am.shiro.amai.util.goToDetail
 import i.am.shiro.amai.util.show
 import i.am.shiro.amai.viewmodel.NhentaiViewModel
-import i.am.shiro.amai.viewmodel.factory.SavedStateViewModelFactory
 import kotlinx.android.synthetic.main.fragment_nhentai.*
 
 class NhentaiFragment : Fragment(R.layout.fragment_nhentai) {
 
-    private val viewModel by viewModels<NhentaiViewModel> {
-        SavedStateViewModelFactory(this, component)
-    }
+    private val viewModel by amaiStatefulViewModels<NhentaiViewModel>()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         toolbar.setOnMenuItemClickListener(::onActionClick)
