@@ -12,7 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.annimon.stream.function.IntConsumer;
+import java.util.function.IntConsumer;
 
 import i.am.shiro.amai.R;
 

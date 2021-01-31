@@ -4,7 +4,7 @@ import android.content.Context
 import android.view.GestureDetector
 import android.view.GestureDetector.SimpleOnGestureListener
 import android.view.MotionEvent
-import com.annimon.stream.function.Consumer
+import java.util.function.Consumer
 
 internal class TapDetector(context: Context?, tapListener: Consumer<MotionEvent?>) {
 
