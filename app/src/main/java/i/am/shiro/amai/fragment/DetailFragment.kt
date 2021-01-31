@@ -5,6 +5,8 @@ import android.net.Uri
 import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
+import androidx.coordinatorlayout.widget.CoordinatorLayout
+import androidx.core.view.updateLayoutParams
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.GridLayoutManager.SpanSizeLookup
@@ -19,6 +21,7 @@ import i.am.shiro.amai.util.argument
 import i.am.shiro.amai.util.goToRead
 import i.am.shiro.amai.util.startLocalService
 import i.am.shiro.amai.viewmodel.DetailViewModel
+import i.am.shiro.amai.widget.PullGestureBehavior
 import io.reactivex.schedulers.Schedulers.io
 import kotlinx.android.synthetic.main.fragment_detail.*
 
@@ -43,8 +46,16 @@ class DetailFragment() : Fragment(R.layout.fragment_detail) {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        toolbar.setNavigationOnClickListener { onBackClick() }
+        toolbar.setNavigationOnClickListener {
+            parentFragmentManager.popBackStack()
+        }
+
         previewRecycler.setHasFixedSize(true)
+        previewRecycler.updateLayoutParams<CoordinatorLayout.LayoutParams> {
+            (behavior as PullGestureBehavior).setOnPullListener {
+                parentFragmentManager.popBackStack()
+            }
+        }
 
         viewModel.modelLive.observe(viewLifecycleOwner, ::onModelLoaded)
     }
@@ -70,10 +81,6 @@ class DetailFragment() : Fragment(R.layout.fragment_detail) {
             R.id.action_browser -> onOpenBrowserClick()
         }
         return true
-    }
-
-    private fun onBackClick() {
-        requireActivity().onBackPressed()
     }
 
     // TODO

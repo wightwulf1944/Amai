@@ -8,7 +8,6 @@ import android.view.View.VISIBLE
 import androidx.fragment.app.Fragment
 import i.am.shiro.amai.R
 import i.am.shiro.amai.adapter.CachedPreviewAdapter
-import i.am.shiro.amai.data.view.CachedPreviewView
 import i.am.shiro.amai.fragment.dialog.NhentaiSortDialog
 import i.am.shiro.amai.fragment.dialog.SearchConstantsDialog
 import i.am.shiro.amai.util.amaiStatefulViewModels
@@ -38,7 +37,7 @@ class NhentaiFragment : Fragment(R.layout.fragment_nhentai) {
 
         val adapter = CachedPreviewAdapter(
             parentFragment = this,
-            onItemClick = ::invokeViewDetails,
+            onItemClick = { goToDetail(it.bookId) },
             onPositionBind = viewModel::onPositionBind
         )
 
@@ -57,10 +56,5 @@ class NhentaiFragment : Fragment(R.layout.fragment_nhentai) {
             R.id.action_constants -> SearchConstantsDialog().show(childFragmentManager)
         }
         return true
-    }
-
-
-    private fun invokeViewDetails(book: CachedPreviewView) {
-        goToDetail(book.bookId)
     }
 }
