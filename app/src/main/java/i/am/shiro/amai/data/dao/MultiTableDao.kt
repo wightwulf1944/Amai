@@ -20,7 +20,7 @@ interface MultiTableDao {
         LEFT JOIN BookEntity USING(bookId)
         LEFT JOIN (SELECT * FROM LocalImageEntity) USING(bookId)
         GROUP BY bookId
-        ORDER BY createTime
+        ORDER BY createTime DESC
     """)
     fun getDownloadDetails(): Observable<List<DownloadDetail>>
 }
