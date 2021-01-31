@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.observe
 import i.am.shiro.amai.R
 import i.am.shiro.amai.SavedSort
 import i.am.shiro.amai.adapter.SavedPreviewAdapter

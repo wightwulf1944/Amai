@@ -1,8 +1,8 @@
 package i.am.shiro.amai.network
 
+import i.am.shiro.amai.BuildConfig
 import okhttp3.Interceptor
 import okhttp3.Response
-import java.io.IOException
 
 private const val USER_AGENT = "Amai/${BuildConfig.VERSION_NAME} (https://github.com/wightwulf1944/Amai)"
 

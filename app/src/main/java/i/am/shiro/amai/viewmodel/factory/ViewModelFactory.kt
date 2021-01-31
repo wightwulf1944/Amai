@@ -2,9 +2,7 @@ package i.am.shiro.amai.viewmodel.factory
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import i.am.shiro.amai.AmaiPreferences
 import i.am.shiro.amai.dagger.AmaiComponent
-import i.am.shiro.amai.data.AmaiDatabase
 import i.am.shiro.amai.viewmodel.DetailViewModel
 import i.am.shiro.amai.viewmodel.DownloadsViewModel
 import i.am.shiro.amai.viewmodel.LoadingViewModel

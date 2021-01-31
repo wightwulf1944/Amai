@@ -8,8 +8,8 @@ import android.os.IBinder
 import androidx.core.app.NotificationCompat
 import androidx.core.content.getSystemService
 import com.bumptech.glide.Glide
+import i.am.shiro.amai.DEFAULT_CHANNEL_ID
 import i.am.shiro.amai.R
-import i.am.shiro.amai.constant.Constants
 import i.am.shiro.amai.dagger.component
 import i.am.shiro.amai.data.entity.LocalImageEntity
 import i.am.shiro.amai.data.entity.SavedEntity
@@ -53,7 +53,7 @@ class DownloadService : Service() {
 
         postDownloadProgressNotification(book.title, book.pageCount, download.progressIndex)
 
-        val localFile = File(preferences.storagePath)
+        val localFile = File(preferences.storagePath!!)
             .resolve(remoteImage.bookId.toString())
             .resolve(remoteImage.url.substringAfterLast('/'))
 
@@ -101,14 +101,14 @@ class DownloadService : Service() {
             .get()
 
     private fun buildForegroundNotification(): Notification =
-        NotificationCompat.Builder(this, Constants.DEFAULT_CHANNEL_ID)
+        NotificationCompat.Builder(this, DEFAULT_CHANNEL_ID)
             .setSmallIcon(R.drawable.ic_notification_download)
             .setContentTitle("Downloading")
             .setProgress(0, 0, true)
             .build()
 
     private fun postDownloadProgressNotification(title: String, max: Int, progress: Int) {
-        NotificationCompat.Builder(this, Constants.DEFAULT_CHANNEL_ID)
+        NotificationCompat.Builder(this, DEFAULT_CHANNEL_ID)
             .setSmallIcon(R.drawable.ic_notification_download)
             .setContentTitle("Downloading")
             .setContentText(title)
@@ -117,7 +117,7 @@ class DownloadService : Service() {
     }
 
     private fun postDownloadDoneNotification(title: String) {
-        NotificationCompat.Builder(this, Constants.DEFAULT_CHANNEL_ID)
+        NotificationCompat.Builder(this, DEFAULT_CHANNEL_ID)
             .setSmallIcon(R.drawable.ic_notification_download)
             .setContentTitle("Download done")
             .setContentText(title)
@@ -125,7 +125,7 @@ class DownloadService : Service() {
     }
 
     private fun postDownloadFailedNotification(title: String) {
-        NotificationCompat.Builder(this, Constants.DEFAULT_CHANNEL_ID)
+        NotificationCompat.Builder(this, DEFAULT_CHANNEL_ID)
             .setSmallIcon(R.drawable.ic_notification_download)
             .setContentTitle("Download failed")
             .setContentText(title)

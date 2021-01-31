@@ -1,5 +1,6 @@
 package i.am.shiro.amai.network
 
+import i.am.shiro.amai.BuildConfig
 import io.reactivex.Single
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor

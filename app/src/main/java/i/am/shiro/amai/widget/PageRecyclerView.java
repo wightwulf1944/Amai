@@ -2,6 +2,7 @@ package i.am.shiro.amai.widget;
 
 import android.content.Context;
 import android.os.Handler;
+import android.os.Looper;
 import android.util.AttributeSet;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
@@ -29,7 +30,7 @@ public final class PageRecyclerView extends RecyclerView {
 
     private final int pagerTapZoneWidth;
 
-    private final Handler pageFlipHandler = new Handler();
+    private final Handler pageFlipHandler = new Handler(Looper.getMainLooper());
 
     private IntConsumer onPageScrollListener;
 

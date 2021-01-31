@@ -34,7 +34,7 @@ class DeleteBookDialog() : DialogFragment() {
             .create()
 
     private fun onConfirmClick() {
-        File(preferences.storagePath)
+        File(preferences.storagePath!!)
             .resolve(bookId.toString())
             .deleteRecursively()
 

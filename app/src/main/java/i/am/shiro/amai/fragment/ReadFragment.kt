@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.view.View
 import android.view.WindowManager.LayoutParams.FLAG_FULLSCREEN
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.observe
 import i.am.shiro.amai.R
 import i.am.shiro.amai.adapter.BookPageAdapter
 import i.am.shiro.amai.util.amaiViewModels

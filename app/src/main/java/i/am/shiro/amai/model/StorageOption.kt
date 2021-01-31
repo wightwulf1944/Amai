@@ -5,23 +5,14 @@ import java.io.File
 
 class StorageOption(dir: File) {
 
-    val path: String
+    val path = dir.path
 
-    val isMounted: Boolean
+    val isMounted = Environment.MEDIA_MOUNTED == Environment.getExternalStorageState(dir)
 
-    val spaceFree: Long
+    val spaceFree = dir.freeSpace
 
-    val percentUsed: Int
+    val percentUsed = (dir.usedSpace / (dir.totalSpace / 100.0)).toInt()
 
-    init {
-        path = dir.path
-
-        isMounted = Environment.MEDIA_MOUNTED == Environment.getExternalStorageState(dir)
-
-        spaceFree = dir.freeSpace
-
-        percentUsed = (dir.usedSpace / (dir.totalSpace / 100.0)).toInt()
-    }
 }
 
 private val File.usedSpace: Long

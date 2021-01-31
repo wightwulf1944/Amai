@@ -8,8 +8,6 @@ import android.util.Log
 import androidx.core.content.getSystemService
 import com.bumptech.glide.Glide
 import com.bumptech.glide.GlideBuilder
-import com.facebook.stetho.Stetho
-import i.am.shiro.amai.constant.Constants.DEFAULT_CHANNEL_ID
 import i.am.shiro.amai.dagger.AmaiComponent
 import i.am.shiro.amai.dagger.DaggerAmaiComponent
 import timber.log.Timber
@@ -24,8 +22,6 @@ class AmaiApplication : Application() {
         super.onCreate()
 
         if (BuildConfig.DEBUG) initDebugTools()
-
-        Stetho.initializeWithDefaults(this)
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val mChannel = NotificationChannel(

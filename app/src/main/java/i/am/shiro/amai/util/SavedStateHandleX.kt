@@ -16,8 +16,6 @@ operator fun <T> SavedStateHandle.invoke(default: T) = object : ReadWritePropert
     }
 }
 
-fun <T> SavedStateHandle.live() = object : ReadOnlyProperty<Any, MutableLiveData<T>> {
-
-    override fun getValue(thisRef: Any, property: KProperty<*>): MutableLiveData<T> =
-        getLiveData(property.name)
+fun <T> SavedStateHandle.live() = ReadOnlyProperty<Any, MutableLiveData<T>> { _, property ->
+    getLiveData(property.name)
 }

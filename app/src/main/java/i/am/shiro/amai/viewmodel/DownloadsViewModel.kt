@@ -6,6 +6,7 @@ import i.am.shiro.amai.data.AmaiDatabase
 import i.am.shiro.amai.data.AmaiDownloadManager
 import i.am.shiro.amai.data.model.Download
 
+// TODO anemic ViewModel might not be needed
 class DownloadsViewModel(database: AmaiDatabase) : ViewModel() {
 
     private var downloadManager = AmaiDownloadManager(database)

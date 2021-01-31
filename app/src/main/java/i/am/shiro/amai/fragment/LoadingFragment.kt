@@ -2,7 +2,6 @@ package i.am.shiro.amai.fragment
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.observe
 import i.am.shiro.amai.R
 import i.am.shiro.amai.util.amaiViewModels
 import i.am.shiro.amai.util.argument
