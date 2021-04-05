@@ -9,7 +9,7 @@ android {
     compileSdkVersion 30
     defaultConfig {
         applicationId "i.am.shiro.amai"
-        minSdkVersion 26
+        minSdkVersion 28
         targetSdkVersion 30
         versionCode 1
         versionName "1.0"
@@ -37,17 +37,17 @@ dependencies {
     implementation 'androidx.appcompat:appcompat:1.2.0'
     implementation 'androidx.vectordrawable:vectordrawable:1.1.0'
     implementation 'androidx.cardview:cardview:1.0.0'
-    implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
-    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0'
-    implementation 'androidx.lifecycle:lifecycle-viewmodel-savedstate:2.2.0'
-    implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.2.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.3.1'
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-savedstate:2.3.1'
+    implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.3.1'
     implementation 'androidx.core:core-ktx:1.3.2'
-    implementation 'androidx.fragment:fragment-ktx:1.2.5'
+    implementation 'androidx.fragment:fragment-ktx:1.3.2'
     implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.1.0'
     implementation 'androidx.preference:preference-ktx:1.1.1'
 
     implementation 'org.jetbrains.kotlin:kotlin-stdlib'
-    implementation 'androidx.annotation:annotation:1.1.0'
+    implementation 'androidx.annotation:annotation:1.2.0'
 
     //    http://square.github.io/retrofit/
     implementation 'com.squareup.retrofit2:retrofit:2.8.2'
@@ -61,7 +61,7 @@ dependencies {
     // https://github.com/square/okhttp
     implementation 'com.squareup.okhttp3:logging-interceptor:3.14.6'
 
-    implementation 'com.google.android.material:material:1.2.1'
+    implementation 'com.google.android.material:material:1.3.0'
 
     // Room
     implementation 'androidx.room:room-runtime:2.2.6'
@@ -73,8 +73,9 @@ dependencies {
     kapt 'com.google.dagger:dagger-compiler:2.27'
 
     // Firebase
-    implementation 'com.google.firebase:firebase-analytics:18.0.1'
-    implementation 'com.google.firebase:firebase-crashlytics:17.3.0'
+    implementation platform('com.google.firebase:firebase-bom:26.8.0')
+    implementation 'com.google.firebase:firebase-analytics'
+    implementation 'com.google.firebase:firebase-crashlytics'
 
     //    https://github.com/google/flexbox-layout
     implementation 'com.google.android:flexbox:2.0.1'

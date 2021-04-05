@@ -3,7 +3,6 @@ package i.am.shiro.amai
 import android.app.Application
 import android.app.NotificationChannel
 import android.app.NotificationManager
-import android.os.Build
 import android.util.Log
 import androidx.core.content.getSystemService
 import com.bumptech.glide.Glide
@@ -23,19 +22,17 @@ class AmaiApplication : Application() {
 
         if (BuildConfig.DEBUG) initDebugTools()
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val mChannel = NotificationChannel(
-                DEFAULT_CHANNEL_ID,
-                getString(R.string.app_name),
-                NotificationManager.IMPORTANCE_DEFAULT)
+        val mChannel = NotificationChannel(
+            DEFAULT_CHANNEL_ID,
+            getString(R.string.app_name),
+            NotificationManager.IMPORTANCE_DEFAULT)
 
-            getSystemService<NotificationManager>()!!.createNotificationChannel(mChannel)
-        }
+        getSystemService<NotificationManager>()!!.createNotificationChannel(mChannel)
     }
 
     private fun initDebugTools() {
         Timber.plant(object : Timber.DebugTree() {
-            override fun createStackElementTag(element: StackTraceElement): String? {
+            override fun createStackElementTag(element: StackTraceElement): String {
                 val tag = super.createStackElementTag(element)
                 val method = element.methodName
                 return String.format("%s:%s", tag, method)
