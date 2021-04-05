@@ -10,6 +10,7 @@ import i.am.shiro.amai.data.entity.CachedEntity
 import i.am.shiro.amai.data.entity.RemoteImageEntity
 import i.am.shiro.amai.data.entity.TagEntity
 import i.am.shiro.amai.data.view.CachedPreviewView
+import i.am.shiro.amai.network.BookJson
 import i.am.shiro.amai.network.Nhentai
 import i.am.shiro.amai.network.SearchJson
 import i.am.shiro.amai.util.imageEntities
@@ -43,6 +44,8 @@ class NhentaiViewModel(
 
     private var sort by handle<Nhentai.Sort>(Nhentai.Sort.DATE)
 
+    private var isComplete by handle<Boolean>(false)
+
     val booksLive = MutableLiveData<List<CachedPreviewView>>()
 
     val isLoadingLive = MutableLiveData<Boolean>()
@@ -65,12 +68,14 @@ class NhentaiViewModel(
     }
 
     fun onPositionBind(position: Int) {
+        if (isComplete) return
         if (!remoteDisposable.isDisposed) return
         if (position > booksLive.value!!.size - PAGING_THRESHOLD) fetchRemotePage()
     }
 
     fun onRefresh() {
         page = 0
+        isComplete = false
 
         deleteLocalThen {
             fetchRemotePage()
@@ -79,6 +84,7 @@ class NhentaiViewModel(
 
     fun onSort(sort: Nhentai.Sort) {
         page = 0
+        isComplete = false
         this.sort = sort
 
         deleteLocalThen {
@@ -88,6 +94,7 @@ class NhentaiViewModel(
 
     fun onSearch(query: String) {
         page = 0
+        isComplete = false
         this.query = query
 
         deleteLocalThen {
@@ -115,17 +122,46 @@ class NhentaiViewModel(
     }
 
     private fun fetchRemotePage() {
-        val query = "${preferences.searchConstants} $query"
-        val page = page + 1
-
         remoteDisposable.dispose()
-        remoteDisposable = Nhentai.API.search(query, page, sort)
-            .doOnSubscribe { isLoadingLive.postValue(true) }
-            .doFinally { isLoadingLive.postValue(false) }
-            .subscribe(::onRemoteSuccess, Timber::e)
+
+        if (query.matches(Regex("^id:\\d+\$"))) {
+            val id = query.substringAfter("id:").toInt()
+
+            remoteDisposable = Nhentai.API.getBook(id)
+                .doOnSubscribe { isLoadingLive.postValue(true) }
+                .doFinally { isLoadingLive.postValue(false) }
+                .subscribe(::onGetBookSuccess, Timber::e)
+
+        } else {
+            val query = "${preferences.searchConstants} $query"
+            val page = page + 1
+
+            remoteDisposable = Nhentai.API.search(query, page, sort)
+                .doOnSubscribe { isLoadingLive.postValue(true) }
+                .doFinally { isLoadingLive.postValue(false) }
+                .subscribe(::onSearchSuccess, Timber::e)
+        }
     }
 
-    private fun onRemoteSuccess(searchJson: SearchJson) {
+    private fun onGetBookSuccess(bookJson: BookJson) {
+        val cachedEntities = listOf(CachedEntity(0, bookJson.id))
+        val bookEntities = listOf(bookJson.toEntity())
+        val tagEntities = bookJson.tagEntities()
+        val imageEntities = bookJson.imageEntities()
+
+        with(database) {
+            runInTransaction {
+                cachedDao.insert(cachedEntities)
+                bookDao.insert(bookEntities)
+                tagDao.insert(tagEntities)
+                remoteImageDao.insert(imageEntities)
+            }
+        }
+
+        isComplete = true
+    }
+
+    private fun onSearchSuccess(searchJson: SearchJson) {
         val cachedEntities = LinkedList<CachedEntity>()
         val bookEntities = LinkedList<BookEntity>()
         val tagEntities = LinkedList<TagEntity>()
@@ -147,7 +183,11 @@ class NhentaiViewModel(
             }
         }
 
-        if (page < searchJson.num_pages) ++page
+        if (page < searchJson.num_pages) {
+            ++page
+        } else {
+            isComplete = true
+        }
     }
 }
 
