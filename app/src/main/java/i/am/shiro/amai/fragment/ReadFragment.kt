@@ -52,7 +52,7 @@ class ReadFragment() : Fragment(R.layout.fragment_read) {
         pageRecycler.requestFocus()
         pageRecycler.setOnPageScrollListener { value -> pageText.text = value.toString() }
 
-        viewModel.pagesLive.observe(this) {
+        viewModel.pagesLive.observe(viewLifecycleOwner) {
             pageRecycler.adapter = BookPageAdapter(this, it)
 
             if (savedInstanceState == null) {
