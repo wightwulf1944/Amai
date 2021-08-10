@@ -27,7 +27,7 @@ class NhentaiSortDialog : DialogFragment() {
             1 -> Nhentai.Sort.POPULAR
             else -> throw RuntimeException()
         }
-        ViewModelProvider(parentFragment!!).get<NhentaiViewModel>().onSort(sort)
+        ViewModelProvider(requireParentFragment()).get<NhentaiViewModel>().onSort(sort)
         dismiss()
     }
 }

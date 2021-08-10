@@ -38,6 +38,8 @@
     <string name="retry">retry</string>
     <string name="downloading">Downloading</string>
     <string name="pause">pause</string>
+    <string name="resume_all">Resume all</string>
+    <string name="pause_all">Pause all</string>
     <string-array name="sort_items_saved">
         <item>Newest first</item>
         <item>Oldest first</item>

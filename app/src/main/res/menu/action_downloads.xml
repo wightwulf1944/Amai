@@ -5,13 +5,13 @@
     <item
         android:id="@+id/action_resume_all"
         android:icon="@drawable/ic_play_all"
-        android:title="Resume all"
+        android:title="@string/resume_all"
         app:showAsAction="always" />
 
     <item
         android:id="@+id/action_pause_all"
         android:icon="@drawable/ic_pause_all"
-        android:title="Pause all"
+        android:title="@string/pause_all"
         app:showAsAction="always" />
 
 </menu>
