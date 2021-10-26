@@ -15,6 +15,7 @@ import i.am.shiro.amai.adapter.DetailAdapter
 import i.am.shiro.amai.dagger.component
 import i.am.shiro.amai.data.entity.DownloadJobEntity
 import i.am.shiro.amai.model.DetailModel
+import i.am.shiro.amai.network.Nhentai
 import i.am.shiro.amai.service.DownloadService
 import i.am.shiro.amai.util.amaiViewModels
 import i.am.shiro.amai.util.argument
@@ -30,8 +31,6 @@ class DetailFragment() : Fragment(R.layout.fragment_detail) {
     private val viewModel by amaiViewModels<DetailViewModel>()
 
     private val database by lazy { component.database }
-
-    private lateinit var bookUrl: String
 
     private var bookId by argument<Int>()
 
@@ -57,6 +56,11 @@ class DetailFragment() : Fragment(R.layout.fragment_detail) {
             }
         }
 
+        val layoutManager = previewRecycler.layoutManager as GridLayoutManager
+        layoutManager.spanSizeLookup = object : SpanSizeLookup() {
+            override fun getSpanSize(position: Int) = if (position == 0) 2 else 1
+        }
+
         viewModel.modelLive.observe(viewLifecycleOwner, ::onModelLoaded)
     }
 
@@ -68,11 +72,6 @@ class DetailFragment() : Fragment(R.layout.fragment_detail) {
             model = model,
             onThumbnailClickListener = ::invokeReadBook
         )
-
-        val layoutManager = previewRecycler.layoutManager as GridLayoutManager
-        layoutManager.spanSizeLookup = object : SpanSizeLookup() {
-            override fun getSpanSize(position: Int) = if (position == 0) 2 else 1
-        }
     }
 
     private fun onActionClick(menuItem: MenuItem): Boolean {
@@ -95,6 +94,7 @@ class DetailFragment() : Fragment(R.layout.fragment_detail) {
     }
 
     private fun onOpenBrowserClick() {
+        val bookUrl = Nhentai.WEBPAGE_BASE_URL + viewModel.modelLive.value!!.book.bookId
         val uri = Uri.parse(bookUrl)
         val intent = Intent(Intent.ACTION_VIEW, uri)
         startActivity(intent)

@@ -7,7 +7,6 @@ import androidx.room.PrimaryKey
 data class BookEntity(
     @PrimaryKey
     val bookId: Int,
-    val webUrl: String,
     val title: String,
     val pageCount: Int,
     val uploadDate: Long,

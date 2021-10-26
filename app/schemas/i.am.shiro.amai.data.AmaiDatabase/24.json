@@ -1,0 +1,376 @@
+{
+  "formatVersion": 1,
+  "database": {
+    "version": 24,
+    "identityHash": "c7141c059d361d9f414b11fcb460e504",
+    "entities": [
+      {
+        "tableName": "BookEntity",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`bookId` INTEGER NOT NULL, `title` TEXT NOT NULL, `pageCount` INTEGER NOT NULL, `uploadDate` INTEGER NOT NULL, `favCount` INTEGER NOT NULL, PRIMARY KEY(`bookId`))",
+        "fields": [
+          {
+            "fieldPath": "bookId",
+            "columnName": "bookId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "title",
+            "columnName": "title",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "pageCount",
+            "columnName": "pageCount",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "uploadDate",
+            "columnName": "uploadDate",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "favCount",
+            "columnName": "favCount",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "bookId"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "TagEntity",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`bookId` INTEGER NOT NULL, `type` TEXT NOT NULL, `name` TEXT NOT NULL, PRIMARY KEY(`bookId`, `type`, `name`), FOREIGN KEY(`bookId`) REFERENCES `BookEntity`(`bookId`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "bookId",
+            "columnName": "bookId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "type",
+            "columnName": "type",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "name",
+            "columnName": "name",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "bookId",
+            "type",
+            "name"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [],
+        "foreignKeys": [
+          {
+            "table": "BookEntity",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "bookId"
+            ],
+            "referencedColumns": [
+              "bookId"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "DownloadJobEntity",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`bookId` INTEGER NOT NULL, `createTime` INTEGER NOT NULL, `progressIndex` INTEGER NOT NULL, `errorCount` INTEGER NOT NULL, `isDownloading` INTEGER NOT NULL, `isPaused` INTEGER NOT NULL, `isDone` INTEGER NOT NULL, PRIMARY KEY(`bookId`))",
+        "fields": [
+          {
+            "fieldPath": "bookId",
+            "columnName": "bookId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "createTime",
+            "columnName": "createTime",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "progressIndex",
+            "columnName": "progressIndex",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "errorCount",
+            "columnName": "errorCount",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "isDownloading",
+            "columnName": "isDownloading",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "isPaused",
+            "columnName": "isPaused",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "isDone",
+            "columnName": "isDone",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "bookId"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "LocalImageEntity",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`bookId` INTEGER NOT NULL, `pageIndex` INTEGER NOT NULL, `width` INTEGER NOT NULL, `height` INTEGER NOT NULL, `url` TEXT NOT NULL, `thumbnailWidth` INTEGER NOT NULL, `thumbnailHeight` INTEGER NOT NULL, `thumbnailUrl` TEXT NOT NULL, PRIMARY KEY(`bookId`, `pageIndex`))",
+        "fields": [
+          {
+            "fieldPath": "bookId",
+            "columnName": "bookId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "pageIndex",
+            "columnName": "pageIndex",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "width",
+            "columnName": "width",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "height",
+            "columnName": "height",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "url",
+            "columnName": "url",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "thumbnailWidth",
+            "columnName": "thumbnailWidth",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "thumbnailHeight",
+            "columnName": "thumbnailHeight",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "thumbnailUrl",
+            "columnName": "thumbnailUrl",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "bookId",
+            "pageIndex"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "RemoteImageEntity",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`bookId` INTEGER NOT NULL, `pageIndex` INTEGER NOT NULL, `width` INTEGER NOT NULL, `height` INTEGER NOT NULL, `url` TEXT NOT NULL, `thumbnailWidth` INTEGER NOT NULL, `thumbnailHeight` INTEGER NOT NULL, `thumbnailUrl` TEXT NOT NULL, PRIMARY KEY(`bookId`, `pageIndex`), FOREIGN KEY(`bookId`) REFERENCES `BookEntity`(`bookId`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "bookId",
+            "columnName": "bookId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "pageIndex",
+            "columnName": "pageIndex",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "width",
+            "columnName": "width",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "height",
+            "columnName": "height",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "url",
+            "columnName": "url",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "thumbnailWidth",
+            "columnName": "thumbnailWidth",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "thumbnailHeight",
+            "columnName": "thumbnailHeight",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "thumbnailUrl",
+            "columnName": "thumbnailUrl",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "bookId",
+            "pageIndex"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [],
+        "foreignKeys": [
+          {
+            "table": "BookEntity",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "bookId"
+            ],
+            "referencedColumns": [
+              "bookId"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "SavedEntity",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`bookId` INTEGER NOT NULL, `saveDate` INTEGER NOT NULL, PRIMARY KEY(`bookId`))",
+        "fields": [
+          {
+            "fieldPath": "bookId",
+            "columnName": "bookId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "saveDate",
+            "columnName": "saveDate",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "bookId"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "CachedEntity",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `bookId` INTEGER NOT NULL)",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "bookId",
+            "columnName": "bookId",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "id"
+          ],
+          "autoGenerate": true
+        },
+        "indices": [
+          {
+            "name": "index_CachedEntity_bookId",
+            "unique": true,
+            "columnNames": [
+              "bookId"
+            ],
+            "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_CachedEntity_bookId` ON `${TABLE_NAME}` (`bookId`)"
+          }
+        ],
+        "foreignKeys": []
+      }
+    ],
+    "views": [
+      {
+        "viewName": "SavedPreviewView",
+        "createSql": "CREATE VIEW `${VIEW_NAME}` AS SELECT \n        bookId, \n        saveDate,\n        title, \n        pageCount, \n        thumbnailWidth, \n        thumbnailHeight,\n        thumbnailUrl\n    FROM SavedEntity \n    LEFT JOIN BookEntity USING(bookId) \n    LEFT JOIN (SELECT * FROM LocalImageEntity WHERE pageIndex = 0) USING(bookId)"
+      },
+      {
+        "viewName": "ThumbnailView",
+        "createSql": "CREATE VIEW `${VIEW_NAME}` AS SELECT \n        RemoteImageEntity.bookId,\n        RemoteImageEntity.pageIndex,\n        CASE\n            WHEN LocalImageEntity.thumbnailWidth IS NULL\n            THEN RemoteImageEntity.thumbnailWidth\n            ELSE LocalImageEntity.thumbnailWidth\n        END AS width,\n        CASE\n            WHEN LocalImageEntity.thumbnailHeight IS NULL\n            THEN RemoteImageEntity.thumbnailHeight\n            ELSE LocalImageEntity.thumbnailHeight\n        END AS height,\n        CASE \n            WHEN LocalImageEntity.thumbnailUrl IS NULL \n            THEN RemoteImageEntity.thumbnailUrl \n            ELSE LocalImageEntity.thumbnailUrl\n        END AS url\n    FROM RemoteImageEntity LEFT JOIN LocalImageEntity \n    ON RemoteImageEntity.bookId = LocalImageEntity.bookId\n    AND RemoteImageEntity.pageIndex = LocalImageEntity.pageIndex"
+      },
+      {
+        "viewName": "PageView",
+        "createSql": "CREATE VIEW `${VIEW_NAME}` AS SELECT \n        RemoteImageEntity.bookId, \n        RemoteImageEntity.pageIndex,\n        CASE\n            WHEN LocalImageEntity.url IS NULL \n            THEN RemoteImageEntity.url\n            ELSE LocalImageEntity.url\n        END AS url,\n        CASE \n            WHEN LocalImageEntity.thumbnailUrl IS NULL \n            THEN RemoteImageEntity.thumbnailUrl \n            ELSE LocalImageEntity.thumbnailUrl\n        END AS thumbnailUrl\n    FROM RemoteImageEntity LEFT JOIN LocalImageEntity\n    ON RemoteImageEntity.bookId = LocalImageEntity.bookId\n    AND RemoteImageEntity.pageIndex = LocalImageEntity.pageIndex"
+      },
+      {
+        "viewName": "CachedPreviewView",
+        "createSql": "CREATE VIEW `${VIEW_NAME}` AS SELECT \n        bookId,\n        title, \n        pageCount, \n        width AS thumbnailWidth, \n        height AS thumbnailHeight, \n        url AS thumbnailUrl,\n        CASE \n            WHEN saveDate IS NULL THEN 0 ELSE 1 \n        END AS isSaved\n    FROM CachedEntity \n    LEFT JOIN BookEntity USING(bookId) \n    LEFT JOIN (SELECT * FROM ThumbnailView WHERE pageIndex = 0) USING(bookId)\n    LEFT JOIN SavedEntity USING(bookId)\n    ORDER BY id"
+      }
+    ],
+    "setupQueries": [
+      "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'c7141c059d361d9f414b11fcb460e504')"
+    ]
+  }
+}

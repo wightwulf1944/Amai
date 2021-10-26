@@ -13,12 +13,15 @@ import kotlin.reflect.KProperty
 
 inline fun <reified T> Fragment.argument() = object : ReadWriteProperty<Any, T> {
 
+    init {
+        if (arguments == null) arguments = Bundle()
+    }
+
     override fun getValue(thisRef: Any, property: KProperty<*>): T =
         requireArguments().get(property.name) as T
 
     override fun setValue(thisRef: Any, property: KProperty<*>, value: T) {
-        val arguments = arguments ?: Bundle().also(::setArguments)
-        arguments.put(property.name, value)
+        requireArguments().put(property.name, value)
     }
 }
 

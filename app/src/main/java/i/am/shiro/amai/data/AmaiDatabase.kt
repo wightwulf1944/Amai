@@ -1,7 +1,10 @@
 package i.am.shiro.amai.data
 
+import androidx.room.AutoMigration
 import androidx.room.Database
+import androidx.room.DeleteColumn
 import androidx.room.RoomDatabase
+import androidx.room.migration.AutoMigrationSpec
 import i.am.shiro.amai.data.dao.*
 import i.am.shiro.amai.data.entity.*
 import i.am.shiro.amai.data.view.CachedPreviewView
@@ -10,6 +13,8 @@ import i.am.shiro.amai.data.view.SavedPreviewView
 import i.am.shiro.amai.data.view.ThumbnailView
 
 @Database(
+    version = 24,
+    exportSchema = true,
     entities = [
         BookEntity::class,
         TagEntity::class,
@@ -25,8 +30,10 @@ import i.am.shiro.amai.data.view.ThumbnailView
         ThumbnailView::class,
         PageView::class
     ],
-    version = 23,
-    exportSchema = false)
+    autoMigrations = [
+        AutoMigration(from = 23, to = 24, spec = AmaiDatabase.Migration23to24::class)
+    ]
+)
 abstract class AmaiDatabase : RoomDatabase() {
 
     abstract val multiTableDao: MultiTableDao
@@ -52,4 +59,7 @@ abstract class AmaiDatabase : RoomDatabase() {
     abstract val thumbnailDao: ThumbnailDao
 
     abstract val pageDao: PageDao
+
+    @DeleteColumn(tableName = "BookEntity", columnName = "webUrl")
+    class Migration23to24 : AutoMigrationSpec
 }

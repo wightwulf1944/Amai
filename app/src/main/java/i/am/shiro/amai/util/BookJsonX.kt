@@ -10,7 +10,6 @@ import kotlin.math.min
 
 fun BookJson.toEntity() = BookEntity(
     bookId = id,
-    webUrl = Nhentai.WEBPAGE_BASE_URL + id,
     title = title.pretty,
     pageCount = num_pages,
     favCount = num_favorites,
