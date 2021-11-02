@@ -65,7 +65,7 @@ class MainFragment : Fragment(R.layout.fragment_main) {
         }
 
         if (isNew) navigation.selectedItemId = R.id.navigation_nhentai
-        navigation.setOnNavigationItemSelectedListener {
+        navigation.setOnItemSelectedListener {
             onNavigate(it.itemId)
             true
         }
