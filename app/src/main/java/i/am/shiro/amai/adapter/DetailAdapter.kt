@@ -4,76 +4,65 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.annotation.StringRes
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.updateLayoutParams
 import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.RecyclerView.Adapter
-import androidx.recyclerview.widget.RecyclerView.ViewHolder
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DecodeFormat
+import com.xwray.groupie.GroupieAdapter
+import com.xwray.groupie.GroupieViewHolder
+import com.xwray.groupie.Item
 import i.am.shiro.amai.R
 import i.am.shiro.amai.data.view.ThumbnailView
 import i.am.shiro.amai.model.DetailModel
 import i.am.shiro.amai.util.addChild
-import i.am.shiro.amai.util.inflateChild
-
-private const val HEADER = 0
-private const val THUMBNAIL = 1
 
 class DetailAdapter(
     private val parentFragment: Fragment,
     private val model: DetailModel,
-    private val onThumbnailClickListener: (Int) -> Unit
-) : Adapter<ViewHolder>() {
+    private val onThumbnailClick: (Int) -> Unit
+) : GroupieAdapter() {
 
-    override fun getItemCount() = model.pageImages.size + 1
-
-    override fun getItemViewType(position: Int) = if (position == 0) HEADER else THUMBNAIL
-
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        return when (viewType) {
-            HEADER -> {
-                val view = parent.inflateChild(R.layout.item_detail_header)
-                HeaderViewHolder(view)
-            }
-            THUMBNAIL -> {
-                val view = parent.inflateChild(R.layout.item_preview_image)
-                ThumbnailViewHolder(view)
-            }
-            else -> throw RuntimeException()
-        }
+    init {
+        add(HeaderItem())
+        addAll(model.pageImages.map { ThumbnailItem(it) })
     }
 
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        if (holder is ThumbnailViewHolder) {
-            holder.bind(model.pageImages[position - 1])
-        }
+    override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
+        val layoutManager = recyclerView.layoutManager as GridLayoutManager
+        layoutManager.spanSizeLookup = spanSizeLookup
+        spanCount = layoutManager.spanCount
     }
 
-    private inner class HeaderViewHolder(itemView: View) : ViewHolder(itemView) {
+    private inner class HeaderItem : Item<GroupieViewHolder>() {
 
-        init {
+        override fun getLayout() = R.layout.item_detail_header
+
+        override fun bind(vh: GroupieViewHolder, position: Int) = with(vh) {
             itemView.findViewById<TextView>(R.id.titleText).text = model.book.title
 
-            val pageCount = itemView.resources.getString(R.string.pages_format, model.book.pageCount)
+            val pageCount = itemView.context.getString(R.string.pages_format, model.book.pageCount)
             itemView.findViewById<TextView>(R.id.text_pages).text = pageCount
 
             val tagsLayout = itemView.findViewById<ViewGroup>(R.id.layout_tags)
-            tagsLayout.addTagGroup("Artists", model.artistTags)
-            tagsLayout.addTagGroup("Groups", model.groupTags)
-            tagsLayout.addTagGroup("Parodies", model.parodyTags)
-            tagsLayout.addTagGroup("Characters", model.characterTags)
-            tagsLayout.addTagGroup("Language", model.languageTags)
-            tagsLayout.addTagGroup("Categories", model.categoryTags)
-            tagsLayout.addTagGroup("Tags", model.generalTags)
+            tagsLayout.addTagGroup(R.string.artists, model.artistTags)
+            tagsLayout.addTagGroup(R.string.groups, model.groupTags)
+            tagsLayout.addTagGroup(R.string.parodies, model.parodyTags)
+            tagsLayout.addTagGroup(R.string.characters, model.characterTags)
+            tagsLayout.addTagGroup(R.string.language, model.languageTags)
+            tagsLayout.addTagGroup(R.string.categories, model.categoryTags)
+            tagsLayout.addTagGroup(R.string.tags, model.generalTags)
         }
 
-        private fun ViewGroup.addTagGroup(label: String, tags: List<String>) {
+        private fun ViewGroup.addTagGroup(@StringRes res: Int, tags: List<String>) {
             if (tags.isEmpty()) return
 
             addChild<ViewGroup>(R.layout.layout_taggroup) {
                 addChild<TextView>(R.layout.item_label) {
-                    text = label
+                    setText(res)
                 }
                 for (tag in tags) {
                     addChild<TextView>(R.layout.item_tag) {
@@ -84,25 +73,33 @@ class DetailAdapter(
         }
     }
 
-    private inner class ThumbnailViewHolder(itemView: View) : ViewHolder(itemView) {
+    private inner class ThumbnailItem(
+        private val thumbnail: ThumbnailView
+    ) : Item<ThumbnailViewHolder>() {
 
-        private val previewImage = itemView.findViewById<ImageView>(R.id.thumbnailImage)
+        override fun getLayout() = R.layout.item_preview_image
 
-        init {
-            itemView.setOnClickListener {
-                onThumbnailClickListener(adapterPosition - 1)
+        override fun getSpanSize(spanCount: Int, position: Int) = 1
+
+        override fun createViewHolder(itemView: View) = ThumbnailViewHolder(itemView)
+
+        override fun bind(vh: ThumbnailViewHolder, position: Int) {
+            vh.itemView.setOnClickListener {
+                onThumbnailClick(thumbnail.pageIndex)
             }
-        }
 
-        fun bind(thumbnail: ThumbnailView) {
-            previewImage.updateLayoutParams<ConstraintLayout.LayoutParams> {
+            vh.imageView.updateLayoutParams<ConstraintLayout.LayoutParams> {
                 dimensionRatio = "${thumbnail.width}:${thumbnail.height}"
             }
 
             Glide.with(parentFragment)
                 .load(thumbnail.url)
                 .format(DecodeFormat.PREFER_RGB_565)
-                .into(previewImage)
+                .into(vh.imageView)
         }
+    }
+
+    private class ThumbnailViewHolder(rootView: View) : GroupieViewHolder(rootView) {
+        val imageView = itemView.findViewById<ImageView>(R.id.thumbnailImage)!!
     }
 }

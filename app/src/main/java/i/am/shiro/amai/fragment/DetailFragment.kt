@@ -8,8 +8,6 @@ import android.view.View
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.view.updateLayoutParams
 import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.GridLayoutManager.SpanSizeLookup
 import i.am.shiro.amai.R
 import i.am.shiro.amai.adapter.DetailAdapter
 import i.am.shiro.amai.dagger.component
@@ -28,15 +26,15 @@ import kotlinx.android.synthetic.main.fragment_detail.*
 
 class DetailFragment() : Fragment(R.layout.fragment_detail) {
 
-    private val viewModel by amaiViewModels<DetailViewModel>()
-
-    private val database by lazy { component.database }
-
-    private var bookId by argument<Int>()
-
     constructor(bookId: Int) : this() {
         this.bookId = bookId
     }
+
+    private var bookId by argument<Int>()
+
+    private val viewModel by amaiViewModels<DetailViewModel>()
+
+    private val database get() = component.database
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -56,11 +54,6 @@ class DetailFragment() : Fragment(R.layout.fragment_detail) {
             }
         }
 
-        val layoutManager = previewRecycler.layoutManager as GridLayoutManager
-        layoutManager.spanSizeLookup = object : SpanSizeLookup() {
-            override fun getSpanSize(position: Int) = if (position == 0) 2 else 1
-        }
-
         viewModel.modelLive.observe(viewLifecycleOwner, ::onModelLoaded)
     }
 
@@ -70,7 +63,7 @@ class DetailFragment() : Fragment(R.layout.fragment_detail) {
         previewRecycler.adapter = DetailAdapter(
             parentFragment = this,
             model = model,
-            onThumbnailClickListener = ::invokeReadBook
+            onThumbnailClick = ::invokeReadBook
         )
     }
 

@@ -48,4 +48,11 @@
         <item>Newest first</item>
         <item>Popular first</item>
     </string-array>
+    <string name="artists">Artists</string>
+    <string name="groups">Groups</string>
+    <string name="parodies">Parodies</string>
+    <string name="characters">Characters</string>
+    <string name="language">Language</string>
+    <string name="categories">Categories</string>
+    <string name="tags">Tags</string>
 </resources>

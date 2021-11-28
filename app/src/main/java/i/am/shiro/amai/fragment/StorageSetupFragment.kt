@@ -27,7 +27,7 @@ class StorageSetupFragment : Fragment(R.layout.fragment_storage_setup) {
     override fun onAttach(context: Context) {
         super.onAttach(context)
 
-        storageOptions = context.getStorageOptions()
+        storageOptions = context.getExternalFilesDirs(null).map { StorageOption(it) }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -75,5 +75,3 @@ class StorageSetupFragment : Fragment(R.layout.fragment_storage_setup) {
         preferences.isFirstRun = false
     }
 }
-
-private fun Context.getStorageOptions() = getExternalFilesDirs(null).map { StorageOption(it) }
