@@ -6,9 +6,12 @@ import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
 import androidx.coordinatorlayout.widget.CoordinatorLayout
+import androidx.core.os.bundleOf
 import androidx.core.view.updateLayoutParams
 import androidx.fragment.app.Fragment
+import i.am.shiro.amai.BUNDLE_TAG
 import i.am.shiro.amai.R
+import i.am.shiro.amai.RESULT_TAG
 import i.am.shiro.amai.adapter.DetailAdapter
 import i.am.shiro.amai.dagger.component
 import i.am.shiro.amai.data.entity.DownloadJobEntity
@@ -63,7 +66,8 @@ class DetailFragment() : Fragment(R.layout.fragment_detail) {
         previewRecycler.adapter = DetailAdapter(
             parentFragment = this,
             model = model,
-            onThumbnailClick = ::invokeReadBook
+            onThumbnailClick = ::invokeReadBook,
+            onTagClick = ::onTagClick
         )
     }
 
@@ -95,5 +99,10 @@ class DetailFragment() : Fragment(R.layout.fragment_detail) {
 
     private fun invokeReadBook(pageIndex: Int) {
         goToRead(bookId, pageIndex)
+    }
+
+    private fun onTagClick(tag: String) {
+        parentFragmentManager.setFragmentResult(RESULT_TAG, bundleOf(BUNDLE_TAG to tag))
+        parentFragmentManager.popBackStack()
     }
 }

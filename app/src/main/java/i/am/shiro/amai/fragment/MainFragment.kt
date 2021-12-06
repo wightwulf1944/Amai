@@ -9,6 +9,7 @@ import androidx.fragment.app.commit
 import androidx.fragment.app.commitNow
 import com.google.android.material.snackbar.Snackbar
 import i.am.shiro.amai.R
+import i.am.shiro.amai.RESULT_TAG
 import kotlinx.android.synthetic.main.fragment_main.*
 
 private const val SAVED = "saved"
@@ -68,6 +69,11 @@ class MainFragment : Fragment(R.layout.fragment_main) {
         navigation.setOnItemSelectedListener {
             onNavigate(it.itemId)
             true
+        }
+
+        parentFragmentManager.setFragmentResultListener(RESULT_TAG, viewLifecycleOwner) { _, result ->
+            navigation.selectedItemId = R.id.navigation_nhentai
+            childFragmentManager.setFragmentResult(RESULT_TAG, result)
         }
     }
 

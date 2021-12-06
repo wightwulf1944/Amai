@@ -6,7 +6,9 @@ import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import androidx.fragment.app.Fragment
+import i.am.shiro.amai.BUNDLE_TAG
 import i.am.shiro.amai.R
+import i.am.shiro.amai.RESULT_TAG
 import i.am.shiro.amai.adapter.CachedPreviewAdapter
 import i.am.shiro.amai.fragment.dialog.NhentaiSortDialog
 import i.am.shiro.amai.fragment.dialog.SearchConstantsDialog
@@ -47,6 +49,13 @@ class NhentaiFragment : Fragment(R.layout.fragment_nhentai) {
         viewModel.booksLive.observe(viewLifecycleOwner, adapter::submitList)
         viewModel.isLoadingLive.observe(viewLifecycleOwner) { isLoading ->
             progress.visibility = if (isLoading) VISIBLE else GONE
+        }
+
+        parentFragmentManager.setFragmentResultListener(RESULT_TAG, viewLifecycleOwner) { _, result ->
+            val tag = result.getString(BUNDLE_TAG)!!
+            searchInput.setText(tag)
+            recyclerView.scrollToPosition(0)
+            viewModel.onSearch(tag)
         }
     }
 

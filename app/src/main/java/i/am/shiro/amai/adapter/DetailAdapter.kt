@@ -23,7 +23,8 @@ import i.am.shiro.amai.util.addChild
 class DetailAdapter(
     private val parentFragment: Fragment,
     private val model: DetailModel,
-    private val onThumbnailClick: (Int) -> Unit
+    private val onThumbnailClick: (Int) -> Unit,
+    private val onTagClick: (String) -> Unit
 ) : GroupieAdapter() {
 
     init {
@@ -48,16 +49,20 @@ class DetailAdapter(
             itemView.findViewById<TextView>(R.id.text_pages).text = pageCount
 
             val tagsLayout = itemView.findViewById<ViewGroup>(R.id.layout_tags)
-            tagsLayout.addTagGroup(R.string.artists, model.artistTags)
-            tagsLayout.addTagGroup(R.string.groups, model.groupTags)
-            tagsLayout.addTagGroup(R.string.parodies, model.parodyTags)
-            tagsLayout.addTagGroup(R.string.characters, model.characterTags)
-            tagsLayout.addTagGroup(R.string.language, model.languageTags)
-            tagsLayout.addTagGroup(R.string.categories, model.categoryTags)
-            tagsLayout.addTagGroup(R.string.tags, model.generalTags)
+            tagsLayout.addTagGroup(R.string.artists, "artist:", model.artistTags)
+            tagsLayout.addTagGroup(R.string.groups, "group:", model.groupTags)
+            tagsLayout.addTagGroup(R.string.parodies, "parody:", model.parodyTags)
+            tagsLayout.addTagGroup(R.string.characters, "character:", model.characterTags)
+            tagsLayout.addTagGroup(R.string.language, "language:", model.languageTags)
+            tagsLayout.addTagGroup(R.string.categories, "category:", model.categoryTags)
+            tagsLayout.addTagGroup(R.string.tags, "", model.generalTags)
         }
 
-        private fun ViewGroup.addTagGroup(@StringRes res: Int, tags: List<String>) {
+        private fun ViewGroup.addTagGroup(
+            @StringRes res: Int,
+            namespace: String?,
+            tags: List<String>
+        ) {
             if (tags.isEmpty()) return
 
             addChild<ViewGroup>(R.layout.layout_taggroup) {
@@ -67,6 +72,10 @@ class DetailAdapter(
                 for (tag in tags) {
                     addChild<TextView>(R.layout.item_tag) {
                         text = tag
+                        setOnClickListener {
+                            val searchTag = if (tag.contains(Regex("\\s+"))) "\"$tag\"" else tag
+                            onTagClick(namespace + searchTag)
+                        }
                     }
                 }
             }
