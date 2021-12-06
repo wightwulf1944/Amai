@@ -8,9 +8,4 @@
         <item name="android:navigationBarColor">?colorSurface</item>
     </style>
 
-    <style name="AppTheme.Launcher">
-        <!-- TODO replace this with a launch screen drawable -->
-        <!--<item name="android:windowBackground">@color/secondary</item>-->
-    </style>
-
 </resources>

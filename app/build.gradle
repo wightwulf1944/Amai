@@ -68,9 +68,9 @@ dependencies {
     implementation 'com.google.android.material:material:1.4.0'
 
     // Room
-    implementation 'androidx.room:room-runtime:2.4.0-beta02'
-    implementation 'androidx.room:room-rxjava2:2.4.0-beta02'
-    kapt 'androidx.room:room-compiler:2.4.0-beta02'
+    implementation 'androidx.room:room-runtime:2.4.0-rc01'
+    implementation 'androidx.room:room-rxjava2:2.4.0-rc01'
+    kapt 'androidx.room:room-compiler:2.4.0-rc01'
 
     // Dagger
     implementation 'com.google.dagger:dagger:2.39.1'

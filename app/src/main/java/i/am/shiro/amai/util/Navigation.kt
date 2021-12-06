@@ -4,6 +4,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.commit
 import i.am.shiro.amai.MainActivity
+import i.am.shiro.amai.R
 import i.am.shiro.amai.fragment.*
 
 fun MainActivity.startAtLoading(bookId: Int) {
@@ -49,19 +50,19 @@ fun NhentaiFragment.goToDetail(bookId: Int) {
 
 private fun FragmentActivity.setFragment(fragment: Fragment) {
     supportFragmentManager.commit {
-        add(android.R.id.content, fragment)
+        add(R.id.fragmentContainer, fragment)
     }
 }
 
 private fun Fragment.replaceFragment(fragment: Fragment) {
     requireActivity().supportFragmentManager.commit {
-        replace(android.R.id.content, fragment)
+        replace(R.id.fragmentContainer, fragment)
     }
 }
 
 private fun Fragment.pushFragment(fragment: Fragment) {
     requireActivity().supportFragmentManager.commit {
-        replace(android.R.id.content, fragment)
+        replace(R.id.fragmentContainer, fragment)
         addToBackStack(null)
     }
 }

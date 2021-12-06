@@ -13,8 +13,9 @@ class MainActivity : AppCompatActivity() {
     private val preferences by lazy { component.preferences }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        setTheme(R.style.AppTheme)
         super.onCreate(savedInstanceState)
+
+        setContentView(R.layout.activity_main)
 
         if (savedInstanceState != null) return
 
