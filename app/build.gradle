@@ -68,9 +68,9 @@ dependencies {
     implementation 'com.google.android.material:material:1.4.0'
 
     // Room
-    implementation 'androidx.room:room-runtime:2.4.0-rc01'
-    implementation 'androidx.room:room-rxjava2:2.4.0-rc01'
-    kapt 'androidx.room:room-compiler:2.4.0-rc01'
+    implementation 'androidx.room:room-runtime:2.4.0'
+    implementation 'androidx.room:room-rxjava2:2.4.0'
+    kapt 'androidx.room:room-compiler:2.4.0'
 
     // Dagger
     implementation 'com.google.dagger:dagger:2.39.1'
@@ -87,10 +87,6 @@ dependencies {
     //    https://github.com/JakeWharton/timber
     implementation 'com.jakewharton.timber:timber:4.7.1'
 
-    //    https://github.com/bumptech/glide
-    implementation 'com.github.bumptech.glide:glide:4.12.0'
-    annotationProcessor 'com.github.bumptech.glide:compiler:4.12.0'
-
     //    https://github.com/ReactiveX/RxJava
     implementation 'io.reactivex.rxjava2:rxjava:2.2.21'
     implementation "io.reactivex.rxjava2:rxkotlin:2.4.0"
@@ -102,4 +98,6 @@ dependencies {
     implementation 'me.zhanghai.android.materialprogressbar:library:1.6.1'
 
     implementation 'com.github.lisawray.groupie:groupie:2.10.0'
+
+    implementation 'io.coil-kt:coil:1.4.0'
 }

@@ -3,15 +3,15 @@ package i.am.shiro.amai
 import android.app.Application
 import android.app.NotificationChannel
 import android.app.NotificationManager
-import android.util.Log
 import androidx.core.content.getSystemService
-import com.bumptech.glide.Glide
-import com.bumptech.glide.GlideBuilder
+import coil.ImageLoader
+import coil.ImageLoaderFactory
+import coil.util.DebugLogger
 import i.am.shiro.amai.dagger.AmaiComponent
 import i.am.shiro.amai.dagger.DaggerAmaiComponent
 import timber.log.Timber
 
-class AmaiApplication : Application() {
+class AmaiApplication : Application(), ImageLoaderFactory {
 
     val component: AmaiComponent by lazy {
         DaggerAmaiComponent.factory().create(this)
@@ -38,8 +38,10 @@ class AmaiApplication : Application() {
                 return String.format("%s:%s", tag, method)
             }
         })
-
-        val glideBuilder = GlideBuilder().setLogLevel(Log.VERBOSE)
-        Glide.init(this, glideBuilder)
     }
+
+    override fun newImageLoader() = ImageLoader.Builder(this)
+        .logger(DebugLogger())
+        .okHttpClient(component.okHttpClient)
+        .build()
 }

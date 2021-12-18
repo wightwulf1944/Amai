@@ -7,11 +7,9 @@ import android.widget.TextView
 import androidx.annotation.StringRes
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.updateLayoutParams
-import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.DecodeFormat
+import coil.load
 import com.xwray.groupie.GroupieAdapter
 import com.xwray.groupie.GroupieViewHolder
 import com.xwray.groupie.Item
@@ -21,7 +19,6 @@ import i.am.shiro.amai.model.DetailModel
 import i.am.shiro.amai.util.addChild
 
 class DetailAdapter(
-    private val parentFragment: Fragment,
     private val model: DetailModel,
     private val onThumbnailClick: (Int) -> Unit,
     private val onTagClick: (String) -> Unit
@@ -101,10 +98,9 @@ class DetailAdapter(
                 dimensionRatio = "${thumbnail.width}:${thumbnail.height}"
             }
 
-            Glide.with(parentFragment)
-                .load(thumbnail.url)
-                .format(DecodeFormat.PREFER_RGB_565)
-                .into(vh.imageView)
+            vh.imageView.load(thumbnail.url) {
+                allowRgb565(true)
+            }
         }
     }
 

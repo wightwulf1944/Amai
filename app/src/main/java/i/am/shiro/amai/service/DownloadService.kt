@@ -7,13 +7,17 @@ import android.content.Intent
 import android.os.IBinder
 import androidx.core.app.NotificationCompat
 import androidx.core.content.getSystemService
-import com.bumptech.glide.Glide
 import i.am.shiro.amai.DEFAULT_CHANNEL_ID
 import i.am.shiro.amai.R
 import i.am.shiro.amai.dagger.component
 import i.am.shiro.amai.data.entity.LocalImageEntity
 import i.am.shiro.amai.data.entity.SavedEntity
+import okhttp3.Request
+import okio.buffer
+import okio.sink
+import timber.log.Timber
 import java.io.File
+import java.io.IOException
 import java.util.concurrent.Executors
 
 private const val ID_PROGRESS = 1
@@ -25,6 +29,8 @@ class DownloadService : Service() {
     private val database by lazy { component.database }
 
     private val preferences by lazy { component.preferences }
+
+    private val okHttpClient by lazy { component.okHttpClient }
 
     private val notifManager by lazy { getSystemService<NotificationManager>()!! }
 
@@ -55,10 +61,11 @@ class DownloadService : Service() {
 
         val localFile = File(preferences.storagePath!!)
             .resolve(remoteImage.bookId.toString())
+            .apply { mkdirs() }
             .resolve(remoteImage.url.substringAfterLast('/'))
 
         try {
-            downloadPage(remoteImage.url).copyTo(localFile, true)
+            downloadPageTo(remoteImage.url, localFile)
             val localImage = LocalImageEntity(
                 bookId = download.bookId,
                 pageIndex = download.progressIndex,
@@ -78,6 +85,7 @@ class DownloadService : Service() {
                 postDownloadDoneNotification(book.title)
             }
         } catch (e: Exception) {
+            Timber.e(e)
             database.downloadDao.incrementErrorCount(download.bookId)
 
             if (download.errorCount + 1 == 3) {
@@ -94,11 +102,17 @@ class DownloadService : Service() {
     }
 
     @Throws(Exception::class)
-    private fun downloadPage(pageUrl: String): File =
-        Glide.with(this)
-            .download(pageUrl)
-            .submit()
-            .get()
+    private fun downloadPageTo(pageUrl: String, toFile: File) {
+        val request = Request.Builder()
+            .url(pageUrl)
+            .build()
+
+        okHttpClient.newCall(request).execute().use {
+            if (!it.isSuccessful) throw IOException("Unexpected code $it")
+            toFile.delete()
+            toFile.sink().buffer().writeAll(it.body!!.source())
+        }
+    }
 
     private fun buildForegroundNotification(): Notification =
         NotificationCompat.Builder(this, DEFAULT_CHANNEL_ID)

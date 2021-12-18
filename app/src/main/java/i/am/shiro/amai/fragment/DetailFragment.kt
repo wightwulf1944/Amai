@@ -64,7 +64,6 @@ class DetailFragment() : Fragment(R.layout.fragment_detail) {
         toolbar.setOnMenuItemClickListener(::onActionClick)
 
         previewRecycler.adapter = DetailAdapter(
-            parentFragment = this,
             model = model,
             onThumbnailClick = ::invokeReadBook,
             onTagClick = ::onTagClick

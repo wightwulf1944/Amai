@@ -38,7 +38,6 @@ class NhentaiFragment : Fragment(R.layout.fragment_nhentai) {
         }
 
         val adapter = CachedPreviewAdapter(
-            parentFragment = this,
             onItemClick = { goToDetail(it.bookId) },
             onPositionBind = viewModel::onPositionBind
         )

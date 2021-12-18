@@ -6,19 +6,16 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.updateLayoutParams
-import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.DecodeFormat
+import coil.load
 import i.am.shiro.amai.R
 import i.am.shiro.amai.adapter.SavedPreviewAdapter.ViewHolder
 import i.am.shiro.amai.data.view.SavedPreviewView
 import i.am.shiro.amai.util.inflateChild
 
 class SavedPreviewAdapter(
-    private val parentFragment: Fragment,
     private val onItemClick: (SavedPreviewView) -> Unit,
     private val onItemLongClick: (SavedPreviewView) -> Unit
 ) : ListAdapter<SavedPreviewView, ViewHolder>(DiffCallback()) {
@@ -62,10 +59,9 @@ class SavedPreviewAdapter(
                 dimensionRatio = "${book.thumbnailWidth}:${book.thumbnailHeight}"
             }
 
-            Glide.with(parentFragment)
-                .load(book.thumbnailUrl)
-                .format(DecodeFormat.PREFER_RGB_565)
-                .into(thumbnailImage)
+            thumbnailImage.load(book.thumbnailUrl) {
+                allowRgb565(true)
+            }
         }
     }
 

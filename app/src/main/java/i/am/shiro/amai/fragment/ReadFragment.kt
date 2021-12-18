@@ -53,7 +53,7 @@ class ReadFragment() : Fragment(R.layout.fragment_read) {
         pageRecycler.setOnPageScrollListener { value -> pageText.text = value.toString() }
 
         viewModel.pagesLive.observe(viewLifecycleOwner) {
-            pageRecycler.adapter = BookPageAdapter(this, it)
+            pageRecycler.adapter = BookPageAdapter(it)
 
             if (savedInstanceState == null) {
                 val position = pageIndex

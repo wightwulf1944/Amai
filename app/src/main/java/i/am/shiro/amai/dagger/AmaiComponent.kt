@@ -9,6 +9,7 @@ import dagger.Component
 import i.am.shiro.amai.AmaiApplication
 import i.am.shiro.amai.AmaiPreferences
 import i.am.shiro.amai.data.AmaiDatabase
+import okhttp3.OkHttpClient
 import javax.inject.Singleton
 
 @Singleton
@@ -23,6 +24,8 @@ interface AmaiComponent {
     val database: AmaiDatabase
 
     val preferences: AmaiPreferences
+
+    val okHttpClient: OkHttpClient
 }
 
 val Service.component get() = (application as AmaiApplication).component

@@ -1,15 +1,14 @@
 package i.am.shiro.amai.adapter
 
+import android.graphics.Bitmap
 import android.view.View
 import android.view.ViewGroup
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.updateLayoutParams
-import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.DecodeFormat
+import coil.load
 import i.am.shiro.amai.R
 import i.am.shiro.amai.adapter.CachedPreviewAdapter.ViewHolder
 import i.am.shiro.amai.data.view.CachedPreviewView
@@ -17,7 +16,6 @@ import i.am.shiro.amai.util.inflateChild
 import kotlinx.android.synthetic.main.item_staggered_book.view.*
 
 class CachedPreviewAdapter(
-    private val parentFragment: Fragment,
     private val onItemClick: (CachedPreviewView) -> Unit,
     private val onPositionBind: (Int) -> Unit
 ) : ListAdapter<CachedPreviewView, ViewHolder>(DiffCallback()) {
@@ -60,10 +58,9 @@ class CachedPreviewAdapter(
                 dimensionRatio = "${book.thumbnailWidth}:${book.thumbnailHeight}"
             }
 
-            Glide.with(parentFragment)
-                .load(book.thumbnailUrl)
-                .format(DecodeFormat.PREFER_RGB_565)
-                .into(thumbnailImage)
+            thumbnailImage.load(book.thumbnailUrl) {
+                bitmapConfig(Bitmap.Config.RGB_565)
+            }
         }
     }
 

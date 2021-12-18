@@ -32,7 +32,6 @@ class SavedFragment : Fragment(R.layout.fragment_saved) {
         }
 
         val adapter = SavedPreviewAdapter(
-            parentFragment = this,
             onItemClick = ::invokeViewDetails,
             onItemLongClick = ::invokeDeleteBook
         )

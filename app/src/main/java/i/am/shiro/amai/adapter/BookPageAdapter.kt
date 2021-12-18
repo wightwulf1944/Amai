@@ -3,19 +3,16 @@ package i.am.shiro.amai.adapter
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
+import coil.load
 import i.am.shiro.amai.R
 import i.am.shiro.amai.data.view.PageView
 import i.am.shiro.amai.util.inflateChild
+import java.io.File
 
 class BookPageAdapter(
-    parentFragment: Fragment,
     private val pages: List<PageView>
 ) : RecyclerView.Adapter<BookPageAdapter.ViewHolder>() {
-
-    private val requestManager = Glide.with(parentFragment)
 
     override fun getItemCount() = pages.size
 
@@ -24,16 +21,12 @@ class BookPageAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val page = pages[position]
-        requestManager
-            .load(page.url)
-            .thumbnail(
-                requestManager.load(page.thumbnailUrl)
-            )
-            .into(holder.pageImage)
-    }
-
-    override fun onViewRecycled(holder: ViewHolder) {
-        requestManager.clear(holder.pageImage)
+        // TODO use page.thumbnailUrl as intermediate image
+        if (page.url.startsWith("https://")) {
+            holder.pageImage.load(page.url)
+        } else {
+            holder.pageImage.load(File(page.url))
+        }
     }
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
