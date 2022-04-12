@@ -2,7 +2,6 @@ package i.am.shiro.amai.adapter
 
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
 import android.widget.TextView
 import androidx.annotation.StringRes
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -13,8 +12,10 @@ import coil.load
 import com.xwray.groupie.GroupieAdapter
 import com.xwray.groupie.GroupieViewHolder
 import com.xwray.groupie.Item
+import com.xwray.groupie.viewbinding.BindableItem
 import i.am.shiro.amai.R
 import i.am.shiro.amai.data.view.ThumbnailView
+import i.am.shiro.amai.databinding.ItemPreviewImageBinding
 import i.am.shiro.amai.model.DetailModel
 import i.am.shiro.amai.util.addChild
 
@@ -37,9 +38,13 @@ class DetailAdapter(
 
     private inner class HeaderItem : Item<GroupieViewHolder>() {
 
+        private var isBound = false
+
         override fun getLayout() = R.layout.item_detail_header
 
         override fun bind(vh: GroupieViewHolder, position: Int) = with(vh) {
+            if (isBound) return
+
             itemView.findViewById<TextView>(R.id.titleText).text = model.book.title
 
             val pageCount = itemView.context.getString(R.string.pages_format, model.book.pageCount)
@@ -53,6 +58,8 @@ class DetailAdapter(
             tagsLayout.addTagGroup(R.string.language, "language:", model.languageTags)
             tagsLayout.addTagGroup(R.string.categories, "category:", model.categoryTags)
             tagsLayout.addTagGroup(R.string.tags, "", model.generalTags)
+
+            isBound = true
         }
 
         private fun ViewGroup.addTagGroup(
@@ -62,12 +69,10 @@ class DetailAdapter(
         ) {
             if (tags.isEmpty()) return
 
-            addChild<ViewGroup>(R.layout.layout_taggroup) {
-                addChild<TextView>(R.layout.item_label) {
-                    setText(res)
-                }
+            addChild<ViewGroup>(R.layout.inflate_tag_group) {
+                findViewById<TextView>(R.id.label).setText(res)
                 for (tag in tags) {
-                    addChild<TextView>(R.layout.item_tag) {
+                    addChild<TextView>(R.layout.inflate_tag) {
                         text = tag
                         setOnClickListener {
                             val searchTag = if (tag.contains(Regex("\\s+"))) "\"$tag\"" else tag
@@ -81,30 +86,26 @@ class DetailAdapter(
 
     private inner class ThumbnailItem(
         private val thumbnail: ThumbnailView
-    ) : Item<ThumbnailViewHolder>() {
+    ) : BindableItem<ItemPreviewImageBinding>() {
 
         override fun getLayout() = R.layout.item_preview_image
 
         override fun getSpanSize(spanCount: Int, position: Int) = 1
 
-        override fun createViewHolder(itemView: View) = ThumbnailViewHolder(itemView)
+        override fun initializeViewBinding(p0: View) = ItemPreviewImageBinding.bind(p0)
 
-        override fun bind(vh: ThumbnailViewHolder, position: Int) {
-            vh.itemView.setOnClickListener {
+        override fun bind(binding: ItemPreviewImageBinding, position: Int) {
+            binding.root.setOnClickListener {
                 onThumbnailClick(thumbnail.pageIndex)
             }
 
-            vh.imageView.updateLayoutParams<ConstraintLayout.LayoutParams> {
+            binding.thumbnailImage.updateLayoutParams<ConstraintLayout.LayoutParams> {
                 dimensionRatio = "${thumbnail.width}:${thumbnail.height}"
             }
 
-            vh.imageView.load(thumbnail.url) {
+            binding.thumbnailImage.load(thumbnail.url) {
                 allowRgb565(true)
             }
         }
-    }
-
-    private class ThumbnailViewHolder(rootView: View) : GroupieViewHolder(rootView) {
-        val imageView = itemView.findViewById<ImageView>(R.id.thumbnailImage)!!
     }
 }

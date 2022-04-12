@@ -26,6 +26,7 @@ import java.util.*
 
 private const val PAGING_THRESHOLD = 10
 
+// TODO reimplement Rx calls so that they chain and produce a single disposable
 class NhentaiViewModel(
     handle: SavedStateHandle,
     private val database: AmaiDatabase,
