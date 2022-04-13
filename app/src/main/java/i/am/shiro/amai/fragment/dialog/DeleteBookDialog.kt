@@ -6,8 +6,8 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import i.am.shiro.amai.R
 import i.am.shiro.amai.dagger.component
 import i.am.shiro.amai.util.argument
-import io.reactivex.Completable
-import io.reactivex.schedulers.Schedulers.io
+import io.reactivex.rxjava3.core.Completable
+import io.reactivex.rxjava3.schedulers.Schedulers.io
 import java.io.File
 
 class DeleteBookDialog() : DialogFragment() {

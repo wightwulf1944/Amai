@@ -24,7 +24,7 @@ import i.am.shiro.amai.util.goToRead
 import i.am.shiro.amai.util.startLocalService
 import i.am.shiro.amai.viewmodel.DetailViewModel
 import i.am.shiro.amai.widget.PullGestureBehavior
-import io.reactivex.schedulers.Schedulers.io
+import io.reactivex.rxjava3.schedulers.Schedulers.io
 import kotlinx.android.synthetic.main.fragment_detail.*
 
 class DetailFragment() : Fragment(R.layout.fragment_detail) {

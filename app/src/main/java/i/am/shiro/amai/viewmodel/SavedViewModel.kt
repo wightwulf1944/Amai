@@ -7,14 +7,14 @@ import i.am.shiro.amai.SavedSort
 import i.am.shiro.amai.data.AmaiDatabase
 import i.am.shiro.amai.data.view.SavedPreviewView
 import i.am.shiro.amai.util.invoke
-import io.reactivex.disposables.Disposables
+import io.reactivex.rxjava3.disposables.Disposable
 
 class SavedViewModel(
     handle: SavedStateHandle,
     private val database: AmaiDatabase
 ) : ViewModel() {
 
-    private var disposable = Disposables.disposed()
+    private var disposable = Disposable.disposed()
 
     private var query by handle<String>("%")
 

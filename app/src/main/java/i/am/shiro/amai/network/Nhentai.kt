@@ -1,13 +1,13 @@
 package i.am.shiro.amai.network
 
 import i.am.shiro.amai.BuildConfig
-import io.reactivex.Single
+import io.reactivex.rxjava3.core.Single
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import okhttp3.logging.HttpLoggingInterceptor.Level.BODY
 import okhttp3.logging.HttpLoggingInterceptor.Level.NONE
 import retrofit2.Retrofit
-import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
+import retrofit2.adapter.rxjava3.RxJava3CallAdapterFactory
 import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.create
 import retrofit2.http.GET
@@ -35,7 +35,7 @@ object Nhentai {
                 .build()
         )
         .baseUrl(API_URL)
-        .addCallAdapterFactory(RxJava2CallAdapterFactory.createAsync())
+        .addCallAdapterFactory(RxJava3CallAdapterFactory.create())
         .addConverterFactory(MoshiConverterFactory.create())
         .build()
         .create()

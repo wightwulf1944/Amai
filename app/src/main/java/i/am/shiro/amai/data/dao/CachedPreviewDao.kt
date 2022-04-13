@@ -3,7 +3,7 @@ package i.am.shiro.amai.data.dao
 import androidx.room.Dao
 import androidx.room.Query
 import i.am.shiro.amai.data.view.CachedPreviewView
-import io.reactivex.Observable
+import io.reactivex.rxjava3.core.Observable
 
 @Dao
 interface CachedPreviewDao {

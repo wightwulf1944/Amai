@@ -17,10 +17,10 @@ import i.am.shiro.amai.util.imageEntities
 import i.am.shiro.amai.util.invoke
 import i.am.shiro.amai.util.tagEntities
 import i.am.shiro.amai.util.toEntity
-import io.reactivex.Completable
-import io.reactivex.android.schedulers.AndroidSchedulers.mainThread
-import io.reactivex.disposables.Disposables
-import io.reactivex.schedulers.Schedulers.io
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers.mainThread
+import io.reactivex.rxjava3.core.Completable
+import io.reactivex.rxjava3.disposables.Disposable
+import io.reactivex.rxjava3.schedulers.Schedulers.io
 import timber.log.Timber
 import java.util.*
 
@@ -33,11 +33,11 @@ class NhentaiViewModel(
     private val preferences: AmaiPreferences
 ) : ViewModel() {
 
-    private var deleteDisposable = Disposables.disposed()
+    private var deleteDisposable = Disposable.disposed()
 
-    private var localDisposable = Disposables.disposed()
+    private var localDisposable = Disposable.disposed()
 
-    private var remoteDisposable = Disposables.disposed()
+    private var remoteDisposable = Disposable.disposed()
 
     private var query by handle<String>("")
 

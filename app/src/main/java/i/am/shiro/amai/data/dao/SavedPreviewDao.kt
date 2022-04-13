@@ -4,7 +4,7 @@ import androidx.room.Dao
 import androidx.room.Query
 import i.am.shiro.amai.SavedSort
 import i.am.shiro.amai.data.view.SavedPreviewView
-import io.reactivex.Observable
+import io.reactivex.rxjava3.core.Observable
 
 @Dao
 abstract class SavedPreviewDao {

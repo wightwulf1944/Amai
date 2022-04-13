@@ -9,12 +9,12 @@ import i.am.shiro.amai.network.Nhentai
 import i.am.shiro.amai.util.imageEntities
 import i.am.shiro.amai.util.tagEntities
 import i.am.shiro.amai.util.toEntity
-import io.reactivex.disposables.Disposables
+import io.reactivex.rxjava3.disposables.Disposable
 import timber.log.Timber
 
 class LoadingViewModel(private val database: AmaiDatabase) : ViewModel() {
 
-    private var disposable = Disposables.disposed()
+    private var disposable = Disposable.disposed()
 
     private val isLoadedLive = MutableLiveData<Boolean>()
 

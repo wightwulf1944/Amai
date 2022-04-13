@@ -4,9 +4,9 @@ import androidx.lifecycle.MutableLiveData
 import i.am.shiro.amai.DownloadStatus
 import i.am.shiro.amai.data.model.Download
 import i.am.shiro.amai.data.model.DownloadDetail
-import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.rxkotlin.plusAssign
-import io.reactivex.schedulers.Schedulers.io
+import io.reactivex.rxjava3.disposables.CompositeDisposable
+import io.reactivex.rxjava3.kotlin.plusAssign
+import io.reactivex.rxjava3.schedulers.Schedulers.io
 import timber.log.Timber
 
 class AmaiDownloadManager(private val db: AmaiDatabase) {

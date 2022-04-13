@@ -5,7 +5,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import i.am.shiro.amai.data.entity.BookEntity
-import io.reactivex.Completable
+import io.reactivex.rxjava3.core.Completable
 
 @Dao
 interface BookDao {

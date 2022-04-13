@@ -1,5 +1,7 @@
 package i.am.shiro.amai.widget;
 
+import static i.am.shiro.amai.util.ViewGroupXKt.forEach;
+
 import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
@@ -15,8 +17,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.function.IntConsumer;
 
 import i.am.shiro.amai.R;
-
-import static i.am.shiro.amai.util.ViewGroupXKt.forEach;
 
 public final class PageRecyclerView extends RecyclerView {
 
