@@ -4,11 +4,10 @@ import android.content.Context
 import android.os.Bundle
 import android.text.format.Formatter
 import android.view.View
-import android.widget.ProgressBar
-import android.widget.TextView
 import androidx.fragment.app.Fragment
 import i.am.shiro.amai.R
 import i.am.shiro.amai.dagger.component
+import i.am.shiro.amai.databinding.ItemStorageOptionBinding
 import i.am.shiro.amai.model.StorageOption
 import i.am.shiro.amai.util.addChild
 import i.am.shiro.amai.util.goToMain
@@ -46,24 +45,24 @@ class StorageSetupFragment : Fragment(R.layout.fragment_storage_setup) {
 
         storageOptions.forEachIndexed { i, storageOption ->
 
-            optionsLayout.addChild<View>(R.layout.item_storage_option) {
-                isSelected = selectedIndex == i
-                setOnClickListener {
+            optionsLayout.addChild(ItemStorageOptionBinding::inflate) {
+                root.isSelected = selectedIndex == i
+                root.setOnClickListener {
                     optionsLayout.dispatchSetSelected(false)
-                    isSelected = true
+                    root.isSelected = true
                     selectedIndex = i
                     finishButton.isEnabled = true
                 }
 
-                findViewById<TextView>(R.id.titleText).text = getString(R.string.storage_label, i)
+                titleText.text = getString(R.string.storage_label, i)
 
-                findViewById<TextView>(R.id.pathText).text = storageOption.path
+                pathText.text = storageOption.path
 
                 val spaceFree = storageOption.spaceFree
                 val freeSpaceSize = Formatter.formatFileSize(context, spaceFree)
-                findViewById<TextView>(R.id.freeSpaceText).text = getString(R.string.storage_free, freeSpaceSize)
+                freeSpaceText.text = getString(R.string.storage_free, freeSpaceSize)
 
-                findViewById<ProgressBar>(R.id.gauge).progress = storageOption.percentUsed
+                gauge.progress = storageOption.percentUsed
             }
         }
     }

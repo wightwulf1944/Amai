@@ -9,11 +9,10 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
-import i.am.shiro.amai.R
 import i.am.shiro.amai.adapter.CachedPreviewAdapter.ViewHolder
 import i.am.shiro.amai.data.view.CachedPreviewView
+import i.am.shiro.amai.databinding.ItemStaggeredBookBinding
 import i.am.shiro.amai.util.inflateChild
-import kotlinx.android.synthetic.main.item_staggered_book.view.*
 
 class CachedPreviewAdapter(
     private val onItemClick: (CachedPreviewView) -> Unit,
@@ -27,28 +26,14 @@ class CachedPreviewAdapter(
     override fun getItemId(position: Int) = getItem(position).bookId.toLong()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        return ViewHolder(parent.inflateChild(R.layout.item_staggered_book))
+        return ViewHolder(parent.inflateChild(ItemStaggeredBookBinding::inflate))
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bind(position)
-        onPositionBind(position)
-    }
-
-    inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-
-        private val thumbnailImage = view.thumbnailImage
-
-        private val titleText = view.titleText
-
-        private val pageText = view.pageText
-
-        private val savedBadge = view.savedBadge
-
-        fun bind(position: Int) {
+        with(holder.binding) {
             val book = getItem(position)
 
-            itemView.setOnClickListener { onItemClick(book) }
+            root.setOnClickListener { onItemClick(book) }
 
             savedBadge.visibility = if (book.isSaved) View.VISIBLE else View.INVISIBLE
             titleText.text = book.title
@@ -62,16 +47,19 @@ class CachedPreviewAdapter(
                 bitmapConfig(Bitmap.Config.RGB_565)
             }
         }
+
+        onPositionBind(position)
     }
+
+    class ViewHolder(val binding: ItemStaggeredBookBinding) :
+        RecyclerView.ViewHolder(binding.root)
 
     private class DiffCallback : DiffUtil.ItemCallback<CachedPreviewView>() {
 
-        override fun areItemsTheSame(oldItem: CachedPreviewView, newItem: CachedPreviewView): Boolean {
-            return oldItem.bookId == newItem.bookId
-        }
+        override fun areItemsTheSame(oldItem: CachedPreviewView, newItem: CachedPreviewView) =
+            oldItem.bookId == newItem.bookId
 
-        override fun areContentsTheSame(oldItem: CachedPreviewView, newItem: CachedPreviewView): Boolean {
-            return oldItem.isSaved == newItem.isSaved
-        }
+        override fun areContentsTheSame(oldItem: CachedPreviewView, newItem: CachedPreviewView) =
+            oldItem.isSaved == newItem.isSaved
     }
 }

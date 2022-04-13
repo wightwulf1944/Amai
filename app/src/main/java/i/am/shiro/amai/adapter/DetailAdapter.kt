@@ -15,6 +15,8 @@ import com.xwray.groupie.Item
 import com.xwray.groupie.viewbinding.BindableItem
 import i.am.shiro.amai.R
 import i.am.shiro.amai.data.view.ThumbnailView
+import i.am.shiro.amai.databinding.InflateTagBinding
+import i.am.shiro.amai.databinding.InflateTagGroupBinding
 import i.am.shiro.amai.databinding.ItemPreviewImageBinding
 import i.am.shiro.amai.model.DetailModel
 import i.am.shiro.amai.util.addChild
@@ -69,12 +71,12 @@ class DetailAdapter(
         ) {
             if (tags.isEmpty()) return
 
-            addChild<ViewGroup>(R.layout.inflate_tag_group) {
-                findViewById<TextView>(R.id.label).setText(res)
+            addChild(InflateTagGroupBinding::inflate) {
+                label.setText(res)
                 for (tag in tags) {
-                    addChild<TextView>(R.layout.inflate_tag) {
-                        text = tag
-                        setOnClickListener {
+                    root.addChild(InflateTagBinding::inflate) {
+                        root.text = tag
+                        root.setOnClickListener {
                             val searchTag = if (tag.contains(Regex("\\s+"))) "\"$tag\"" else tag
                             onTagClick(namespace + searchTag)
                         }

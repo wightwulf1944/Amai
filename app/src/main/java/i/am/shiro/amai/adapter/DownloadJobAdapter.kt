@@ -1,17 +1,16 @@
 package i.am.shiro.amai.adapter
 
-import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.ProgressBar
-import android.widget.TextView
-import androidx.annotation.CallSuper
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import androidx.viewbinding.ViewBinding
 import i.am.shiro.amai.DownloadStatus
-import i.am.shiro.amai.R
 import i.am.shiro.amai.data.model.Download
+import i.am.shiro.amai.databinding.ItemDownloadDoneBinding
+import i.am.shiro.amai.databinding.ItemDownloadDownloadingBinding
+import i.am.shiro.amai.databinding.ItemDownloadFailedBinding
+import i.am.shiro.amai.databinding.ItemDownloadGenericBinding
 import i.am.shiro.amai.util.inflateChild
 
 class DownloadJobAdapter(
@@ -27,16 +26,16 @@ class DownloadJobAdapter(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return when (DownloadStatus.values()[viewType]) {
             DownloadStatus.DONE -> {
-                DoneViewHolder(parent.inflateChild(R.layout.item_download_done))
+                DoneViewHolder(parent.inflateChild(ItemDownloadDoneBinding::inflate))
             }
             DownloadStatus.FAILED -> {
-                FailedViewHolder(parent.inflateChild(R.layout.item_download_failed))
+                FailedViewHolder(parent.inflateChild(ItemDownloadFailedBinding::inflate))
             }
             DownloadStatus.RUNNING -> {
-                DownloadingViewHolder(parent.inflateChild(R.layout.item_download_downloading))
+                DownloadingViewHolder(parent.inflateChild(ItemDownloadDownloadingBinding::inflate))
             }
             else -> {
-                GenericViewHolder(parent.inflateChild(R.layout.item_download_generic))
+                GenericViewHolder(parent.inflateChild(ItemDownloadGenericBinding::inflate))
             }
         }
     }
@@ -46,72 +45,65 @@ class DownloadJobAdapter(
         holder.bindData(job)
     }
 
-    abstract class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    abstract class ViewHolder(binding: ViewBinding) : RecyclerView.ViewHolder(binding.root) {
 
-        private val titleText: TextView = itemView.findViewById(R.id.titleText)
+        internal abstract fun bindData(job: Download)
+    }
 
-        @CallSuper
-        internal open fun bindData(job: Download) {
-            titleText.text = job.title
+    internal class GenericViewHolder(private val binding: ItemDownloadGenericBinding) :
+        ViewHolder(binding) {
+
+        override fun bindData(job: Download) {
+            with(binding) {
+                titleText.text = job.title
+                statusText.text = job.status.toString()
+            }
         }
     }
 
-    internal class GenericViewHolder(itemView: View) : ViewHolder(itemView) {
-
-        private val statusText: TextView = itemView.findViewById(R.id.statusText)
+    internal inner class DoneViewHolder(private val binding: ItemDownloadDoneBinding) :
+        ViewHolder(binding) {
 
         override fun bindData(job: Download) {
-            super.bindData(job)
-            statusText.text = job.status.toString()
+            with(binding) {
+                titleText.text = job.title
+                dismissButton.setOnClickListener { onDismiss(job) }
+            }
         }
     }
 
-    internal inner class DoneViewHolder(itemView: View) : ViewHolder(itemView) {
-
-        private val dismissButton: Button = itemView.findViewById(R.id.dismissButton)
+    internal inner class FailedViewHolder(private val binding: ItemDownloadFailedBinding) :
+        ViewHolder(binding) {
 
         override fun bindData(job: Download) {
-            super.bindData(job)
-            dismissButton.setOnClickListener { onDismiss(job) }
+            with(binding) {
+                binding.titleText.text = job.title
+                cancelButton.setOnClickListener { onCancel(job) }
+                retryButton.setOnClickListener { onRetry(job) }
+            }
         }
     }
 
-    internal inner class FailedViewHolder(itemView: View) : ViewHolder(itemView) {
-
-        private val cancelButton: Button = itemView.findViewById(R.id.cancelButton)
-
-        private val retryButton: Button = itemView.findViewById(R.id.retryButton)
+    internal inner class DownloadingViewHolder(private val binding: ItemDownloadDownloadingBinding) :
+        ViewHolder(binding) {
 
         override fun bindData(job: Download) {
-            super.bindData(job)
-            cancelButton.setOnClickListener { onCancel(job) }
-            retryButton.setOnClickListener { onRetry(job) }
-        }
-    }
-
-    internal inner class DownloadingViewHolder(itemView: View) : ViewHolder(itemView) {
-
-        private val progressBar: ProgressBar = itemView.findViewById(R.id.progressBar)
-
-        private val cancelButton: Button = itemView.findViewById(R.id.cancelButton)
-
-        private val pauseButton: Button = itemView.findViewById(R.id.pauseButton)
-
-        override fun bindData(job: Download) {
-            super.bindData(job)
-            progressBar.max = job.progressMax
-            progressBar.progress = job.progress
-            cancelButton.setOnClickListener { onCancel(job) }
-            pauseButton.setOnClickListener { onPause(job) }
+            with(binding) {
+                binding.titleText.text = job.title
+                progressBar.max = job.progressMax
+                progressBar.progress = job.progress
+                cancelButton.setOnClickListener { onCancel(job) }
+                pauseButton.setOnClickListener { onPause(job) }
+            }
         }
     }
 
     private class DiffCallback : DiffUtil.ItemCallback<Download>() {
 
-        override fun areItemsTheSame(oldItem: Download, newItem: Download): Boolean =
+        override fun areItemsTheSame(oldItem: Download, newItem: Download) =
             oldItem.bookId == newItem.bookId
 
-        override fun areContentsTheSame(oldItem: Download, newItem: Download): Boolean =
+        override fun areContentsTheSame(oldItem: Download, newItem: Download) =
             oldItem.status == newItem.status && oldItem.progress == newItem.progress
     }
 }

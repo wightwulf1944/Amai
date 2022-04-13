@@ -1,12 +1,10 @@
 package i.am.shiro.amai.adapter
 
-import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
-import i.am.shiro.amai.R
 import i.am.shiro.amai.data.view.PageView
+import i.am.shiro.amai.databinding.ItemReadPageBinding
 import i.am.shiro.amai.util.inflateChild
 import java.io.File
 
@@ -17,7 +15,7 @@ class BookPageAdapter(
     override fun getItemCount() = pages.size
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder =
-        ViewHolder(parent.inflateChild(R.layout.item_read_page))
+        ViewHolder(parent.inflateChild(ItemReadPageBinding::inflate))
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val page = pages[position]
@@ -29,7 +27,7 @@ class BookPageAdapter(
         }
     }
 
-    class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val pageImage: ImageView = itemView as ImageView
+    class ViewHolder(binding: ItemReadPageBinding) : RecyclerView.ViewHolder(binding.root) {
+        val pageImage = binding.root
     }
 }
