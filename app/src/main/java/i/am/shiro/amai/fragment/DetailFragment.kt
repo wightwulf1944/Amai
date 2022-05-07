@@ -13,7 +13,7 @@ import i.am.shiro.amai.BUNDLE_TAG
 import i.am.shiro.amai.R
 import i.am.shiro.amai.RESULT_TAG
 import i.am.shiro.amai.adapter.DetailAdapter
-import i.am.shiro.amai.dagger.component
+import i.am.shiro.amai.data.AmaiDatabase
 import i.am.shiro.amai.data.entity.DownloadJobEntity
 import i.am.shiro.amai.model.DetailModel
 import i.am.shiro.amai.network.Nhentai
@@ -26,6 +26,7 @@ import i.am.shiro.amai.viewmodel.DetailViewModel
 import i.am.shiro.amai.widget.PullGestureBehavior
 import io.reactivex.rxjava3.schedulers.Schedulers.io
 import kotlinx.android.synthetic.main.fragment_detail.*
+import org.koin.android.ext.android.inject
 
 class DetailFragment() : Fragment(R.layout.fragment_detail) {
 
@@ -37,7 +38,7 @@ class DetailFragment() : Fragment(R.layout.fragment_detail) {
 
     private val viewModel by amaiViewModels<DetailViewModel>()
 
-    private val database get() = component.database
+    private val database by inject<AmaiDatabase>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

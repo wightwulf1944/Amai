@@ -3,18 +3,20 @@ package i.am.shiro.amai.fragment.dialog
 import android.os.Bundle
 import androidx.fragment.app.DialogFragment
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import i.am.shiro.amai.AmaiPreferences
 import i.am.shiro.amai.R
-import i.am.shiro.amai.dagger.component
+import i.am.shiro.amai.data.AmaiDatabase
 import i.am.shiro.amai.util.argument
 import io.reactivex.rxjava3.core.Completable
 import io.reactivex.rxjava3.schedulers.Schedulers.io
+import org.koin.android.ext.android.inject
 import java.io.File
 
 class DeleteBookDialog() : DialogFragment() {
 
-    private val database by lazy { component.database }
+    private val database by inject<AmaiDatabase>()
 
-    private val preferences by lazy { component.preferences }
+    private val preferences by inject<AmaiPreferences>()
 
     private var bookId by argument<Int>()
 

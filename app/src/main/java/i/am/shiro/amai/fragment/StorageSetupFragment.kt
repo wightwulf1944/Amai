@@ -5,8 +5,8 @@ import android.os.Bundle
 import android.text.format.Formatter
 import android.view.View
 import androidx.fragment.app.Fragment
+import i.am.shiro.amai.AmaiPreferences
 import i.am.shiro.amai.R
-import i.am.shiro.amai.dagger.component
 import i.am.shiro.amai.databinding.ItemStorageOptionBinding
 import i.am.shiro.amai.model.StorageOption
 import i.am.shiro.amai.util.addChild
@@ -14,10 +14,11 @@ import i.am.shiro.amai.util.goToMain
 import i.am.shiro.amai.util.loadInt
 import i.am.shiro.amai.util.saveInt
 import kotlinx.android.synthetic.main.fragment_storage_setup.*
+import org.koin.android.ext.android.inject
 
 class StorageSetupFragment : Fragment(R.layout.fragment_storage_setup) {
 
-    private val preferences by lazy { component.preferences }
+    private val preferences by inject<AmaiPreferences>()
 
     private lateinit var storageOptions: List<StorageOption>
 

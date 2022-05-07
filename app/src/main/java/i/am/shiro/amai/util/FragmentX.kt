@@ -5,9 +5,9 @@ import android.os.Bundle
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModel
-import i.am.shiro.amai.dagger.component
 import i.am.shiro.amai.viewmodel.factory.SavedStateViewModelFactory
 import i.am.shiro.amai.viewmodel.factory.ViewModelFactory
+import org.koin.android.ext.android.getKoin
 import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty
 
@@ -30,9 +30,9 @@ inline fun <reified T : Service> Fragment.startLocalService() {
 }
 
 inline fun <reified T : ViewModel> Fragment.amaiViewModels() = viewModels<T> {
-    ViewModelFactory(component)
+    ViewModelFactory()
 }
 
 inline fun <reified T : ViewModel> Fragment.amaiStatefulViewModels() = viewModels<T> {
-    SavedStateViewModelFactory(this, component)
+    SavedStateViewModelFactory(this)
 }

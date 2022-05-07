@@ -7,14 +7,17 @@ import android.content.Intent
 import android.os.IBinder
 import androidx.core.app.NotificationCompat
 import androidx.core.content.getSystemService
+import i.am.shiro.amai.AmaiPreferences
 import i.am.shiro.amai.DEFAULT_CHANNEL_ID
 import i.am.shiro.amai.R
-import i.am.shiro.amai.dagger.component
+import i.am.shiro.amai.data.AmaiDatabase
 import i.am.shiro.amai.data.entity.LocalImageEntity
 import i.am.shiro.amai.data.entity.SavedEntity
+import okhttp3.OkHttpClient
 import okhttp3.Request
 import okio.buffer
 import okio.sink
+import org.koin.android.ext.android.inject
 import timber.log.Timber
 import java.io.File
 import java.io.IOException
@@ -26,11 +29,11 @@ private const val ID_ERROR = 3
 
 class DownloadService : Service() {
 
-    private val database by lazy { component.database }
+    private val database by inject<AmaiDatabase>()
 
-    private val preferences by lazy { component.preferences }
+    private val preferences by inject<AmaiPreferences>()
 
-    private val okHttpClient by lazy { component.okHttpClient }
+    private val okHttpClient by inject<OkHttpClient>()
 
     private val notifManager by lazy { getSystemService<NotificationManager>()!! }
 

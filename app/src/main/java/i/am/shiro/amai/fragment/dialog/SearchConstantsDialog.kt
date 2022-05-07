@@ -5,11 +5,12 @@ import android.os.Bundle
 import androidx.appcompat.widget.AppCompatEditText
 import androidx.fragment.app.DialogFragment
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import i.am.shiro.amai.dagger.component
+import i.am.shiro.amai.AmaiPreferences
+import org.koin.android.ext.android.inject
 
 class SearchConstantsDialog : DialogFragment() {
 
-    private val preferences by lazy { component.preferences }
+    private val preferences by inject<AmaiPreferences>()
 
     private lateinit var editText: AppCompatEditText
 
