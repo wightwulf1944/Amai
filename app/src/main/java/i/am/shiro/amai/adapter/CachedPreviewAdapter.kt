@@ -4,6 +4,7 @@ import android.graphics.Bitmap
 import android.view.View
 import android.view.ViewGroup
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.view.isVisible
 import androidx.core.view.updateLayoutParams
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
@@ -35,7 +36,7 @@ class CachedPreviewAdapter(
 
             root.setOnClickListener { onItemClick(book) }
 
-            savedBadge.visibility = if (book.isSaved) View.VISIBLE else View.INVISIBLE
+            savedBadge.isVisible = book.isSaved
             titleText.text = book.title
             pageText.text = book.pageCount.toString()
 

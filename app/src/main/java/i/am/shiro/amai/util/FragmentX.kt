@@ -7,7 +7,6 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModel
 import i.am.shiro.amai.viewmodel.factory.SavedStateViewModelFactory
 import i.am.shiro.amai.viewmodel.factory.ViewModelFactory
-import org.koin.android.ext.android.getKoin
 import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty
 

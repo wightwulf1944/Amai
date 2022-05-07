@@ -26,8 +26,6 @@ class MainFragment : Fragment(R.layout.fragment_main) {
 
     private lateinit var downloadsFragment: DownloadsFragment
 
-    private var isNew = false
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -43,8 +41,6 @@ class MainFragment : Fragment(R.layout.fragment_main) {
                 detach(savedFragment)
                 detach(downloadsFragment)
             }
-
-            isNew = true
         } else {
             savedFragment = childFragmentManager.findFragmentByTag(SAVED) as SavedFragment
             nhentaiFragment = childFragmentManager.findFragmentByTag(NHENTAI) as NhentaiFragment
@@ -65,7 +61,12 @@ class MainFragment : Fragment(R.layout.fragment_main) {
             }
         }
 
-        if (isNew) navigation.selectedItemId = R.id.navigation_nhentai
+        navigation.selectedItemId = when {
+            !savedFragment.isDetached -> R.id.navigation_nhentai
+            !nhentaiFragment.isDetached -> R.id.navigation_nhentai
+            !downloadsFragment.isDetached -> R.id.navigation_downloads
+            else -> error(childFragmentManager.fragments)
+        }
         navigation.setOnItemSelectedListener {
             onNavigate(it.itemId)
             true

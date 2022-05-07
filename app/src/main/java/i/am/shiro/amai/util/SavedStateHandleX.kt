@@ -1,8 +1,6 @@
 package i.am.shiro.amai.util
 
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
-import kotlin.properties.ReadOnlyProperty
 import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty
 
@@ -14,8 +12,4 @@ operator fun <T> SavedStateHandle.invoke(default: T) = object : ReadWritePropert
     override fun setValue(thisRef: Any, property: KProperty<*>, value: T) {
         set(property.name, value)
     }
-}
-
-fun <T> SavedStateHandle.live() = ReadOnlyProperty<Any, MutableLiveData<T>> { _, property ->
-    getLiveData(property.name)
 }

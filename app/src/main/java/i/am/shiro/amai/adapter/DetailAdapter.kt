@@ -59,7 +59,7 @@ class DetailAdapter(
             tagsLayout.addTagGroup(R.string.characters, "character:", model.characterTags)
             tagsLayout.addTagGroup(R.string.language, "language:", model.languageTags)
             tagsLayout.addTagGroup(R.string.categories, "category:", model.categoryTags)
-            tagsLayout.addTagGroup(R.string.tags, "", model.generalTags)
+            tagsLayout.addTagGroup(R.string.tags, "tag:", model.generalTags)
 
             isBound = true
         }
