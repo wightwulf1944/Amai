@@ -75,6 +75,7 @@ class DetailFragment() : Fragment(R.layout.fragment_detail) {
         when (menuItem.itemId) {
             R.id.action_download -> onDownloadClick()
             R.id.action_browser -> onOpenBrowserClick()
+            R.id.action_share -> onShare()
         }
         return true
     }
@@ -91,9 +92,18 @@ class DetailFragment() : Fragment(R.layout.fragment_detail) {
     }
 
     private fun onOpenBrowserClick() {
-        val bookUrl = Nhentai.WEBPAGE_BASE_URL + viewModel.modelLive.value!!.book.bookId
+        val bookUrl = Nhentai.WEBPAGE_BASE_URL + bookId
         val uri = Uri.parse(bookUrl)
         val intent = Intent(Intent.ACTION_VIEW, uri)
+        startActivity(intent)
+    }
+
+    private fun onShare() {
+        val bookUrl = Nhentai.WEBPAGE_BASE_URL + bookId
+        val intent = Intent(Intent.ACTION_SEND)
+            .putExtra(Intent.EXTRA_TEXT, bookUrl)
+            .setType("text/plain")
+            .let { Intent.createChooser(it, null) }
         startActivity(intent)
     }
 

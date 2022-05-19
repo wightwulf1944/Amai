@@ -39,7 +39,7 @@ class AmaiApplication : Application(), ImageLoaderFactory {
             override fun createStackElementTag(element: StackTraceElement): String {
                 val tag = super.createStackElementTag(element)
                 val method = element.methodName
-                return String.format("%s:%s", tag, method)
+                return "$tag:$method"
             }
         })
     }
