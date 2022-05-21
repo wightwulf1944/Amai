@@ -5,6 +5,7 @@ import android.view.MenuItem
 import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import i.am.shiro.amai.BUNDLE_TAG
 import i.am.shiro.amai.R
@@ -47,7 +48,7 @@ class NhentaiFragment : Fragment(R.layout.fragment_nhentai) {
 
         viewModel.booksLive.observe(viewLifecycleOwner, adapter::submitList)
         viewModel.isLoadingLive.observe(viewLifecycleOwner) { isLoading ->
-            progress.visibility = if (isLoading) VISIBLE else GONE
+            progressBar.isVisible = isLoading
         }
 
         parentFragmentManager.setFragmentResultListener(RESULT_TAG, viewLifecycleOwner) { _, result ->

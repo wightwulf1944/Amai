@@ -49,15 +49,13 @@
 
     </androidx.appcompat.widget.Toolbar>
 
-    <me.zhanghai.android.materialprogressbar.MaterialProgressBar
-        android:id="@+id/progress"
-        style="@style/Widget.MaterialProgressBar.ProgressBar.Horizontal.NoPadding"
+    <com.google.android.material.progressindicator.LinearProgressIndicator
+        android:id="@+id/progressBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
         android:indeterminate="true"
         android:visibility="gone"
-        app:mpb_progressStyle="horizontal"
         tools:visibility="visible" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
