@@ -1,8 +1,13 @@
 package i.am.shiro.amai.adapter
 
+import android.graphics.Bitmap
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import coil.load
+import coil.Coil
+import coil.clear
+import coil.loadAny
+import coil.request.CachePolicy
+import coil.request.ImageRequest
 import i.am.shiro.amai.data.view.PageView
 import i.am.shiro.amai.databinding.ItemReadPageBinding
 import i.am.shiro.amai.util.inflateChild
@@ -19,12 +24,29 @@ class BookPageAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val page = pages[position]
-        // TODO use page.thumbnailUrl as intermediate image
-        if (page.url.startsWith("https://")) {
-            holder.pageImage.load(page.url)
+
+        // TODO see if this check is necessary with loadAny
+        val data = if (page.url.startsWith("https://")) {
+            page.url
         } else {
-            holder.pageImage.load(File(page.url))
+            File(page.url)
         }
+
+        // TODO wait for Coil update
+        holder.pageImage.clear()
+        val request = ImageRequest.Builder(holder.pageImage.context)
+            .data(data)
+            .size(600)
+            .bitmapConfig(Bitmap.Config.RGB_565)
+            .target(onSuccess = {
+                holder.pageImage.loadAny(data) {
+                    memoryCachePolicy(CachePolicy.DISABLED)
+                    placeholder(it)
+                }
+            })
+            .build()
+
+        Coil.enqueue(request)
     }
 
     class ViewHolder(binding: ItemReadPageBinding) : RecyclerView.ViewHolder(binding.root) {
