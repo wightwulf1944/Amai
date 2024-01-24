@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompilationTask
+
 plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
@@ -90,4 +92,10 @@ dependencies {
     implementation 'io.coil-kt:coil:1.4.0'
 
     implementation "io.insert-koin:koin-android:3.4.2"
+}
+
+tasks.withType(KotlinCompilationTask).configureEach {
+    compilerOptions {
+        freeCompilerArgs.add("-Xcontext-receivers")
+    }
 }

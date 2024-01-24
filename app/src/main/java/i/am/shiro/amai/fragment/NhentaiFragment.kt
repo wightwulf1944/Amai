@@ -13,7 +13,7 @@ import i.am.shiro.amai.databinding.FragmentNhentaiBinding
 import i.am.shiro.amai.fragment.dialog.NhentaiSortDialog
 import i.am.shiro.amai.fragment.dialog.SearchConstantsDialog
 import i.am.shiro.amai.util.amaiStatefulViewModels
-import i.am.shiro.amai.util.dp
+import i.am.shiro.amai.util.dpToPx
 import i.am.shiro.amai.util.goToDetail
 import i.am.shiro.amai.util.show
 import i.am.shiro.amai.viewmodel.NhentaiViewModel
@@ -32,7 +32,7 @@ class NhentaiFragment : Fragment(R.layout.fragment_nhentai) {
             viewModel.onSearch(query)
         }
 
-        b.swipeRefreshLayout.setProgressViewOffset(false, 0, dp(64))
+        b.swipeRefreshLayout.setProgressViewOffset(false, 0, 64.dpToPx())
         b.swipeRefreshLayout.setOnRefreshListener {
             b.swipeRefreshLayout.isRefreshing = false
             viewModel.onRefresh()
