@@ -7,4 +7,10 @@
     <color name="backgroundFloating">#424242</color>
 
     <color name="colorSurface_elevated4dp">#272727</color>
+
+    <color name="text">#DDDDDD</color>
+    <color name="background">#141414</color>
+    <color name="primary_2">#533582</color>
+    <color name="secondary_2">#2C1230</color>
+    <color name="accent">#AD55B9</color>
 </resources>

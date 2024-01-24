@@ -1,16 +1,12 @@
 package i.am.shiro.amai.network
 
-import com.squareup.moshi.JsonClass
-
-@JsonClass(generateAdapter = true)
-data class SearchJson(
+class SearchJson(
     val result: List<BookJson>,
     val num_pages: Int,
     val per_page: Int
 )
 
-@JsonClass(generateAdapter = true)
-data class BookJson(
+class BookJson(
     val id: Int,
     val media_id: String,
     val upload_date: Long,
@@ -22,15 +18,13 @@ data class BookJson(
     val images: ImagesJson
 )
 
-@JsonClass(generateAdapter = true)
-data class TitleJson(
+class TitleJson(
     val japanese: String?,
     val pretty: String,
     val english: String
 )
 
-@JsonClass(generateAdapter = true)
-data class TagJson(
+class TagJson(
     val id: Int,
     val name: String,
     val type: String,
@@ -38,15 +32,13 @@ data class TagJson(
     val count: Int
 )
 
-@JsonClass(generateAdapter = true)
-data class ImagesJson(
+class ImagesJson(
     val cover: ImageJson,
     val pages: List<ImageJson>,
     val thumbnail: ImageJson
 )
 
-@JsonClass(generateAdapter = true)
-data class ImageJson(
+class ImageJson(
     val h: Int,
     val w: Int,
     val t: String

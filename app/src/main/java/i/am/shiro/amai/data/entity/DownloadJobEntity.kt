@@ -1,6 +1,7 @@
 package i.am.shiro.amai.data.entity
 
 import androidx.room.Entity
+import androidx.room.Ignore
 import androidx.room.PrimaryKey
 
 @Entity
@@ -14,6 +15,7 @@ data class DownloadJobEntity(
     val isPaused: Boolean,
     val isDone: Boolean
 ) {
+    @Ignore
     constructor(bookId: Int) : this(
         bookId = bookId,
         createTime = System.currentTimeMillis(),

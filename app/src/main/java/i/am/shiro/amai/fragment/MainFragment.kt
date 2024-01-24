@@ -10,11 +10,7 @@ import androidx.fragment.app.commitNow
 import com.google.android.material.snackbar.Snackbar
 import i.am.shiro.amai.R
 import i.am.shiro.amai.RESULT_TAG
-import kotlinx.android.synthetic.main.fragment_main.*
-
-private const val SAVED = "saved"
-private const val NHENTAI = "nhentai"
-private const val DOWNLOADS = "downloads"
+import i.am.shiro.amai.databinding.FragmentMainBinding
 
 class MainFragment : Fragment(R.layout.fragment_main) {
 
@@ -22,58 +18,57 @@ class MainFragment : Fragment(R.layout.fragment_main) {
 
     private lateinit var savedFragment: SavedFragment
 
-    private lateinit var nhentaiFragment: NhentaiFragment
-
-    private lateinit var downloadsFragment: DownloadsFragment
+    private lateinit var nhentaiFragment: Nhentai2Fragment
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        val savedTag = "saved"
+        val nhentaiTag = "nhentai"
+
         if (savedInstanceState == null) {
             savedFragment = SavedFragment()
-            nhentaiFragment = NhentaiFragment()
-            downloadsFragment = DownloadsFragment()
+            nhentaiFragment = Nhentai2Fragment()
 
             childFragmentManager.commitNow {
-                add(R.id.fragmentContainer, savedFragment, SAVED)
-                add(R.id.fragmentContainer, nhentaiFragment, NHENTAI)
-                add(R.id.fragmentContainer, downloadsFragment, DOWNLOADS)
+                add(R.id.fragmentContainer, savedFragment, savedTag)
+                add(R.id.fragmentContainer, nhentaiFragment, nhentaiTag)
                 detach(savedFragment)
-                detach(downloadsFragment)
             }
         } else {
-            savedFragment = childFragmentManager.findFragmentByTag(SAVED) as SavedFragment
-            nhentaiFragment = childFragmentManager.findFragmentByTag(NHENTAI) as NhentaiFragment
-            downloadsFragment = childFragmentManager.findFragmentByTag(DOWNLOADS) as DownloadsFragment
+            savedFragment = childFragmentManager.findFragmentByTag(savedTag) as SavedFragment
+            nhentaiFragment = childFragmentManager.findFragmentByTag(nhentaiTag) as Nhentai2Fragment
         }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        val b = FragmentMainBinding.bind(view)
+
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
             val now = SystemClock.elapsedRealtime()
             if (now > lastBackPressTime + 1000) {
                 lastBackPressTime = now
+                // TODO replace this with actual view in layout
                 Snackbar.make(view, R.string.confirm_exit, Snackbar.LENGTH_SHORT)
-                    .setAnchorView(navigation)
+                    .setAnchorView(b.navigation)
                     .show()
             } else {
                 requireActivity().finish()
             }
         }
 
-        navigation.selectedItemId = when {
+        b.navigation.selectedItemId = when {
             !savedFragment.isDetached -> R.id.navigation_nhentai
             !nhentaiFragment.isDetached -> R.id.navigation_nhentai
-            !downloadsFragment.isDetached -> R.id.navigation_downloads
             else -> error(childFragmentManager.fragments)
         }
-        navigation.setOnItemSelectedListener {
+        b.navigation.setOnItemSelectedListener {
             onNavigate(it.itemId)
             true
         }
 
         parentFragmentManager.setFragmentResultListener(RESULT_TAG, viewLifecycleOwner) { _, result ->
-            navigation.selectedItemId = R.id.navigation_nhentai
+            b.navigation.selectedItemId = R.id.navigation_nhentai
             childFragmentManager.setFragmentResult(RESULT_TAG, result)
         }
     }
@@ -82,12 +77,11 @@ class MainFragment : Fragment(R.layout.fragment_main) {
         val targetFragment = when (itemId) {
             R.id.navigation_saved -> savedFragment
             R.id.navigation_nhentai -> nhentaiFragment
-            R.id.navigation_downloads -> downloadsFragment
             else -> throw IllegalArgumentException()
         }
 
         childFragmentManager.commit {
-            for (fragment in arrayOf(savedFragment, nhentaiFragment, downloadsFragment)) {
+            for (fragment in arrayOf(savedFragment, nhentaiFragment)) {
                 if (fragment == targetFragment) attach(fragment) else detach(fragment)
             }
             setReorderingAllowed(true)

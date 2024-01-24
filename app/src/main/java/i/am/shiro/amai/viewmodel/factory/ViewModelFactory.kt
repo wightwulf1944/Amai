@@ -15,7 +15,7 @@ class ViewModelFactory : ViewModelProvider.Factory, KoinComponent {
     override fun <T : ViewModel> create(modelClass: Class<T>) =
         when (modelClass) {
             DetailViewModel::class.java -> DetailViewModel(get())
-            LoadingViewModel::class.java -> LoadingViewModel(get())
+            LoadingViewModel::class.java -> LoadingViewModel(get(), get())
             ReadViewModel::class.java -> ReadViewModel(get())
             DownloadsViewModel::class.java -> DownloadsViewModel(get())
             else -> error("Unable to create $modelClass")

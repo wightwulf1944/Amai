@@ -1,19 +1,20 @@
-apply plugin: 'com.android.application'
-apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-android-extensions'
-apply plugin: 'kotlin-kapt'
-apply plugin: 'com.google.gms.google-services'
-apply plugin: 'com.google.firebase.crashlytics'
+plugins {
+    id 'com.android.application'
+    id 'org.jetbrains.kotlin.android'
+    id 'org.jetbrains.kotlin.kapt'
+//    id 'com.google.gms.google-services'
+//    id 'com.google.firebase.crashlytics'
+}
 
 android {
-    compileSdkVersion 31
+    namespace 'i.am.shiro.amai'
+    compileSdk 34
     defaultConfig {
         applicationId "i.am.shiro.amai"
-        minSdkVersion 30
-        targetSdkVersion 31
+        minSdk 30
+        targetSdk 33
         versionCode 1
         versionName "1.0"
-        vectorDrawables.useSupportLibrary = true
         proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         kapt {
             arguments {
@@ -26,40 +27,39 @@ android {
             minifyEnabled false
         }
         debug {
-            minifyEnabled true
+            minifyEnabled false
         }
     }
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_11
-        targetCompatibility JavaVersion.VERSION_11
-    }
-    kotlinOptions {
-        jvmTarget = "11"
-    }
     buildFeatures {
+        // generate ViewBinding classes for layouts
         viewBinding true
+        // generate BuildConfig class
+        buildConfig true
     }
 }
 
+kotlin {
+    jvmToolchain 17
+}
+
 dependencies {
-    implementation 'androidx.annotation:annotation:1.3.0'
-    implementation 'androidx.appcompat:appcompat:1.4.1'
+    implementation 'androidx.annotation:annotation:1.7.1'
+    implementation 'androidx.appcompat:appcompat:1.6.1'
     implementation 'androidx.cardview:cardview:1.0.0'
-    implementation 'androidx.constraintlayout:constraintlayout:2.1.3'
-    implementation 'androidx.core:core-ktx:1.7.0'
-    implementation 'androidx.fragment:fragment-ktx:1.4.1'
-    implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.4.1'
-    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.4.1'
-    implementation 'androidx.lifecycle:lifecycle-viewmodel-savedstate:2.4.1'
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
+    implementation 'androidx.core:core-ktx:1.12.0'
+    implementation 'androidx.fragment:fragment-ktx:1.6.2'
+    implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.6.1'
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.1'
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-savedstate:2.6.1'
     implementation 'androidx.preference:preference-ktx:1.2.0'
     implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.1.0'
-    implementation 'androidx.vectordrawable:vectordrawable:1.1.0'
-    implementation 'androidx.room:room-runtime:2.4.2'
-    implementation 'androidx.room:room-rxjava3:2.4.2'
-    kapt 'androidx.room:room-compiler:2.4.2'
+    implementation 'androidx.room:room-runtime:2.5.2'
+    implementation 'androidx.room:room-rxjava3:2.5.2'
+    kapt 'androidx.room:room-compiler:2.5.2'
 
-    implementation 'io.reactivex.rxjava3:rxjava:3.1.4'
-    implementation 'io.reactivex.rxjava3:rxandroid:3.0.0'
+    implementation 'io.reactivex.rxjava3:rxjava:3.1.6'
+    implementation 'io.reactivex.rxjava3:rxandroid:3.0.2'
     implementation 'io.reactivex.rxjava3:rxkotlin:3.0.1'
 
     //    http://square.github.io/retrofit/
@@ -67,20 +67,16 @@ dependencies {
     implementation 'com.squareup.retrofit2:converter-moshi:2.9.0'
     implementation 'com.squareup.retrofit2:adapter-rxjava3:2.9.0'
 
-    // https://github.com/square/moshi
-    implementation 'com.squareup.moshi:moshi:1.13.0'
-    kapt 'com.squareup.moshi:moshi-kotlin-codegen:1.13.0'
-
-    implementation platform('com.squareup.okhttp3:okhttp-bom:4.9.0')
+    implementation platform('com.squareup.okhttp3:okhttp-bom:4.10.0')
     implementation 'com.squareup.okhttp3:okhttp'
     implementation 'com.squareup.okhttp3:logging-interceptor'
 
-    implementation 'com.google.android.material:material:1.6.0'
+    implementation 'com.google.android.material:material:1.9.0'
 
     // Firebase
-    implementation platform('com.google.firebase:firebase-bom:26.8.0')
-    implementation 'com.google.firebase:firebase-analytics'
-    implementation 'com.google.firebase:firebase-crashlytics'
+//    implementation platform('com.google.firebase:firebase-bom:26.8.0')
+//    implementation 'com.google.firebase:firebase-analytics'
+//    implementation 'com.google.firebase:firebase-crashlytics'
 
     //    https://github.com/google/flexbox-layout
     implementation 'com.google.android.flexbox:flexbox:3.0.0'
@@ -88,10 +84,10 @@ dependencies {
     //    https://github.com/JakeWharton/timber
     implementation 'com.jakewharton.timber:timber:5.0.1'
 
-    implementation 'com.github.lisawray.groupie:groupie:2.10.0'
-    implementation 'com.github.lisawray.groupie:groupie-viewbinding:2.10.0'
+    implementation 'com.github.lisawray.groupie:groupie:2.10.1'
+    implementation 'com.github.lisawray.groupie:groupie-viewbinding:2.10.1'
 
     implementation 'io.coil-kt:coil:1.4.0'
 
-    implementation "io.insert-koin:koin-android:3.2.0-beta-1"
+    implementation "io.insert-koin:koin-android:3.4.2"
 }

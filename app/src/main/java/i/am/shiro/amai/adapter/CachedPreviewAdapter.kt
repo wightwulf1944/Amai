@@ -1,7 +1,6 @@
 package i.am.shiro.amai.adapter
 
 import android.graphics.Bitmap
-import android.view.View
 import android.view.ViewGroup
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.isVisible

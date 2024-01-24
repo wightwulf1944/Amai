@@ -7,10 +7,10 @@ import android.view.WindowManager.LayoutParams.FLAG_FULLSCREEN
 import androidx.fragment.app.Fragment
 import i.am.shiro.amai.R
 import i.am.shiro.amai.adapter.BookPageAdapter
+import i.am.shiro.amai.databinding.FragmentReadBinding
 import i.am.shiro.amai.util.amaiViewModels
 import i.am.shiro.amai.util.argument
 import i.am.shiro.amai.viewmodel.ReadViewModel
-import kotlinx.android.synthetic.main.fragment_read.*
 
 class ReadFragment() : Fragment(R.layout.fragment_read) {
 
@@ -48,17 +48,19 @@ class ReadFragment() : Fragment(R.layout.fragment_read) {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        pageRecycler.setHasFixedSize(true)
-        pageRecycler.requestFocus()
-        pageRecycler.setOnPageScrollListener { value -> pageText.text = value.toString() }
+        val b = FragmentReadBinding.bind(view)
+
+        b.pageRecycler.setHasFixedSize(true)
+        b.pageRecycler.requestFocus()
+        b.pageRecycler.setOnPageScrollListener { value -> b.pageText.text = value.toString() }
 
         viewModel.pagesLive.observe(viewLifecycleOwner) {
-            pageRecycler.adapter = BookPageAdapter(it)
+            b.pageRecycler.adapter = BookPageAdapter(it)
 
             if (savedInstanceState == null) {
                 val position = pageIndex
-                pageRecycler.scrollToPosition(position)
-                pageText.text = (position + 1).toString()
+                b.pageRecycler.scrollToPosition(position)
+                b.pageText.text = (position + 1).toString()
             }
         }
     }

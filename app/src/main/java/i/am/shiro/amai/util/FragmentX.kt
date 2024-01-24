@@ -35,3 +35,7 @@ inline fun <reified T : ViewModel> Fragment.amaiViewModels() = viewModels<T> {
 inline fun <reified T : ViewModel> Fragment.amaiStatefulViewModels() = viewModels<T> {
     SavedStateViewModelFactory(this)
 }
+
+fun Fragment.dp(value: Int): Int{
+    return (value * resources.displayMetrics.density).toInt()
+}

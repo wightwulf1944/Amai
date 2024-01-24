@@ -15,7 +15,7 @@ internal class TapDetector(context: Context?, tapListener: Consumer<MotionEvent?
         }
     })
 
-    fun onTouchEvent(ev: MotionEvent?) {
+    fun onTouchEvent(ev: MotionEvent) {
         gestureDetector.onTouchEvent(ev)
     }
 }

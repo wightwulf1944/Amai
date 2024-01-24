@@ -8,12 +8,12 @@ import i.am.shiro.amai.R
 import i.am.shiro.amai.SavedSort
 import i.am.shiro.amai.adapter.SavedPreviewAdapter
 import i.am.shiro.amai.data.view.SavedPreviewView
+import i.am.shiro.amai.databinding.FragmentSavedBinding
 import i.am.shiro.amai.fragment.dialog.DeleteBookDialog
 import i.am.shiro.amai.fragment.dialog.PlaceholderDialog
 import i.am.shiro.amai.fragment.dialog.SavedSortDialog
 import i.am.shiro.amai.util.*
 import i.am.shiro.amai.viewmodel.SavedViewModel
-import kotlinx.android.synthetic.main.fragment_saved.*
 
 class SavedFragment : Fragment(R.layout.fragment_saved) {
 
@@ -24,9 +24,11 @@ class SavedFragment : Fragment(R.layout.fragment_saved) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         savedInstanceState?.loadBoolean(::shouldScrollToTop)
 
-        toolbar.setOnMenuItemClickListener(::onActionClick)
+        val b = FragmentSavedBinding.bind(view)
 
-        searchInput.onSubmitListener = { searchQuery ->
+        b.toolbar.setOnMenuItemClickListener(::onActionClick)
+
+        b.searchInput.onSubmitListener = { searchQuery ->
             shouldScrollToTop = true
             viewModel.onSearch(searchQuery)
         }
@@ -36,13 +38,13 @@ class SavedFragment : Fragment(R.layout.fragment_saved) {
             onItemLongClick = ::invokeDeleteBook
         )
 
-        recyclerView.setHasFixedSize(true)
-        recyclerView.adapter = adapter
+        b.recyclerView.setHasFixedSize(true)
+        b.recyclerView.adapter = adapter
 
         viewModel.booksLive.observe(viewLifecycleOwner) { books ->
             adapter.submitList(books) {
                 if (shouldScrollToTop) {
-                    recyclerView.scrollToPosition(0)
+                    b.recyclerView.scrollToPosition(0)
                     shouldScrollToTop = false
                 }
             }

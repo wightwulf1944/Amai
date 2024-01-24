@@ -30,7 +30,8 @@ private const val PAGING_THRESHOLD = 10
 class NhentaiViewModel(
     handle: SavedStateHandle,
     private val database: AmaiDatabase,
-    private val preferences: AmaiPreferences
+    private val preferences: AmaiPreferences,
+    private val nhentaiApi: Nhentai.Api
 ) : ViewModel() {
 
     private var deleteDisposable = Disposable.disposed()
@@ -128,7 +129,7 @@ class NhentaiViewModel(
         if (query.matches(Regex("^id:\\d+\$"))) {
             val id = query.substringAfter("id:").toInt()
 
-            remoteDisposable = Nhentai.API.getBook(id)
+            remoteDisposable = nhentaiApi.getBook(id)
                 .doOnSubscribe { isLoadingLive.postValue(true) }
                 .doFinally { isLoadingLive.postValue(false) }
                 .subscribe(::onGetBookSuccess, Timber::e)
@@ -137,7 +138,7 @@ class NhentaiViewModel(
             val query = "${preferences.searchConstants} $query"
             val page = page + 1
 
-            remoteDisposable = Nhentai.API.search(query, page, sort)
+            remoteDisposable = nhentaiApi.search(query, page, sort)
                 .doOnSubscribe { isLoadingLive.postValue(true) }
                 .doFinally { isLoadingLive.postValue(false) }
                 .subscribe(::onSearchSuccess, Timber::e)

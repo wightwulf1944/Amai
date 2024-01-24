@@ -12,7 +12,10 @@ import i.am.shiro.amai.util.toEntity
 import io.reactivex.rxjava3.disposables.Disposable
 import timber.log.Timber
 
-class LoadingViewModel(private val database: AmaiDatabase) : ViewModel() {
+class LoadingViewModel(
+    private val database: AmaiDatabase,
+    private val nhentaiApi: Nhentai.Api
+) : ViewModel() {
 
     private var disposable = Disposable.disposed()
 
@@ -24,7 +27,7 @@ class LoadingViewModel(private val database: AmaiDatabase) : ViewModel() {
 
     fun load(bookId: Int): LiveData<Boolean> {
         if (disposable.isDisposed) {
-            disposable = Nhentai.API
+            disposable = nhentaiApi
                 .getBook(bookId)
                 .retry()
                 .subscribe(::onFetch, Timber::e)

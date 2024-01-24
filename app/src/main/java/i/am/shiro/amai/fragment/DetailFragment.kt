@@ -15,7 +15,7 @@ import i.am.shiro.amai.RESULT_TAG
 import i.am.shiro.amai.adapter.DetailAdapter
 import i.am.shiro.amai.data.AmaiDatabase
 import i.am.shiro.amai.data.entity.DownloadJobEntity
-import i.am.shiro.amai.model.DetailModel
+import i.am.shiro.amai.databinding.FragmentDetailBinding
 import i.am.shiro.amai.network.Nhentai
 import i.am.shiro.amai.service.DownloadService
 import i.am.shiro.amai.util.amaiViewModels
@@ -25,7 +25,6 @@ import i.am.shiro.amai.util.startLocalService
 import i.am.shiro.amai.viewmodel.DetailViewModel
 import i.am.shiro.amai.widget.PullGestureBehavior
 import io.reactivex.rxjava3.schedulers.Schedulers.io
-import kotlinx.android.synthetic.main.fragment_detail.*
 import org.koin.android.ext.android.inject
 
 class DetailFragment() : Fragment(R.layout.fragment_detail) {
@@ -47,28 +46,28 @@ class DetailFragment() : Fragment(R.layout.fragment_detail) {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        toolbar.setNavigationOnClickListener {
+        val b = FragmentDetailBinding.bind(view)
+
+        b.toolbar.setNavigationOnClickListener {
             parentFragmentManager.popBackStack()
         }
 
-        previewRecycler.setHasFixedSize(true)
-        previewRecycler.updateLayoutParams<CoordinatorLayout.LayoutParams> {
+        b.previewRecycler.setHasFixedSize(true)
+        b.previewRecycler.updateLayoutParams<CoordinatorLayout.LayoutParams> {
             (behavior as PullGestureBehavior).setOnPullListener {
                 parentFragmentManager.popBackStack()
             }
         }
 
-        viewModel.modelLive.observe(viewLifecycleOwner, ::onModelLoaded)
-    }
+        viewModel.modelLive.observe(viewLifecycleOwner) { model ->
+            b.toolbar.setOnMenuItemClickListener(::onActionClick)
 
-    private fun onModelLoaded(model: DetailModel) {
-        toolbar.setOnMenuItemClickListener(::onActionClick)
-
-        previewRecycler.adapter = DetailAdapter(
-            model = model,
-            onThumbnailClick = ::invokeReadBook,
-            onTagClick = ::onTagClick
-        )
+            b.previewRecycler.adapter = DetailAdapter(
+                model = model,
+                onThumbnailClick = ::invokeReadBook,
+                onTagClick = ::onTagClick
+            )
+        }
     }
 
     private fun onActionClick(menuItem: MenuItem): Boolean {

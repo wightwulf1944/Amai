@@ -2,7 +2,7 @@ package i.am.shiro.amai.data.entity
 
 import androidx.room.Entity
 import androidx.room.ForeignKey
-import androidx.room.ForeignKey.CASCADE
+import androidx.room.ForeignKey.Companion.CASCADE
 
 @Entity(
     primaryKeys = ["bookId", "type", "name"],

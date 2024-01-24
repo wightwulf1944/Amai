@@ -7,13 +7,13 @@ import android.view.View
 import androidx.fragment.app.Fragment
 import i.am.shiro.amai.AmaiPreferences
 import i.am.shiro.amai.R
+import i.am.shiro.amai.databinding.FragmentStorageSetupBinding
 import i.am.shiro.amai.databinding.ItemStorageOptionBinding
 import i.am.shiro.amai.model.StorageOption
 import i.am.shiro.amai.util.addChild
 import i.am.shiro.amai.util.goToMain
 import i.am.shiro.amai.util.loadInt
 import i.am.shiro.amai.util.saveInt
-import kotlinx.android.synthetic.main.fragment_storage_setup.*
 import org.koin.android.ext.android.inject
 
 class StorageSetupFragment : Fragment(R.layout.fragment_storage_setup) {
@@ -41,18 +41,20 @@ class StorageSetupFragment : Fragment(R.layout.fragment_storage_setup) {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        finishButton.isEnabled = selectedIndex != -1
-        finishButton.setOnClickListener { onFinish() }
+        val b = FragmentStorageSetupBinding.bind(view)
+
+        b.finishButton.isEnabled = selectedIndex != -1
+        b.finishButton.setOnClickListener { onFinish() }
 
         storageOptions.forEachIndexed { i, storageOption ->
 
-            optionsLayout.addChild(ItemStorageOptionBinding::inflate) {
+            b.optionsLayout.addChild(ItemStorageOptionBinding::inflate) {
                 root.isSelected = selectedIndex == i
                 root.setOnClickListener {
-                    optionsLayout.dispatchSetSelected(false)
+                    b.optionsLayout.dispatchSetSelected(false)
                     root.isSelected = true
                     selectedIndex = i
-                    finishButton.isEnabled = true
+                    b.finishButton.isEnabled = true
                 }
 
                 titleText.text = getString(R.string.storage_label, i)
