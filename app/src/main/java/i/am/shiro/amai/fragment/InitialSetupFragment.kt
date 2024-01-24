@@ -7,7 +7,7 @@ import android.view.View
 import androidx.fragment.app.Fragment
 import i.am.shiro.amai.AmaiPreferences
 import i.am.shiro.amai.R
-import i.am.shiro.amai.databinding.FragmentStorageSetupBinding
+import i.am.shiro.amai.databinding.FragmentInitialSetupBinding
 import i.am.shiro.amai.databinding.ItemStorageOptionBinding
 import i.am.shiro.amai.model.StorageOption
 import i.am.shiro.amai.util.addChild
@@ -16,7 +16,7 @@ import i.am.shiro.amai.util.loadInt
 import i.am.shiro.amai.util.saveInt
 import org.koin.android.ext.android.inject
 
-class StorageSetupFragment : Fragment(R.layout.fragment_storage_setup) {
+class InitialSetupFragment : Fragment(R.layout.fragment_initial_setup) {
 
     private val preferences by inject<AmaiPreferences>()
 
@@ -41,7 +41,7 @@ class StorageSetupFragment : Fragment(R.layout.fragment_storage_setup) {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        val b = FragmentStorageSetupBinding.bind(view)
+        val b = FragmentInitialSetupBinding.bind(view)
 
         b.finishButton.isEnabled = selectedIndex != -1
         b.finishButton.setOnClickListener { onFinish() }

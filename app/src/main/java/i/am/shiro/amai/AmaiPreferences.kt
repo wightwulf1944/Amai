@@ -7,6 +7,7 @@ private const val IS_FIRST_RUN = "isFirstRun"
 private const val STORAGE_PATH = "storagePath"
 private const val SEARCH_CONSTANTS = "searchConstants"
 
+// TODO change to new preferences storage
 class AmaiPreferences(private val sharedPreferences: SharedPreferences) {
 
     var isFirstRun: Boolean

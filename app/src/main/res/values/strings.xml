@@ -6,15 +6,11 @@
 
     <string name="storage_label">External %1$d</string>
     <string name="storage_free">%1$s Free</string>
-    <string name="storage_note">
-        • Uninstalling this app will also delete your downloads
-        \n• Changing the storage option later will not transfer your downloads
-    </string>
 
     <string name="search">Search</string>
     <string name="next">Next</string>
     <string name="skip">Skip</string>
-    <string name="finish">Finish</string>
+    <string name="start">Start</string>
     <string name="choose_a_storage_option">Choose a storage option</string>
     <string name="pages">pages</string>
     <string name="pages_format">%1$d pages</string>

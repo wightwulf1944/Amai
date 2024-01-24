@@ -12,7 +12,7 @@ fun MainActivity.startAtLoading(bookId: Int) {
 }
 
 fun MainActivity.startAtWelcome() {
-    setFragment(WelcomeFragment())
+    setFragment(InitialSetupFragment())
 }
 
 fun MainActivity.startAtMain() {
@@ -27,16 +27,7 @@ fun DetailFragment.goToRead(bookId: Int, pageIndex: Int) {
     pushFragment(ReadFragment(bookId, pageIndex))
 }
 
-fun WelcomeFragment.goToMain() {
-    replaceFragment(MainFragment())
-}
-
-fun WelcomeFragment.goToStorageSetup() {
-    pushFragment(StorageSetupFragment())
-}
-
-fun StorageSetupFragment.goToMain() {
-    popFragment()
+fun InitialSetupFragment.goToMain() {
     replaceFragment(MainFragment())
 }
 

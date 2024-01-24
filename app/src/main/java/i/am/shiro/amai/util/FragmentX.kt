@@ -36,6 +36,7 @@ inline fun <reified T : ViewModel> Fragment.amaiStatefulViewModels() = viewModel
     SavedStateViewModelFactory(this)
 }
 
+// TODO use kotlin context receivers
 fun Fragment.dp(value: Int): Int{
     return (value * resources.displayMetrics.density).toInt()
 }
