@@ -1,7 +1,6 @@
 package i.am.shiro.amai.fragment
 
 import android.os.Bundle
-import android.os.SystemClock
 import android.view.View
 import androidx.activity.addCallback
 import androidx.fragment.app.Fragment
@@ -11,10 +10,12 @@ import com.google.android.material.snackbar.Snackbar
 import i.am.shiro.amai.R
 import i.am.shiro.amai.RESULT_TAG
 import i.am.shiro.amai.databinding.FragmentMainBinding
+import kotlin.time.Duration.Companion.seconds
+import kotlin.time.TimeSource.Monotonic.markNow
 
 class MainFragment : Fragment(R.layout.fragment_main) {
 
-    private var lastBackPressTime = 0L
+    private var lastBackPressTime = markNow()
 
     private lateinit var savedFragment: SavedFragment
 
@@ -45,9 +46,8 @@ class MainFragment : Fragment(R.layout.fragment_main) {
         val b = FragmentMainBinding.bind(view)
 
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
-            val now = SystemClock.elapsedRealtime()
-            if (now > lastBackPressTime + 1000) {
-                lastBackPressTime = now
+            if (lastBackPressTime.elapsedNow() > 1.seconds) {
+                lastBackPressTime = markNow()
                 // TODO replace this with actual view in layout
                 Snackbar.make(view, R.string.confirm_exit, Snackbar.LENGTH_SHORT)
                     .setAnchorView(b.navigation)
