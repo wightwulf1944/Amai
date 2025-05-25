@@ -4,6 +4,7 @@ import androidx.preference.PreferenceManager
 import androidx.room.Room
 import coil.util.CoilUtils
 import com.squareup.moshi.Moshi
+import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import i.am.shiro.amai.API_URL
 import i.am.shiro.amai.AmaiPreferences
 import i.am.shiro.amai.BuildConfig
@@ -35,6 +36,10 @@ val mainModule = module {
             .build()
     }
     single<Nhentai.Api> {
+        val moshi = Moshi.Builder()
+            .addLast(KotlinJsonAdapterFactory())
+            .build()
+
         Retrofit.Builder()
             .client(
                 get<OkHttpClient>()
@@ -47,7 +52,7 @@ val mainModule = module {
             )
             .baseUrl(API_URL)
             .addCallAdapterFactory(RxJava3CallAdapterFactory.create())
-            .addConverterFactory(MoshiConverterFactory.create())
+            .addConverterFactory(MoshiConverterFactory.create(moshi))
             .build()
             .create()
     }

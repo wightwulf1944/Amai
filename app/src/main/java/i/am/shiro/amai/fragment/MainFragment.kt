@@ -19,7 +19,7 @@ class MainFragment : Fragment(R.layout.fragment_main) {
 
     private lateinit var savedFragment: SavedFragment
 
-    private lateinit var nhentaiFragment: Nhentai2Fragment
+    private lateinit var nhentaiFragment: NhentaiFragment
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -29,7 +29,7 @@ class MainFragment : Fragment(R.layout.fragment_main) {
 
         if (savedInstanceState == null) {
             savedFragment = SavedFragment()
-            nhentaiFragment = Nhentai2Fragment()
+            nhentaiFragment = NhentaiFragment()
 
             childFragmentManager.commitNow {
                 add(R.id.fragmentContainer, savedFragment, savedTag)
@@ -38,7 +38,7 @@ class MainFragment : Fragment(R.layout.fragment_main) {
             }
         } else {
             savedFragment = childFragmentManager.findFragmentByTag(savedTag) as SavedFragment
-            nhentaiFragment = childFragmentManager.findFragmentByTag(nhentaiTag) as Nhentai2Fragment
+            nhentaiFragment = childFragmentManager.findFragmentByTag(nhentaiTag) as NhentaiFragment
         }
     }
 

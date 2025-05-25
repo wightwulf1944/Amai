@@ -41,5 +41,6 @@ private fun ImageJson.extension() = when (t) {
     "j" -> ".jpg"
     "p" -> ".png"
     "g" -> ".gif"
-    else -> throw RuntimeException("Unknown type $t")
+    "w" -> ".webp"
+    else -> throw RuntimeException("Unknown image type $t")
 }

@@ -9,9 +9,9 @@ object Nhentai {
 
     const val WEBPAGE_BASE_URL = "https://nhentai.net/g/"
 
-    const val THUMBNAIL_BASE_URL = "https://t.nhentai.net/galleries/"
+    const val THUMBNAIL_BASE_URL = "https://t1.nhentai.net/galleries/"
 
-    const val IMAGE_BASE_URL = "https://i.nhentai.net/galleries/"
+    const val IMAGE_BASE_URL = "https://i4.nhentai.net/galleries/"
 
     interface Api {
 
