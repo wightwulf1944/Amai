@@ -16,7 +16,7 @@ fun MainActivity.startAtWelcome() {
 }
 
 fun MainActivity.startAtMain() {
-    setFragment(MainFragment())
+    setFragment(HomeFragment())
 }
 
 fun LoadingFragment.goToDetail(bookId: Int) {
@@ -28,7 +28,7 @@ fun DetailFragment.goToRead(bookId: Int, pageIndex: Int) {
 }
 
 fun InitialSetupFragment.goToMain() {
-    replaceFragment(MainFragment())
+    replaceFragment(HomeFragment())
 }
 
 fun SavedFragment.goToDetail(bookId: Int) {

@@ -22,7 +22,7 @@ class SearchInput(context: Context, attrs: AttributeSet) : TextInputEditText(con
 
     override fun onKeyPreIme(keyCode: Int, event: KeyEvent): Boolean {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
-            dismiss()
+            clearFocus()
             return true
         }
 

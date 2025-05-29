@@ -6,12 +6,10 @@ import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
 import androidx.coordinatorlayout.widget.CoordinatorLayout
-import androidx.core.os.bundleOf
 import androidx.core.view.updateLayoutParams
 import androidx.fragment.app.Fragment
-import i.am.shiro.amai.BUNDLE_TAG
+import androidx.fragment.app.activityViewModels
 import i.am.shiro.amai.R
-import i.am.shiro.amai.RESULT_TAG
 import i.am.shiro.amai.adapter.DetailAdapter
 import i.am.shiro.amai.data.AmaiDatabase
 import i.am.shiro.amai.data.entity.DownloadJobEntity
@@ -23,6 +21,7 @@ import i.am.shiro.amai.util.argument
 import i.am.shiro.amai.util.goToRead
 import i.am.shiro.amai.util.startLocalService
 import i.am.shiro.amai.viewmodel.DetailViewModel
+import i.am.shiro.amai.viewmodel.MainViewModel
 import i.am.shiro.amai.widget.PullGestureBehavior
 import io.reactivex.rxjava3.schedulers.Schedulers.io
 import org.koin.android.ext.android.inject
@@ -36,6 +35,8 @@ class DetailFragment() : Fragment(R.layout.fragment_detail) {
     private var bookId by argument<Int>()
 
     private val viewModel by amaiViewModels<DetailViewModel>()
+
+    private val activityViewModel by activityViewModels<MainViewModel>()
 
     private val database by inject<AmaiDatabase>()
 
@@ -111,7 +112,7 @@ class DetailFragment() : Fragment(R.layout.fragment_detail) {
     }
 
     private fun onTagClick(tag: String) {
-        parentFragmentManager.setFragmentResult(RESULT_TAG, bundleOf(BUNDLE_TAG to tag))
+        activityViewModel.searchEventLive.value = MainViewModel.SearchEvent(tag)
         parentFragmentManager.popBackStack()
     }
 }

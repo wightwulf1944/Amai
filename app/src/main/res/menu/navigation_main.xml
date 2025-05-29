@@ -3,12 +3,17 @@
 
     <item
         android:id="@+id/navigation_saved"
-        android:icon="@drawable/ic_check_underline"
+        android:icon="@drawable/ic_archive"
         android:title="@string/saved" />
 
     <item
         android:id="@+id/navigation_nhentai"
         android:icon="@drawable/ic_nhentai"
         android:title="@string/nhentai" />
+
+    <item
+        android:id="@+id/navigation_search"
+        android:icon="@drawable/ic_search"
+        android:title="@string/search" />
 
 </menu>

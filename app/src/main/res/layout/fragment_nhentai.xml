@@ -38,14 +38,14 @@
         app:layout_behavior=".widget.TopFloatingBehavior"
         app:menu="@menu/action_nhentai">
 
-        <i.am.shiro.amai.widget.SearchInput
-            android:id="@+id/searchInput"
+        <TextView
+            android:id="@+id/title_view"
             android:layout_width="match_parent"
             android:layout_height="48dp"
             android:background="@null"
+            android:freezesText="true"
             android:gravity="center_vertical"
-            android:hint="@string/search"
-            android:inputType="text" />
+            android:text="@string/search" />
 
     </androidx.appcompat.widget.Toolbar>
 

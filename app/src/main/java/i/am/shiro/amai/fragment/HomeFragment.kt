@@ -4,16 +4,19 @@ import android.os.Bundle
 import android.view.View
 import androidx.activity.addCallback
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.commit
 import androidx.fragment.app.commitNow
 import com.google.android.material.snackbar.Snackbar
 import i.am.shiro.amai.R
-import i.am.shiro.amai.RESULT_TAG
-import i.am.shiro.amai.databinding.FragmentMainBinding
+import i.am.shiro.amai.databinding.FragmentHomeBinding
+import i.am.shiro.amai.viewmodel.MainViewModel
 import kotlin.time.Duration.Companion.seconds
 import kotlin.time.TimeSource.Monotonic.markNow
 
-class MainFragment : Fragment(R.layout.fragment_main) {
+class HomeFragment : Fragment(R.layout.fragment_home) {
+
+    private val activityViewModel by activityViewModels<MainViewModel>()
 
     private var lastBackPressTime = markNow()
 
@@ -21,29 +24,36 @@ class MainFragment : Fragment(R.layout.fragment_main) {
 
     private lateinit var nhentaiFragment: NhentaiFragment
 
+    private lateinit var searchFragment: SearchFragment
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         val savedTag = "saved"
         val nhentaiTag = "nhentai"
+        val searchTag = "search"
 
         if (savedInstanceState == null) {
             savedFragment = SavedFragment()
             nhentaiFragment = NhentaiFragment()
+            searchFragment = SearchFragment()
 
             childFragmentManager.commitNow {
                 add(R.id.fragmentContainer, savedFragment, savedTag)
                 add(R.id.fragmentContainer, nhentaiFragment, nhentaiTag)
+                add(R.id.fragmentContainer, searchFragment, searchTag)
                 detach(savedFragment)
+                detach(searchFragment)
             }
         } else {
             savedFragment = childFragmentManager.findFragmentByTag(savedTag) as SavedFragment
             nhentaiFragment = childFragmentManager.findFragmentByTag(nhentaiTag) as NhentaiFragment
+            searchFragment = childFragmentManager.findFragmentByTag(searchTag) as SearchFragment
         }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        val b = FragmentMainBinding.bind(view)
+        val b = FragmentHomeBinding.bind(view)
 
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
             if (lastBackPressTime.elapsedNow() > 1.seconds) {
@@ -60,6 +70,7 @@ class MainFragment : Fragment(R.layout.fragment_main) {
         b.navigation.selectedItemId = when {
             !savedFragment.isDetached -> R.id.navigation_nhentai
             !nhentaiFragment.isDetached -> R.id.navigation_nhentai
+            !searchFragment.isDetached -> R.id.navigation_search
             else -> error(childFragmentManager.fragments)
         }
         b.navigation.setOnItemSelectedListener {
@@ -67,23 +78,24 @@ class MainFragment : Fragment(R.layout.fragment_main) {
             true
         }
 
-        parentFragmentManager.setFragmentResultListener(RESULT_TAG, viewLifecycleOwner) { _, result ->
+        activityViewModel.searchEventLive.observe(viewLifecycleOwner) { event ->
+            if (event.isConsumed) return@observe
+            if (b.navigation.selectedItemId == R.id.navigation_nhentai) return@observe
             b.navigation.selectedItemId = R.id.navigation_nhentai
-            childFragmentManager.setFragmentResult(RESULT_TAG, result)
         }
     }
 
     private fun onNavigate(itemId: Int) {
-        val targetFragment = when (itemId) {
-            R.id.navigation_saved -> savedFragment
-            R.id.navigation_nhentai -> nhentaiFragment
-            else -> throw IllegalArgumentException()
-        }
-
         childFragmentManager.commit {
-            for (fragment in arrayOf(savedFragment, nhentaiFragment)) {
-                if (fragment == targetFragment) attach(fragment) else detach(fragment)
-            }
+            if (itemId == R.id.navigation_saved) attach(savedFragment)
+            else detach(savedFragment)
+
+            if (itemId == R.id.navigation_nhentai) attach(nhentaiFragment)
+            else detach(nhentaiFragment)
+
+            if (itemId == R.id.navigation_search) attach(searchFragment)
+            else detach(searchFragment)
+
             setReorderingAllowed(true)
         }
     }

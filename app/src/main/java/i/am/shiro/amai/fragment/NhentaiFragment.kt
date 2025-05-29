@@ -5,9 +5,8 @@ import android.view.MenuItem
 import android.view.View
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
-import i.am.shiro.amai.BUNDLE_TAG
+import androidx.fragment.app.activityViewModels
 import i.am.shiro.amai.R
-import i.am.shiro.amai.RESULT_TAG
 import i.am.shiro.amai.adapter.CachedPreviewAdapter
 import i.am.shiro.amai.databinding.FragmentNhentaiBinding
 import i.am.shiro.amai.fragment.dialog.NhentaiSortDialog
@@ -16,21 +15,19 @@ import i.am.shiro.amai.util.amaiStatefulViewModels
 import i.am.shiro.amai.util.dpToPx
 import i.am.shiro.amai.util.goToDetail
 import i.am.shiro.amai.util.show
+import i.am.shiro.amai.viewmodel.MainViewModel
 import i.am.shiro.amai.viewmodel.NhentaiViewModel
 
 class NhentaiFragment : Fragment(R.layout.fragment_nhentai) {
 
     private val viewModel by amaiStatefulViewModels<NhentaiViewModel>()
 
+    private val activityViewModel by activityViewModels<MainViewModel>()
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         val b = FragmentNhentaiBinding.bind(view)
 
         b.toolbar.setOnMenuItemClickListener(::onActionClick)
-
-        b.searchInput.onSubmitListener = { query: String ->
-            b.recyclerView.scrollToPosition(0)
-            viewModel.onSearch(query)
-        }
 
         b.swipeRefreshLayout.setProgressViewOffset(false, 0, 64.dpToPx())
         b.swipeRefreshLayout.setOnRefreshListener {
@@ -51,11 +48,12 @@ class NhentaiFragment : Fragment(R.layout.fragment_nhentai) {
             b.progressBar.isVisible = isLoading
         }
 
-        parentFragmentManager.setFragmentResultListener(RESULT_TAG, viewLifecycleOwner) { _, result ->
-            val tag = result.getString(BUNDLE_TAG)!!
-            b.searchInput.setText(tag)
-            b.recyclerView.scrollToPosition(0)
-            viewModel.onSearch(tag)
+        activityViewModel.searchEventLive.observe(viewLifecycleOwner) { event ->
+            event.consume {
+                b.titleView.text = it
+                b.recyclerView.scrollToPosition(0)
+                viewModel.onSearch(it)
+            }
         }
     }
 
