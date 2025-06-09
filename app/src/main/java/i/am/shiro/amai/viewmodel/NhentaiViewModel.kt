@@ -22,7 +22,7 @@ import io.reactivex.rxjava3.core.Completable
 import io.reactivex.rxjava3.disposables.Disposable
 import io.reactivex.rxjava3.schedulers.Schedulers.io
 import timber.log.Timber
-import java.util.*
+import java.util.LinkedList
 
 private const val PAGING_THRESHOLD = 10
 
@@ -126,7 +126,12 @@ class NhentaiViewModel(
     private fun fetchRemotePage() {
         remoteDisposable.dispose()
 
-        if (query.matches(Regex("^id:\\d+\$"))) {
+        if (query.isEmpty()) {
+            remoteDisposable = nhentaiApi.getAll(page + 1)
+                .doOnSubscribe { isLoadingLive.postValue(true) }
+                .doFinally { isLoadingLive.postValue(false) }
+                .subscribe(::onSearchSuccess, Timber::e)
+        } else if (query.matches(Regex("^id:\\d+\$"))) {
             val id = query.substringAfter("id:").toInt()
 
             remoteDisposable = nhentaiApi.getBook(id)
@@ -135,10 +140,7 @@ class NhentaiViewModel(
                 .subscribe(::onGetBookSuccess, Timber::e)
 
         } else {
-            val query = "${preferences.searchConstants} $query"
-            val page = page + 1
-
-            remoteDisposable = nhentaiApi.search(query, page, sort)
+            remoteDisposable = nhentaiApi.search(query, page + 1, sort)
                 .doOnSubscribe { isLoadingLive.postValue(true) }
                 .doFinally { isLoadingLive.postValue(false) }
                 .subscribe(::onSearchSuccess, Timber::e)

@@ -2,8 +2,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:focusableInTouchMode="true">
+    android:layout_height="match_parent">
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/swipeRefreshLayout"
@@ -26,28 +25,52 @@
 
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/toolbar"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="48dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="16dp"
-        android:background="@drawable/bg_floating"
+        android:layout_height="wrap_content"
         android:elevation="4dp"
-        app:layout_behavior=".widget.TopFloatingBehavior"
-        app:menu="@menu/action_nhentai">
+        android:orientation="horizontal"
+        android:paddingHorizontal="16dp"
+        android:paddingTop="8dp"
+        app:layout_behavior=".widget.TopFloatingBehavior">
 
-        <TextView
-            android:id="@+id/title_view"
-            android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:background="@null"
-            android:freezesText="true"
-            android:gravity="center_vertical"
-            android:text="@string/search" />
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/bg_floating"
+            android:orientation="horizontal">
 
-    </androidx.appcompat.widget.Toolbar>
+            <TextView
+                android:id="@+id/title_view"
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+                android:layout_marginStart="16dp"
+                android:layout_weight="1"
+                android:freezesText="true"
+                android:gravity="center_vertical"
+                android:text="@string/nhentai"
+                android:textSize="12sp" />
+
+            <Button
+                android:id="@+id/sort_button"
+                style="@style/Widget.Material3.Button.IconButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:contentDescription="@string/search"
+                app:icon="@drawable/ic_sort" />
+
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/search_button"
+            style="@style/Widget.Material3.Button.IconButton.Filled.Tonal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="@string/search"
+            app:icon="@drawable/ic_search" />
+
+    </LinearLayout>
 
     <com.google.android.material.progressindicator.LinearProgressIndicator
         android:id="@+id/progressBar"

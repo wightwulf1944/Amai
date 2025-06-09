@@ -12,6 +12,7 @@ import i.am.shiro.amai.R
 import i.am.shiro.amai.network.Nhentai
 import i.am.shiro.amai.viewmodel.NhentaiViewModel
 
+@Deprecated("remove this")
 class NhentaiSortDialog : DialogFragment() {
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {

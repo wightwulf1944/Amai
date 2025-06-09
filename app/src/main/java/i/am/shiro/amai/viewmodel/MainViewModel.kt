@@ -5,15 +5,23 @@ import androidx.lifecycle.ViewModel
 
 class MainViewModel : ViewModel() {
 
-    val searchEventLive = MutableLiveData<SearchEvent>()
+    val navigationPathLive = MutableLiveData<NavigationPath>()
+}
 
-    class SearchEvent(private val search: String) {
-        var isConsumed = false
+class NavigationPath(val payload: String, vararg pathSegments: PathSegment) {
 
-        fun consume(action: (String) -> Unit) {
-            if (isConsumed) return
-            action(search)
-            isConsumed = true
+    var segments = pathSegments.asList()
+
+    fun traverse(current: PathSegment, action: (PathSegment?) -> Unit) {
+        if (segments.firstOrNull() == current) {
+            segments = segments.drop(1)
+            action(segments.firstOrNull())
         }
     }
 }
+
+
+interface PathSegment
+object Home : PathSegment
+object Nhentai : PathSegment
+object Search : PathSegment

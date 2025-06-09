@@ -5,6 +5,7 @@ import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query
 
+// TODO add image and thumbnail url apis
 object Nhentai {
 
     const val WEBPAGE_BASE_URL = "https://nhentai.net/g/"

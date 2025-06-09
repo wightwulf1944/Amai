@@ -7,9 +7,12 @@ import androidx.lifecycle.ViewModel
 class SearchViewModel : ViewModel() {
 
     private val dictionary = listOf(
-        "language:",
-        "artist:",
+        "id:",
         "tag:",
+        "artist:",
+        "parody:",
+        "group:",
+        "language:",
         "pages:",
         "pages:>",
         "pages:<",

@@ -1,7 +1,6 @@
 package i.am.shiro.amai.fragment
 
 import android.os.Bundle
-import android.view.MenuItem
 import android.view.View
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
@@ -10,14 +9,18 @@ import i.am.shiro.amai.R
 import i.am.shiro.amai.adapter.CachedPreviewAdapter
 import i.am.shiro.amai.databinding.FragmentNhentaiBinding
 import i.am.shiro.amai.fragment.dialog.NhentaiSortDialog
-import i.am.shiro.amai.fragment.dialog.SearchConstantsDialog
 import i.am.shiro.amai.util.amaiStatefulViewModels
 import i.am.shiro.amai.util.dpToPx
 import i.am.shiro.amai.util.goToDetail
 import i.am.shiro.amai.util.show
+import i.am.shiro.amai.viewmodel.Home
 import i.am.shiro.amai.viewmodel.MainViewModel
+import i.am.shiro.amai.viewmodel.NavigationPath
+import i.am.shiro.amai.viewmodel.Nhentai
 import i.am.shiro.amai.viewmodel.NhentaiViewModel
+import i.am.shiro.amai.viewmodel.Search
 
+// TODO try Jetpack Paging 3 library for infinite scrolling
 class NhentaiFragment : Fragment(R.layout.fragment_nhentai) {
 
     private val viewModel by amaiStatefulViewModels<NhentaiViewModel>()
@@ -27,7 +30,18 @@ class NhentaiFragment : Fragment(R.layout.fragment_nhentai) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         val b = FragmentNhentaiBinding.bind(view)
 
-        b.toolbar.setOnMenuItemClickListener(::onActionClick)
+        b.titleView.setOnClickListener {
+            activityViewModel.navigationPathLive.value =
+                NavigationPath("${b.titleView.text}", Home, Search)
+        }
+
+        b.sortButton.setOnClickListener {
+            NhentaiSortDialog().show(childFragmentManager)
+        }
+
+        b.searchButton.setOnClickListener {
+            activityViewModel.navigationPathLive.value = NavigationPath("", Home, Search)
+        }
 
         b.swipeRefreshLayout.setProgressViewOffset(false, 0, 64.dpToPx())
         b.swipeRefreshLayout.setOnRefreshListener {
@@ -48,20 +62,13 @@ class NhentaiFragment : Fragment(R.layout.fragment_nhentai) {
             b.progressBar.isVisible = isLoading
         }
 
-        activityViewModel.searchEventLive.observe(viewLifecycleOwner) { event ->
-            event.consume {
-                b.titleView.text = it
+        activityViewModel.navigationPathLive.observe(viewLifecycleOwner) { path ->
+            path.traverse(Nhentai) {
+                val search = path.payload
+                b.titleView.text = search
                 b.recyclerView.scrollToPosition(0)
-                viewModel.onSearch(it)
+                viewModel.onSearch(search)
             }
         }
-    }
-
-    private fun onActionClick(menuItem: MenuItem): Boolean {
-        when (menuItem.itemId) {
-            R.id.action_sort -> NhentaiSortDialog().show(childFragmentManager)
-            R.id.action_constants -> SearchConstantsDialog().show(childFragmentManager)
-        }
-        return true
     }
 }

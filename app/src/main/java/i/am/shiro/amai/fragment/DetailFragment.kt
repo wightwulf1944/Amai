@@ -21,10 +21,13 @@ import i.am.shiro.amai.util.argument
 import i.am.shiro.amai.util.goToRead
 import i.am.shiro.amai.util.startLocalService
 import i.am.shiro.amai.viewmodel.DetailViewModel
+import i.am.shiro.amai.viewmodel.Home
 import i.am.shiro.amai.viewmodel.MainViewModel
+import i.am.shiro.amai.viewmodel.NavigationPath
 import i.am.shiro.amai.widget.PullGestureBehavior
 import io.reactivex.rxjava3.schedulers.Schedulers.io
 import org.koin.android.ext.android.inject
+import androidx.core.net.toUri
 
 class DetailFragment() : Fragment(R.layout.fragment_detail) {
 
@@ -93,7 +96,7 @@ class DetailFragment() : Fragment(R.layout.fragment_detail) {
 
     private fun onOpenBrowserClick() {
         val bookUrl = Nhentai.WEBPAGE_BASE_URL + bookId
-        val uri = Uri.parse(bookUrl)
+        val uri = bookUrl.toUri()
         val intent = Intent(Intent.ACTION_VIEW, uri)
         startActivity(intent)
     }
@@ -112,7 +115,7 @@ class DetailFragment() : Fragment(R.layout.fragment_detail) {
     }
 
     private fun onTagClick(tag: String) {
-        activityViewModel.searchEventLive.value = MainViewModel.SearchEvent(tag)
+        activityViewModel.navigationPathLive.value = NavigationPath(tag, Home, i.am.shiro.amai.viewmodel.Nhentai)
         parentFragmentManager.popBackStack()
     }
 }

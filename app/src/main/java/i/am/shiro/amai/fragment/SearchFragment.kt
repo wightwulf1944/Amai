@@ -11,7 +11,11 @@ import androidx.fragment.app.viewModels
 import i.am.shiro.amai.R
 import i.am.shiro.amai.adapter.SuggestionsAdapter
 import i.am.shiro.amai.databinding.FragmentSearchBinding
+import i.am.shiro.amai.viewmodel.Home
 import i.am.shiro.amai.viewmodel.MainViewModel
+import i.am.shiro.amai.viewmodel.NavigationPath
+import i.am.shiro.amai.viewmodel.Nhentai
+import i.am.shiro.amai.viewmodel.Search
 import i.am.shiro.amai.viewmodel.SearchViewModel
 
 class SearchFragment : Fragment(R.layout.fragment_search) {
@@ -25,9 +29,7 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
 
         val adapter = SuggestionsAdapter()
 
-        viewModel.suggestionsLive.observe(viewLifecycleOwner) {
-            adapter.suggestions = it
-        }
+        viewModel.suggestionsLive.observe(viewLifecycleOwner, adapter::submitList)
 
         b.suggestionsRecycler.adapter = adapter
 
@@ -47,7 +49,13 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
         b.textInput.onImeActionSearch {
             val search = b.textInput.text.toString()
             b.textInput.setText("")
-            activityViewModel.searchEventLive.value = MainViewModel.SearchEvent(search)
+            activityViewModel.navigationPathLive.value = NavigationPath(search, Home, Nhentai)
+        }
+
+        activityViewModel.navigationPathLive.observe(viewLifecycleOwner) { path ->
+            path.traverse(Search) {
+                b.textInput.setText(path.payload)
+            }
         }
     }
 }
