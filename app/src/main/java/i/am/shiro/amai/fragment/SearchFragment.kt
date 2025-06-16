@@ -3,7 +3,9 @@ package i.am.shiro.amai.fragment
 import android.os.Bundle
 import android.view.View
 import android.view.inputmethod.EditorInfo
+import android.view.inputmethod.InputMethodManager
 import android.widget.TextView
+import androidx.core.content.getSystemService
 import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -48,14 +50,11 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
         }
         b.textInput.onImeActionSearch {
             val search = b.textInput.text.toString()
-            b.textInput.setText("")
             activityViewModel.navigationPathLive.value = NavigationPath(search, Home, Nhentai)
         }
-
-        activityViewModel.navigationPathLive.observe(viewLifecycleOwner) { path ->
-            path.traverse(Search) {
-                b.textInput.setText(path.payload)
-            }
+        if (b.textInput.requestFocus()) {
+            requireContext().getSystemService<InputMethodManager>()
+                ?.showSoftInput(b.textInput, InputMethodManager.SHOW_IMPLICIT)
         }
     }
 }

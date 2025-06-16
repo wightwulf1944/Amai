@@ -28,47 +28,51 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/bg_floating"
         android:elevation="4dp"
         android:orientation="horizontal"
-        android:paddingHorizontal="16dp"
-        android:paddingTop="8dp"
         app:layout_behavior=".widget.TopFloatingBehavior">
 
-        <LinearLayout
+        <TextView
+            android:id="@+id/title_view"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="48dp"
+            android:layout_marginStart="16dp"
             android:layout_weight="1"
-            android:background="@drawable/bg_floating"
-            android:orientation="horizontal">
+            android:freezesText="true"
+            android:gravity="center_vertical"
+            android:text="@string/nhentai"
+            android:textSize="13sp" />
 
-            <TextView
-                android:id="@+id/title_view"
-                android:layout_width="0dp"
-                android:layout_height="48dp"
-                android:layout_marginStart="16dp"
-                android:layout_weight="1"
-                android:freezesText="true"
-                android:gravity="center_vertical"
-                android:text="@string/nhentai"
-                android:textSize="12sp" />
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/sort_button"
+            style="@style/Widget.Material3.Button.IconButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="@string/sort"
+            android:insetLeft="2dp"
+            android:insetRight="2dp"
+            android:insetTop="4dp"
+            android:insetBottom="4dp"
+            android:padding="8dp"
+            app:icon="@drawable/ic_sort"
+            app:iconSize="24dp" />
 
-            <Button
-                android:id="@+id/sort_button"
-                style="@style/Widget.Material3.Button.IconButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:contentDescription="@string/search"
-                app:icon="@drawable/ic_sort" />
-
-        </LinearLayout>
-
-        <Button
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/search_button"
-            style="@style/Widget.Material3.Button.IconButton.Filled.Tonal"
+            style="@style/Widget.Material3.Button.IconButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:contentDescription="@string/search"
-            app:icon="@drawable/ic_search" />
+            android:insetLeft="2dp"
+            android:insetRight="2dp"
+            android:insetTop="4dp"
+            android:insetBottom="4dp"
+            android:padding="8dp"
+            app:icon="@drawable/ic_search"
+            app:iconSize="24dp" />
 
     </LinearLayout>
 
