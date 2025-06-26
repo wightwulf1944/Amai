@@ -1,11 +1,11 @@
 package i.am.shiro.amai.fragment
 
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
 import androidx.coordinatorlayout.widget.CoordinatorLayout
+import androidx.core.net.toUri
 import androidx.core.view.updateLayoutParams
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -27,7 +27,6 @@ import i.am.shiro.amai.viewmodel.NavigationPath
 import i.am.shiro.amai.widget.PullGestureBehavior
 import io.reactivex.rxjava3.schedulers.Schedulers.io
 import org.koin.android.ext.android.inject
-import androidx.core.net.toUri
 
 class DetailFragment() : Fragment(R.layout.fragment_detail) {
 

@@ -35,7 +35,7 @@ class NhentaiFragment : Fragment(R.layout.fragment_nhentai) {
         val b = FragmentNhentaiBinding.bind(view)
 
         b.sortButton.setOnClickListener {
-            NhentaiSortDialog().show(childFragmentManager)
+            childFragmentManager.show(NhentaiSortDialog())
         }
 
         b.searchButton.setOnClickListener {

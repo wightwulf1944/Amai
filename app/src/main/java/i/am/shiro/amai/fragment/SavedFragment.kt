@@ -70,11 +70,11 @@ class SavedFragment : Fragment(R.layout.fragment_saved) {
     }
 
     private fun invokeSort() {
-        SavedSortDialog().show(childFragmentManager)
+        childFragmentManager.show(SavedSortDialog())
     }
 
     private fun invokeHelp() {
-        PlaceholderDialog().show(childFragmentManager)
+        childFragmentManager.show(PlaceholderDialog())
     }
 
     private fun invokeViewDetails(preview: SavedPreviewView) {
@@ -82,6 +82,6 @@ class SavedFragment : Fragment(R.layout.fragment_saved) {
     }
 
     private fun invokeDeleteBook(preview: SavedPreviewView) {
-        DeleteBookDialog(preview.bookId, preview.title).show(childFragmentManager)
+        childFragmentManager.show(DeleteBookDialog(preview.bookId, preview.title))
     }
 }

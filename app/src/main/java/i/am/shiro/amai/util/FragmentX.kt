@@ -10,7 +10,7 @@ import i.am.shiro.amai.viewmodel.factory.ViewModelFactory
 import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty
 
-inline fun <reified T> Fragment.argument() = object : ReadWriteProperty<Any, T> {
+inline fun <reified T : Any> Fragment.argument() = object : ReadWriteProperty<Any, T> {
 
     init {
         if (arguments == null) arguments = Bundle()
