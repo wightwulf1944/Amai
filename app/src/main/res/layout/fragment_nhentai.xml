@@ -41,20 +41,23 @@
             android:layout_height="48dp"
             android:layout_marginStart="16dp"
             android:layout_weight="1"
+            android:ellipsize="end"
             android:freezesText="true"
             android:gravity="center_vertical"
+            android:lines="1"
             android:text="@string/nhentai"
-            android:textSize="13sp" />
+            android:textAppearance="?textAppearanceLabelSmall"
+            android:textColor="?colorOnSurface" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/sort_button"
-            style="@style/Widget.Material3.Button.IconButton"
+            style="?attr/materialIconButtonStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:contentDescription="@string/sort"
             android:insetLeft="2dp"
-            android:insetRight="2dp"
             android:insetTop="4dp"
+            android:insetRight="2dp"
             android:insetBottom="4dp"
             android:padding="8dp"
             app:icon="@drawable/ic_sort"
@@ -62,13 +65,13 @@
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/search_button"
-            style="@style/Widget.Material3.Button.IconButton"
+            style="?attr/materialIconButtonStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:contentDescription="@string/search"
             android:insetLeft="2dp"
-            android:insetRight="2dp"
             android:insetTop="4dp"
+            android:insetRight="2dp"
             android:insetBottom="4dp"
             android:padding="8dp"
             app:icon="@drawable/ic_search"

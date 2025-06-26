@@ -13,7 +13,7 @@
         android:id="@+id/thumbnailImage"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:background="@android:color/darker_gray"
+        android:background="?colorSurfaceBright"
         android:contentDescription="@string/thumbnail"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

@@ -24,7 +24,7 @@
         android:gravity="center"
         android:paddingStart="6dp"
         android:paddingEnd="6dp"
-        android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
+        android:textAppearance="?textAppearanceBodyLarge"
         tools:text="123" />
 
 </FrameLayout>

@@ -15,18 +15,18 @@ class SuggestionsAdapter : ListAdapter<String, ViewHolder>(DiffCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val binding = parent.inflateChild(ItemSearchSuggestionBinding::inflate)
-        return ViewHolder(binding.root)
+        return ViewHolder(binding)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val suggestion = getItem(position)
-        holder.textView.text = suggestion
-        holder.textView.setOnClickListener {
+        holder.b.textView.text = suggestion
+        holder.b.textView.setOnClickListener {
             onSuggestionCLickListener(suggestion)
         }
     }
 
-    class ViewHolder(val textView: TextView) : RecyclerView.ViewHolder(textView)
+    class ViewHolder(val b: ItemSearchSuggestionBinding) : RecyclerView.ViewHolder(b.root)
 }
 
 private class DiffCallback : DiffUtil.ItemCallback<String>() {

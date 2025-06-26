@@ -11,7 +11,7 @@
         android:id="@+id/titleText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
+        android:textAppearance="?textAppearanceTitleMedium"
         tools:text="Lorem Ipsum Dolor Sit Amet" />
 
     <View
@@ -26,7 +26,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
-        android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
+        android:textAppearance="?textAppearanceBodySmall"
         tools:text="123 pages" />
 
     <LinearLayout

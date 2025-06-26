@@ -9,12 +9,13 @@
         android:id="@+id/text_input"
         android:layout_width="match_parent"
         android:layout_height="56dp"
-        android:background="#30FFFFFF"
+        android:background="?colorSurfaceContainer"
         android:hint="@string/search"
         android:imeOptions="actionSearch"
         android:importantForAutofill="no"
         android:inputType="text|textNoSuggestions"
         android:paddingHorizontal="16dp"
+        android:textColor="?colorOnSurface"
         app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.recyclerview.widget.RecyclerView

@@ -3,8 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="2dp"
     android:layout_marginTop="2dp"
+    android:layout_marginBottom="2dp"
     android:background="@drawable/intro_storage_selector"
     android:orientation="vertical"
     android:padding="8dp">
@@ -13,7 +13,7 @@
         android:id="@+id/titleText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textStyle="bold"
+        android:textAppearance="?textAppearanceLabelLarge"
         tools:text="Internal" />
 
     <TextView
@@ -21,21 +21,21 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:ellipsize="marquee"
-        android:textSize="12sp"
+        android:textAppearance="?textAppearanceBodySmall"
         tools:text="/data/user/0/i.am.shiro.amai/files" />
 
     <TextView
         android:id="@+id/freeSpaceText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="12sp"
+        android:textAppearance="?textAppearanceBodySmall"
         tools:text="123 MB free" />
 
     <ProgressBar
         android:id="@+id/gauge"
         style="?android:attr/progressBarStyleHorizontal"
-        android:max="100"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:max="100" />
 
 </LinearLayout>

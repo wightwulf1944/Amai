@@ -14,9 +14,9 @@
 
         <TextView
             android:id="@+id/statusText"
-            style="@style/DownloadItemStatusText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textAppearance="?textAppearanceLabelMedium"
             tools:text="Queued" />
 
         <TextView
@@ -24,7 +24,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
-            android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
+            android:textAppearance="?textAppearanceBodyMedium"
             tools:text="Lorem ipsum dolor Sit amet" />
 
     </LinearLayout>
