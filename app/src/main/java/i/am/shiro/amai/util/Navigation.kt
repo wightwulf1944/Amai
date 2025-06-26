@@ -39,6 +39,10 @@ fun NhentaiFragment.goToDetail(bookId: Int) {
     pushFragment(DetailFragment(bookId))
 }
 
+fun NhentaiFragment.goToSearch() {
+    pushFragment(SearchFragment())
+}
+
 private fun FragmentActivity.setFragment(fragment: Fragment) {
     supportFragmentManager.commit {
         add(R.id.fragmentContainer, fragment)

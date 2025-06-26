@@ -13,7 +13,6 @@ import i.am.shiro.amai.databinding.FragmentHomeBinding
 import i.am.shiro.amai.viewmodel.Home
 import i.am.shiro.amai.viewmodel.MainViewModel
 import i.am.shiro.amai.viewmodel.Nhentai
-import i.am.shiro.amai.viewmodel.Search
 import kotlin.time.Duration.Companion.seconds
 import kotlin.time.TimeSource.Monotonic.markNow
 
@@ -27,31 +26,24 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
 
     private lateinit var nhentaiFragment: NhentaiFragment
 
-    private lateinit var searchFragment: SearchFragment
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         val savedTag = "saved"
         val nhentaiTag = "nhentai"
-        val searchTag = "search"
 
         if (savedInstanceState == null) {
             savedFragment = SavedFragment()
             nhentaiFragment = NhentaiFragment()
-            searchFragment = SearchFragment()
 
             childFragmentManager.commitNow {
                 add(R.id.fragmentContainer, savedFragment, savedTag)
                 add(R.id.fragmentContainer, nhentaiFragment, nhentaiTag)
-                add(R.id.fragmentContainer, searchFragment, searchTag)
                 detach(savedFragment)
-                detach(searchFragment)
             }
         } else {
             savedFragment = childFragmentManager.findFragmentByTag(savedTag) as SavedFragment
             nhentaiFragment = childFragmentManager.findFragmentByTag(nhentaiTag) as NhentaiFragment
-            searchFragment = childFragmentManager.findFragmentByTag(searchTag) as SearchFragment
         }
     }
 
@@ -73,7 +65,6 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         b.navigation.selectedItemId = when {
             !savedFragment.isDetached -> R.id.navigation_nhentai
             !nhentaiFragment.isDetached -> R.id.navigation_nhentai
-            !searchFragment.isDetached -> R.id.navigation_search
             else -> error(childFragmentManager.fragments)
         }
         b.navigation.setOnItemSelectedListener {
@@ -85,7 +76,6 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
             path.traverse(Home) { next ->
                 when (next) {
                     Nhentai -> b.navigation.selectedItemId = R.id.navigation_nhentai
-                    Search -> b.navigation.selectedItemId = R.id.navigation_search
                 }
             }
         }
@@ -98,9 +88,6 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
 
             if (itemId == R.id.navigation_nhentai) attach(nhentaiFragment)
             else detach(nhentaiFragment)
-
-            if (itemId == R.id.navigation_search) attach(searchFragment)
-            else detach(searchFragment)
 
             setReorderingAllowed(true)
         }

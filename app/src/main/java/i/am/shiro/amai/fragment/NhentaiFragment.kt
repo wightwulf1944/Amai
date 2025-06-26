@@ -16,13 +16,11 @@ import i.am.shiro.amai.fragment.dialog.NhentaiSortDialog
 import i.am.shiro.amai.util.amaiStatefulViewModels
 import i.am.shiro.amai.util.dpToPx
 import i.am.shiro.amai.util.goToDetail
+import i.am.shiro.amai.util.goToSearch
 import i.am.shiro.amai.util.show
-import i.am.shiro.amai.viewmodel.Home
 import i.am.shiro.amai.viewmodel.MainViewModel
-import i.am.shiro.amai.viewmodel.NavigationPath
 import i.am.shiro.amai.viewmodel.Nhentai
 import i.am.shiro.amai.viewmodel.NhentaiViewModel
-import i.am.shiro.amai.viewmodel.Search
 
 // TODO try Jetpack Paging 3 library for infinite scrolling
 class NhentaiFragment : Fragment(R.layout.fragment_nhentai) {
@@ -39,7 +37,7 @@ class NhentaiFragment : Fragment(R.layout.fragment_nhentai) {
         }
 
         b.searchButton.setOnClickListener {
-            activityViewModel.navigationPathLive.value = NavigationPath("", Home, Search)
+            goToSearch()
         }
 
         b.swipeRefreshLayout.setProgressViewOffset(false, 0, 64.dpToPx())

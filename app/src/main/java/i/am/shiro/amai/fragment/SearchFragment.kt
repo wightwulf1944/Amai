@@ -17,7 +17,6 @@ import i.am.shiro.amai.viewmodel.Home
 import i.am.shiro.amai.viewmodel.MainViewModel
 import i.am.shiro.amai.viewmodel.NavigationPath
 import i.am.shiro.amai.viewmodel.Nhentai
-import i.am.shiro.amai.viewmodel.Search
 import i.am.shiro.amai.viewmodel.SearchViewModel
 
 class SearchFragment : Fragment(R.layout.fragment_search) {
@@ -51,6 +50,7 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
         b.textInput.onImeActionSearch {
             val search = b.textInput.text.toString()
             activityViewModel.navigationPathLive.value = NavigationPath(search, Home, Nhentai)
+            parentFragmentManager.popBackStack()
         }
         if (b.textInput.requestFocus()) {
             requireContext().getSystemService<InputMethodManager>()

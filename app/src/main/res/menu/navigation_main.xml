@@ -11,9 +11,4 @@
         android:icon="@drawable/ic_nhentai"
         android:title="@string/nhentai" />
 
-    <item
-        android:id="@+id/navigation_search"
-        android:icon="@drawable/ic_search"
-        android:title="@string/search" />
-
 </menu>

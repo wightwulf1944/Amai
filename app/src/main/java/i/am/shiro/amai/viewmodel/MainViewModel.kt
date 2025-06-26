@@ -24,4 +24,3 @@ class NavigationPath(val payload: String, vararg pathSegments: PathSegment) {
 interface PathSegment
 object Home : PathSegment
 object Nhentai : PathSegment
-object Search : PathSegment
