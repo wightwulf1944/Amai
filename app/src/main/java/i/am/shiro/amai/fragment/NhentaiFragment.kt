@@ -19,7 +19,6 @@ import i.am.shiro.amai.util.goToDetail
 import i.am.shiro.amai.util.goToSearch
 import i.am.shiro.amai.util.show
 import i.am.shiro.amai.viewmodel.MainViewModel
-import i.am.shiro.amai.viewmodel.Nhentai
 import i.am.shiro.amai.viewmodel.NhentaiViewModel
 
 // TODO try Jetpack Paging 3 library for infinite scrolling
@@ -59,12 +58,13 @@ class NhentaiFragment : Fragment(R.layout.fragment_nhentai) {
             b.progressBar.isVisible = isLoading
         }
 
-        activityViewModel.navigationPathLive.observe(viewLifecycleOwner) { path ->
-            path.traverse(Nhentai) {
-                val search = path.payload
-                b.titleView.text = search.tokenize()
+        activityViewModel.searchEventLive.observe(viewLifecycleOwner) { event ->
+            if (!event.isNhentaiConsumed) {
+                val query = event.query
+                b.titleView.text = query.tokenize()
                 b.recyclerView.scrollToPosition(0)
-                viewModel.onSearch(search)
+                viewModel.onSearch(query)
+                event.isNhentaiConsumed = true
             }
         }
     }
@@ -148,7 +148,7 @@ private fun String.tokenize(): Spannable {
             SearchMode.END_QUOTE -> {
                 when (c) {
                     '"' -> {
-                        spannable[startI .. i + 1] = UnderlineSpan()
+                        spannable[startI .. i] = UnderlineSpan()
                         searchMode = SearchMode.START
                     }
 

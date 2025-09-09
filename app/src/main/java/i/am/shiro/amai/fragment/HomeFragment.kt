@@ -10,9 +10,7 @@ import androidx.fragment.app.commitNow
 import com.google.android.material.snackbar.Snackbar
 import i.am.shiro.amai.R
 import i.am.shiro.amai.databinding.FragmentHomeBinding
-import i.am.shiro.amai.viewmodel.Home
 import i.am.shiro.amai.viewmodel.MainViewModel
-import i.am.shiro.amai.viewmodel.Nhentai
 import kotlin.time.Duration.Companion.seconds
 import kotlin.time.TimeSource.Monotonic.markNow
 
@@ -72,11 +70,10 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
             true
         }
 
-        activityViewModel.navigationPathLive.observe(viewLifecycleOwner) { path ->
-            path.traverse(Home) { next ->
-                when (next) {
-                    Nhentai -> b.navigation.selectedItemId = R.id.navigation_nhentai
-                }
+        activityViewModel.searchEventLive.observe(viewLifecycleOwner) { event ->
+            if (!event.isHomeConsumed) {
+                b.navigation.selectedItemId = R.id.navigation_nhentai
+                event.isHomeConsumed = true
             }
         }
     }

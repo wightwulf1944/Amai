@@ -13,10 +13,7 @@ import androidx.fragment.app.viewModels
 import i.am.shiro.amai.R
 import i.am.shiro.amai.adapter.SuggestionsAdapter
 import i.am.shiro.amai.databinding.FragmentSearchBinding
-import i.am.shiro.amai.viewmodel.Home
 import i.am.shiro.amai.viewmodel.MainViewModel
-import i.am.shiro.amai.viewmodel.NavigationPath
-import i.am.shiro.amai.viewmodel.Nhentai
 import i.am.shiro.amai.viewmodel.SearchViewModel
 
 class SearchFragment : Fragment(R.layout.fragment_search) {
@@ -48,8 +45,8 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
             viewModel.onTextInput(it!!)
         }
         b.textInput.onImeActionSearch {
-            val search = b.textInput.text.toString()
-            activityViewModel.navigationPathLive.value = NavigationPath(search, Home, Nhentai)
+            val query = b.textInput.text.toString()
+            activityViewModel.search(query)
             parentFragmentManager.popBackStack()
         }
         if (b.textInput.requestFocus()) {
