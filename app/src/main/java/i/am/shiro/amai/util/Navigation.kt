@@ -15,7 +15,7 @@ fun MainActivity.startAtWelcome() {
     setFragment(InitialSetupFragment())
 }
 
-fun MainActivity.startAtMain() {
+fun MainActivity.startAtHome() {
     setFragment(HomeFragment())
 }
 

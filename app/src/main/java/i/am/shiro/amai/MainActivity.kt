@@ -4,7 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import i.am.shiro.amai.util.startAtLoading
-import i.am.shiro.amai.util.startAtMain
+import i.am.shiro.amai.util.startAtHome
 import i.am.shiro.amai.util.startAtWelcome
 import org.koin.android.ext.android.inject
 
@@ -27,7 +27,7 @@ class MainActivity : AppCompatActivity() {
                 startAtWelcome()
             }
             else -> {
-                startAtMain()
+                startAtHome()
             }
         }
     }
