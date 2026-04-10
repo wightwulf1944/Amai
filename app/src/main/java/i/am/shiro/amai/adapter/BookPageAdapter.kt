@@ -1,20 +1,18 @@
 package i.am.shiro.amai.adapter
 
-import android.graphics.Bitmap
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import coil.Coil
-import coil.clear
-import coil.loadAny
+import coil.dispose
+import coil.imageLoader
+import coil.load
 import coil.request.CachePolicy
 import coil.request.ImageRequest
-import i.am.shiro.amai.data.view.PageView
+import i.am.shiro.amai.data.entity.RemoteImageEntity
 import i.am.shiro.amai.databinding.ItemReadPageBinding
 import i.am.shiro.amai.util.inflateChild
-import java.io.File
 
 class BookPageAdapter(
-    private val pages: List<PageView>
+    private val pages: List<RemoteImageEntity>
 ) : RecyclerView.Adapter<BookPageAdapter.ViewHolder>() {
 
     override fun getItemCount() = pages.size
@@ -25,28 +23,19 @@ class BookPageAdapter(
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val page = pages[position]
 
-        // TODO see if this check is necessary with loadAny
-        val data = if (page.url.startsWith("https://")) {
-            page.url
-        } else {
-            File(page.url)
-        }
+        holder.pageImage.dispose()
 
-        // TODO wait for Coil update
-        holder.pageImage.clear()
-        val request = ImageRequest.Builder(holder.pageImage.context)
-            .data(data)
-            .size(600)
-            .bitmapConfig(Bitmap.Config.RGB_565)
-            .target(onSuccess = {
-                holder.pageImage.loadAny(data) {
+        val smallRequest = ImageRequest.Builder(holder.pageImage.context)
+            .data(page.thumbnailUrl)
+            .target { drawable ->
+                holder.pageImage.load(page.url) {
                     memoryCachePolicy(CachePolicy.DISABLED)
-                    placeholder(it)
+                    placeholder(drawable)
                 }
-            })
+            }
             .build()
 
-        Coil.enqueue(request)
+        holder.pageImage.context.imageLoader.enqueue(smallRequest)
     }
 
     class ViewHolder(binding: ItemReadPageBinding) : RecyclerView.ViewHolder(binding.root) {

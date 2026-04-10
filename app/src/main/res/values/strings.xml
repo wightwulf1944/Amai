@@ -41,8 +41,11 @@
         <item>Oldest first</item>
     </string-array>
     <string-array name="sort_items_nhentai">
-        <item>Newest first</item>
-        <item>Popular first</item>
+        <item>Newest</item>
+        <item>Popular</item>
+        <item>Popular Today</item>
+        <item>Popular Week</item>
+        <item>Popular Month</item>
     </string-array>
     <string name="artists">Artists</string>
     <string name="groups">Groups</string>

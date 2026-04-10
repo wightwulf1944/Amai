@@ -43,7 +43,7 @@ class DetailFragment() : Fragment(R.layout.fragment_detail) {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        viewModel.setBookId(bookId)
+        viewModel.load(bookId)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -53,8 +53,9 @@ class DetailFragment() : Fragment(R.layout.fragment_detail) {
             parentFragmentManager.popBackStack()
         }
 
-        b.previewRecycler.setHasFixedSize(true)
-        b.previewRecycler.updateLayoutParams<CoordinatorLayout.LayoutParams> {
+        b.contentRecycler.setHasFixedSize(true)
+        b.contentRecycler.updateLayoutParams<CoordinatorLayout.LayoutParams> {
+            // TODO remove this. After experimenting this does not improve UX at the cost of added complexity
             (behavior as PullGestureBehavior).setOnPullListener {
                 parentFragmentManager.popBackStack()
             }
@@ -63,7 +64,7 @@ class DetailFragment() : Fragment(R.layout.fragment_detail) {
         viewModel.modelLive.observe(viewLifecycleOwner) { model ->
             b.toolbar.setOnMenuItemClickListener(::onActionClick)
 
-            b.previewRecycler.adapter = DetailAdapter(
+            b.contentRecycler.adapter = DetailAdapter(
                 model = model,
                 onThumbnailClick = ::invokeReadBook,
                 onTagClick = ::onTagClick

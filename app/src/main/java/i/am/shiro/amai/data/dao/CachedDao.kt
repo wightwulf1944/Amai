@@ -11,7 +11,7 @@ import io.reactivex.rxjava3.core.Completable
 interface CachedDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insert(entities: List<CachedEntity>)
+    fun insert(entity: CachedEntity)
 
     @Query("DELETE FROM CachedEntity")
     fun deleteAll(): Completable

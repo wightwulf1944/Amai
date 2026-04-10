@@ -9,6 +9,7 @@ data class BookEntity(
     val bookId: Int,
     val title: String,
     val pageCount: Int,
-    val uploadDate: Long,
-    val favCount: Int
+    val thumbnailWidth: Int,
+    val thumbnailHeight: Int,
+    val thumbnailUrl: String
 )

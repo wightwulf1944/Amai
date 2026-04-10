@@ -3,26 +3,19 @@ package i.am.shiro.amai.viewmodel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
-import i.am.shiro.amai.AmaiPreferences
 import i.am.shiro.amai.data.AmaiDatabase
-import i.am.shiro.amai.data.entity.BookEntity
 import i.am.shiro.amai.data.entity.CachedEntity
-import i.am.shiro.amai.data.entity.RemoteImageEntity
-import i.am.shiro.amai.data.entity.TagEntity
 import i.am.shiro.amai.data.view.CachedPreviewView
-import i.am.shiro.amai.network.BookJson
+import i.am.shiro.amai.network.GalleryDetailResponse
 import i.am.shiro.amai.network.Nhentai
-import i.am.shiro.amai.network.SearchJson
-import i.am.shiro.amai.util.imageEntities
+import i.am.shiro.amai.network.PaginatedResponse
 import i.am.shiro.amai.util.invoke
-import i.am.shiro.amai.util.tagEntities
 import i.am.shiro.amai.util.toEntity
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers.mainThread
 import io.reactivex.rxjava3.core.Completable
 import io.reactivex.rxjava3.disposables.Disposable
 import io.reactivex.rxjava3.schedulers.Schedulers.io
 import timber.log.Timber
-import java.util.LinkedList
 
 private const val PAGING_THRESHOLD = 10
 
@@ -30,7 +23,6 @@ private const val PAGING_THRESHOLD = 10
 class NhentaiViewModel(
     handle: SavedStateHandle,
     private val database: AmaiDatabase,
-    private val preferences: AmaiPreferences,
     private val nhentaiApi: Nhentai.Api
 ) : ViewModel() {
 
@@ -134,56 +126,37 @@ class NhentaiViewModel(
         } else if (query.matches(Regex("^id:\\d+\$"))) {
             val id = query.substringAfter("id:").toInt()
 
-            remoteDisposable = nhentaiApi.getBook(id)
+            remoteDisposable = nhentaiApi.getOne(id)
                 .doOnSubscribe { isLoadingLive.postValue(true) }
                 .doFinally { isLoadingLive.postValue(false) }
                 .subscribe(::onGetBookSuccess, Timber::e)
 
         } else {
-            remoteDisposable = nhentaiApi.search(query, page + 1, sort)
+            remoteDisposable = nhentaiApi.search(query, sort, page + 1)
                 .doOnSubscribe { isLoadingLive.postValue(true) }
                 .doFinally { isLoadingLive.postValue(false) }
                 .subscribe(::onSearchSuccess, Timber::e)
         }
     }
 
-    private fun onGetBookSuccess(bookJson: BookJson) {
-        val cachedEntities = listOf(CachedEntity(0, bookJson.id))
-        val bookEntities = listOf(bookJson.toEntity())
-        val tagEntities = bookJson.tagEntities()
-        val imageEntities = bookJson.imageEntities()
-
+    private fun onGetBookSuccess(bookJson: GalleryDetailResponse) {
         with(database) {
             runInTransaction {
-                cachedDao.insert(cachedEntities)
-                bookDao.insert(bookEntities)
-                tagDao.insert(tagEntities)
-                remoteImageDao.insert(imageEntities)
+                cachedDao.insert(CachedEntity(0, bookJson.id))
+                bookDao.insert(bookJson.toEntity())
             }
         }
 
         isComplete = true
     }
 
-    private fun onSearchSuccess(searchJson: SearchJson) {
-        val cachedEntities = LinkedList<CachedEntity>()
-        val bookEntities = LinkedList<BookEntity>()
-        val tagEntities = LinkedList<TagEntity>()
-        val imageEntities = LinkedList<RemoteImageEntity>()
-
-        for (book in searchJson.result) {
-            cachedEntities += CachedEntity(0, book.id)
-            bookEntities += book.toEntity()
-            tagEntities += book.tagEntities()
-            imageEntities += book.imageEntities()
-        }
-
+    private fun onSearchSuccess(searchJson: PaginatedResponse) {
         with(database) {
             runInTransaction {
-                cachedDao.insert(cachedEntities)
-                bookDao.insert(bookEntities)
-                tagDao.insert(tagEntities)
-                remoteImageDao.insert(imageEntities)
+                for (bookJson in searchJson.result) {
+                    cachedDao.insert(CachedEntity(0, bookJson.id))
+                    bookDao.insert(bookJson.toEntity())
+                }
             }
         }
 

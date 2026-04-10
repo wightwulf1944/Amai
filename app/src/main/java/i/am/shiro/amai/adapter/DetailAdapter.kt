@@ -14,11 +14,11 @@ import com.xwray.groupie.GroupieViewHolder
 import com.xwray.groupie.Item
 import com.xwray.groupie.viewbinding.BindableItem
 import i.am.shiro.amai.R
-import i.am.shiro.amai.data.view.ThumbnailView
 import i.am.shiro.amai.databinding.InflateTagBinding
 import i.am.shiro.amai.databinding.InflateTagGroupBinding
 import i.am.shiro.amai.databinding.ItemPreviewImageBinding
 import i.am.shiro.amai.model.DetailModel
+import i.am.shiro.amai.model.Thumbnail
 import i.am.shiro.amai.util.addChild
 
 class DetailAdapter(
@@ -29,7 +29,7 @@ class DetailAdapter(
 
     init {
         add(HeaderItem())
-        addAll(model.pageImages.map { ThumbnailItem(it) })
+        addAll(model.thumbnails.map { ThumbnailItem(it) })
     }
 
     override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
@@ -47,29 +47,29 @@ class DetailAdapter(
         override fun bind(vh: GroupieViewHolder, position: Int) = with(vh) {
             if (isBound) return
 
-            itemView.findViewById<TextView>(R.id.titleText).text = model.book.title
+            itemView.findViewById<TextView>(R.id.titleText).text = model.title
 
-            val pageCount = itemView.context.getString(R.string.pages_format, model.book.pageCount)
+            val pageCount = itemView.context.getString(R.string.pages_format, model.pageCount)
             itemView.findViewById<TextView>(R.id.text_pages).text = pageCount
 
             val tagsLayout = itemView.findViewById<ViewGroup>(R.id.layout_tags)
-            tagsLayout.addTagGroup(R.string.artists, "artist:", model.artistTags)
-            tagsLayout.addTagGroup(R.string.groups, "group:", model.groupTags)
-            tagsLayout.addTagGroup(R.string.parodies, "parody:", model.parodyTags)
-            tagsLayout.addTagGroup(R.string.characters, "character:", model.characterTags)
-            tagsLayout.addTagGroup(R.string.language, "language:", model.languageTags)
-            tagsLayout.addTagGroup(R.string.categories, "category:", model.categoryTags)
-            tagsLayout.addTagGroup(R.string.tags, "tag:", model.generalTags)
+            tagsLayout.addTagGroup(R.string.artists, "artist", model.tags)
+            tagsLayout.addTagGroup(R.string.groups, "group", model.tags)
+            tagsLayout.addTagGroup(R.string.parodies, "parody", model.tags)
+            tagsLayout.addTagGroup(R.string.characters, "character", model.tags)
+            tagsLayout.addTagGroup(R.string.language, "language", model.tags)
+            tagsLayout.addTagGroup(R.string.categories, "category", model.tags)
+            tagsLayout.addTagGroup(R.string.tags, "tag", model.tags)
 
             isBound = true
         }
 
         private fun ViewGroup.addTagGroup(
             @StringRes res: Int,
-            namespace: String?,
-            tags: List<String>
+            namespace: String,
+            tags: Map<String, List<String>>
         ) {
-            if (tags.isEmpty()) return
+            val tags = tags[namespace] ?: return
 
             addChild(InflateTagGroupBinding::inflate) {
                 label.setText(res)
@@ -78,7 +78,7 @@ class DetailAdapter(
                         root.text = tag
                         root.setOnClickListener {
                             val searchTag = if (tag.contains(Regex("\\s+"))) "\"$tag\"" else tag
-                            onTagClick(namespace + searchTag)
+                            onTagClick("$namespace:$searchTag")
                         }
                     }
                 }
@@ -87,7 +87,7 @@ class DetailAdapter(
     }
 
     private inner class ThumbnailItem(
-        private val thumbnail: ThumbnailView
+        private val thumbnail: Thumbnail
     ) : BindableItem<ItemPreviewImageBinding>() {
 
         override fun getLayout() = R.layout.item_preview_image
@@ -98,7 +98,7 @@ class DetailAdapter(
 
         override fun bind(binding: ItemPreviewImageBinding, position: Int) {
             binding.root.setOnClickListener {
-                onThumbnailClick(thumbnail.pageIndex)
+                onThumbnailClick(position - 1)
             }
 
             binding.thumbnailImage.updateLayoutParams<ConstraintLayout.LayoutParams> {

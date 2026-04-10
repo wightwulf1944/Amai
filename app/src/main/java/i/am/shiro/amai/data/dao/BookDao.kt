@@ -14,10 +14,7 @@ interface BookDao {
     fun findById(id: Int): BookEntity
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insert(bookEntity: BookEntity)
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insert(bookEntities: List<BookEntity>)
+    fun insert(entity: BookEntity)
 
     @Query("""
         DELETE FROM BookEntity 

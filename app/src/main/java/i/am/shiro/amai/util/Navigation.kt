@@ -7,8 +7,8 @@ import i.am.shiro.amai.MainActivity
 import i.am.shiro.amai.R
 import i.am.shiro.amai.fragment.*
 
-fun MainActivity.startAtLoading(bookId: Int) {
-    setFragment(LoadingFragment(bookId))
+fun MainActivity.startAtDetail(bookId: Int) {
+    setFragment(DetailFragment(bookId))
 }
 
 fun MainActivity.startAtWelcome() {
@@ -17,10 +17,6 @@ fun MainActivity.startAtWelcome() {
 
 fun MainActivity.startAtHome() {
     setFragment(HomeFragment())
-}
-
-fun LoadingFragment.goToDetail(bookId: Int) {
-    replaceFragment(DetailFragment(bookId))
 }
 
 fun DetailFragment.goToRead(bookId: Int, pageIndex: Int) {

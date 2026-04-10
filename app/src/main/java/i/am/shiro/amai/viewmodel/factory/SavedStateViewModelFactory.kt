@@ -16,7 +16,7 @@ class SavedStateViewModelFactory(
     @Suppress("UNCHECKED_CAST")
     override fun <T : ViewModel> create(key: String, modelClass: Class<T>, handle: SavedStateHandle) =
         when (modelClass) {
-            NhentaiViewModel::class.java -> NhentaiViewModel(handle, get(), get(), get())
+            NhentaiViewModel::class.java -> NhentaiViewModel(handle, get(), get())
             SavedViewModel::class.java -> SavedViewModel(handle, get())
             else -> error("Unable to create $modelClass")
         } as T

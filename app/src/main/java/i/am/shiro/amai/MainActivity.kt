@@ -3,7 +3,7 @@ package i.am.shiro.amai
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import i.am.shiro.amai.util.startAtLoading
+import i.am.shiro.amai.util.startAtDetail
 import i.am.shiro.amai.util.startAtHome
 import i.am.shiro.amai.util.startAtWelcome
 import org.koin.android.ext.android.inject
@@ -21,7 +21,7 @@ class MainActivity : AppCompatActivity() {
 
         when {
             intent.action == Intent.ACTION_VIEW -> {
-                startAtLoading(intent.data!!.pathSegments[1].toInt())
+                startAtDetail(intent.data!!.pathSegments[1].toInt())
             }
             preferences.isFirstRun -> {
                 startAtWelcome()

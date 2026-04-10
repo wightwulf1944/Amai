@@ -13,7 +13,6 @@ import androidx.room.DatabaseView
         thumbnailUrl
     FROM SavedEntity 
     LEFT JOIN BookEntity USING(bookId) 
-    LEFT JOIN (SELECT * FROM LocalImageEntity WHERE pageIndex = 0) USING(bookId)
 """)
 class SavedPreviewView(
     val bookId: Int,

@@ -3,44 +3,77 @@ package i.am.shiro.amai.viewmodel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import i.am.shiro.amai.data.AmaiDatabase
+import i.am.shiro.amai.data.entity.TagEntity
 import i.am.shiro.amai.model.DetailModel
+import i.am.shiro.amai.model.Thumbnail
+import i.am.shiro.amai.network.GalleryDetailResponse
+import i.am.shiro.amai.network.Nhentai
+import i.am.shiro.amai.util.imageEntities
+import i.am.shiro.amai.util.tagEntities
+import i.am.shiro.amai.util.toEntity
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers.mainThread
-import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.disposables.Disposable
-import io.reactivex.rxjava3.schedulers.Schedulers.io
+import timber.log.Timber
 
-class DetailViewModel(private val database: AmaiDatabase) : ViewModel() {
+class DetailViewModel(
+    private val database: AmaiDatabase,
+    private val nhentaiApi: Nhentai.Api
+) : ViewModel() {
 
-    private var disposable = Disposable.disposed()
+    private var localDisposable = Disposable.disposed()
 
-    private var isLoaded = false
+    private var remoteDisposable = Disposable.disposed()
+
+    val isLoadingLive = MutableLiveData<Boolean>()
 
     val modelLive = MutableLiveData<DetailModel>()
 
-    fun setBookId(bookId: Int) {
-        if (isLoaded) return
-        else isLoaded = true
-
-        disposable = Single
-            .fromCallable { getModel(bookId) }
-            .subscribeOn(io())
-            .observeOn(mainThread())
-            .subscribe(modelLive::setValue)
+    override fun onCleared() {
+        localDisposable.dispose()
+        remoteDisposable.dispose()
     }
 
-    private fun getModel(bookId: Int) = DetailModel(
-        book = database.bookDao.findById(bookId),
-        artistTags = database.tagDao.findNameByIdAndType(bookId, "artist"),
-        groupTags = database.tagDao.findNameByIdAndType(bookId, "group"),
-        parodyTags = database.tagDao.findNameByIdAndType(bookId, "parody"),
-        characterTags = database.tagDao.findNameByIdAndType(bookId, "character"),
-        languageTags = database.tagDao.findNameByIdAndType(bookId, "language"),
-        categoryTags = database.tagDao.findNameByIdAndType(bookId, "category"),
-        generalTags = database.tagDao.findNameByIdAndType(bookId, "tag"),
-        pageImages = database.thumbnailDao.findByBookId(bookId)
-    )
+    fun load(bookId: Int) {
+        localDisposable = database.detailDao.getDetail(bookId)
+            .map { detailIntermediate ->
+                val book = detailIntermediate.bookEntity
 
-    override fun onCleared() {
-        disposable.dispose()
+                val tagMap = detailIntermediate.tagEntities
+                    .groupBy(TagEntity::type, TagEntity::name)
+
+                val thumbnails = detailIntermediate.remoteImageEntities
+                    .map {
+                        Thumbnail(
+                            width = it.thumbnailWidth,
+                            height = it.thumbnailHeight,
+                            url = it.thumbnailUrl
+                        )
+                    }
+
+                DetailModel(
+                    title = book.title,
+                    pageCount = book.pageCount,
+                    tags = tagMap,
+                    thumbnails = thumbnails
+                )
+            }
+            .observeOn(mainThread())
+            .subscribe(modelLive::setValue, Timber::e)
+
+        remoteDisposable = nhentaiApi.getOne(bookId)
+            .doOnSubscribe { isLoadingLive.postValue(true) }
+            .doFinally { isLoadingLive.postValue(false) }
+            .retry()
+            .subscribe(::onRemoteSuccess, Timber::e)
+    }
+
+    private fun onRemoteSuccess(detailedBookJson: GalleryDetailResponse) {
+        with(database) {
+            runInTransaction {
+                bookDao.insert(detailedBookJson.toEntity())
+                tagDao.insert(detailedBookJson.tagEntities())
+                remoteImageDao.insert(detailedBookJson.imageEntities())
+            }
+        }
     }
 }

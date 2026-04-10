@@ -2,6 +2,7 @@ package i.am.shiro.amai.data.entity
 
 import androidx.room.Entity
 import androidx.room.ForeignKey
+import androidx.room.ForeignKey.Companion.CASCADE
 
 @Entity(
     primaryKeys = ["bookId", "pageIndex"],
@@ -10,7 +11,7 @@ import androidx.room.ForeignKey
             entity = BookEntity::class,
             parentColumns = ["bookId"],
             childColumns = ["bookId"],
-            onDelete = ForeignKey.CASCADE
+            onDelete = CASCADE
         )
     ]
 )

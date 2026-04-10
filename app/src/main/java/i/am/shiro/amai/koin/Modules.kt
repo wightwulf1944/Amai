@@ -5,7 +5,6 @@ import androidx.room.Room
 import coil.util.CoilUtils
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
-import i.am.shiro.amai.API_URL
 import i.am.shiro.amai.AmaiPreferences
 import i.am.shiro.amai.BuildConfig
 import i.am.shiro.amai.data.AmaiDatabase
@@ -23,7 +22,7 @@ import retrofit2.create
 val mainModule = module {
     single {
         Room.databaseBuilder(androidContext(), AmaiDatabase::class.java, "amai")
-            .fallbackToDestructiveMigrationOnDowngrade()
+            .fallbackToDestructiveMigration(dropAllTables = true)
             .build()
     }
     single {
@@ -31,7 +30,6 @@ val mainModule = module {
     }
     single {
         OkHttpClient.Builder()
-            .cache(CoilUtils.createDefaultCache(androidContext()))
             .addInterceptor(UserAgentInterceptor())
             .build()
     }
@@ -50,7 +48,7 @@ val mainModule = module {
                     )
                     .build()
             )
-            .baseUrl(API_URL)
+            .baseUrl(Nhentai.API_BASE_URL)
             .addCallAdapterFactory(RxJava3CallAdapterFactory.create())
             .addConverterFactory(MoshiConverterFactory.create(moshi))
             .build()

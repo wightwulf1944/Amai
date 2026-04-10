@@ -1,19 +1,34 @@
 package i.am.shiro.amai.data
 
-import androidx.room.AutoMigration
 import androidx.room.Database
-import androidx.room.DeleteColumn
 import androidx.room.RoomDatabase
-import androidx.room.migration.AutoMigrationSpec
-import i.am.shiro.amai.data.dao.*
-import i.am.shiro.amai.data.entity.*
+import i.am.shiro.amai.data.dao.BookDao
+import i.am.shiro.amai.data.dao.CachedDao
+import i.am.shiro.amai.data.dao.CachedPreviewDao
+import i.am.shiro.amai.data.dao.DetailDao
+import i.am.shiro.amai.data.dao.DownloadDao
+import i.am.shiro.amai.data.dao.LocalImageDao
+import i.am.shiro.amai.data.dao.MultiTableDao
+import i.am.shiro.amai.data.dao.PageDao
+import i.am.shiro.amai.data.dao.RemoteImageDao
+import i.am.shiro.amai.data.dao.SavedDao
+import i.am.shiro.amai.data.dao.SavedPreviewDao
+import i.am.shiro.amai.data.dao.TagDao
+import i.am.shiro.amai.data.dao.ThumbnailDao
+import i.am.shiro.amai.data.entity.BookEntity
+import i.am.shiro.amai.data.entity.CachedEntity
+import i.am.shiro.amai.data.entity.DownloadJobEntity
+import i.am.shiro.amai.data.entity.LocalImageEntity
+import i.am.shiro.amai.data.entity.RemoteImageEntity
+import i.am.shiro.amai.data.entity.SavedEntity
+import i.am.shiro.amai.data.entity.TagEntity
 import i.am.shiro.amai.data.view.CachedPreviewView
 import i.am.shiro.amai.data.view.PageView
 import i.am.shiro.amai.data.view.SavedPreviewView
 import i.am.shiro.amai.data.view.ThumbnailView
 
 @Database(
-    version = 24,
+    version = 25,
     exportSchema = true,
     entities = [
         BookEntity::class,
@@ -29,9 +44,6 @@ import i.am.shiro.amai.data.view.ThumbnailView
         CachedPreviewView::class,
         ThumbnailView::class,
         PageView::class
-    ],
-    autoMigrations = [
-        AutoMigration(from = 23, to = 24, spec = AmaiDatabase.Migration23to24::class)
     ]
 )
 abstract class AmaiDatabase : RoomDatabase() {
@@ -60,6 +72,5 @@ abstract class AmaiDatabase : RoomDatabase() {
 
     abstract val pageDao: PageDao
 
-    @DeleteColumn(tableName = "BookEntity", columnName = "webUrl")
-    class Migration23to24 : AutoMigrationSpec
+    abstract val detailDao: DetailDao
 }

@@ -17,7 +17,7 @@ android {
         minSdk 30
         targetSdk 34
         versionCode 1
-        versionName "1.0"
+        versionName "1.1"
         proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
     }
     buildTypes {
@@ -61,9 +61,9 @@ dependencies {
     implementation 'androidx.lifecycle:lifecycle-viewmodel-savedstate:2.9.0'
     implementation 'androidx.preference:preference-ktx:1.2.1'
     implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.1.0'
-    implementation 'androidx.room:room-runtime:2.7.1'
-    implementation 'androidx.room:room-rxjava3:2.7.1'
-    ksp 'androidx.room:room-compiler:2.7.1'
+    implementation 'androidx.room:room-runtime:2.8.4'
+    implementation 'androidx.room:room-rxjava3:2.8.4'
+    ksp 'androidx.room:room-compiler:2.8.4'
 
     implementation 'io.reactivex.rxjava3:rxjava:3.1.10'
     implementation 'io.reactivex.rxjava3:rxandroid:3.0.2'
@@ -96,7 +96,7 @@ dependencies {
     implementation 'com.github.lisawray.groupie:groupie:2.10.1'
     implementation 'com.github.lisawray.groupie:groupie-viewbinding:2.10.1'
 
-    implementation 'io.coil-kt:coil:1.4.0'
+    implementation 'io.coil-kt:coil:2.7.0'
 
     implementation 'io.insert-koin:koin-android:3.4.2'
 }
