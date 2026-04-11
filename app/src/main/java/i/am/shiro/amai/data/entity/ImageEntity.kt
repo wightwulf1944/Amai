@@ -15,7 +15,7 @@ import androidx.room.ForeignKey.Companion.CASCADE
         )
     ]
 )
-data class RemoteImageEntity(
+data class ImageEntity(
     val bookId: Int,
     val pageIndex: Int,
     val width: Int,

@@ -10,9 +10,6 @@ import io.reactivex.rxjava3.core.Completable
 @Dao
 interface BookDao {
 
-    @Query("SELECT * FROM BookEntity WHERE bookId=:id")
-    fun findById(id: Int): BookEntity
-
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(entity: BookEntity)
 
@@ -20,8 +17,7 @@ interface BookDao {
         DELETE FROM BookEntity 
         WHERE bookId NOT IN (
             SELECT bookId FROM SavedEntity UNION 
-            SELECT bookId FROM CachedEntity UNION 
-            SELECT bookId FROM DownloadJobEntity)
+            SELECT bookId FROM CachedEntity)
     """)
     fun deleteOrphan(): Completable
 }

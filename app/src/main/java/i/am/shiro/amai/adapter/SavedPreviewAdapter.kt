@@ -49,7 +49,7 @@ class SavedPreviewAdapter(
         }
     }
 
-    inner class ViewHolder(val binding: ItemStaggeredBookBinding) : RecyclerView.ViewHolder(binding.root)
+    class ViewHolder(val binding: ItemStaggeredBookBinding) : RecyclerView.ViewHolder(binding.root)
 
     private class DiffCallback : DiffUtil.ItemCallback<SavedPreviewView>() {
 

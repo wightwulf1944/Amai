@@ -2,7 +2,6 @@ package i.am.shiro.amai.koin
 
 import androidx.preference.PreferenceManager
 import androidx.room.Room
-import coil.util.CoilUtils
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import i.am.shiro.amai.AmaiPreferences

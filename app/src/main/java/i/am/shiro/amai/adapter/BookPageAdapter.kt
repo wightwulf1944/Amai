@@ -7,12 +7,12 @@ import coil.imageLoader
 import coil.load
 import coil.request.CachePolicy
 import coil.request.ImageRequest
-import i.am.shiro.amai.data.entity.RemoteImageEntity
+import i.am.shiro.amai.data.entity.ImageEntity
 import i.am.shiro.amai.databinding.ItemReadPageBinding
 import i.am.shiro.amai.util.inflateChild
 
 class BookPageAdapter(
-    private val pages: List<RemoteImageEntity>
+    private val pages: List<ImageEntity>
 ) : RecyclerView.Adapter<BookPageAdapter.ViewHolder>() {
 
     override fun getItemCount() = pages.size

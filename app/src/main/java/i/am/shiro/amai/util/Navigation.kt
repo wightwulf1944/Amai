@@ -58,6 +58,3 @@ private fun Fragment.pushFragment(fragment: Fragment) {
     }
 }
 
-private fun Fragment.popFragment() {
-    requireActivity().supportFragmentManager.popBackStack()
-}

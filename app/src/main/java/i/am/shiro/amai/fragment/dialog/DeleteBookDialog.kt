@@ -43,7 +43,6 @@ class DeleteBookDialog() : DialogFragment() {
         Completable
             .concatArray(
                 database.savedDao.deleteById(bookId),
-                database.localImageDao.deleteById(bookId),
                 database.bookDao.deleteOrphan()
             )
             .subscribeOn(io())

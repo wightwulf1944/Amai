@@ -1,7 +1,7 @@
 package i.am.shiro.amai.util
 
 import i.am.shiro.amai.data.entity.BookEntity
-import i.am.shiro.amai.data.entity.RemoteImageEntity
+import i.am.shiro.amai.data.entity.ImageEntity
 import i.am.shiro.amai.data.entity.TagEntity
 import i.am.shiro.amai.network.GalleryDetailResponse
 import i.am.shiro.amai.network.GalleryListItem
@@ -34,8 +34,8 @@ fun GalleryDetailResponse.tagEntities(): List<TagEntity> = tags.map {
     )
 }
 
-fun GalleryDetailResponse.imageEntities(): List<RemoteImageEntity> = pages.map { page ->
-    RemoteImageEntity(
+fun GalleryDetailResponse.imageEntities(): List<ImageEntity> = pages.map { page ->
+    ImageEntity(
         bookId = id,
         pageIndex = page.number,
         width = page.width,

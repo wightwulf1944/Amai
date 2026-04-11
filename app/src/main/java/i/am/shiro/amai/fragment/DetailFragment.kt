@@ -4,26 +4,18 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
-import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.net.toUri
-import androidx.core.view.updateLayoutParams
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import i.am.shiro.amai.R
 import i.am.shiro.amai.adapter.DetailAdapter
-import i.am.shiro.amai.data.AmaiDatabase
-import i.am.shiro.amai.data.entity.DownloadJobEntity
 import i.am.shiro.amai.databinding.FragmentDetailBinding
 import i.am.shiro.amai.network.Nhentai
-import i.am.shiro.amai.service.DownloadService
 import i.am.shiro.amai.util.amaiViewModels
 import i.am.shiro.amai.util.argument
 import i.am.shiro.amai.util.goToRead
-import i.am.shiro.amai.util.startLocalService
 import i.am.shiro.amai.viewmodel.DetailViewModel
 import i.am.shiro.amai.viewmodel.MainViewModel
-import io.reactivex.rxjava3.schedulers.Schedulers.io
-import org.koin.android.ext.android.inject
 
 class DetailFragment() : Fragment(R.layout.fragment_detail) {
 
@@ -36,8 +28,6 @@ class DetailFragment() : Fragment(R.layout.fragment_detail) {
     private val viewModel by amaiViewModels<DetailViewModel>()
 
     private val activityViewModel by activityViewModels<MainViewModel>()
-
-    private val database by inject<AmaiDatabase>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -67,22 +57,10 @@ class DetailFragment() : Fragment(R.layout.fragment_detail) {
 
     private fun onActionClick(menuItem: MenuItem): Boolean {
         when (menuItem.itemId) {
-            R.id.action_download -> onDownloadClick()
             R.id.action_browser -> onOpenBrowserClick()
             R.id.action_share -> onShare()
         }
         return true
-    }
-
-    // TODO
-    private fun onDownloadClick() {
-        val job = DownloadJobEntity(bookId)
-
-        database.downloadDao.insert(job)
-            .subscribeOn(io())
-            .subscribe {
-                startLocalService<DownloadService>()
-            }
     }
 
     private fun onOpenBrowserClick() {

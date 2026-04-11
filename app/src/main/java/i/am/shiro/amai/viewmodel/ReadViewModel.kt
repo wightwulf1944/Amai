@@ -3,12 +3,9 @@ package i.am.shiro.amai.viewmodel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import i.am.shiro.amai.data.AmaiDatabase
-import i.am.shiro.amai.data.entity.RemoteImageEntity
-import i.am.shiro.amai.data.view.PageView
+import i.am.shiro.amai.data.entity.ImageEntity
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers.mainThread
-import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.disposables.Disposable
-import io.reactivex.rxjava3.schedulers.Schedulers.io
 
 class ReadViewModel(private val database: AmaiDatabase) : ViewModel() {
 
@@ -16,7 +13,7 @@ class ReadViewModel(private val database: AmaiDatabase) : ViewModel() {
 
     private var isLoaded = false
 
-    val pagesLive = MutableLiveData<List<RemoteImageEntity>>()
+    val pagesLive = MutableLiveData<List<ImageEntity>>()
 
     fun setBookId(bookId: Int) {
         if (isLoaded) return

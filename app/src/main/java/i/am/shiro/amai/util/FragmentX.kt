@@ -1,6 +1,5 @@
 package i.am.shiro.amai.util
 
-import android.app.Service
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -22,10 +21,6 @@ inline fun <reified T : Any> Fragment.argument() = object : ReadWriteProperty<An
     override fun setValue(thisRef: Any, property: KProperty<*>, value: T) {
         requireArguments().put(property.name, value)
     }
-}
-
-inline fun <reified T : Service> Fragment.startLocalService() {
-    requireContext().startLocalService<T>()
 }
 
 inline fun <reified T : ViewModel> Fragment.amaiViewModels() = viewModels<T> {

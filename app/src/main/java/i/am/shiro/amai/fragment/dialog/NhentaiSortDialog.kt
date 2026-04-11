@@ -5,11 +5,8 @@ import android.os.Bundle
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.get
-
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-
 import i.am.shiro.amai.R
-import i.am.shiro.amai.network.Nhentai
 import i.am.shiro.amai.network.Nhentai.Sort
 import i.am.shiro.amai.viewmodel.NhentaiViewModel
 
