@@ -16,7 +16,6 @@
         android:paddingEnd="12dp"
         android:paddingBottom="8dp"
         app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
-        app:layout_behavior=".widget.PullGestureBehavior"
         app:spanCount="@integer/span_count"
         tools:listitem="@layout/item_preview_image" />
 

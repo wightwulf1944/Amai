@@ -22,7 +22,6 @@ import i.am.shiro.amai.util.goToRead
 import i.am.shiro.amai.util.startLocalService
 import i.am.shiro.amai.viewmodel.DetailViewModel
 import i.am.shiro.amai.viewmodel.MainViewModel
-import i.am.shiro.amai.widget.PullGestureBehavior
 import io.reactivex.rxjava3.schedulers.Schedulers.io
 import org.koin.android.ext.android.inject
 
@@ -54,12 +53,6 @@ class DetailFragment() : Fragment(R.layout.fragment_detail) {
         }
 
         b.contentRecycler.setHasFixedSize(true)
-        b.contentRecycler.updateLayoutParams<CoordinatorLayout.LayoutParams> {
-            // TODO remove this. After experimenting this does not improve UX at the cost of added complexity
-            (behavior as PullGestureBehavior).setOnPullListener {
-                parentFragmentManager.popBackStack()
-            }
-        }
 
         viewModel.modelLive.observe(viewLifecycleOwner) { model ->
             b.toolbar.setOnMenuItemClickListener(::onActionClick)
