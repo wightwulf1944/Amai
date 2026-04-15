@@ -14,7 +14,6 @@ import i.am.shiro.amai.adapter.CachedPreviewAdapter
 import i.am.shiro.amai.databinding.FragmentNhentaiBinding
 import i.am.shiro.amai.fragment.dialog.NhentaiSortDialog
 import i.am.shiro.amai.util.amaiStatefulViewModels
-import i.am.shiro.amai.util.dpToPx
 import i.am.shiro.amai.util.goToDetail
 import i.am.shiro.amai.util.goToSearch
 import i.am.shiro.amai.util.show
@@ -39,7 +38,8 @@ class NhentaiFragment : Fragment(R.layout.fragment_nhentai) {
             goToSearch()
         }
 
-        b.swipeRefreshLayout.setProgressViewOffset(false, 0, 64.dpToPx())
+        val offset = (64 * resources.displayMetrics.density).toInt()
+        b.swipeRefreshLayout.setProgressViewOffset(false, 0, offset)
         b.swipeRefreshLayout.setOnRefreshListener {
             b.swipeRefreshLayout.isRefreshing = false
             viewModel.onRefresh()

@@ -2,7 +2,6 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompilationTask
 
 plugins {
     id 'com.android.application'
-    id 'org.jetbrains.kotlin.android'
     id 'com.google.devtools.ksp'
     id 'androidx.room'
 //    id 'com.google.gms.google-services'
@@ -11,7 +10,7 @@ plugins {
 
 android {
     namespace 'i.am.shiro.amai'
-    compileSdk 35
+    compileSdk = 36
     defaultConfig {
         applicationId "i.am.shiro.amai"
         minSdk 30
@@ -34,10 +33,6 @@ android {
         // generate BuildConfig class
         buildConfig true
     }
-    kotlinOptions {
-        freeCompilerArgs += '-Xjspecify-annotations=strict'
-        freeCompilerArgs += '-Xcontext-receivers'
-    }
     room {
         schemaDirectory "$projectDir/schemas"
     }
@@ -50,37 +45,29 @@ java {
 }
 
 dependencies {
-    implementation 'androidx.annotation:annotation:1.9.1'
-    implementation 'androidx.appcompat:appcompat:1.7.0'
-    implementation 'androidx.cardview:cardview:1.0.0'
-    implementation 'androidx.constraintlayout:constraintlayout:2.2.1'
-    implementation 'androidx.core:core-ktx:1.16.0'
-    implementation 'androidx.fragment:fragment-ktx:1.8.6'
-    implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.9.0'
-    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.9.0'
-    implementation 'androidx.lifecycle:lifecycle-viewmodel-savedstate:2.9.0'
-    implementation 'androidx.preference:preference-ktx:1.2.1'
-    implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.1.0'
+    implementation 'androidx.core:core-ktx:1.18.0'
+    implementation 'androidx.preference:preference:1.2.1'
+    implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.2.0'
     implementation 'androidx.room:room-runtime:2.8.4'
     implementation 'androidx.room:room-rxjava3:2.8.4'
     ksp 'androidx.room:room-compiler:2.8.4'
 
-    implementation 'io.reactivex.rxjava3:rxjava:3.1.10'
+    implementation 'io.reactivex.rxjava3:rxjava:3.1.12'
     implementation 'io.reactivex.rxjava3:rxandroid:3.0.2'
     implementation 'io.reactivex.rxjava3:rxkotlin:3.0.1'
 
     //    http://square.github.io/retrofit/
-    implementation 'com.squareup.retrofit2:retrofit:2.11.0'
-    implementation 'com.squareup.retrofit2:converter-moshi:2.11.0'
-    implementation 'com.squareup.retrofit2:adapter-rxjava3:2.11.0'
+    implementation 'com.squareup.retrofit2:retrofit:3.0.0'
+    implementation 'com.squareup.retrofit2:converter-moshi:3.0.0'
+    implementation 'com.squareup.retrofit2:adapter-rxjava3:3.0.0'
 
     implementation 'com.squareup.moshi:moshi-kotlin:1.15.2'
 
-    implementation platform('com.squareup.okhttp3:okhttp-bom:4.10.0')
+    implementation platform('com.squareup.okhttp3:okhttp-bom:5.3.2')
     implementation 'com.squareup.okhttp3:okhttp'
     implementation 'com.squareup.okhttp3:logging-interceptor'
 
-    implementation 'com.google.android.material:material:1.12.0'
+    implementation 'com.google.android.material:material:1.13.0'
 
     // Firebase
 //    implementation platform('com.google.firebase:firebase-bom:26.8.0')
@@ -98,5 +85,5 @@ dependencies {
 
     implementation 'io.coil-kt:coil:2.7.0'
 
-    implementation 'io.insert-koin:koin-android:3.4.2'
+    implementation 'io.insert-koin:koin-android:4.2.1'
 }

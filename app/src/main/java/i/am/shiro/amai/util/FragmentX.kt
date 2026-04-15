@@ -30,8 +30,3 @@ inline fun <reified T : ViewModel> Fragment.amaiViewModels() = viewModels<T> {
 inline fun <reified T : ViewModel> Fragment.amaiStatefulViewModels() = viewModels<T> {
     SavedStateViewModelFactory(this)
 }
-
-context(Fragment)
-fun Int.dpToPx(): Int {
-    return (this * resources.displayMetrics.density).toInt()
-}
