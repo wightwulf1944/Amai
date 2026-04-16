@@ -68,7 +68,7 @@ class DetailFragment() : Fragment(R.layout.fragment_detail) {
     }
 
     private fun onShare() {
-        val bookUrl = Nhentai.WEBPAGE_BASE_URL + bookId
+        val bookUrl = "${Nhentai.WEBPAGE_BASE_URL}$bookId/"
         val intent = Intent(Intent.ACTION_SEND)
             .putExtra(Intent.EXTRA_TEXT, bookUrl)
             .setType("text/plain")
