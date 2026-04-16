@@ -80,7 +80,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/titleText"
-            app:srcCompat="@drawable/ic_check_badge"
+            app:srcCompat="@drawable/ic_favorite"
             app:tint="?colorSecondary"
             tools:visibility="visible" />
 
