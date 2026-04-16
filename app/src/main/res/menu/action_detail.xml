@@ -9,9 +9,9 @@
         app:showAsAction="ifRoom" />
 
     <item
-        android:id="@+id/action_browser"
-        android:icon="@drawable/ic_open_in_browser"
-        android:title="@string/open_in_browser"
+        android:id="@+id/action_favorite"
+        android:icon="@drawable/ic_favorite"
+        android:title="@string/favorite"
         app:showAsAction="ifRoom" />
 
 </menu>

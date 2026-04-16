@@ -57,17 +57,14 @@ class DetailFragment() : Fragment(R.layout.fragment_detail) {
 
     private fun onActionClick(menuItem: MenuItem): Boolean {
         when (menuItem.itemId) {
-            R.id.action_browser -> onOpenBrowserClick()
+            R.id.action_favorite -> onFavoriteClick()
             R.id.action_share -> onShare()
         }
         return true
     }
 
-    private fun onOpenBrowserClick() {
-        val bookUrl = Nhentai.WEBPAGE_BASE_URL + bookId
-        val uri = bookUrl.toUri()
-        val intent = Intent(Intent.ACTION_VIEW, uri)
-        startActivity(intent)
+    private fun onFavoriteClick() {
+        TODO()
     }
 
     private fun onShare() {
