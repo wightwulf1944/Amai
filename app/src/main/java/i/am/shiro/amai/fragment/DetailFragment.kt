@@ -1,12 +1,13 @@
 package i.am.shiro.amai.fragment
 
+import android.content.ComponentName
 import android.content.Intent
 import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
-import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import i.am.shiro.amai.MainActivity
 import i.am.shiro.amai.R
 import i.am.shiro.amai.adapter.DetailAdapter
 import i.am.shiro.amai.databinding.FragmentDetailBinding
@@ -69,8 +70,10 @@ class DetailFragment() : Fragment(R.layout.fragment_detail) {
 
     private fun onShare() {
         val bookUrl = "${Nhentai.WEBPAGE_BASE_URL}$bookId/"
+        val exclude = arrayOf(ComponentName(requireContext(), MainActivity::class.java))
         val intent = Intent(Intent.ACTION_SEND)
             .putExtra(Intent.EXTRA_TEXT, bookUrl)
+            .putExtra(Intent.EXTRA_EXCLUDE_COMPONENTS, exclude)
             .setType("text/plain")
             .let { Intent.createChooser(it, null) }
         startActivity(intent)
