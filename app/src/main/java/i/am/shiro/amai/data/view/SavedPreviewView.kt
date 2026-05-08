@@ -11,7 +11,7 @@ import androidx.room.DatabaseView
         thumbnailWidth, 
         thumbnailHeight,
         thumbnailUrl
-    FROM SavedEntity 
+    FROM FavoriteEntity 
     LEFT JOIN BookEntity USING(bookId) 
 """)
 class SavedPreviewView(

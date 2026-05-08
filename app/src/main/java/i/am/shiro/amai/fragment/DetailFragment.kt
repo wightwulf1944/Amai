@@ -30,23 +30,18 @@ class DetailFragment() : Fragment(R.layout.fragment_detail) {
 
     private val activityViewModel by activityViewModels<MainViewModel>()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        viewModel.load(bookId)
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         val b = FragmentDetailBinding.bind(view)
 
         b.toolbar.setNavigationOnClickListener {
             parentFragmentManager.popBackStack()
         }
+        b.toolbar.setOnMenuItemClickListener(::onActionClick)
 
         b.contentRecycler.setHasFixedSize(true)
 
         viewModel.modelLive.observe(viewLifecycleOwner) { model ->
-            b.toolbar.setOnMenuItemClickListener(::onActionClick)
+            // TODO update favorite button visuals based on model.isFavorite
 
             b.contentRecycler.adapter = DetailAdapter(
                 model = model,

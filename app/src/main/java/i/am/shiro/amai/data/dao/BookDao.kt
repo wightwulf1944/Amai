@@ -16,7 +16,7 @@ interface BookDao {
     @Query("""
         DELETE FROM BookEntity 
         WHERE bookId NOT IN (
-            SELECT bookId FROM SavedEntity UNION 
+            SELECT bookId FROM FavoriteEntity UNION 
             SELECT bookId FROM CachedEntity)
     """)
     fun deleteOrphan(): Completable

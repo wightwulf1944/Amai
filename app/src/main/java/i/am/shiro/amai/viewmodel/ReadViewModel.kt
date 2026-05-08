@@ -19,7 +19,7 @@ class ReadViewModel(private val database: AmaiDatabase) : ViewModel() {
         if (isLoaded) return
         else isLoaded = true
 
-        disposable = database.remoteImageDao.findByBookId(bookId)
+        disposable = database.imageDao.findByBookId(bookId)
             .observeOn(mainThread())
             .subscribe(pagesLive::setValue)
     }

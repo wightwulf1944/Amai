@@ -4,7 +4,6 @@ import android.os.Bundle
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModel
-import i.am.shiro.amai.viewmodel.factory.SavedStateViewModelFactory
 import i.am.shiro.amai.viewmodel.factory.ViewModelFactory
 import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty
@@ -25,8 +24,4 @@ inline fun <reified T : Any> Fragment.argument() = object : ReadWriteProperty<An
 
 inline fun <reified T : ViewModel> Fragment.amaiViewModels() = viewModels<T> {
     ViewModelFactory()
-}
-
-inline fun <reified T : ViewModel> Fragment.amaiStatefulViewModels() = viewModels<T> {
-    SavedStateViewModelFactory(this)
 }

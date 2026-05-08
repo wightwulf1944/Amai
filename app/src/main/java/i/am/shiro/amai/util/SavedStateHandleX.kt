@@ -1,6 +1,7 @@
 package i.am.shiro.amai.util
 
 import androidx.lifecycle.SavedStateHandle
+import kotlin.properties.ReadOnlyProperty
 import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty
 
@@ -13,3 +14,6 @@ operator fun <T> SavedStateHandle.invoke(default: T) = object : ReadWritePropert
         set(property.name, value)
     }
 }
+
+fun <T : Any> SavedStateHandle.argument(init: () -> T) =
+    ReadOnlyProperty<Any?, T> { _, property -> get(property.name) ?: init() }

@@ -3,6 +3,7 @@ package i.am.shiro.amai.data.intermediate
 import androidx.room.Embedded
 import androidx.room.Relation
 import i.am.shiro.amai.data.entity.BookEntity
+import i.am.shiro.amai.data.entity.FavoriteEntity
 import i.am.shiro.amai.data.entity.ImageEntity
 import i.am.shiro.amai.data.entity.TagEntity
 
@@ -17,5 +18,10 @@ data class DetailIntermediate(
         parentColumn = "bookId",
         entityColumn = "bookId"
     )
-    val remoteImageEntities: List<ImageEntity>
+    val remoteImageEntities: List<ImageEntity>,
+    @Relation(
+        parentColumn = "bookId",
+        entityColumn = "bookId"
+    )
+    val favoriteEntity: FavoriteEntity?
 )

@@ -15,7 +15,7 @@ import androidx.room.DatabaseView
         END AS isSaved
     FROM CachedEntity 
     LEFT JOIN BookEntity USING(bookId) 
-    LEFT JOIN SavedEntity USING(bookId)
+    LEFT JOIN FavoriteEntity USING(bookId)
     ORDER BY id
 """)
 class CachedPreviewView(

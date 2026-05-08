@@ -12,12 +12,16 @@ import i.am.shiro.amai.databinding.FragmentSavedBinding
 import i.am.shiro.amai.fragment.dialog.DeleteBookDialog
 import i.am.shiro.amai.fragment.dialog.PlaceholderDialog
 import i.am.shiro.amai.fragment.dialog.SavedSortDialog
-import i.am.shiro.amai.util.*
+import i.am.shiro.amai.util.amaiViewModels
+import i.am.shiro.amai.util.goToDetail
+import i.am.shiro.amai.util.loadBoolean
+import i.am.shiro.amai.util.saveBoolean
+import i.am.shiro.amai.util.show
 import i.am.shiro.amai.viewmodel.SavedViewModel
 
 class SavedFragment : Fragment(R.layout.fragment_saved) {
 
-    private val viewModel by amaiStatefulViewModels<SavedViewModel>()
+    private val viewModel by amaiViewModels<SavedViewModel>()
 
     private var shouldScrollToTop = false
 
