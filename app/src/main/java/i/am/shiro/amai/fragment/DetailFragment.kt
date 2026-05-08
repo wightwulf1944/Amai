@@ -41,7 +41,12 @@ class DetailFragment() : Fragment(R.layout.fragment_detail) {
         b.contentRecycler.setHasFixedSize(true)
 
         viewModel.modelLive.observe(viewLifecycleOwner) { model ->
-            // TODO update favorite button visuals based on model.isFavorite
+            val menuItem = b.toolbar.menu.findItem(R.id.action_favorite)
+            menuItem.icon?.state = if (model.isFavorite) {
+                intArrayOf(android.R.attr.state_checked)
+            } else {
+                intArrayOf()
+            }
 
             b.contentRecycler.adapter = DetailAdapter(
                 model = model,
@@ -53,14 +58,10 @@ class DetailFragment() : Fragment(R.layout.fragment_detail) {
 
     private fun onActionClick(menuItem: MenuItem): Boolean {
         when (menuItem.itemId) {
-            R.id.action_favorite -> onFavoriteClick()
+            R.id.action_favorite -> viewModel.toggleFavorite()
             R.id.action_share -> onShare()
         }
         return true
-    }
-
-    private fun onFavoriteClick() {
-        TODO()
     }
 
     private fun onShare() {

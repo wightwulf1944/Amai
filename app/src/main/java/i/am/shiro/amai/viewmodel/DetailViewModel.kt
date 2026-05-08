@@ -4,7 +4,9 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import i.am.shiro.amai.data.AmaiDatabase
+import i.am.shiro.amai.data.entity.FavoriteEntity
 import i.am.shiro.amai.data.entity.TagEntity
+import i.am.shiro.amai.data.intermediate.DetailIntermediate
 import i.am.shiro.amai.model.DetailModel
 import i.am.shiro.amai.model.Thumbnail
 import i.am.shiro.amai.network.GalleryDetailResponse
@@ -14,7 +16,9 @@ import i.am.shiro.amai.util.imageEntities
 import i.am.shiro.amai.util.tagEntities
 import i.am.shiro.amai.util.toEntity
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers.mainThread
+import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.disposables.Disposable
+import io.reactivex.rxjava3.kotlin.plusAssign
 import timber.log.Timber
 
 class DetailViewModel(
@@ -29,6 +33,8 @@ class DetailViewModel(
 
     private var remoteDisposable = Disposable.disposed()
 
+    private val toggleDisposable = CompositeDisposable()
+
     val isLoadingLive = MutableLiveData<Boolean>()
 
     val modelLive = MutableLiveData<DetailModel>()
@@ -40,35 +46,24 @@ class DetailViewModel(
     override fun onCleared() {
         localDisposable.dispose()
         remoteDisposable.dispose()
+        toggleDisposable.dispose()
+    }
+
+    fun toggleFavorite() {
+        val isFavorite = modelLive.value?.isFavorite ?: return
+
+        val action = if (isFavorite) {
+            database.favoriteDao.deleteById(bookId)
+        } else {
+            database.favoriteDao.insert(FavoriteEntity(bookId))
+        }
+
+        toggleDisposable += action.subscribe({}, Timber::e)
     }
 
     private fun load() {
         localDisposable = database.detailDao.getDetail(bookId)
-            .map { detailIntermediate ->
-                val book = detailIntermediate.bookEntity
-
-                val tagMap = detailIntermediate.tagEntities
-                    .groupBy(TagEntity::type, TagEntity::name)
-
-                val thumbnails = detailIntermediate.remoteImageEntities
-                    .map {
-                        Thumbnail(
-                            width = it.thumbnailWidth,
-                            height = it.thumbnailHeight,
-                            url = it.thumbnailUrl
-                        )
-                    }
-
-                val isFavorite = detailIntermediate.favoriteEntity != null
-
-                DetailModel(
-                    title = book.title,
-                    pageCount = book.pageCount,
-                    tags = tagMap,
-                    thumbnails = thumbnails,
-                    isFavorite = isFavorite
-                )
-            }
+            .map { it.toDetailModel() }
             .observeOn(mainThread())
             .subscribe(modelLive::setValue, Timber::e)
 
@@ -77,6 +72,30 @@ class DetailViewModel(
             .doFinally { isLoadingLive.postValue(false) }
             .retry()
             .subscribe(::onRemoteSuccess, Timber::e)
+    }
+
+    private fun DetailIntermediate.toDetailModel(): DetailModel {
+        val book = bookEntity
+
+        val tagMap = tagEntities.groupBy(TagEntity::type, TagEntity::name)
+
+        val thumbnails = remoteImageEntities.map {
+                Thumbnail(
+                    width = it.thumbnailWidth,
+                    height = it.thumbnailHeight,
+                    url = it.thumbnailUrl
+                )
+            }
+
+        val isFavorite = favoriteEntity != null
+
+        return DetailModel(
+            title = book.title,
+            pageCount = book.pageCount,
+            tags = tagMap,
+            thumbnails = thumbnails,
+            isFavorite = isFavorite
+        )
     }
 
     private fun onRemoteSuccess(detailedBookJson: GalleryDetailResponse) {
