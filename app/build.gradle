@@ -2,6 +2,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompilationTask
 
 plugins {
     id 'com.android.application'
+    id 'org.jetbrains.kotlin.plugin.compose'
     id 'com.google.devtools.ksp'
     id 'androidx.room'
 //    id 'com.google.gms.google-services'
@@ -32,6 +33,8 @@ android {
         viewBinding true
         // generate BuildConfig class
         buildConfig true
+        // enable compose features
+        compose true
     }
     room {
         schemaDirectory "$projectDir/schemas"
@@ -46,11 +49,19 @@ java {
 
 dependencies {
     implementation 'androidx.core:core-ktx:1.18.0'
+    implementation 'androidx.activity:activity-compose:1.13.0'
     implementation 'androidx.preference:preference:1.2.1'
     implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.2.0'
     implementation 'androidx.room:room-runtime:2.8.4'
     implementation 'androidx.room:room-rxjava3:2.8.4'
     ksp 'androidx.room:room-compiler:2.8.4'
+
+    // Jetpack Compose
+    def composeBom = platform('androidx.compose:compose-bom:2026.05.01')
+    implementation composeBom
+    implementation 'androidx.compose.material3:material3'
+    implementation 'androidx.compose.ui:ui-tooling-preview'
+    debugImplementation 'androidx.compose.ui:ui-tooling'
 
     implementation 'io.reactivex.rxjava3:rxjava:3.1.12'
     implementation 'io.reactivex.rxjava3:rxandroid:3.0.2'
@@ -67,7 +78,7 @@ dependencies {
     implementation 'com.squareup.okhttp3:okhttp'
     implementation 'com.squareup.okhttp3:logging-interceptor'
 
-    implementation 'com.google.android.material:material:1.13.0'
+    implementation 'com.google.android.material:material:1.14.0'
 
     // Firebase
 //    implementation platform('com.google.firebase:firebase-bom:26.8.0')

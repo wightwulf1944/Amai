@@ -1,9 +1,10 @@
 package i.am.shiro.amai.adapter
 
 import android.view.View
-import android.view.ViewGroup
-import android.widget.TextView
-import androidx.annotation.StringRes
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.platform.ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.updateLayoutParams
 import androidx.recyclerview.widget.GridLayoutManager
@@ -14,12 +15,10 @@ import com.xwray.groupie.GroupieViewHolder
 import com.xwray.groupie.Item
 import com.xwray.groupie.viewbinding.BindableItem
 import i.am.shiro.amai.R
-import i.am.shiro.amai.databinding.InflateTagBinding
-import i.am.shiro.amai.databinding.InflateTagGroupBinding
+import i.am.shiro.amai.compose.AmaiTheme
 import i.am.shiro.amai.databinding.ItemPreviewImageBinding
 import i.am.shiro.amai.model.DetailModel
 import i.am.shiro.amai.model.Thumbnail
-import i.am.shiro.amai.util.addChild
 
 class DetailAdapter(
     private val model: DetailModel,
@@ -40,46 +39,18 @@ class DetailAdapter(
 
     private inner class HeaderItem : Item<GroupieViewHolder>() {
 
-        private var isBound = false
-
         override fun getLayout() = R.layout.item_detail_header
 
-        override fun bind(vh: GroupieViewHolder, position: Int) = with(vh) {
-            if (isBound) return
-
-            itemView.findViewById<TextView>(R.id.titleText).text = model.title
-
-            val pageCount = itemView.context.getString(R.string.pages_format, model.pageCount)
-            itemView.findViewById<TextView>(R.id.text_pages).text = pageCount
-
-            val tagsLayout = itemView.findViewById<ViewGroup>(R.id.layout_tags)
-            tagsLayout.addTagGroup(R.string.artists, "artist", model.tags)
-            tagsLayout.addTagGroup(R.string.groups, "group", model.tags)
-            tagsLayout.addTagGroup(R.string.parodies, "parody", model.tags)
-            tagsLayout.addTagGroup(R.string.characters, "character", model.tags)
-            tagsLayout.addTagGroup(R.string.language, "language", model.tags)
-            tagsLayout.addTagGroup(R.string.categories, "category", model.tags)
-            tagsLayout.addTagGroup(R.string.tags, "tag", model.tags)
-
-            isBound = true
-        }
-
-        private fun ViewGroup.addTagGroup(
-            @StringRes res: Int,
-            namespace: String,
-            tags: Map<String, List<String>>
-        ) {
-            val tags = tags[namespace] ?: return
-
-            addChild(InflateTagGroupBinding::inflate) {
-                label.setText(res)
-                for (tag in tags) {
-                    root.addChild(InflateTagBinding::inflate) {
-                        root.text = tag
-                        root.setOnClickListener {
-                            val searchTag = if (tag.contains(Regex("\\s+"))) "\"$tag\"" else tag
-                            onTagClick("$namespace:$searchTag")
-                        }
+        override fun bind(vh: GroupieViewHolder, position: Int) {
+            val composeView = vh.itemView as ComposeView
+            composeView.setViewCompositionStrategy(DisposeOnViewTreeLifecycleDestroyed)
+            composeView.setContent {
+                AmaiTheme {
+                    Surface(color = MaterialTheme.colorScheme.background) {
+                        DetailHeaderContent(
+                            model = model,
+                            onTagClick = onTagClick
+                        )
                     }
                 }
             }

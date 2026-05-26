@@ -79,8 +79,8 @@ class DetailFragment() : Fragment(R.layout.fragment_detail) {
         goToRead(bookId, pageIndex)
     }
 
-    private fun onTagClick(tag: String) {
-        activityViewModel.search(tag)
+    private fun onTagClick(query: String) {
+        activityViewModel.search(query)
         parentFragmentManager.popBackStack()
     }
 }

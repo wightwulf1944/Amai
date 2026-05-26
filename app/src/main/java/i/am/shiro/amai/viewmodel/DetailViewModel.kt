@@ -8,6 +8,7 @@ import i.am.shiro.amai.data.entity.FavoriteEntity
 import i.am.shiro.amai.data.entity.TagEntity
 import i.am.shiro.amai.data.intermediate.DetailIntermediate
 import i.am.shiro.amai.model.DetailModel
+import i.am.shiro.amai.model.TagModel
 import i.am.shiro.amai.model.Thumbnail
 import i.am.shiro.amai.network.GalleryDetailResponse
 import i.am.shiro.amai.network.Nhentai
@@ -77,24 +78,32 @@ class DetailViewModel(
     private fun DetailIntermediate.toDetailModel(): DetailModel {
         val book = bookEntity
 
-        val tagMap = tagEntities.groupBy(TagEntity::type, TagEntity::name)
+        val isFavorite = favoriteEntity != null
+
+        val tagMap = tagEntities.groupBy(TagEntity::type) {
+            TagModel(it.type, it.name)
+        }
 
         val thumbnails = remoteImageEntities.map {
-                Thumbnail(
-                    width = it.thumbnailWidth,
-                    height = it.thumbnailHeight,
-                    url = it.thumbnailUrl
-                )
-            }
-
-        val isFavorite = favoriteEntity != null
+            Thumbnail(
+                width = it.thumbnailWidth,
+                height = it.thumbnailHeight,
+                url = it.thumbnailUrl
+            )
+        }
 
         return DetailModel(
             title = book.title,
             pageCount = book.pageCount,
-            tags = tagMap,
-            thumbnails = thumbnails,
-            isFavorite = isFavorite
+            isFavorite = isFavorite,
+            artistTags = tagMap["artist"],
+            groupTags = tagMap["group"],
+            parodyTags = tagMap["parody"],
+            characterTags = tagMap["character"],
+            languageTags = tagMap["language"],
+            categoryTags = tagMap["category"],
+            generalTags = tagMap["tag"],
+            thumbnails = thumbnails
         )
     }
 

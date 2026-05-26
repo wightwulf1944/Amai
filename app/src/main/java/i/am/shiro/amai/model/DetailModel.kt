@@ -3,7 +3,24 @@ package i.am.shiro.amai.model
 class DetailModel(
     val title: String,
     val pageCount: Int,
-    val tags: Map<String, List<String>>,
-    val thumbnails: List<Thumbnail>,
-    val isFavorite: Boolean
+    val isFavorite: Boolean,
+    val artistTags: List<TagModel>?,
+    val groupTags: List<TagModel>?,
+    val parodyTags: List<TagModel>?,
+    val characterTags: List<TagModel>?,
+    val languageTags: List<TagModel>?,
+    val categoryTags: List<TagModel>?,
+    val generalTags: List<TagModel>?,
+    val thumbnails: List<Thumbnail>
 )
+
+class TagModel(
+    val type: String,
+    val name: String
+) {
+    val query: String
+        get() {
+            val searchTag = if (name.any(Char::isWhitespace)) "\"$name\"" else name
+            return "$type:$searchTag"
+        }
+}
