@@ -1,4 +1,4 @@
-package i.am.shiro.amai.adapter
+package i.am.shiro.amai.compose
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -17,13 +17,12 @@ import coil.request.ImageRequest
 import i.am.shiro.amai.model.Thumbnail
 
 @Composable
-fun ThumbnailContent(
+fun DetailThumbnailContent(
     thumbnail: Thumbnail,
-    onClick: () -> Unit,
-    modifier: Modifier = Modifier
+    onClick: () -> Unit
 ) {
     Box(
-        modifier = modifier
+        modifier = Modifier
             .padding(horizontal = 4.dp)
             .padding(bottom = 8.dp)
             .aspectRatio(thumbnail.width.toFloat() / thumbnail.height.toFloat())

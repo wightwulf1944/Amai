@@ -1,6 +1,6 @@
 package i.am.shiro.amai.model
 
-class DetailModel(
+data class DetailModel(
     val title: String,
     val pageCount: Int,
     val isFavorite: Boolean,
@@ -14,7 +14,7 @@ class DetailModel(
     val thumbnails: List<Thumbnail>
 )
 
-class TagModel(
+data class TagModel(
     val type: String,
     val name: String
 ) {

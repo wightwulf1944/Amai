@@ -5,11 +5,18 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.ui.unit.dp
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import i.am.shiro.amai.MainActivity
 import i.am.shiro.amai.R
-import i.am.shiro.amai.adapter.DetailAdapter
+import i.am.shiro.amai.compose.AmaiTheme
+import i.am.shiro.amai.compose.DetailGridContent
 import i.am.shiro.amai.databinding.FragmentDetailBinding
 import i.am.shiro.amai.network.Nhentai
 import i.am.shiro.amai.util.amaiViewModels
@@ -38,7 +45,26 @@ class DetailFragment() : Fragment(R.layout.fragment_detail) {
         }
         b.toolbar.setOnMenuItemClickListener(::onActionClick)
 
-        b.contentRecycler.setHasFixedSize(true)
+        b.detailGrid.setContent {
+            AmaiTheme {
+                Surface(color = MaterialTheme.colorScheme.background) {
+                    val model by viewModel.modelLive.observeAsState()
+                    model?.let {
+                        DetailGridContent(
+                            model = it,
+                            onThumbnailClick = ::invokeReadBook,
+                            onTagClick = ::onTagClick,
+                            contentPadding = PaddingValues(
+                                start = 12.dp,
+                                top = 64.dp,
+                                end = 12.dp,
+                                bottom = 8.dp
+                            )
+                        )
+                    }
+                }
+            }
+        }
 
         viewModel.modelLive.observe(viewLifecycleOwner) { model ->
             val menuItem = b.toolbar.menu.findItem(R.id.action_favorite)
@@ -47,12 +73,6 @@ class DetailFragment() : Fragment(R.layout.fragment_detail) {
             } else {
                 intArrayOf()
             }
-
-            b.contentRecycler.adapter = DetailAdapter(
-                model = model,
-                onThumbnailClick = ::invokeReadBook,
-                onTagClick = ::onTagClick
-            )
         }
     }
 
