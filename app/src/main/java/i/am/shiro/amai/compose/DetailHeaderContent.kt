@@ -34,15 +34,7 @@ fun DetailHeaderContent(
             .padding(horizontal = 4.dp)
             .padding(bottom = 8.dp)
     ) {
-        Text(
-            text = model.title,
-            style = MaterialTheme.typography.titleMedium
-        )
-
-        HorizontalDivider(
-            modifier = Modifier.padding(top = 4.dp),
-            thickness = 1.dp
-        )
+        HorizontalDivider(thickness = 1.dp)
 
         Text(
             text = stringResource(R.string.pages_format, model.pageCount),

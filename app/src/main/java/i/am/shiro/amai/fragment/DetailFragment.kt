@@ -3,21 +3,16 @@ package i.am.shiro.amai.fragment
 import android.content.ComponentName
 import android.content.Intent
 import android.os.Bundle
-import android.view.MenuItem
 import android.view.View
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.ui.unit.dp
+import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import i.am.shiro.amai.MainActivity
 import i.am.shiro.amai.R
 import i.am.shiro.amai.compose.AmaiTheme
-import i.am.shiro.amai.compose.DetailGridContent
-import i.am.shiro.amai.databinding.FragmentDetailBinding
+import i.am.shiro.amai.compose.DetailScreen
 import i.am.shiro.amai.network.Nhentai
 import i.am.shiro.amai.util.amaiViewModels
 import i.am.shiro.amai.util.argument
@@ -38,50 +33,22 @@ class DetailFragment() : Fragment(R.layout.fragment_detail) {
     private val activityViewModel by activityViewModels<MainViewModel>()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        val b = FragmentDetailBinding.bind(view)
 
-        b.toolbar.setNavigationOnClickListener {
-            parentFragmentManager.popBackStack()
-        }
-        b.toolbar.setOnMenuItemClickListener(::onActionClick)
-
-        b.detailGrid.setContent {
+        (view as ComposeView).setContent {
             AmaiTheme {
-                Surface(color = MaterialTheme.colorScheme.background) {
-                    val model by viewModel.modelLive.observeAsState()
-                    model?.let {
-                        DetailGridContent(
-                            model = it,
-                            onThumbnailClick = ::invokeReadBook,
-                            onTagClick = ::onTagClick,
-                            contentPadding = PaddingValues(
-                                start = 12.dp,
-                                top = 64.dp,
-                                end = 12.dp,
-                                bottom = 8.dp
-                            )
-                        )
-                    }
+                val model by viewModel.modelLive.observeAsState()
+                model?.let {
+                    DetailScreen(
+                        model = it,
+                        onBackClick = { parentFragmentManager.popBackStack() },
+                        onShareClick = ::onShare,
+                        onFavoriteClick = viewModel::toggleFavorite,
+                        onThumbnailClick = ::invokeReadBook,
+                        onTagClick = ::onTagClick
+                    )
                 }
             }
         }
-
-        viewModel.modelLive.observe(viewLifecycleOwner) { model ->
-            val menuItem = b.toolbar.menu.findItem(R.id.action_favorite)
-            menuItem.icon?.state = if (model.isFavorite) {
-                intArrayOf(android.R.attr.state_checked)
-            } else {
-                intArrayOf()
-            }
-        }
-    }
-
-    private fun onActionClick(menuItem: MenuItem): Boolean {
-        when (menuItem.itemId) {
-            R.id.action_favorite -> viewModel.toggleFavorite()
-            R.id.action_share -> onShare()
-        }
-        return true
     }
 
     private fun onShare() {

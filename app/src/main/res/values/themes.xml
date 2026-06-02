@@ -2,7 +2,7 @@
 <resources>
 
     <style name="AppTheme" parent="Theme.Material3.Dark.NoActionBar">
-        <item name="android:statusBarColor">?colorSurfaceContainerHigh</item>
+        <item name="android:statusBarColor">?colorSurface</item>
         <item name="android:navigationBarColor">?colorSurfaceContainerHigh</item>
         <item name="android:colorBackground">@color/md_theme_background</item>
 

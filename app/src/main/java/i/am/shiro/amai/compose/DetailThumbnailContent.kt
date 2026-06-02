@@ -25,7 +25,7 @@ fun DetailThumbnailContent(
         modifier = Modifier
             .padding(horizontal = 4.dp)
             .padding(bottom = 8.dp)
-            .aspectRatio(thumbnail.width.toFloat() / thumbnail.height.toFloat())
+            .aspectRatio(thumbnail.aspectRatio)
             .background(MaterialTheme.colorScheme.surfaceBright)
             .clickable(onClick = onClick)
     ) {

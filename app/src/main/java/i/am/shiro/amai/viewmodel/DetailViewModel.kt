@@ -36,8 +36,6 @@ class DetailViewModel(
 
     private val toggleDisposable = CompositeDisposable()
 
-    val isLoadingLive = MutableLiveData<Boolean>()
-
     val modelLive = MutableLiveData<DetailModel>()
 
     init {
@@ -69,8 +67,6 @@ class DetailViewModel(
             .subscribe(modelLive::setValue, Timber::e)
 
         remoteDisposable = nhentaiApi.getOne(bookId)
-            .doOnSubscribe { isLoadingLive.postValue(true) }
-            .doFinally { isLoadingLive.postValue(false) }
             .retry()
             .subscribe(::onRemoteSuccess, Timber::e)
     }
@@ -85,9 +81,10 @@ class DetailViewModel(
         }
 
         val thumbnails = remoteImageEntities.map {
+            val width = it.thumbnailWidth.coerceAtLeast(1).toFloat()
+            val height = it.thumbnailHeight.coerceAtLeast(1).toFloat()
             Thumbnail(
-                width = it.thumbnailWidth,
-                height = it.thumbnailHeight,
+                aspectRatio = width / height,
                 url = it.thumbnailUrl
             )
         }
