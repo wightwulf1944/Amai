@@ -55,4 +55,6 @@
     <string name="categories">Categories</string>
     <string name="tags">Tags</string>
     <string name="share">Share</string>
+    <string name="added_to_favorites">Added to favorites</string>
+    <string name="removed_from_favorites">Removed from favorites</string>
 </resources>

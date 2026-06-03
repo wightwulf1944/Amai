@@ -20,8 +20,15 @@ import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.IconToggleButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
@@ -43,7 +50,17 @@ fun DetailScreen(
     onThumbnailClick: (Int) -> Unit,
     onTagClick: (String) -> Unit
 ) {
+    val snackbarHostState = remember { SnackbarHostState() }
+
+    FavoriteSnackbarEffect(
+        isFavorite = model.isFavorite,
+        snackbarHostState = snackbarHostState
+    )
+
     Scaffold(
+        snackbarHost = {
+            SnackbarHost(snackbarHostState)
+        },
         topBar = {
             DetailTopBar(
                 isFavorite = model.isFavorite,
@@ -61,6 +78,27 @@ fun DetailScreen(
             )
         }
     )
+}
+
+@Composable
+fun FavoriteSnackbarEffect(
+    isFavorite: Boolean,
+    snackbarHostState: SnackbarHostState
+) {
+    var isFirstComposition by remember { mutableStateOf(true) }
+
+    val addedMessage = stringResource(R.string.added_to_favorites)
+    val removedMessage = stringResource(R.string.removed_from_favorites)
+
+    LaunchedEffect(isFavorite) {
+        if (isFirstComposition) {
+            isFirstComposition = false
+        } else {
+            snackbarHostState.showSnackbar(
+                message = if (isFavorite) addedMessage else removedMessage
+            )
+        }
+    }
 }
 
 @Composable
