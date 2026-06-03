@@ -13,33 +13,39 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import i.am.shiro.amai.R
 import i.am.shiro.amai.model.DetailModel
 import i.am.shiro.amai.model.TagModel
+import i.am.shiro.amai.model.Thumbnail
 
 @Composable
-fun DetailHeaderContent(
+fun DetailContentHeader(
     model: DetailModel,
     onTagClick: (String) -> Unit
 ) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 4.dp)
-            .padding(bottom = 8.dp)
+            .padding(horizontal = 8.dp)
     ) {
-        HorizontalDivider(thickness = 1.dp)
+        Text(
+            text = model.title,
+            style = MaterialTheme.typography.titleMedium
+        )
+
+        HorizontalDivider(thickness = 1.dp, modifier = Modifier.padding(vertical = 4.dp))
 
         Text(
             text = stringResource(R.string.pages_format, model.pageCount),
             style = MaterialTheme.typography.bodySmall,
-            modifier = Modifier.padding(top = 4.dp)
         )
 
         Spacer(modifier = Modifier.height(16.dp))
@@ -102,3 +108,47 @@ private fun TagGroup(
         }
     }
 }
+
+@Preview
+@Composable
+fun DetailContentHeaderPreview() {
+    AmaiTheme {
+        Surface {
+            DetailContentHeader(
+                model = sampleModel(),
+                onTagClick = {}
+            )
+        }
+    }
+}
+
+private fun sampleModel() = DetailModel(
+    title = "Amai: The Sweetest Adventure",
+    pageCount = 256,
+    isFavorite = true,
+    artistTags = listOf(TagModel("artist", "shiro"), TagModel("artist", "kuro")),
+    groupTags = listOf(TagModel("group", "C86")),
+    parodyTags = listOf(TagModel("parody", "Original")),
+    characterTags = listOf(
+        TagModel("character", "Amai-chan"),
+        TagModel("character", "Mochi-kun")
+    ),
+    languageTags = listOf(
+        TagModel("language", "English"),
+        TagModel("language", "Japanese")
+    ),
+    categoryTags = listOf(TagModel("category", "Manga")),
+    generalTags = listOf(
+        TagModel("tag", "sweet"),
+        TagModel("tag", "comedy"),
+        TagModel("tag", "romance"),
+        TagModel("tag", "slice of life"),
+        TagModel("tag", "school life")
+    ),
+    thumbnails = List(5) { index ->
+        Thumbnail(
+            aspectRatio = 0.75f,
+            url = "https://example.com/thumb/$index.jpg"
+        )
+    }
+)

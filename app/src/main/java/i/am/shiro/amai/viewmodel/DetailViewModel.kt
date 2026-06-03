@@ -17,9 +17,7 @@ import i.am.shiro.amai.util.imageEntities
 import i.am.shiro.amai.util.tagEntities
 import i.am.shiro.amai.util.toEntity
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers.mainThread
-import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.disposables.Disposable
-import io.reactivex.rxjava3.kotlin.plusAssign
 import timber.log.Timber
 
 class DetailViewModel(
@@ -34,7 +32,7 @@ class DetailViewModel(
 
     private var remoteDisposable = Disposable.disposed()
 
-    private val toggleDisposable = CompositeDisposable()
+    private var toggleDisposable = Disposable.disposed()
 
     val modelLive = MutableLiveData<DetailModel>()
 
@@ -48,16 +46,16 @@ class DetailViewModel(
         toggleDisposable.dispose()
     }
 
-    fun toggleFavorite() {
-        val isFavorite = modelLive.value?.isFavorite ?: return
+    fun onFavoriteToggle(isFavorite: Boolean) {
+        toggleDisposable.dispose()
 
         val action = if (isFavorite) {
-            database.favoriteDao.deleteById(bookId)
-        } else {
             database.favoriteDao.insert(FavoriteEntity(bookId))
+        } else {
+            database.favoriteDao.deleteById(bookId)
         }
 
-        toggleDisposable += action.subscribe({}, Timber::e)
+        toggleDisposable = action.subscribe({}, Timber::e)
     }
 
     private fun load() {

@@ -1,27 +1,30 @@
 package i.am.shiro.amai.compose
 
-import androidx.compose.animation.animateColorAsState
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.plus
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.itemsIndexed
-import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonDefaults
+import androidx.compose.material3.IconToggleButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.MediumTopAppBar
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.material3.TopAppBarScrollBehavior
+import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -31,27 +34,22 @@ import i.am.shiro.amai.model.DetailModel
 import i.am.shiro.amai.model.TagModel
 import i.am.shiro.amai.model.Thumbnail
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DetailScreen(
     model: DetailModel,
     onBackClick: () -> Unit,
     onShareClick: () -> Unit,
-    onFavoriteClick: () -> Unit,
+    onFavoriteToggle: (Boolean) -> Unit,
     onThumbnailClick: (Int) -> Unit,
     onTagClick: (String) -> Unit
 ) {
-    val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
-
     Scaffold(
-        modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
-            DetailTopAppBar(
-                model = model,
+            DetailTopBar(
+                isFavorite = model.isFavorite,
                 onBackClick = onBackClick,
                 onShareClick = onShareClick,
-                onFavoriteClick = onFavoriteClick,
-                scrollBehavior = scrollBehavior
+                onFavoriteToggle = onFavoriteToggle
             )
         },
         content = { innerPadding ->
@@ -65,61 +63,65 @@ fun DetailScreen(
     )
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DetailTopAppBar(
-    model: DetailModel,
+fun DetailTopBar(
+    isFavorite: Boolean,
     onBackClick: () -> Unit,
     onShareClick: () -> Unit,
-    onFavoriteClick: () -> Unit,
-    scrollBehavior: TopAppBarScrollBehavior
+    onFavoriteToggle: (Boolean) -> Unit,
 ) {
-    MediumTopAppBar(
-        title = {
-            Text(
-                modifier = Modifier.padding(end = 16.dp),
-                text = model.title,
-                style = MaterialTheme.typography.titleMedium
-            )
-        },
-        navigationIcon = {
+    val background = Brush.verticalGradient(
+        listOf(MaterialTheme.colorScheme.surface, Color.Transparent)
+    )
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(background)
+            .padding(horizontal = 16.dp, vertical = 8.dp)
+    ) {
+        Surface(
+            color = MaterialTheme.colorScheme.surfaceContainer,
+            shape = CircleShape
+        ) {
             IconButton(onClick = onBackClick) {
                 Icon(
                     painter = painterResource(R.drawable.ic_arrow_back),
                     contentDescription = stringResource(R.string.back)
                 )
             }
-        },
-        actions = {
-            IconButton(onClick = onShareClick) {
-                Icon(
-                    painter = painterResource(R.drawable.ic_share),
-                    contentDescription = stringResource(R.string.share)
-                )
+        }
+
+        Spacer(modifier = Modifier.weight(1f))
+
+        Surface(
+            color = MaterialTheme.colorScheme.surfaceContainer,
+            shape = CircleShape
+        ) {
+            Row {
+                IconButton(onClick = onShareClick) {
+                    Icon(
+                        painter = painterResource(R.drawable.ic_share),
+                        contentDescription = stringResource(R.string.share)
+                    )
+                }
+                IconToggleButton(
+                    checked = isFavorite,
+                    onCheckedChange = { onFavoriteToggle(it) },
+                    colors = IconButtonDefaults.iconToggleButtonColors(
+                        checkedContainerColor = MaterialTheme.colorScheme.tertiaryContainer,
+                        checkedContentColor = MaterialTheme.colorScheme.onTertiaryContainer
+                    )
+                ) {
+                    Icon(
+                        painter = painterResource(R.drawable.ic_favorite),
+                        contentDescription = stringResource(R.string.favorite),
+                    )
+                }
             }
-            IconButton(onClick = onFavoriteClick) {
-                val tint by animateColorAsState(
-                    targetValue = if (model.isFavorite) {
-                        MaterialTheme.colorScheme.tertiary
-                    } else {
-                        MaterialTheme.colorScheme.onSurfaceVariant
-                    }
-                )
-                Icon(
-                    painter = painterResource(R.drawable.ic_favorite),
-                    contentDescription = stringResource(R.string.favorite),
-                    tint = tint
-                )
-            }
-        },
-        colors = TopAppBarDefaults.topAppBarColors(
-            scrolledContainerColor = MaterialTheme.colorScheme.surfaceContainerLow
-        ),
-        scrollBehavior = scrollBehavior
-    )
+        }
+    }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DetailContent(
     model: DetailModel,
@@ -130,21 +132,19 @@ fun DetailContent(
     LazyVerticalGrid(
         columns = GridCells.Adaptive(150.dp),
         modifier = Modifier.fillMaxSize(),
-        contentPadding = contentPadding + PaddingValues(
-            start = 12.dp,
-            end = 12.dp,
-            bottom = 8.dp
-        )
+        contentPadding = contentPadding + PaddingValues(8.dp, 8.dp, 8.dp, 24.dp),
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp),
     ) {
         item(span = { GridItemSpan(maxLineSpan) }) {
-            DetailHeaderContent(
+            DetailContentHeader(
                 model = model,
                 onTagClick = onTagClick
             )
         }
 
         itemsIndexed(model.thumbnails) { index, thumbnail ->
-            DetailThumbnailContent(
+            DetailContentThumbnail(
                 thumbnail = thumbnail,
                 onClick = { onThumbnailClick(index) }
             )
@@ -154,13 +154,28 @@ fun DetailContent(
 
 @Preview
 @Composable
-fun DetailGridContentPreview() {
+fun DetailTopBarPreview() {
+    AmaiTheme {
+        Surface {
+            DetailTopBar(
+                isFavorite = false,
+                onBackClick = {},
+                onShareClick = {},
+                onFavoriteToggle = {}
+            )
+        }
+    }
+}
+
+@Preview
+@Composable
+fun DetailScreenPreview() {
     AmaiTheme {
         DetailScreen(
             model = sampleModel(),
             onBackClick = {},
             onShareClick = {},
-            onFavoriteClick = {},
+            onFavoriteToggle = {},
             onThumbnailClick = {},
             onTagClick = {}
         )
