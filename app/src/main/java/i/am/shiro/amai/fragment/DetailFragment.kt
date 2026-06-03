@@ -7,7 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.rxjava3.subscribeAsState
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed
 import androidx.fragment.app.Fragment
@@ -43,7 +43,7 @@ class DetailFragment() : Fragment() {
         composeView.setViewCompositionStrategy(DisposeOnViewTreeLifecycleDestroyed)
         composeView.setContent {
             AmaiTheme {
-                val model by viewModel.modelLive.observeAsState()
+                val model by viewModel.uiState.subscribeAsState(null)
                 model?.let {
                     DetailScreen(
                         model = it,

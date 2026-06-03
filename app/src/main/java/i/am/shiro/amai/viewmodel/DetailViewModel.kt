@@ -1,6 +1,5 @@
 package i.am.shiro.amai.viewmodel
 
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import i.am.shiro.amai.data.AmaiDatabase
@@ -16,7 +15,6 @@ import i.am.shiro.amai.util.argument
 import i.am.shiro.amai.util.imageEntities
 import i.am.shiro.amai.util.tagEntities
 import i.am.shiro.amai.util.toEntity
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers.mainThread
 import io.reactivex.rxjava3.disposables.Disposable
 import timber.log.Timber
 
@@ -28,20 +26,18 @@ class DetailViewModel(
 
     private val bookId by handle.argument<Int> { error("bookId is required") }
 
-    private var localDisposable = Disposable.disposed()
-
     private var remoteDisposable = Disposable.disposed()
 
     private var toggleDisposable = Disposable.disposed()
 
-    val modelLive = MutableLiveData<DetailModel>()
+    val uiState = database.detailDao.getDetail(bookId)
+        .map { it.toDetailModel() }
 
     init {
-        load()
+        loadRemote()
     }
 
     override fun onCleared() {
-        localDisposable.dispose()
         remoteDisposable.dispose()
         toggleDisposable.dispose()
     }
@@ -58,12 +54,7 @@ class DetailViewModel(
         toggleDisposable = action.subscribe({}, Timber::e)
     }
 
-    private fun load() {
-        localDisposable = database.detailDao.getDetail(bookId)
-            .map { it.toDetailModel() }
-            .observeOn(mainThread())
-            .subscribe(modelLive::setValue, Timber::e)
-
+    private fun loadRemote() {
         remoteDisposable = nhentaiApi.getOne(bookId)
             .retry()
             .subscribe(::onRemoteSuccess, Timber::e)
