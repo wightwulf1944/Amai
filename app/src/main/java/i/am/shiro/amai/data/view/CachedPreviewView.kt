@@ -18,7 +18,7 @@ import androidx.room.DatabaseView
     LEFT JOIN FavoriteEntity USING(bookId)
     ORDER BY id
 """)
-class CachedPreviewView(
+data class CachedPreviewView(
     val bookId: Int,
     val title: String,
     val pageCount: Int,

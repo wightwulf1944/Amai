@@ -1,17 +1,24 @@
 package i.am.shiro.amai.fragment
 
 import android.os.Bundle
-import android.text.Spannable
-import android.text.style.UnderlineSpan
+import android.view.LayoutInflater
 import android.view.View
-import androidx.core.text.set
-import androidx.core.text.toSpannable
-import androidx.core.view.isVisible
+import android.view.ViewGroup
+import androidx.compose.foundation.lazy.staggeredgrid.rememberLazyStaggeredGridState
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.platform.ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import i.am.shiro.amai.R
-import i.am.shiro.amai.adapter.CachedPreviewAdapter
-import i.am.shiro.amai.databinding.FragmentNhentaiBinding
+import i.am.shiro.amai.compose.AmaiTheme
+import i.am.shiro.amai.compose.BrowseScreen
 import i.am.shiro.amai.fragment.dialog.NhentaiSortDialog
 import i.am.shiro.amai.util.amaiViewModels
 import i.am.shiro.amai.util.goToDetail
@@ -21,151 +28,59 @@ import i.am.shiro.amai.viewmodel.MainViewModel
 import i.am.shiro.amai.viewmodel.NhentaiViewModel
 
 // TODO try Jetpack Paging 3 library for infinite scrolling
-class NhentaiFragment : Fragment(R.layout.fragment_nhentai) {
+class NhentaiFragment : Fragment() {
 
     private val viewModel by amaiViewModels<NhentaiViewModel>()
 
     private val activityViewModel by activityViewModels<MainViewModel>()
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        val b = FragmentNhentaiBinding.bind(view)
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        val composeView = ComposeView(requireContext())
+        composeView.setViewCompositionStrategy(DisposeOnViewTreeLifecycleDestroyed)
+        composeView.setContent {
+            val books by viewModel.booksLive.observeAsState(emptyList())
+            val isLoading by viewModel.isLoadingLive.observeAsState(false)
+            val scrollState = rememberLazyStaggeredGridState()
 
-        b.sortButton.setOnClickListener {
-            childFragmentManager.show(NhentaiSortDialog())
-        }
+            var title by remember { mutableStateOf(getString(R.string.nhentai)) }
+            var scrollTrigger by remember { mutableIntStateOf(0) }
 
-        b.searchButton.setOnClickListener {
-            goToSearch()
-        }
+            LaunchedEffect(scrollTrigger) {
+                if (scrollTrigger > 0) {
+                    scrollState.scrollToItem(0)
+                }
+            }
 
-        val offset = (64 * resources.displayMetrics.density).toInt()
-        b.swipeRefreshLayout.setProgressViewOffset(false, 0, offset)
-        b.swipeRefreshLayout.setOnRefreshListener {
-            b.swipeRefreshLayout.isRefreshing = false
-            viewModel.onRefresh()
-        }
+            AmaiTheme {
+                BrowseScreen(
+                    title = title,
+                    books = books,
+                    isLoading = isLoading,
+                    onRefresh = viewModel::onRefresh,
+                    onSortClick = { childFragmentManager.show(NhentaiSortDialog()) },
+                    onSearchClick = { goToSearch() },
+                    onItemClick = { bookId -> goToDetail(bookId) },
+                    onPositionBind = viewModel::onPositionBind,
+                    gridState = scrollState
+                )
+            }
 
-        val adapter = CachedPreviewAdapter(
-            onItemClick = { goToDetail(it.bookId) },
-            onPositionBind = viewModel::onPositionBind
-        )
-
-        b.recyclerView.setHasFixedSize(true)
-        b.recyclerView.adapter = adapter
-
-        viewModel.booksLive.observe(viewLifecycleOwner, adapter::submitList)
-        viewModel.isLoadingLive.observe(viewLifecycleOwner) { isLoading ->
-            b.progressBar.isVisible = isLoading
-        }
-
-        activityViewModel.searchEventLive.observe(viewLifecycleOwner) { event ->
-            if (!event.isNhentaiConsumed) {
-                val query = event.query
-                b.titleView.text = query.tokenize()
-                b.recyclerView.scrollToPosition(0)
-                viewModel.onSearch(query)
-                event.isNhentaiConsumed = true
+            LaunchedEffect(Unit) {
+                activityViewModel.searchEventLive.observe(viewLifecycleOwner) { event ->
+                    if (!event.isNhentaiConsumed) {
+                        title = event.query
+                        scrollTrigger++
+                        viewModel.onSearch(event.query)
+                        event.isNhentaiConsumed = true
+                    }
+                }
             }
         }
+
+        return composeView
     }
-}
-
-private fun String.tokenize(): Spannable {
-    var searchMode = SearchMode.START
-    var startI = -1
-    val spannable = toSpannable()
-
-    forEachIndexed { i, c ->
-        when (searchMode) {
-            SearchMode.START -> {
-                when (c) {
-                    '"' -> {
-                        startI = i
-                        searchMode = SearchMode.END_QUOTE
-                    }
-
-                    ':' -> {
-                        // unexpected, do nothing
-                    }
-
-                    ' ' -> {
-                        // stay in START
-                    }
-
-                    else -> {
-                        startI = i
-                        searchMode = SearchMode.END
-                    }
-                }
-            }
-
-            SearchMode.CONTINUE -> {
-                when (c) {
-                    '"' -> {
-                        searchMode = SearchMode.END_QUOTE
-                    }
-
-                    ':' -> {
-                        // unexpected, do nothing
-                    }
-
-                    ' ' -> {
-                        // unexpected, end current token
-                        spannable[startI .. i] = UnderlineSpan()
-                        searchMode = SearchMode.START
-                    }
-
-                    else -> {
-                        searchMode = SearchMode.END
-                    }
-                }
-            }
-
-            SearchMode.END -> {
-                when (c) {
-                    '"' -> {
-                        // unexpected, end current token and start new token
-                        spannable[startI .. i] = UnderlineSpan()
-                        startI = i
-                        searchMode = SearchMode.END_QUOTE
-                    }
-
-                    ':' -> {
-                        searchMode = SearchMode.CONTINUE
-                    }
-
-                    ' ' -> {
-                        spannable[startI .. i] = UnderlineSpan()
-                        searchMode = SearchMode.START
-                    }
-
-                    else -> {
-                        // stay in END
-                    }
-                }
-            }
-
-            SearchMode.END_QUOTE -> {
-                when (c) {
-                    '"' -> {
-                        spannable[startI .. i] = UnderlineSpan()
-                        searchMode = SearchMode.START
-                    }
-
-                    else -> {
-                        // inside quotes: do nothing
-                    }
-                }
-            }
-        }
-    }
-    if (searchMode != SearchMode.START) {
-        spannable[startI .. length] = UnderlineSpan()
-    }
-
-    return spannable
-}
-
-private enum class SearchMode {
-    START, CONTINUE, END, END_QUOTE
 }
