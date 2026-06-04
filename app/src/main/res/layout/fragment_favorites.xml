@@ -28,7 +28,7 @@
         android:background="@drawable/bg_floating"
         android:elevation="4dp"
         app:layout_behavior=".widget.TopFloatingBehavior"
-        app:menu="@menu/action_saved">
+        app:menu="@menu/action_favorites">
 
         <i.am.shiro.amai.widget.SearchInput
             android:id="@+id/searchInput"

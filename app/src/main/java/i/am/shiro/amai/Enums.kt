@@ -1,5 +1,5 @@
 package i.am.shiro.amai
 
-enum class SavedSort {
+enum class FavoritesSort {
     New, Old
 }

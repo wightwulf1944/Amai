@@ -3,13 +3,13 @@ package i.am.shiro.amai.viewmodel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
-import i.am.shiro.amai.SavedSort
+import i.am.shiro.amai.FavoritesSort
 import i.am.shiro.amai.data.AmaiDatabase
-import i.am.shiro.amai.data.view.SavedPreviewView
+import i.am.shiro.amai.data.view.FavoritesPreviewView
 import i.am.shiro.amai.util.invoke
 import io.reactivex.rxjava3.disposables.Disposable
 
-class SavedViewModel(
+class FavoritesViewModel(
     handle: SavedStateHandle,
     private val database: AmaiDatabase
 ) : ViewModel() {
@@ -18,9 +18,9 @@ class SavedViewModel(
 
     private var query by handle<String>("%")
 
-    private var sort by handle<SavedSort>(SavedSort.New)
+    private var sort by handle<FavoritesSort>(FavoritesSort.New)
 
-    val booksLive = MutableLiveData<List<SavedPreviewView>>()
+    val booksLive = MutableLiveData<List<FavoritesPreviewView>>()
 
     init {
         fetchLocal()
@@ -31,14 +31,14 @@ class SavedViewModel(
         fetchLocal()
     }
 
-    fun onSort(sort: SavedSort) {
+    fun onSort(sort: FavoritesSort) {
         this.sort = sort
         fetchLocal()
     }
 
     private fun fetchLocal() {
         disposable.dispose()
-        disposable = database.savedPreviewDao
+        disposable = database.favoritesPreviewDao
             .findSorted(query, sort)
             .subscribe(booksLive::postValue)
     }

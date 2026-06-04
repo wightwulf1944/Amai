@@ -7,15 +7,15 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
-import i.am.shiro.amai.adapter.SavedPreviewAdapter.ViewHolder
-import i.am.shiro.amai.data.view.SavedPreviewView
+import i.am.shiro.amai.adapter.FavoritesPreviewAdapter.ViewHolder
+import i.am.shiro.amai.data.view.FavoritesPreviewView
 import i.am.shiro.amai.databinding.ItemStaggeredBookBinding
 import i.am.shiro.amai.util.inflateChild
 
-class SavedPreviewAdapter(
-    private val onItemClick: (SavedPreviewView) -> Unit,
-    private val onItemLongClick: (SavedPreviewView) -> Unit
-) : ListAdapter<SavedPreviewView, ViewHolder>(DiffCallback()) {
+class FavoritesPreviewAdapter(
+    private val onItemClick: (FavoritesPreviewView) -> Unit,
+    private val onItemLongClick: (FavoritesPreviewView) -> Unit
+) : ListAdapter<FavoritesPreviewView, ViewHolder>(DiffCallback()) {
 
     init {
         setHasStableIds(true)
@@ -51,11 +51,11 @@ class SavedPreviewAdapter(
 
     class ViewHolder(val binding: ItemStaggeredBookBinding) : RecyclerView.ViewHolder(binding.root)
 
-    private class DiffCallback : DiffUtil.ItemCallback<SavedPreviewView>() {
+    private class DiffCallback : DiffUtil.ItemCallback<FavoritesPreviewView>() {
 
-        override fun areItemsTheSame(oldItem: SavedPreviewView, newItem: SavedPreviewView) =
+        override fun areItemsTheSame(oldItem: FavoritesPreviewView, newItem: FavoritesPreviewView) =
             oldItem.bookId == newItem.bookId
 
-        override fun areContentsTheSame(oldItem: SavedPreviewView, newItem: SavedPreviewView) = true
+        override fun areContentsTheSame(oldItem: FavoritesPreviewView, newItem: FavoritesPreviewView) = true
     }
 }

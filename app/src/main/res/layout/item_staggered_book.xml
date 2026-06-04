@@ -69,7 +69,7 @@
             app:layout_constraintTop_toBottomOf="@+id/titleText" />
 
         <ImageView
-            android:id="@+id/savedBadge"
+            android:id="@+id/favoriteBadge"
             android:layout_width="16dp"
             android:layout_height="16dp"
             android:layout_marginStart="8dp"

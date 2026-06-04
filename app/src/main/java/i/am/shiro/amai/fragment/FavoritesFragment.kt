@@ -5,30 +5,30 @@ import android.view.MenuItem
 import android.view.View
 import androidx.fragment.app.Fragment
 import i.am.shiro.amai.R
-import i.am.shiro.amai.SavedSort
-import i.am.shiro.amai.adapter.SavedPreviewAdapter
-import i.am.shiro.amai.data.view.SavedPreviewView
-import i.am.shiro.amai.databinding.FragmentSavedBinding
+import i.am.shiro.amai.FavoritesSort
+import i.am.shiro.amai.adapter.FavoritesPreviewAdapter
+import i.am.shiro.amai.data.view.FavoritesPreviewView
+import i.am.shiro.amai.databinding.FragmentFavoritesBinding
 import i.am.shiro.amai.fragment.dialog.DeleteBookDialog
 import i.am.shiro.amai.fragment.dialog.PlaceholderDialog
-import i.am.shiro.amai.fragment.dialog.SavedSortDialog
+import i.am.shiro.amai.fragment.dialog.FavoritesSortDialog
 import i.am.shiro.amai.util.amaiViewModels
 import i.am.shiro.amai.util.goToDetail
 import i.am.shiro.amai.util.loadBoolean
 import i.am.shiro.amai.util.saveBoolean
 import i.am.shiro.amai.util.show
-import i.am.shiro.amai.viewmodel.SavedViewModel
+import i.am.shiro.amai.viewmodel.FavoritesViewModel
 
-class SavedFragment : Fragment(R.layout.fragment_saved) {
+class FavoritesFragment : Fragment(R.layout.fragment_favorites) {
 
-    private val viewModel by amaiViewModels<SavedViewModel>()
+    private val viewModel by amaiViewModels<FavoritesViewModel>()
 
     private var shouldScrollToTop = false
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         savedInstanceState?.loadBoolean(::shouldScrollToTop)
 
-        val b = FragmentSavedBinding.bind(view)
+        val b = FragmentFavoritesBinding.bind(view)
 
         b.toolbar.setOnMenuItemClickListener(::onActionClick)
 
@@ -37,7 +37,7 @@ class SavedFragment : Fragment(R.layout.fragment_saved) {
             viewModel.onSearch(searchQuery)
         }
 
-        val adapter = SavedPreviewAdapter(
+        val adapter = FavoritesPreviewAdapter(
             onItemClick = ::invokeViewDetails,
             onItemLongClick = ::invokeDeleteBook
         )
@@ -55,7 +55,7 @@ class SavedFragment : Fragment(R.layout.fragment_saved) {
         }
     }
 
-    fun onSort(sort: SavedSort) {
+    fun onSort(sort: FavoritesSort) {
         shouldScrollToTop = true
         viewModel.onSort(sort)
     }
@@ -74,18 +74,18 @@ class SavedFragment : Fragment(R.layout.fragment_saved) {
     }
 
     private fun invokeSort() {
-        childFragmentManager.show(SavedSortDialog())
+        childFragmentManager.show(FavoritesSortDialog())
     }
 
     private fun invokeHelp() {
         childFragmentManager.show(PlaceholderDialog())
     }
 
-    private fun invokeViewDetails(preview: SavedPreviewView) {
+    private fun invokeViewDetails(preview: FavoritesPreviewView) {
         goToDetail(preview.bookId)
     }
 
-    private fun invokeDeleteBook(preview: SavedPreviewView) {
+    private fun invokeDeleteBook(preview: FavoritesPreviewView) {
         childFragmentManager.show(DeleteBookDialog(preview.bookId, preview.title))
     }
 }

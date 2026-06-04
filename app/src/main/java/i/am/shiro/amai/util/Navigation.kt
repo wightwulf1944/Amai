@@ -27,7 +27,7 @@ fun InitialSetupFragment.goToMain() {
     replaceFragment(HomeFragment())
 }
 
-fun SavedFragment.goToDetail(bookId: Int) {
+fun FavoritesFragment.goToDetail(bookId: Int) {
     pushFragment(DetailFragment(bookId))
 }
 

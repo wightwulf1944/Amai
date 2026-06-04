@@ -11,8 +11,8 @@ import androidx.room.DatabaseView
         thumbnailHeight, 
         thumbnailUrl,
         CASE 
-            WHEN saveDate IS NULL THEN 0 ELSE 1 
-        END AS isSaved
+            WHEN favoriteDate IS NULL THEN 0 ELSE 1 
+        END AS isFavorite
     FROM CachedEntity 
     LEFT JOIN BookEntity USING(bookId) 
     LEFT JOIN FavoriteEntity USING(bookId)
@@ -25,5 +25,5 @@ data class CachedPreviewView(
     val thumbnailWidth: Int,
     val thumbnailHeight: Int,
     val thumbnailUrl: String,
-    val isSaved: Boolean
+    val isFavorite: Boolean
 )

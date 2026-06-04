@@ -97,7 +97,7 @@ git -c safe.directory=C:/android_projects/Amai status --short
 - `app/src/main/java/i/am/shiro/amai/viewmodel`: app ViewModels. Shared factory lives in `viewmodel/factory/ViewModelFactory.kt`.
 - `app/src/main/java/i/am/shiro/amai/fragment`: fragment entry points, including XML-backed screens, Compose-backed screens, and dialogs.
 - `app/src/main/java/i/am/shiro/amai/compose`: Compose UI for browse and detail screens plus Material 3 theme/colors.
-- `app/src/main/java/i/am/shiro/amai/adapter`: legacy RecyclerView adapters for saved previews, reading pages, and search suggestions.
+- `app/src/main/java/i/am/shiro/amai/adapter`: legacy RecyclerView adapters for favorites previews, reading pages, and search suggestions.
 - `app/src/main/java/i/am/shiro/amai/widget`: custom widgets and behaviors, including `PageRecyclerView`, `SearchInput`, and `TopFloatingBehavior`.
 - `app/src/main/java/i/am/shiro/amai/util`: extension helpers for navigation, fragment arguments, SavedStateHandle delegates, ViewBinding inflation, Room/API mapping, and dialog display.
 - `app/src/main/res`: XML layouts, menus, colors, theme, icons, and strings.
@@ -107,9 +107,9 @@ git -c safe.directory=C:/android_projects/Amai status --short
 - `MainActivity` hosts a single `FragmentContainerView` from `activity_main.xml`.
 - First run opens `InitialSetupFragment`, which lists `context.getExternalFilesDirs(null)` choices and stores the selected path in `AmaiPreferences.storagePath`.
 - Normal launch opens `HomeFragment`.
-- `HomeFragment` owns child `SavedFragment` and `NhentaiFragment`, attaching/detaching them behind a Material bottom navigation.
+- `HomeFragment` owns child `FavoritesFragment` and `NhentaiFragment`, attaching/detaching them behind a Material bottom navigation.
 - `NhentaiFragment` is a Compose-backed browse/search screen. It observes `NhentaiViewModel.booksLive` and `isLoadingLive`, supports refresh/sort/search, and triggers pagination when items bind near the end.
-- `SavedFragment` is XML/ViewBinding-backed. It shows locally favorited books, supports search/sort, opens details, and long-presses into `DeleteBookDialog`.
+- `FavoritesFragment` is XML/ViewBinding-backed. It shows locally favorited books, supports search/sort, opens details, and long-presses into `DeleteBookDialog`.
 - `SearchFragment` submits queries through the activity-scoped `MainViewModel`.
 - `DetailFragment` is Compose-backed. It loads detail state from Room, refreshes detail from the API, toggles favorites, shares URLs, opens the reader, and sends tag-click searches through `MainViewModel`.
 - `ReadFragment` is XML/ViewBinding-backed. It displays page images in `PageRecyclerView`, entering fullscreen while attached.
@@ -124,18 +124,18 @@ git -c safe.directory=C:/android_projects/Amai status --short
   - `BookEntity`: parent table keyed by `bookId`.
   - `TagEntity`: composite key `bookId`, `type`, `name`; cascades when a book is deleted.
   - `ImageEntity`: composite key `bookId`, `pageIndex`; cascades when a book is deleted.
-  - `FavoriteEntity`: keyed by `bookId`, stores `saveDate`; foreign key uses `NO_ACTION`.
+  - `FavoriteEntity`: keyed by `bookId`, stores `favoriteDate`; foreign key uses `NO_ACTION`.
   - `CachedEntity`: auto id plus unique `bookId`; stores current browse/search result ordering.
 - Views:
-  - `SavedPreviewView`: joins favorites to books for saved-list display.
-  - `CachedPreviewView`: joins cached rows to books and favorites for browse display and saved badge state.
+  - `FavoritesPreviewView`: joins favorites to books for favorites-list display.
+  - `CachedPreviewView`: joins cached rows to books and favorites for browse display and favorite badge state.
 - Important DAOs:
   - `BookDao.deleteOrphan()` deletes books not referenced by favorites or cache.
-  - `SavedPreviewDao.findSorted()` switches between newest and oldest saved sort.
+  - `FavoritesPreviewDao.findSorted()` switches between newest and oldest favorite sort.
   - `DetailDao.getDetail()` returns `Observable<DetailIntermediate>`.
   - `ImageDao.findByBookId()` returns reader pages ordered by `pageIndex`.
 - API-to-entity mapping lives in `util/NhentaiX.kt`.
-- File deletion for saved items happens in `DeleteBookDialog` at `File(preferences.storagePath!!).resolve(bookId.toString()).deleteRecursively()`.
+- File deletion for favorited items happens in `DeleteBookDialog` at `File(preferences.storagePath!!).resolve(bookId.toString()).deleteRecursively()`.
 
 ## Network
 
@@ -150,7 +150,7 @@ git -c safe.directory=C:/android_projects/Amai status --short
 - Compose theme is `AmaiTheme`; verify current color schemes in `compose/AmaiTheme.kt`.
 - XML theme is `Theme.Material3.Dark.NoActionBar`; verify in `res/values/themes.xml`.
 - Browse and detail Compose layouts use adaptive grids with 150 dp cells and Coil `AsyncImage`.
-- Legacy saved list uses `RecyclerView` with `StaggeredGridLayoutManager`; verify span counts in `res/values/integers.xml`.
+- Legacy favorites list uses `RecyclerView` with `StaggeredGridLayoutManager`; verify span counts in `res/values/integers.xml`.
 - Use existing string resources for visible text. Add strings to `res/values/strings.xml` when introducing new UI text.
 - Use existing icons/drawables where possible before adding assets.
 
@@ -168,8 +168,8 @@ git -c safe.directory=C:/android_projects/Amai status --short
 
 These were observed during research. Re-check the named files before acting on them:
 
-- `HomeFragment.kt` set bottom navigation selection to `navigation_nhentai` in both saved and nhentai branches; inspect carefully before relying on that logic.
-- `SavedPreviewAdapter.kt` had `DiffCallback.areContentsTheSame()` always returning `true`; content changes may not rebind existing rows.
+- `HomeFragment.kt` set bottom navigation selection to `navigation_nhentai` in both favorites and nhentai branches; inspect carefully before relying on that logic.
+- `FavoritesPreviewAdapter.kt` had `DiffCallback.areContentsTheSame()` always returning `true`; content changes may not rebind existing rows.
 - `fragment/dialog/NhentaiSortDialog.kt` was marked `@Deprecated("remove this")` but was still used by `NhentaiFragment.kt`.
 - `DetailViewModel.kt` used unbounded `retry()` in `loadRemote()`.
 - Several call sites used `!!`; search with `rg -n "!!" app/src/main/java` before changing intent parsing, preferences, or LiveData assumptions.

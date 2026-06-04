@@ -20,27 +20,27 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
 
     private var lastBackPressTime = markNow()
 
-    private lateinit var savedFragment: SavedFragment
+    private lateinit var favoritesFragment: FavoritesFragment
 
     private lateinit var nhentaiFragment: NhentaiFragment
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val savedTag = "saved"
+        val favoritesTag = "favorites"
         val nhentaiTag = "nhentai"
 
         if (savedInstanceState == null) {
-            savedFragment = SavedFragment()
+            favoritesFragment = FavoritesFragment()
             nhentaiFragment = NhentaiFragment()
 
             childFragmentManager.commitNow {
-                add(R.id.fragmentContainer, savedFragment, savedTag)
+                add(R.id.fragmentContainer, favoritesFragment, favoritesTag)
                 add(R.id.fragmentContainer, nhentaiFragment, nhentaiTag)
-                detach(savedFragment)
+                detach(favoritesFragment)
             }
         } else {
-            savedFragment = childFragmentManager.findFragmentByTag(savedTag) as SavedFragment
+            favoritesFragment = childFragmentManager.findFragmentByTag(favoritesTag) as FavoritesFragment
             nhentaiFragment = childFragmentManager.findFragmentByTag(nhentaiTag) as NhentaiFragment
         }
     }
@@ -61,7 +61,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         }
 
         b.navigation.selectedItemId = when {
-            !savedFragment.isDetached -> R.id.navigation_nhentai
+            !favoritesFragment.isDetached -> R.id.navigation_favorites
             !nhentaiFragment.isDetached -> R.id.navigation_nhentai
             else -> error(childFragmentManager.fragments)
         }
@@ -80,8 +80,8 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
 
     private fun onNavigate(itemId: Int) {
         childFragmentManager.commit {
-            if (itemId == R.id.navigation_saved) attach(savedFragment)
-            else detach(savedFragment)
+            if (itemId == R.id.navigation_favorites) attach(favoritesFragment)
+            else detach(favoritesFragment)
 
             if (itemId == R.id.navigation_nhentai) attach(nhentaiFragment)
             else detach(nhentaiFragment)

@@ -7,7 +7,7 @@ import androidx.lifecycle.viewmodel.CreationExtras
 import i.am.shiro.amai.viewmodel.DetailViewModel
 import i.am.shiro.amai.viewmodel.NhentaiViewModel
 import i.am.shiro.amai.viewmodel.ReadViewModel
-import i.am.shiro.amai.viewmodel.SavedViewModel
+import i.am.shiro.amai.viewmodel.FavoritesViewModel
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.get
 import kotlin.reflect.KClass
@@ -26,8 +26,8 @@ class ViewModelFactory : ViewModelProvider.Factory, KoinComponent {
             NhentaiViewModel::class ->
                 NhentaiViewModel(extras.createSavedStateHandle(), get(), get()) as T
 
-            SavedViewModel::class ->
-                SavedViewModel(extras.createSavedStateHandle(), get()) as T
+            FavoritesViewModel::class ->
+                FavoritesViewModel(extras.createSavedStateHandle(), get()) as T
 
             else ->
                 error("Unable to create $modelClass")

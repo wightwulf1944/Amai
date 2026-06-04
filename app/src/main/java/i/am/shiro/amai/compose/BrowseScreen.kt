@@ -302,7 +302,7 @@ fun BrowseScreenPreview() {
             thumbnailWidth = 50,
             thumbnailHeight = if (i % 2 == 0) 70 else 30, // Varied heights for staggered effect
             thumbnailUrl = "",
-            isSaved = i % 3 == 0
+            isFavorite = i % 3 == 0
         )
     }
 

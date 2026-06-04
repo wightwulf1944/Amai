@@ -18,11 +18,11 @@ import androidx.room.Ignore
 )
 data class FavoriteEntity(
     val bookId: Int,
-    val saveDate: Long
+    val favoriteDate: Long
 ) {
     @Ignore
     constructor(bookId: Int) : this (
         bookId = bookId,
-        saveDate = System.currentTimeMillis()
+        favoriteDate = System.currentTimeMillis()
     )
 }

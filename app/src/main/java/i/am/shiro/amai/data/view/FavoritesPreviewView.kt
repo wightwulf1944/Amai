@@ -5,7 +5,7 @@ import androidx.room.DatabaseView
 @DatabaseView("""
     SELECT 
         bookId, 
-        saveDate,
+        favoriteDate,
         title, 
         pageCount, 
         thumbnailWidth, 
@@ -14,9 +14,9 @@ import androidx.room.DatabaseView
     FROM FavoriteEntity 
     LEFT JOIN BookEntity USING(bookId) 
 """)
-class SavedPreviewView(
+class FavoritesPreviewView(
     val bookId: Int,
-    val saveDate: Long,
+    val favoriteDate: Long,
     val title: String,
     val pageCount: Int,
     val thumbnailWidth: Int,

@@ -66,7 +66,7 @@ fun BrowseItem(
         Row(
             modifier = Modifier.padding(top = 4.dp, start = 8.dp, end = 8.dp, bottom = 8.dp)
         ) {
-            if (book.isSaved) {
+            if (book.isFavorite) {
                 Icon(
                     painter = painterResource(id = R.drawable.ic_favorite),
                     contentDescription = null,
@@ -95,7 +95,7 @@ private fun BrowseItemPreview() {
         thumbnailWidth = 50,
         thumbnailHeight = 71,
         thumbnailUrl = "",
-        isSaved = true
+        isFavorite = true
     )
     AmaiTheme {
         BrowseItem(book = mockBook, onItemClick = {})
