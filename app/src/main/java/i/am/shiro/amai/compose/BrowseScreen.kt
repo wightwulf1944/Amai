@@ -26,6 +26,10 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
@@ -40,6 +44,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import i.am.shiro.amai.R
 import i.am.shiro.amai.data.view.CachedPreviewView
+import i.am.shiro.amai.network.Nhentai.Sort
 
 @Composable
 fun BrowseScreen(
@@ -47,17 +52,26 @@ fun BrowseScreen(
     books: List<CachedPreviewView>,
     isLoading: Boolean,
     onRefresh: () -> Unit,
-    onSortClick: () -> Unit,
+    onSortChanged: (Sort) -> Unit,
     onSearchClick: () -> Unit,
     onItemClick: (Int) -> Unit,
     onPositionBind: (Int) -> Unit,
     gridState: LazyStaggeredGridState
 ) {
+    var showSortDialog by remember { mutableStateOf(false) }
+
+    if (showSortDialog) {
+        BrowseSortDialog(
+            onDismissRequest = { showSortDialog = false },
+            onSortChanged = onSortChanged
+        )
+    }
+
     Scaffold(
         topBar = {
             BrowseTopBar(
                 title = title,
-                onSortClick = onSortClick,
+                onSortClick = { showSortDialog = true },
                 onSearchClick = onSearchClick
             )
         },
@@ -312,7 +326,7 @@ fun BrowseScreenPreview() {
             books = mockBooks,
             isLoading = false,
             onRefresh = {},
-            onSortClick = {},
+            onSortChanged = {},
             onSearchClick = {},
             onItemClick = {},
             onPositionBind = {},

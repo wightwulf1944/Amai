@@ -19,11 +19,9 @@ import androidx.fragment.app.activityViewModels
 import i.am.shiro.amai.R
 import i.am.shiro.amai.compose.AmaiTheme
 import i.am.shiro.amai.compose.BrowseScreen
-import i.am.shiro.amai.fragment.dialog.NhentaiSortDialog
 import i.am.shiro.amai.util.amaiViewModels
 import i.am.shiro.amai.util.goToDetail
 import i.am.shiro.amai.util.goToSearch
-import i.am.shiro.amai.util.show
 import i.am.shiro.amai.viewmodel.MainViewModel
 import i.am.shiro.amai.viewmodel.NhentaiViewModel
 
@@ -61,7 +59,7 @@ class NhentaiFragment : Fragment() {
                     books = books,
                     isLoading = isLoading,
                     onRefresh = viewModel::onRefresh,
-                    onSortClick = { childFragmentManager.show(NhentaiSortDialog()) },
+                    onSortChanged = viewModel::onSort,
                     onSearchClick = { goToSearch() },
                     onItemClick = { bookId -> goToDetail(bookId) },
                     onPositionBind = viewModel::onPositionBind,

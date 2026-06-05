@@ -170,7 +170,6 @@ These were observed during research. Re-check the named files before acting on t
 
 - `HomeFragment.kt` set bottom navigation selection to `navigation_nhentai` in both favorites and nhentai branches; inspect carefully before relying on that logic.
 - `FavoritesPreviewAdapter.kt` had `DiffCallback.areContentsTheSame()` always returning `true`; content changes may not rebind existing rows.
-- `fragment/dialog/NhentaiSortDialog.kt` was marked `@Deprecated("remove this")` but was still used by `NhentaiFragment.kt`.
 - `DetailViewModel.kt` used unbounded `retry()` in `loadRemote()`.
 - Several call sites used `!!`; search with `rg -n "!!" app/src/main/java` before changing intent parsing, preferences, or LiveData assumptions.
 - `ReadFragment.kt` and `PageRecyclerView.java` handled fullscreen, page snapping, tap zones, and volume-key page flips. Changes here should be manually tested on a device/emulator.
