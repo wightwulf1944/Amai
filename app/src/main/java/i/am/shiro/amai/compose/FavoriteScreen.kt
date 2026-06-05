@@ -51,21 +51,31 @@ import androidx.compose.ui.unit.dp
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import i.am.shiro.amai.R
+import i.am.shiro.amai.FavoritesSort
 import i.am.shiro.amai.data.view.FavoritesPreviewView
 
 @Composable
 fun FavoritesScreen(
     books: List<FavoritesPreviewView>,
-    onSortClick: () -> Unit,
+    onSortChanged: (FavoritesSort) -> Unit,
     onSearchSubmit: (String) -> Unit,
     onItemClick: (Int) -> Unit,
     gridState: LazyStaggeredGridState
 ) {
+    var showSortDialog by remember { mutableStateOf(false) }
+
+    if (showSortDialog) {
+        FavoriteSortDialog(
+            onDismissRequest = { showSortDialog = false },
+            onSortChanged = onSortChanged
+        )
+    }
+
     Scaffold(
         topBar = {
             FavoriteTopBar(
                 onSearchSubmit = onSearchSubmit,
-                onSortClick = onSortClick
+                onSortClick = { showSortDialog = true }
             )
         },
         content = { innerPadding ->
@@ -239,7 +249,7 @@ fun FavoriteScreenPreview() {
     AmaiTheme {
         FavoritesScreen(
             books = mockBooks,
-            onSortClick = {},
+            onSortChanged = {},
             onSearchSubmit = {},
             onItemClick = {},
             gridState = rememberLazyStaggeredGridState()

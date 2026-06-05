@@ -109,7 +109,7 @@ git -c safe.directory=C:/android_projects/Amai status --short
 - Normal launch opens `HomeFragment`.
 - `HomeFragment` owns child `FavoritesFragment` and `NhentaiFragment`, attaching/detaching them behind a Material bottom navigation.
 - `NhentaiFragment` is a Compose-backed browse/search screen. It observes `NhentaiViewModel.booksLive` and `isLoadingLive`, supports refresh/sort/search, and triggers pagination when items bind near the end.
-- `FavoritesFragment` is XML/ViewBinding-backed. It shows locally favorited books, supports search/sort, opens details, and long-presses into `DeleteBookDialog`.
+- `FavoritesFragment` is Compose-backed. It shows locally favorited books, supports search/sort, and opens details.
 - `SearchFragment` submits queries through the activity-scoped `MainViewModel`.
 - `DetailFragment` is Compose-backed. It loads detail state from Room, refreshes detail from the API, toggles favorites, shares URLs, opens the reader, and sends tag-click searches through `MainViewModel`.
 - `ReadFragment` is XML/ViewBinding-backed. It displays page images in `PageRecyclerView`, entering fullscreen while attached.
@@ -135,7 +135,6 @@ git -c safe.directory=C:/android_projects/Amai status --short
   - `DetailDao.getDetail()` returns `Observable<DetailIntermediate>`.
   - `ImageDao.findByBookId()` returns reader pages ordered by `pageIndex`.
 - API-to-entity mapping lives in `util/NhentaiX.kt`.
-- File deletion for favorited items happens in `DeleteBookDialog` at `File(preferences.storagePath!!).resolve(bookId.toString()).deleteRecursively()`.
 
 ## Network
 

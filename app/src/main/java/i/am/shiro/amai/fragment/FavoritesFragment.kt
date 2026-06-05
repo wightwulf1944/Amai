@@ -8,39 +8,34 @@ import androidx.compose.foundation.lazy.staggeredgrid.rememberLazyStaggeredGridS
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed
 import androidx.fragment.app.Fragment
-import i.am.shiro.amai.FavoritesSort
 import i.am.shiro.amai.compose.AmaiTheme
 import i.am.shiro.amai.compose.FavoritesScreen
-import i.am.shiro.amai.fragment.dialog.FavoritesSortDialog
 import i.am.shiro.amai.util.amaiViewModels
 import i.am.shiro.amai.util.goToDetail
-import i.am.shiro.amai.util.loadBoolean
-import i.am.shiro.amai.util.saveBoolean
-import i.am.shiro.amai.util.show
 import i.am.shiro.amai.viewmodel.FavoritesViewModel
 
 class FavoritesFragment : Fragment() {
 
     private val viewModel by amaiViewModels<FavoritesViewModel>()
 
-    private var shouldScrollToTop = false
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        savedInstanceState?.loadBoolean(::shouldScrollToTop)
-
         val composeView = ComposeView(requireContext())
         composeView.setViewCompositionStrategy(DisposeOnViewTreeLifecycleDestroyed)
         composeView.setContent {
             AmaiTheme {
                 val books by viewModel.booksLive.observeAsState(emptyList())
                 val gridState = rememberLazyStaggeredGridState()
+                var shouldScrollToTop by rememberSaveable { mutableStateOf(false) }
 
                 LaunchedEffect(books) {
                     if (shouldScrollToTop) {
@@ -51,8 +46,9 @@ class FavoritesFragment : Fragment() {
 
                 FavoritesScreen(
                     books = books,
-                    onSortClick = {
-                        childFragmentManager.show(FavoritesSortDialog())
+                    onSortChanged = { sort ->
+                        shouldScrollToTop = true
+                        viewModel.onSort(sort)
                     },
                     onSearchSubmit = { searchQuery ->
                         shouldScrollToTop = true
@@ -65,15 +61,5 @@ class FavoritesFragment : Fragment() {
         }
 
         return composeView
-    }
-
-    fun onSort(sort: FavoritesSort) {
-        shouldScrollToTop = true
-        viewModel.onSort(sort)
-    }
-
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-        outState.saveBoolean(::shouldScrollToTop)
     }
 }
