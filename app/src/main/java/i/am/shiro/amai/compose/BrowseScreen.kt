@@ -51,7 +51,7 @@ fun BrowseScreen(
     onSearchClick: () -> Unit,
     onItemClick: (Int) -> Unit,
     onPositionBind: (Int) -> Unit,
-    gridState: LazyStaggeredGridState = rememberLazyStaggeredGridState()
+    gridState: LazyStaggeredGridState
 ) {
     Scaffold(
         topBar = {
@@ -144,7 +144,7 @@ fun BrowseContent(
             contentPadding = contentPadding + PaddingValues(
                 start = 8.dp,
                 end = 8.dp,
-                bottom = 8.dp
+                bottom = 16.dp
             ),
             horizontalArrangement = Arrangement.spacedBy(8.dp),
             verticalItemSpacing = 8.dp
@@ -315,7 +315,8 @@ fun BrowseScreenPreview() {
             onSortClick = {},
             onSearchClick = {},
             onItemClick = {},
-            onPositionBind = {}
+            onPositionBind = {},
+            gridState = rememberLazyStaggeredGridState()
         )
     }
 }

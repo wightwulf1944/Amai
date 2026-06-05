@@ -189,7 +189,7 @@ These were observed during research. Re-check the named files before acting on t
 
 ## Verification
 
-- **Build and Lint**: Run `.\gradlew.bat :app:assembleDebug` and `.\gradlew.bat :app:lintDebug` after making changes.
+- Build and Lint the app module after making changes
 - **Lint Reports**: Inspect `app/build/reports/lint-results-debug.html` or `.txt` for project health.
 - **Testing State**: No unit or instrumentation tests were present at research time.
 - **UI Verification**: Use Compose previews where available.
