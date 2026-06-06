@@ -46,6 +46,7 @@ import i.am.shiro.amai.R
 import i.am.shiro.amai.data.view.CachedPreviewView
 import i.am.shiro.amai.network.Nhentai.Sort
 
+// TODO try jetpack paging library for loading content
 @Composable
 fun BrowseScreen(
     title: String,

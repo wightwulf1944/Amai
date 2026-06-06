@@ -16,7 +16,7 @@ fun MainActivity.startAtWelcome() {
 }
 
 fun MainActivity.startAtHome() {
-    setFragment(HomeFragment())
+    setFragment(HomeComposeFragment())
 }
 
 fun DetailFragment.goToRead(bookId: Int, pageIndex: Int) {
@@ -24,18 +24,14 @@ fun DetailFragment.goToRead(bookId: Int, pageIndex: Int) {
 }
 
 fun InitialSetupFragment.goToMain() {
-    replaceFragment(HomeFragment())
+    replaceFragment(HomeComposeFragment())
 }
 
-fun FavoritesFragment.goToDetail(bookId: Int) {
+fun Fragment.goToDetail(bookId: Int) {
     pushFragment(DetailFragment(bookId))
 }
 
-fun NhentaiFragment.goToDetail(bookId: Int) {
-    pushFragment(DetailFragment(bookId))
-}
-
-fun NhentaiFragment.goToSearch() {
+fun Fragment.goToSearch() {
     pushFragment(SearchFragment())
 }
 

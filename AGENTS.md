@@ -25,10 +25,10 @@ Start with these files when validating project facts:
 
 - **Build & Dependencies**: `settings.gradle`, `app/build.gradle`, `gradle.properties`.
 - **Runtime startup and DI**: `AmaiApplication.kt`, `koin/Modules.kt`.
-- **Navigation & Screen Flow**: `MainActivity.kt`, `util/Navigation.kt`, `fragment/`.
+- **Navigation & Screen Flow**: `MainActivity.kt`, `util/Navigation.kt`, `fragment/`, `compose/HomeScreen.kt`.
 - **Room schema**: `data/AmaiDatabase.kt`, `app/schemas/`.
 - **Network API**: `network/Nhentai.kt`, `util/NhentaiX.kt`.
-- **Compose UI**: `compose/`, plus XML theme in `res/values`.
+- **Compose UI**: `compose/`.
 
 ## Project Snapshot
 
@@ -57,14 +57,14 @@ git -c safe.directory=C:/android_projects/Amai status --short
 - `viewmodel/factory/ViewModelFactory.kt`: Manual factory combining Koin plus `SavedStateHandle`.
 - `util/FragmentX.kt`: Provides `amaiViewModels<T>()` to wire fragments to the custom factory.
 - `util/NhentaiX.kt`: Logic for mapping API DTOs to Room Entities.
-- `widget/`: Contains custom UI components like `PageRecyclerView` (reader) and `SearchInput`.
+- `widget/`: Contains custom UI components like `PageRecyclerView` (reader).
 
 ## Runtime Flow
 
 - `MainActivity` hosts a single `FragmentContainerView`.
 - First run opens `InitialSetupFragment` to select the storage path (`AmaiPreferences.storagePath`).
-- Normal launch opens `HomeFragment`, which manages `FavoritesFragment` and `NhentaiFragment` via a Material bottom navigation.
-- `NhentaiFragment` is the Compose browse/search screen. It observes `NhentaiViewModel` and triggers pagination via Room cache updates.
+- Normal launch opens `HomeComposeFragment`, which hosts `HomeScreen` (Compose). This manages the browse and favorites tabs.
+- `HomeScreen` uses `BrowseScreen` and `FavoritesScreen` Composables. It observes `NhentaiViewModel` and `FavoritesViewModel`.
 - `ReadFragment` is XML-backed, using `PageRecyclerView` for the reader. It enters fullscreen while attached.
 
 ## Data Model And Storage
@@ -100,8 +100,6 @@ git -c safe.directory=C:/android_projects/Amai status --short
 
 ## Known Code Quirks
 
-- `HomeFragment.kt`: Bottom navigation selection logic is complex; verify before modifying.
-- `FavoritesPreviewAdapter.kt`: `areContentsTheSame()` may always return `true`, causing potential rebind issues.
 - `DetailViewModel.kt`: Uses unbounded `retry()` in `loadRemote()`.
 - `!!` Usage: Many legacy areas use non-null assertions; verify `SavedStateHandle` or `Intent` extras carefully.
 - `PageRecyclerView.java`: Handles volume-key page flips and tap zones. Changes here require manual testing on a device.
