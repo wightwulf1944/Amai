@@ -1,6 +1,6 @@
 package i.am.shiro.amai.viewmodel
 
-import android.text.Editable
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 
@@ -23,7 +23,9 @@ class SearchViewModel : ViewModel() {
 
     val suggestionsLive = MutableLiveData(dictionary)
 
-    fun onTextInput(s: Editable) {
+    // TODO: Use value.selection to provide suggestions based on cursor position instead of just splitting the string.
+    fun onQueryChange(value: TextFieldValue) {
+        val s = value.text
         val lastToken = s.split(' ').last()
         suggestionsLive.value = if (lastToken.isEmpty()) {
             dictionary

@@ -1,67 +1,53 @@
 package i.am.shiro.amai.fragment
 
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
-import android.view.inputmethod.EditorInfo
-import android.view.inputmethod.InputMethodManager
-import android.widget.TextView
-import androidx.core.content.getSystemService
-import androidx.core.widget.doAfterTextChanged
+import android.view.ViewGroup
+import androidx.compose.material3.Surface
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
-import i.am.shiro.amai.R
-import i.am.shiro.amai.adapter.SuggestionsAdapter
-import i.am.shiro.amai.databinding.FragmentSearchBinding
+import i.am.shiro.amai.compose.AmaiTheme
+import i.am.shiro.amai.compose.SearchScreen
 import i.am.shiro.amai.viewmodel.MainViewModel
 import i.am.shiro.amai.viewmodel.SearchViewModel
 
-class SearchFragment : Fragment(R.layout.fragment_search) {
+class SearchFragment : Fragment() {
 
     private val viewModel by viewModels<SearchViewModel>()
 
     private val activityViewModel by activityViewModels<MainViewModel>()
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        val b = FragmentSearchBinding.bind(view)
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        return ComposeView(requireContext()).apply {
+            setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
+            setContent {
+                AmaiTheme {
+                    val suggestions by viewModel.suggestionsLive.observeAsState(emptyList())
 
-        val adapter = SuggestionsAdapter()
-
-        viewModel.suggestionsLive.observe(viewLifecycleOwner, adapter::submitList)
-
-        b.suggestionsRecycler.adapter = adapter
-
-        adapter.onSuggestionCLickListener = {
-            val before = b.textInput.text
-            val after = before.split(' ')
-                .dropLast(1)
-                .plus(it)
-                .joinToString(" ")
-            b.textInput.setText(after)
-            b.textInput.setSelection(after.length)
+                    Surface {
+                        SearchScreen(
+                            suggestions = suggestions,
+                            onQueryChange = {
+                                viewModel.onQueryChange(it)
+                            },
+                            onSearch = {
+                                activityViewModel.search(it)
+                                parentFragmentManager.popBackStack()
+                            }
+                        )
+                    }
+                }
+            }
         }
-
-        b.textInput.doAfterTextChanged {
-            viewModel.onTextInput(it!!)
-        }
-        b.textInput.onImeActionSearch {
-            val query = b.textInput.text.toString()
-            activityViewModel.search(query)
-            parentFragmentManager.popBackStack()
-        }
-        if (b.textInput.requestFocus()) {
-            requireContext().getSystemService<InputMethodManager>()
-                ?.showSoftInput(b.textInput, InputMethodManager.SHOW_IMPLICIT)
-        }
-    }
-}
-
-private fun TextView.onImeActionSearch(listener: () -> Unit) {
-    setOnEditorActionListener { _, actionId, _ ->
-        if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-            listener()
-            return@setOnEditorActionListener true
-        }
-        return@setOnEditorActionListener false
     }
 }
