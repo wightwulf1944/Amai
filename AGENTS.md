@@ -25,7 +25,7 @@ Start with these files when validating project facts:
 
 - **Build & Dependencies**: `settings.gradle`, `app/build.gradle`, `gradle.properties`.
 - **Runtime startup and DI**: `AmaiApplication.kt`, `koin/Modules.kt`.
-- **Navigation & Screen Flow**: `MainActivity.kt`, `util/Navigation.kt`, `fragment/`, `compose/HomeScreen.kt`.
+- **Navigation & Screen Flow**: `MainActivity.kt`, `util/Navigation.kt`, `fragment/`, `compose/HomeScreen.kt`, `fragment/HomeComposeFragment.kt`.
 - **Room schema**: `data/AmaiDatabase.kt`, `app/schemas/`.
 - **Network API**: `network/Nhentai.kt`, `util/NhentaiX.kt`.
 - **Compose UI**: `compose/`.
@@ -35,7 +35,7 @@ Start with these files when validating project facts:
 - **Project Name**: `Amai`.
 - **Purpose**: Browse, search, view, favorite, and read galleries from `nhentai.net`.
 - **UI Architecture**: Hybrid (XML layouts/ViewBinding + Jetpack Compose).
-- **Tech Stack**: Room, Koin, RxJava 3, Retrofit, Coil.
+- **Tech Stack**: Room, Koin, RxJava 3, Retrofit, Coil, Timber.
 
 ## Local Environment Notes
 
@@ -63,15 +63,17 @@ git -c safe.directory=C:/android_projects/Amai status --short
 
 - `MainActivity` hosts a single `FragmentContainerView`.
 - First run opens `InitialSetupFragment` to select the storage path (`AmaiPreferences.storagePath`).
-- Normal launch opens `HomeComposeFragment`, which hosts `HomeScreen` (Compose). This manages the browse and favorites tabs.
-- `HomeScreen` uses `BrowseScreen` and `FavoritesScreen` Composables. It observes `NhentaiViewModel` and `FavoritesViewModel`.
+- Normal launch opens `HomeComposeFragment`, which acts as a navigator for Compose-based screens.
+- `HomeComposeFragment` manages navigation between `HomeScreen`, `SearchScreen`, and `DetailScreen` using `Crossfade` and local state (`Destination`).
+- `HomeScreen` manages the browse (Nhentai) and favorites tabs. It uses `BrowseScreen` and `FavoritesScreen`.
 - `ReadFragment` is XML-backed, using `PageRecyclerView` for the reader. It enters fullscreen while attached.
 
 ## Data Model And Storage
 
 - **Database**: `AmaiDatabase` (Room).
 - **Caching Pattern**: `NhentaiViewModel` stores remote browse/search results in the `CachedEntity` table. `CachedPreviewView` (a DatabaseView) then joins these results with local favorite state for display.
-- **Persistence**: `FavoriteEntity` stores favorited book IDs.
+- **Persistence**: `FavoriteEntity` stores favorited book IDs. `FavoritesPreviewView` provides a joined view for the favorites screen.
+- **Migrations**: Uses `AutoMigration` for schema changes.
 - **Orphan Cleanup**: `BookDao.deleteOrphan()` is used to delete books no longer referenced by favorites or the current search cache.
 
 ## Network
@@ -89,26 +91,29 @@ git -c safe.directory=C:/android_projects/Amai status --short
 
 - **Hybrid View**: Compose screens are embedded in fragments via `ComposeView` with `DisposeOnViewTreeLifecycleDestroyed`.
 - **Theme**: Compose uses `AmaiTheme`. XML uses `Theme.Material3.Dark.NoActionBar`.
-- **Grid**: Browse and detail layouts use adaptive grids with ~150 dp cells.
+- **Grid**: Browse, favorites, and detail layouts use adaptive grids with ~150 dp cells.
 - **Resources**: Use existing strings in `res/values/strings.xml` and icons in `res/drawable` before adding new assets.
 
 ## ViewModel And Reactive Patterns
 
 - **RxJava**: ViewModels use RxJava `Disposable` fields and explicit disposal in `onCleared()`.
-- **Live Events**: `MainViewModel.searchEventLive` handles shared search events between fragments.
+- **Compose + Rx**: `subscribeAsState()` is used in `HomeComposeFragment` to observe `DetailViewModel.uiState`.
+- **Live Events**: `MainViewModel.searchEventLive` handles shared search events between screens.
 - **State**: `DetailViewModel` combines Room-backed Rx `Observable` state with separate remote refresh calls.
+- **Search Suggestions**: `SearchViewModel` provides real-time query suggestions based on a fixed dictionary.
 
 ## Known Code Quirks
 
 - `DetailViewModel.kt`: Uses unbounded `retry()` in `loadRemote()`.
-- `!!` Usage: Many legacy areas use non-null assertions; verify `SavedStateHandle` or `Intent` extras carefully.
+- `!!` Usage: Many areas use non-null assertions; verify `SavedStateHandle` or `Intent` extras carefully.
 - `PageRecyclerView.java`: Handles volume-key page flips and tap zones. Changes here require manual testing on a device.
+- `Modules.kt`: Uses `.fallbackToDestructiveMigration(dropAllTables = true)`, which resets the DB on schema mismatches during development.
 
 ## Editing Guidelines
 
 - **Respect user work**: Always run `git status --short` before editing.
 - **Architecture**: Do not refactor from hybrid to pure Compose unless requested.
-- **Room Migrations**: Increment `AmaiDatabase.version` and handle schema exports if changing entities.
+- **Room Migrations**: Increment `AmaiDatabase.version` and handle schema exports or use `AutoMigration` if changing entities.
 
 ## Verification
 

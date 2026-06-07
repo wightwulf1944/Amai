@@ -25,14 +25,6 @@ fun <T> Bundle.put(key: String, value: T) {
     }
 }
 
-fun Bundle.loadBoolean(property: KMutableProperty0<Boolean>) {
-    property.set(getBoolean(property.name))
-}
-
-fun Bundle.saveBoolean(property: KMutableProperty0<Boolean>) {
-    putBoolean(property.name, property.get())
-}
-
 fun Bundle.loadInt(property: KMutableProperty0<Int>) {
     property.set(getInt(property.name))
 }

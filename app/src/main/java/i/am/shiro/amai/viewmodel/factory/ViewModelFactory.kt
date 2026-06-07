@@ -5,9 +5,9 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.createSavedStateHandle
 import androidx.lifecycle.viewmodel.CreationExtras
 import i.am.shiro.amai.viewmodel.DetailViewModel
+import i.am.shiro.amai.viewmodel.FavoritesViewModel
 import i.am.shiro.amai.viewmodel.NhentaiViewModel
 import i.am.shiro.amai.viewmodel.ReadViewModel
-import i.am.shiro.amai.viewmodel.FavoritesViewModel
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.get
 import kotlin.reflect.KClass
@@ -21,7 +21,7 @@ class ViewModelFactory : ViewModelProvider.Factory, KoinComponent {
                 ReadViewModel(get()) as T
 
             DetailViewModel::class ->
-                DetailViewModel(extras.createSavedStateHandle(), get(), get()) as T
+                DetailViewModel(get(), get()) as T
 
             NhentaiViewModel::class ->
                 NhentaiViewModel(extras.createSavedStateHandle(), get(), get()) as T

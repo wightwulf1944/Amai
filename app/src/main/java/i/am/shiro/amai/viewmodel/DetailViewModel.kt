@@ -1,6 +1,5 @@
 package i.am.shiro.amai.viewmodel
 
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import i.am.shiro.amai.data.AmaiDatabase
 import i.am.shiro.amai.data.entity.FavoriteEntity
@@ -11,30 +10,35 @@ import i.am.shiro.amai.model.TagModel
 import i.am.shiro.amai.model.Thumbnail
 import i.am.shiro.amai.network.GalleryDetailResponse
 import i.am.shiro.amai.network.Nhentai
-import i.am.shiro.amai.util.argument
 import i.am.shiro.amai.util.imageEntities
 import i.am.shiro.amai.util.tagEntities
 import i.am.shiro.amai.util.toEntity
+import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.disposables.Disposable
 import timber.log.Timber
 
 class DetailViewModel(
-    handle: SavedStateHandle,
     private val database: AmaiDatabase,
     private val nhentaiApi: Nhentai.Api
 ) : ViewModel() {
 
-    private val bookId by handle.argument<Int> { error("bookId is required") }
+    private var bookId: Int = -1
 
     private var remoteDisposable = Disposable.disposed()
 
     private var toggleDisposable = Disposable.disposed()
 
-    val uiState = database.detailDao.getDetail(bookId)
-        .map { it.toDetailModel() }
+    var uiState: Observable<DetailModel> = Observable.empty()
 
-    init {
-        loadRemote()
+    fun load(bookId: Int) {
+        this.bookId = bookId
+
+        remoteDisposable = nhentaiApi.getOne(bookId)
+            .retry()
+            .subscribe(::onRemoteSuccess, Timber::e)
+
+        uiState = database.detailDao.getDetail(bookId)
+            .map { it.toDetailModel() }
     }
 
     override fun onCleared() {
@@ -52,12 +56,6 @@ class DetailViewModel(
         }
 
         toggleDisposable = action.subscribe({}, Timber::e)
-    }
-
-    private fun loadRemote() {
-        remoteDisposable = nhentaiApi.getOne(bookId)
-            .retry()
-            .subscribe(::onRemoteSuccess, Timber::e)
     }
 
     private fun DetailIntermediate.toDetailModel(): DetailModel {

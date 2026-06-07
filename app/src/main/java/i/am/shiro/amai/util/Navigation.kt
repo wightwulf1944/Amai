@@ -5,10 +5,12 @@ import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.commit
 import i.am.shiro.amai.MainActivity
 import i.am.shiro.amai.R
-import i.am.shiro.amai.fragment.*
+import i.am.shiro.amai.fragment.HomeComposeFragment
+import i.am.shiro.amai.fragment.InitialSetupFragment
+import i.am.shiro.amai.fragment.ReadFragment
 
 fun MainActivity.startAtDetail(bookId: Int) {
-    setFragment(DetailFragment(bookId))
+    setFragment(HomeComposeFragment(bookId))
 }
 
 fun MainActivity.startAtWelcome() {
@@ -19,20 +21,12 @@ fun MainActivity.startAtHome() {
     setFragment(HomeComposeFragment())
 }
 
-fun DetailFragment.goToRead(bookId: Int, pageIndex: Int) {
+fun HomeComposeFragment.goToRead(bookId: Int, pageIndex: Int) {
     pushFragment(ReadFragment(bookId, pageIndex))
 }
 
 fun InitialSetupFragment.goToMain() {
     replaceFragment(HomeComposeFragment())
-}
-
-fun Fragment.goToDetail(bookId: Int) {
-    pushFragment(DetailFragment(bookId))
-}
-
-fun Fragment.goToSearch() {
-    pushFragment(SearchFragment())
 }
 
 private fun FragmentActivity.setFragment(fragment: Fragment) {

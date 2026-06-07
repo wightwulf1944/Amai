@@ -49,6 +49,7 @@ fun SearchScreen(
     var textFieldValue by rememberSaveable(stateSaver = TextFieldValue.Saver) {
         mutableStateOf(TextFieldValue(""))
     }
+    onQueryChange(textFieldValue)
 
     LaunchedEffect(Unit) {
         focusRequester.requestFocus()
@@ -83,23 +84,25 @@ fun SearchScreen(
             )
         )
 
-        LazyColumn(
-            modifier = Modifier.fillMaxSize(),
-            contentPadding = PaddingValues(bottom = 8.dp)
-        ) {
-            items(suggestions) { suggestion ->
-                SuggestionItem(
-                    suggestion = suggestion,
-                    onClick = {
-                        val words = textFieldValue.text.split(' ')
-                        val newText = words.dropLast(1).plus(suggestion).joinToString(" ")
-                        textFieldValue = TextFieldValue(
-                            text = newText,
-                            selection = TextRange(newText.length)
-                        )
-                        onQueryChange(textFieldValue)
-                    }
-                )
+        Surface {
+            LazyColumn(
+                modifier = Modifier.fillMaxSize(),
+                contentPadding = PaddingValues(bottom = 8.dp)
+            ) {
+                items(suggestions) { suggestion ->
+                    SuggestionItem(
+                        suggestion = suggestion,
+                        onClick = {
+                            val words = textFieldValue.text.split(' ')
+                            val newText = words.dropLast(1).plus(suggestion).joinToString(" ")
+                            textFieldValue = TextFieldValue(
+                                text = newText,
+                                selection = TextRange(newText.length)
+                            )
+                            onQueryChange(textFieldValue)
+                        }
+                    )
+                }
             }
         }
     }
@@ -128,12 +131,10 @@ fun SuggestionItem(
 @Composable
 private fun SearchScreenPreview() {
     AmaiTheme {
-        Surface {
-            SearchScreen(
-                suggestions = listOf("tag:artist", "tag:artistic"),
-                onQueryChange = {},
-                onSearch = {},
-            )
-        }
+        SearchScreen(
+            suggestions = listOf("tag:artist", "tag:artistic"),
+            onQueryChange = {},
+            onSearch = {},
+        )
     }
 }
