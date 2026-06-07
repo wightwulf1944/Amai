@@ -18,6 +18,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -44,7 +45,7 @@ fun DetailContentHeader(
         HorizontalDivider(thickness = 1.dp, modifier = Modifier.padding(vertical = 4.dp))
 
         Text(
-            text = stringResource(R.string.pages_format, model.pageCount),
+            text = pluralStringResource(R.plurals.pages_format, model.pageCount, model.pageCount),
             style = MaterialTheme.typography.bodySmall,
         )
 

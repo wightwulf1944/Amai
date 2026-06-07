@@ -15,7 +15,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -66,7 +66,7 @@ fun FavoriteItem(
             Spacer(modifier = Modifier.weight(1f))
 
             Text(
-                text = stringResource(R.string.pages_format, book.pageCount),
+                text = pluralStringResource(R.plurals.pages_format, book.pageCount, book.pageCount),
                 style = MaterialTheme.typography.labelSmall
             )
         }
