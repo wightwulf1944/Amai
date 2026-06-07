@@ -6,13 +6,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.net.toUri
 import i.am.shiro.amai.util.startAtDetail
 import i.am.shiro.amai.util.startAtHome
-import i.am.shiro.amai.util.startAtWelcome
-import org.koin.android.ext.android.inject
 import timber.log.Timber
 
 class MainActivity : AppCompatActivity() {
-
-    private val preferences by inject<AmaiPreferences>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -21,12 +17,11 @@ class MainActivity : AppCompatActivity() {
 
         if (savedInstanceState != null) return
 
-        when {
-            intent.action == Intent.ACTION_VIEW -> {
+        when (intent.action) {
+            Intent.ACTION_VIEW -> {
                 startAtDetail(intent.data!!.pathSegments[1].toInt())
             }
-
-            intent.action == Intent.ACTION_SEND -> {
+            Intent.ACTION_SEND -> {
                 try {
                     val bookId = intent.getStringExtra(Intent.EXTRA_TEXT)!!
                         .toUri()
@@ -38,11 +33,6 @@ class MainActivity : AppCompatActivity() {
                     finish()
                 }
             }
-
-            preferences.isFirstRun -> {
-                startAtWelcome()
-            }
-
             else -> {
                 startAtHome()
             }

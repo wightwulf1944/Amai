@@ -1,10 +1,8 @@
 package i.am.shiro.amai.koin
 
-import androidx.preference.PreferenceManager
 import androidx.room.Room
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
-import i.am.shiro.amai.AmaiPreferences
 import i.am.shiro.amai.BuildConfig
 import i.am.shiro.amai.data.AmaiDatabase
 import i.am.shiro.amai.network.Nhentai
@@ -23,9 +21,6 @@ val mainModule = module {
         Room.databaseBuilder(androidContext(), AmaiDatabase::class.java, "amai")
             .fallbackToDestructiveMigration(dropAllTables = true)
             .build()
-    }
-    single {
-        AmaiPreferences(PreferenceManager.getDefaultSharedPreferences(androidContext()))
     }
     single {
         OkHttpClient.Builder()

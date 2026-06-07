@@ -2,41 +2,15 @@
     <string name="app_name">Amai</string>
     <string name="favorites">Favorites</string>
     <string name="nhentai">Nhentai</string>
-    <string name="downloads">Downloads</string>
-
-    <string name="storage_label">External %1$d</string>
-    <string name="storage_free">%1$s Free</string>
 
     <string name="search">Search</string>
-    <string name="next">Next</string>
-    <string name="skip">Skip</string>
-    <string name="start">Start</string>
-    <string name="choose_a_storage_option">Choose a storage option</string>
-    <string name="pages">pages</string>
     <string name="pages_format">%1$d pages</string>
-    <string name="thumbnail">thumbnail</string>
-    <string name="download">Download</string>
     <string name="favorite">Favorite</string>
-    <string name="welcome">Welcome</string>
-    <string name="amai_logo">Amai logo</string>
     <string name="page_image">page image</string>
-    <string name="dialog_title_delete">Delete this download?</string>
-    <string name="delete">Delete</string>
-    <string name="cancel">Cancel</string>
     <string name="back">back</string>
     <string name="confirm_exit">Press back again to exit</string>
     <string name="sort">Sort</string>
     <string name="sort_by">Sort by</string>
-    <string name="search_constants">Search constants</string>
-    <string name="help">Help</string>
-    <string name="done">Done</string>
-    <string name="dismiss">Dismiss</string>
-    <string name="failed">Failed</string>
-    <string name="retry">retry</string>
-    <string name="downloading">Downloading</string>
-    <string name="pause">pause</string>
-    <string name="resume_all">Resume all</string>
-    <string name="pause_all">Pause all</string>
     <string-array name="sort_items_favorites">
         <item>Newest first</item>
         <item>Oldest first</item>

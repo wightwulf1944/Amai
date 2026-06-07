@@ -62,8 +62,7 @@ git -c safe.directory=C:/android_projects/Amai status --short
 ## Runtime Flow
 
 - `MainActivity` hosts a single `FragmentContainerView`.
-- First run opens `InitialSetupFragment` to select the storage path (`AmaiPreferences.storagePath`).
-- Normal launch opens `HomeComposeFragment`, which acts as a navigator for Compose-based screens.
+- App launch opens `HomeComposeFragment`, which acts as a navigator for Compose-based screens.
 - `HomeComposeFragment` manages navigation between `HomeScreen`, `SearchScreen`, and `DetailScreen` using `Crossfade` and local state (`Destination`).
 - `HomeScreen` manages the browse (Nhentai) and favorites tabs. It uses `BrowseScreen` and `FavoritesScreen`.
 - `ReadFragment` is XML-backed, using `PageRecyclerView` for the reader. It enters fullscreen while attached.
