@@ -17,8 +17,6 @@ import io.reactivex.rxjava3.disposables.Disposable
 import io.reactivex.rxjava3.schedulers.Schedulers.io
 import timber.log.Timber
 
-private const val PAGING_THRESHOLD = 10
-
 // TODO reimplement Rx calls so that they chain and produce a single disposable
 class NhentaiViewModel(
     handle: SavedStateHandle,
@@ -61,10 +59,10 @@ class NhentaiViewModel(
         remoteDisposable.dispose()
     }
 
-    fun onPositionBind(position: Int) {
+    fun onScrollToBottom() {
         if (isComplete) return
         if (!remoteDisposable.isDisposed) return
-        if (position > booksLive.value!!.size - PAGING_THRESHOLD) fetchRemotePage()
+        fetchRemotePage()
     }
 
     fun onRefresh() {

@@ -108,6 +108,12 @@ fun HomeScreen(
                             }
                         }
 
+                        LaunchedEffect(nhentaiGridState.canScrollForward) {
+                            if (!nhentaiGridState.canScrollForward) {
+                                nhentaiViewModel.onScrollToBottom()
+                            }
+                        }
+
                         LaunchedEffect(searchEvent) {
                             searchEvent?.let { event ->
                                 if (!event.isNhentaiConsumed) {
@@ -127,7 +133,6 @@ fun HomeScreen(
                             onSortChanged = nhentaiViewModel::onSort,
                             onSearchClick = onSearchClick,
                             onItemClick = onItemClick,
-                            onPositionBind = nhentaiViewModel::onPositionBind,
                             gridState = nhentaiGridState
                         )
                     }

@@ -13,7 +13,7 @@ import androidx.compose.foundation.layout.plus
 import androidx.compose.foundation.lazy.staggeredgrid.LazyStaggeredGridState
 import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells.Adaptive
-import androidx.compose.foundation.lazy.staggeredgrid.itemsIndexed
+import androidx.compose.foundation.lazy.staggeredgrid.items
 import androidx.compose.foundation.lazy.staggeredgrid.rememberLazyStaggeredGridState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Icon
@@ -25,7 +25,6 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -56,7 +55,6 @@ fun BrowseScreen(
     onSortChanged: (Sort) -> Unit,
     onSearchClick: () -> Unit,
     onItemClick: (Int) -> Unit,
-    onPositionBind: (Int) -> Unit,
     gridState: LazyStaggeredGridState
 ) {
     var showSortDialog by remember { mutableStateOf(false) }
@@ -82,7 +80,6 @@ fun BrowseScreen(
                 isLoading = isLoading,
                 onRefresh = onRefresh,
                 onItemClick = onItemClick,
-                onPositionBind = onPositionBind,
                 gridState = gridState,
                 contentPadding = innerPadding
             )
@@ -143,7 +140,6 @@ fun BrowseContent(
     isLoading: Boolean,
     onRefresh: () -> Unit,
     onItemClick: (Int) -> Unit,
-    onPositionBind: (Int) -> Unit,
     gridState: LazyStaggeredGridState,
     contentPadding: PaddingValues
 ) {
@@ -164,17 +160,12 @@ fun BrowseContent(
             horizontalArrangement = Arrangement.spacedBy(8.dp),
             verticalItemSpacing = 8.dp
         ) {
-            itemsIndexed(
+            items(
                 items = books,
-                key = { _, book -> book.bookId }
-            ) { index, book ->
-                LaunchedEffect(index) {
-                    // Notify the viewmodel of the current position
-                    onPositionBind(index)
-                }
-
+                key = { it.bookId }
+            ) {
                 BrowseItem(
-                    book = book,
+                    book = it,
                     onItemClick = onItemClick
                 )
             }
@@ -330,7 +321,6 @@ fun BrowseScreenPreview() {
             onSortChanged = {},
             onSearchClick = {},
             onItemClick = {},
-            onPositionBind = {},
             gridState = rememberLazyStaggeredGridState()
         )
     }
