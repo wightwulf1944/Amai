@@ -19,6 +19,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
+// TODO reimplement this to better match what's actually in androidx.compose.material3.ColorScheme
+//  such as adding whatever is missing and removing Shadow
 @Composable
 fun ColorPreview() {
     val color = MaterialTheme.colorScheme

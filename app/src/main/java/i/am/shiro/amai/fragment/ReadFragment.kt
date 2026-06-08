@@ -2,18 +2,21 @@ package i.am.shiro.amai.fragment
 
 import android.content.Context
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
+import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.fragment.app.Fragment
-import i.am.shiro.amai.R
-import i.am.shiro.amai.adapter.BookPageAdapter
-import i.am.shiro.amai.databinding.FragmentReadBinding
+import i.am.shiro.amai.compose.AmaiTheme
+import i.am.shiro.amai.compose.ReadScreen
 import i.am.shiro.amai.util.amaiViewModels
 import i.am.shiro.amai.util.argument
 import i.am.shiro.amai.viewmodel.ReadViewModel
 
-class ReadFragment() : Fragment(R.layout.fragment_read) {
+class ReadFragment() : Fragment() {
 
     private val viewModel by amaiViewModels<ReadViewModel>()
 
@@ -49,20 +52,20 @@ class ReadFragment() : Fragment(R.layout.fragment_read) {
         viewModel.setBookId(bookId)
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        val b = FragmentReadBinding.bind(view)
-
-        b.pageRecycler.setHasFixedSize(true)
-        b.pageRecycler.requestFocus()
-        b.pageRecycler.setOnPageScrollListener { value -> b.pageText.text = value.toString() }
-
-        viewModel.pagesLive.observe(viewLifecycleOwner) {
-            b.pageRecycler.adapter = BookPageAdapter(it)
-
-            if (savedInstanceState == null) {
-                val position = pageIndex
-                b.pageRecycler.scrollToPosition(position)
-                b.pageText.text = (position + 1).toString()
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        return ComposeView(requireContext()).apply {
+            setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
+            setContent {
+                AmaiTheme {
+                    ReadScreen(
+                        viewModel = viewModel,
+                        initialPage = pageIndex
+                    )
+                }
             }
         }
     }
