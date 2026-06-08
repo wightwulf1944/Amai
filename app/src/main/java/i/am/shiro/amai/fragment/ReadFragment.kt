@@ -3,7 +3,8 @@ package i.am.shiro.amai.fragment
 import android.content.Context
 import android.os.Bundle
 import android.view.View
-import android.view.WindowManager.LayoutParams.FLAG_FULLSCREEN
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.WindowInsetsControllerCompat
 import androidx.fragment.app.Fragment
 import i.am.shiro.amai.R
 import i.am.shiro.amai.adapter.BookPageAdapter
@@ -28,17 +29,18 @@ class ReadFragment() : Fragment(R.layout.fragment_read) {
     override fun onAttach(context: Context) {
         super.onAttach(context)
 
-        requireActivity()
-            .window
-            .addFlags(FLAG_FULLSCREEN)
+        val window = requireActivity().window
+        WindowInsetsControllerCompat(window, window.decorView).apply {
+            hide(WindowInsetsCompat.Type.statusBars())
+            systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+        }
     }
 
     override fun onDetach() {
         super.onDetach()
 
-        requireActivity()
-            .window
-            .clearFlags(FLAG_FULLSCREEN)
+        val window = requireActivity().window
+        WindowInsetsControllerCompat(window, window.decorView).show(WindowInsetsCompat.Type.statusBars())
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
