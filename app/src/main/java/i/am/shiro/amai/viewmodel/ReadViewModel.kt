@@ -2,14 +2,12 @@ package i.am.shiro.amai.viewmodel
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import i.am.shiro.amai.data.AmaiDatabase
 import i.am.shiro.amai.data.entity.ImageEntity
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers.mainThread
-import io.reactivex.rxjava3.disposables.Disposable
+import kotlinx.coroutines.launch
 
 class ReadViewModel(private val database: AmaiDatabase) : ViewModel() {
-
-    private var disposable = Disposable.disposed()
 
     private var isLoaded = false
 
@@ -19,12 +17,9 @@ class ReadViewModel(private val database: AmaiDatabase) : ViewModel() {
         if (isLoaded) return
         else isLoaded = true
 
-        disposable = database.imageDao.findByBookId(bookId)
-            .observeOn(mainThread())
-            .subscribe(pagesLive::setValue)
-    }
-
-    override fun onCleared() {
-        disposable.dispose()
+        viewModelScope.launch {
+            val pages = database.imageDao.findByBookId(bookId)
+            pagesLive.postValue(pages)
+        }
     }
 }

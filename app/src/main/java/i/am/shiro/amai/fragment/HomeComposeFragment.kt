@@ -12,11 +12,10 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.Crossfade
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rxjava3.subscribeAsState
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.ComposeView
@@ -98,7 +97,7 @@ class HomeComposeFragment() : Fragment() {
                                 BackHandler {
                                     currentDestination = Destination.Home
                                 }
-                                val suggestions by searchViewModel.suggestionsLive.observeAsState(emptyList())
+                                val suggestions by searchViewModel.suggestions.collectAsState()
                                 SearchScreen(
                                     suggestions = suggestions,
                                     onQueryChange = { searchViewModel.onQueryChange(it) },
@@ -114,7 +113,7 @@ class HomeComposeFragment() : Fragment() {
                                     currentDestination = Destination.Home
                                 }
 
-                                val model by detailViewModel.uiState.subscribeAsState(null)
+                                val model by detailViewModel.uiState.collectAsState()
                                 model?.let { detailModel ->
                                     DetailScreen(
                                         model = detailModel,

@@ -4,19 +4,22 @@ import androidx.room.Dao
 import androidx.room.Query
 import i.am.shiro.amai.FavoritesSort
 import i.am.shiro.amai.data.view.FavoritesPreviewView
-import io.reactivex.rxjava3.core.Observable
+import kotlinx.coroutines.flow.Flow
 
 @Dao
-abstract class FavoritesPreviewDao {
+interface FavoritesPreviewDao {
 
-    fun findSorted(searchPattern: String, sort: FavoritesSort) = when (sort) {
-        FavoritesSort.Old -> findOldest(searchPattern)
-        FavoritesSort.New -> findNewest(searchPattern)
+    fun find(query: String, sort: FavoritesSort): Flow<List<FavoritesPreviewView>> {
+        val pattern = "%${query.trim()}%"
+        return when (sort) {
+            FavoritesSort.New -> findNewest(pattern)
+            FavoritesSort.Old -> findOldest(pattern)
+        }
     }
 
-    @Query("SELECT * FROM FavoritesPreviewView WHERE title LIKE :searchPattern ORDER BY favoriteDate")
-    protected abstract fun findOldest(searchPattern: String): Observable<List<FavoritesPreviewView>>
-
     @Query("SELECT * FROM FavoritesPreviewView WHERE title LIKE :searchPattern ORDER BY favoriteDate DESC")
-    protected abstract fun findNewest(searchPattern: String): Observable<List<FavoritesPreviewView>>
+    fun findNewest(searchPattern: String): Flow<List<FavoritesPreviewView>>
+
+    @Query("SELECT * FROM FavoritesPreviewView WHERE title LIKE :searchPattern ORDER BY favoriteDate ASC")
+    fun findOldest(searchPattern: String): Flow<List<FavoritesPreviewView>>
 }

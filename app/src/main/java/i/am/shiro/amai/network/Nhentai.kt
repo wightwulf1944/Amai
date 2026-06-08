@@ -1,6 +1,5 @@
 package i.am.shiro.amai.network
 
-import io.reactivex.rxjava3.core.Single
 import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query
@@ -29,22 +28,22 @@ object Nhentai {
     interface Api {
 
         @GET("search")
-        fun search(
+        suspend fun search(
             @Query("query") query: String,
             @Query("sort") sort: Sort?,
             @Query("page") page: Int?
-        ): Single<PaginatedResponse>
+        ): PaginatedResponse
 
         @GET("galleries")
-        fun getAll(
+        suspend fun getAll(
             @Query("page") page: Int? = null,
             @Query("per_page") perPage: Int? = null
-        ): Single<PaginatedResponse>
+        ): PaginatedResponse
 
         @GET("galleries/{id}")
-        fun getOne(
+        suspend fun getOne(
             @Path("id") id: Int
-        ): Single<GalleryDetailResponse>
+        ): GalleryDetailResponse
     }
 }
 

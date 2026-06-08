@@ -3,11 +3,11 @@ package i.am.shiro.amai.data.dao
 import androidx.room.Dao
 import androidx.room.Query
 import i.am.shiro.amai.data.view.CachedPreviewView
-import io.reactivex.rxjava3.core.Observable
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface CachedPreviewDao {
 
     @Query("SELECT * FROM CachedPreviewView")
-    fun getAll(): Observable<List<CachedPreviewView>>
+    fun getAll(): Flow<List<CachedPreviewView>>
 }

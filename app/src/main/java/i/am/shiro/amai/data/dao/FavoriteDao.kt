@@ -5,14 +5,13 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import i.am.shiro.amai.data.entity.FavoriteEntity
-import io.reactivex.rxjava3.core.Completable
 
 @Dao
 interface FavoriteDao {
 
     @Query("DELETE FROM FavoriteEntity WHERE bookId = :bookId")
-    fun deleteById(bookId: Int): Completable
+    suspend fun deleteById(bookId: Int)
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    fun insert(favoriteEntity: FavoriteEntity): Completable
+    suspend fun insert(favoriteEntity: FavoriteEntity)
 }

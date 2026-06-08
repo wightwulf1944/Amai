@@ -9,5 +9,5 @@ import i.am.shiro.amai.data.entity.TagEntity
 interface TagDao {
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    fun insert(tagEntities: List<TagEntity>)
+    suspend fun insert(tagEntities: List<TagEntity>)
 }

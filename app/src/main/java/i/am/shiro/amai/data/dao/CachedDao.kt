@@ -5,14 +5,13 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import i.am.shiro.amai.data.entity.CachedEntity
-import io.reactivex.rxjava3.core.Completable
 
 @Dao
 interface CachedDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insert(entity: CachedEntity)
+    suspend fun insert(entity: CachedEntity)
 
     @Query("DELETE FROM CachedEntity")
-    fun deleteAll(): Completable
+    suspend fun deleteAll()
 }

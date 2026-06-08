@@ -1,6 +1,9 @@
 package i.am.shiro.amai.viewmodel
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import androidx.room.withTransaction
 import i.am.shiro.amai.data.AmaiDatabase
 import i.am.shiro.amai.data.entity.FavoriteEntity
 import i.am.shiro.amai.data.entity.TagEntity
@@ -11,51 +14,57 @@ import i.am.shiro.amai.model.Thumbnail
 import i.am.shiro.amai.network.GalleryDetailResponse
 import i.am.shiro.amai.network.Nhentai
 import i.am.shiro.amai.util.imageEntities
+import i.am.shiro.amai.util.invoke
 import i.am.shiro.amai.util.tagEntities
 import i.am.shiro.amai.util.toEntity
-import io.reactivex.rxjava3.core.Observable
-import io.reactivex.rxjava3.disposables.Disposable
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
 import timber.log.Timber
 
+@OptIn(ExperimentalCoroutinesApi::class)
 class DetailViewModel(
+    handle: SavedStateHandle,
     private val database: AmaiDatabase,
     private val nhentaiApi: Nhentai.Api
 ) : ViewModel() {
 
-    private var bookId: Int = -1
+    private var bookId by handle<Int>(-1)
 
-    private var remoteDisposable = Disposable.disposed()
-
-    private var toggleDisposable = Disposable.disposed()
-
-    var uiState: Observable<DetailModel> = Observable.empty()
+    val uiState: StateFlow<DetailModel?> = handle.getStateFlow("bookId", -1)
+        .flatMapLatest { id -> database.detailDao.getDetail(id) }
+        .map { it?.toDetailModel() }
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), null)
 
     fun load(bookId: Int) {
         this.bookId = bookId
 
-        remoteDisposable = nhentaiApi.getOne(bookId)
-            .retry()
-            .subscribe(::onRemoteSuccess, Timber::e)
-
-        uiState = database.detailDao.getDetail(bookId)
-            .map { it.toDetailModel() }
-    }
-
-    override fun onCleared() {
-        remoteDisposable.dispose()
-        toggleDisposable.dispose()
+        viewModelScope.launch {
+            try {
+                val detailedBookJson = nhentaiApi.getOne(bookId)
+                onRemoteSuccess(detailedBookJson)
+            } catch (e: Exception) {
+                Timber.e(e)
+            }
+        }
     }
 
     fun onFavoriteToggle(isFavorite: Boolean) {
-        toggleDisposable.dispose()
-
-        val action = if (isFavorite) {
-            database.favoriteDao.insert(FavoriteEntity(bookId))
-        } else {
-            database.favoriteDao.deleteById(bookId)
+        viewModelScope.launch {
+            try {
+                if (isFavorite) {
+                    database.favoriteDao.insert(FavoriteEntity(bookId))
+                } else {
+                    database.favoriteDao.deleteById(bookId)
+                }
+            } catch (e: Exception) {
+                Timber.e(e)
+            }
         }
-
-        toggleDisposable = action.subscribe({}, Timber::e)
     }
 
     private fun DetailIntermediate.toDetailModel(): DetailModel {
@@ -91,13 +100,11 @@ class DetailViewModel(
         )
     }
 
-    private fun onRemoteSuccess(detailedBookJson: GalleryDetailResponse) {
-        with(database) {
-            runInTransaction {
-                bookDao.insert(detailedBookJson.toEntity())
-                tagDao.insert(detailedBookJson.tagEntities())
-                imageDao.insert(detailedBookJson.imageEntities())
-            }
+    private suspend fun onRemoteSuccess(detailedBookJson: GalleryDetailResponse) {
+        database.withTransaction {
+            database.bookDao.insert(detailedBookJson.toEntity())
+            database.tagDao.insert(detailedBookJson.tagEntities())
+            database.imageDao.insert(detailedBookJson.imageEntities())
         }
     }
 }

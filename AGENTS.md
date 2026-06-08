@@ -35,7 +35,7 @@ Start with these files when validating project facts:
 - **Project Name**: `Amai`.
 - **Purpose**: Browse, search, view, favorite, and read galleries from `nhentai.net`.
 - **UI Architecture**: Hybrid (XML layouts/ViewBinding + Jetpack Compose).
-- **Tech Stack**: Room, Koin, RxJava 3, Retrofit, Coil, Timber.
+- **Tech Stack**: Room, Koin, Coroutines/Flow, Retrofit, Coil, Timber.
 
 ## Local Environment Notes
 
@@ -95,11 +95,10 @@ git -c safe.directory=C:/android_projects/Amai status --short
 
 ## ViewModel And Reactive Patterns
 
-- **RxJava**: ViewModels use RxJava `Disposable` fields and explicit disposal in `onCleared()`.
-- **Compose + Rx**: `subscribeAsState()` is used in `HomeComposeFragment` to observe `DetailViewModel.uiState`.
-- **Live Events**: `MainViewModel.searchEventLive` handles shared search events between screens.
-- **State**: `DetailViewModel` combines Room-backed Rx `Observable` state with separate remote refresh calls.
-- **Search Suggestions**: `SearchViewModel` provides real-time query suggestions based on a fixed dictionary.
+- **Coroutines & Flow**: ViewModels use `StateFlow` and `SharedFlow` driven by `SavedStateHandle`. Business logic is handled in `viewModelScope`.
+- **Compose + Flow**: `collectAsState()` is used in Compose screens to observe state from ViewModels.
+- **Live Events**: `MainViewModel.searchEvent` is a `SharedFlow` for shared events between screens.
+- **State**: `DetailViewModel` uses `flatMapLatest` on `SavedStateHandle` to reactively load book details from Room.
 
 ## Known Code Quirks
 

@@ -12,7 +12,6 @@ import okhttp3.logging.HttpLoggingInterceptor
 import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module
 import retrofit2.Retrofit
-import retrofit2.adapter.rxjava3.RxJava3CallAdapterFactory
 import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.create
 
@@ -43,7 +42,6 @@ val mainModule = module {
                     .build()
             )
             .baseUrl(Nhentai.API_BASE_URL)
-            .addCallAdapterFactory(RxJava3CallAdapterFactory.create())
             .addConverterFactory(MoshiConverterFactory.create(moshi))
             .build()
             .create()

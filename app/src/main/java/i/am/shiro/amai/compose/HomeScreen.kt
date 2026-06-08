@@ -12,8 +12,9 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -37,7 +38,7 @@ fun HomeScreen(
 ) {
     var selectedTab by rememberSaveable { mutableStateOf(HomeTab.NHENTAI) }
 
-    val searchEvent by mainViewModel.searchEventLive.observeAsState()
+    val searchEvent by mainViewModel.searchEvent.collectAsState(null)
     LaunchedEffect(searchEvent) {
         searchEvent?.let { event ->
             if (!event.isHomeConsumed) {
@@ -69,7 +70,7 @@ fun HomeScreen(
 
                 when (selectedTab) {
                     HomeTab.FAVORITES -> {
-                        val books by favoritesViewModel.booksLive.observeAsState(emptyList())
+                        val books by favoritesViewModel.books.collectAsState()
                         var shouldScrollToTop by remember { mutableStateOf(false) }
 
                         LaunchedEffect(books) {
@@ -95,8 +96,8 @@ fun HomeScreen(
                     }
 
                     HomeTab.NHENTAI -> {
-                        val books by nhentaiViewModel.booksLive.observeAsState(emptyList())
-                        val isLoading by nhentaiViewModel.isLoadingLive.observeAsState(false)
+                        val books by nhentaiViewModel.books.collectAsState()
+                        val isLoading by nhentaiViewModel.isLoading.collectAsState()
 
                         val initialTitle = stringResource(R.string.nhentai)
                         var title by remember { mutableStateOf(initialTitle) }

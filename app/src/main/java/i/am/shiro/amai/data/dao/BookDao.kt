@@ -5,13 +5,12 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import i.am.shiro.amai.data.entity.BookEntity
-import io.reactivex.rxjava3.core.Completable
 
 @Dao
 interface BookDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insert(entity: BookEntity)
+    suspend fun insert(entity: BookEntity)
 
     @Query("""
         DELETE FROM BookEntity 
@@ -19,5 +18,5 @@ interface BookDao {
             SELECT bookId FROM FavoriteEntity UNION 
             SELECT bookId FROM CachedEntity)
     """)
-    fun deleteOrphan(): Completable
+    suspend fun deleteOrphan()
 }

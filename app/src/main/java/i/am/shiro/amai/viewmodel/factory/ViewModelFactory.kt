@@ -21,7 +21,7 @@ class ViewModelFactory : ViewModelProvider.Factory, KoinComponent {
                 ReadViewModel(get()) as T
 
             DetailViewModel::class ->
-                DetailViewModel(get(), get()) as T
+                DetailViewModel(extras.createSavedStateHandle(), get(), get()) as T
 
             NhentaiViewModel::class ->
                 NhentaiViewModel(extras.createSavedStateHandle(), get(), get()) as T

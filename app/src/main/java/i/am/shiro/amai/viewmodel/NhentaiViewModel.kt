@@ -1,8 +1,9 @@
 package i.am.shiro.amai.viewmodel
 
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import androidx.room.withTransaction
 import i.am.shiro.amai.data.AmaiDatabase
 import i.am.shiro.amai.data.entity.CachedEntity
 import i.am.shiro.amai.data.view.CachedPreviewView
@@ -11,24 +12,19 @@ import i.am.shiro.amai.network.Nhentai
 import i.am.shiro.amai.network.PaginatedResponse
 import i.am.shiro.amai.util.invoke
 import i.am.shiro.amai.util.toEntity
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers.mainThread
-import io.reactivex.rxjava3.core.Completable
-import io.reactivex.rxjava3.disposables.Disposable
-import io.reactivex.rxjava3.schedulers.Schedulers.io
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
 import timber.log.Timber
 
-// TODO reimplement Rx calls so that they chain and produce a single disposable
 class NhentaiViewModel(
     handle: SavedStateHandle,
     private val database: AmaiDatabase,
     private val nhentaiApi: Nhentai.Api
 ) : ViewModel() {
-
-    private var deleteDisposable = Disposable.disposed()
-
-    private var localDisposable = Disposable.disposed()
-
-    private var remoteDisposable = Disposable.disposed()
 
     private var query by handle<String>("")
 
@@ -38,30 +34,21 @@ class NhentaiViewModel(
 
     private var isComplete by handle<Boolean>(false)
 
-    val booksLive = MutableLiveData<List<CachedPreviewView>>()
+    val books: StateFlow<List<CachedPreviewView>> = database.cachedPreviewDao
+        .getAll()
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
-    val isLoadingLive = MutableLiveData<Boolean>()
+    private val _isLoading = MutableStateFlow(false)
+    val isLoading = _isLoading.asStateFlow()
 
     init {
         if (page == 0) {
-            deleteLocalThen {
-                fetchLocal()
-                fetchRemotePage()
-            }
-        } else {
-            fetchLocal()
+            onRefresh()
         }
     }
 
-    override fun onCleared() {
-        deleteDisposable.dispose()
-        localDisposable.dispose()
-        remoteDisposable.dispose()
-    }
-
     fun onScrollToBottom() {
-        if (isComplete) return
-        if (!remoteDisposable.isDisposed) return
+        if (isComplete || _isLoading.value) return
         fetchRemotePage()
     }
 
@@ -69,100 +56,76 @@ class NhentaiViewModel(
         page = 0
         isComplete = false
 
-        deleteLocalThen {
+        viewModelScope.launch {
+            deleteLocal()
             fetchRemotePage()
         }
     }
 
     fun onSort(sort: Nhentai.Sort) {
-        page = 0
-        isComplete = false
+        if (this.sort == sort) return
         this.sort = sort
-
-        deleteLocalThen {
-            fetchRemotePage()
-        }
+        onRefresh()
     }
 
     fun onSearch(query: String) {
-        page = 0
-        isComplete = false
+        if (this.query == query) return
         this.query = query
+        onRefresh()
+    }
 
-        deleteLocalThen {
-            fetchRemotePage()
+    private suspend fun deleteLocal() {
+        try {
+            database.cachedDao.deleteAll()
+            database.bookDao.deleteOrphan()
+        } catch (e: Exception) {
+            Timber.e(e)
         }
-    }
-
-    private fun deleteLocalThen(onComplete: () -> Unit) {
-        deleteDisposable.dispose()
-        deleteDisposable = Completable
-            .concatArray(
-                database.cachedDao.deleteAll(),
-                database.bookDao.deleteOrphan()
-            )
-            .subscribeOn(io())
-            .observeOn(mainThread())
-            .subscribe(onComplete)
-    }
-
-    private fun fetchLocal() {
-        localDisposable.dispose()
-        localDisposable = database.cachedPreviewDao
-            .getAll()
-            .subscribe(booksLive::postValue)
     }
 
     private fun fetchRemotePage() {
-        remoteDisposable.dispose()
-
-        if (query.isEmpty()) {
-            remoteDisposable = nhentaiApi.getAll(page + 1)
-                .doOnSubscribe { isLoadingLive.postValue(true) }
-                .doFinally { isLoadingLive.postValue(false) }
-                .subscribe(::onSearchSuccess, Timber::e)
-        } else if (query.matches(Regex("^id:\\d+\$"))) {
-            val id = query.substringAfter("id:").toInt()
-
-            remoteDisposable = nhentaiApi.getOne(id)
-                .doOnSubscribe { isLoadingLive.postValue(true) }
-                .doFinally { isLoadingLive.postValue(false) }
-                .subscribe(::onGetBookSuccess, Timber::e)
-
-        } else {
-            remoteDisposable = nhentaiApi.search(query, sort, page + 1)
-                .doOnSubscribe { isLoadingLive.postValue(true) }
-                .doFinally { isLoadingLive.postValue(false) }
-                .subscribe(::onSearchSuccess, Timber::e)
+        viewModelScope.launch {
+            _isLoading.value = true
+            try {
+                if (query.isEmpty()) {
+                    val response = nhentaiApi.getAll(page + 1)
+                    onSearchSuccess(response)
+                } else if (query.matches(Regex("^id:\\d+\$"))) {
+                    val id = query.substringAfter("id:").toInt()
+                    val response = nhentaiApi.getOne(id)
+                    onGetBookSuccess(response)
+                } else {
+                    val response = nhentaiApi.search(query, sort, page + 1)
+                    onSearchSuccess(response)
+                }
+            } catch (e: Exception) {
+                Timber.e(e)
+            } finally {
+                _isLoading.value = false
+            }
         }
     }
 
-    private fun onGetBookSuccess(bookJson: GalleryDetailResponse) {
-        with(database) {
-            runInTransaction {
-                cachedDao.insert(CachedEntity(0, bookJson.id))
-                bookDao.insert(bookJson.toEntity())
-            }
+    private suspend fun onGetBookSuccess(bookJson: GalleryDetailResponse) {
+        database.withTransaction {
+            database.cachedDao.insert(CachedEntity(0, bookJson.id))
+            database.bookDao.insert(bookJson.toEntity())
         }
-
         isComplete = true
     }
 
-    private fun onSearchSuccess(searchJson: PaginatedResponse) {
-        with(database) {
-            runInTransaction {
-                for (bookJson in searchJson.result) {
-                    cachedDao.insert(CachedEntity(0, bookJson.id))
-                    bookDao.insert(bookJson.toEntity())
-                }
+    private suspend fun onSearchSuccess(searchJson: PaginatedResponse) {
+        database.withTransaction {
+            for (bookJson in searchJson.result) {
+                database.cachedDao.insert(CachedEntity(0, bookJson.id))
+                database.bookDao.insert(bookJson.toEntity())
             }
         }
 
         if (page < searchJson.num_pages) {
-            ++page
+            page++
         } else {
             isComplete = true
         }
     }
 }
-
