@@ -3,14 +3,13 @@ package i.am.shiro.amai.compose
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -86,6 +85,8 @@ private fun TagGroup(
         horizontalArrangement = Arrangement.spacedBy(4.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
+        // Text style and vertical padding must match to align items
+
         Text(
             text = label,
             style = MaterialTheme.typography.bodyMedium,
@@ -93,19 +94,16 @@ private fun TagGroup(
         )
 
         tags.forEach { tag ->
-            Box(
+            Text(
+                text = tag.name,
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurface,
                 modifier = Modifier
-                    .clip(RoundedCornerShape(16.dp))
-                    .background(MaterialTheme.colorScheme.surfaceContainer)
+                    .clip(CircleShape)
                     .clickable { onTagClick(tag.query) }
+                    .background(MaterialTheme.colorScheme.surfaceContainer)
                     .padding(vertical = 4.dp, horizontal = 12.dp)
-            ) {
-                Text(
-                    text = tag.name,
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurface
-                )
-            }
+            )
         }
     }
 }
