@@ -15,6 +15,7 @@ import androidx.compose.animation.Crossfade
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -119,33 +120,35 @@ class HomeComposeFragment() : Fragment() {
                                     currentDestination = Destination.Home
                                 }
 
-                                val model by detailViewModel.uiState.collectAsState()
-                                model?.let { detailModel ->
-                                    DetailScreen(
-                                        model = detailModel,
-                                        onBackClick = {
-                                            currentDestination = Destination.Home
-                                        },
-                                        onShareClick = {
-                                            val bookUrl = "${Nhentai.WEBPAGE_BASE_URL}${destination.bookId}/"
-                                            val exclude = arrayOf(ComponentName(requireContext(), MainActivity::class.java))
-                                            val intent = Intent(ACTION_SEND)
-                                                .putExtra(EXTRA_TEXT, bookUrl)
-                                                .putExtra(EXTRA_EXCLUDE_COMPONENTS, exclude)
-                                                .setType("text/plain")
-                                                .let { createChooser(it, null) }
-                                            startActivity(intent)
-                                        },
-                                        onFavoriteToggle = detailViewModel::onFavoriteToggle,
-                                        onThumbnailClick = { pageIndex ->
-                                            readViewModel.setBookId(destination.bookId)
-                                            currentDestination = Destination.Read(destination.bookId, pageIndex)
-                                        },
-                                        onTagClick = {
-                                            mainViewModel.search(it)
-                                            currentDestination = Destination.Home
-                                        }
-                                    )
+                                key(destination.bookId) {
+                                    val model by detailViewModel.uiState.collectAsState()
+                                    model?.let { detailModel ->
+                                        DetailScreen(
+                                            model = detailModel,
+                                            onBackClick = {
+                                                currentDestination = Destination.Home
+                                            },
+                                            onShareClick = {
+                                                val bookUrl = "${Nhentai.WEBPAGE_BASE_URL}${destination.bookId}/"
+                                                val exclude = arrayOf(ComponentName(requireContext(), MainActivity::class.java))
+                                                val intent = Intent(ACTION_SEND)
+                                                    .putExtra(EXTRA_TEXT, bookUrl)
+                                                    .putExtra(EXTRA_EXCLUDE_COMPONENTS, exclude)
+                                                    .setType("text/plain")
+                                                    .let { createChooser(it, null) }
+                                                startActivity(intent)
+                                            },
+                                            onFavoriteToggle = detailViewModel::onFavoriteToggle,
+                                            onThumbnailClick = { pageIndex ->
+                                                readViewModel.setBookId(destination.bookId)
+                                                currentDestination = Destination.Read(destination.bookId, pageIndex)
+                                            },
+                                            onTagClick = {
+                                                mainViewModel.search(it)
+                                                currentDestination = Destination.Home
+                                            }
+                                        )
+                                    }
                                 }
                             }
 
@@ -154,20 +157,22 @@ class HomeComposeFragment() : Fragment() {
                                     currentDestination = Destination.Detail(destination.bookId)
                                 }
 
-                                DisposableEffect(Unit) {
-                                    val window = requireActivity().window
-                                    val controller = WindowInsetsControllerCompat(window, window.decorView)
-                                    controller.hide(WindowInsetsCompat.Type.statusBars())
-                                    controller.systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
-                                    onDispose {
-                                        controller.show(WindowInsetsCompat.Type.statusBars())
+                                key(destination.bookId) {
+                                    DisposableEffect(Unit) {
+                                        val window = requireActivity().window
+                                        val controller = WindowInsetsControllerCompat(window, window.decorView)
+                                        controller.hide(WindowInsetsCompat.Type.statusBars())
+                                        controller.systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+                                        onDispose {
+                                            controller.show(WindowInsetsCompat.Type.statusBars())
+                                        }
                                     }
-                                }
 
-                                ReadScreen(
-                                    viewModel = readViewModel,
-                                    initialPage = destination.pageIndex
-                                )
+                                    ReadScreen(
+                                        viewModel = readViewModel,
+                                        initialPage = destination.pageIndex
+                                    )
+                                }
                             }
                         }
                     }
