@@ -25,7 +25,7 @@ Start with these files when validating project facts:
 
 - **Build & Dependencies**: `settings.gradle`, `app/build.gradle`, `gradle.properties`.
 - **Runtime startup and DI**: `AmaiApplication.kt`, `koin/Modules.kt`.
-- **Navigation & Screen Flow**: `MainActivity.kt`, `util/Navigation.kt`, `fragment/`, `compose/HomeScreen.kt`, `fragment/HomeComposeFragment.kt`.
+- **Navigation & Screen Flow**: `MainActivity.kt`, `fragment/`, `compose/HomeScreen.kt`, `fragment/HomeComposeFragment.kt`.
 - **Room schema**: `data/AmaiDatabase.kt`, `app/schemas/`.
 - **Network API**: `network/Nhentai.kt`, `util/NhentaiX.kt`.
 - **Compose UI**: `compose/`.
@@ -52,8 +52,7 @@ git -c safe.directory=C:/android_projects/Amai status --short
 
 ## Source Map
 
-- `MainActivity.kt`: chooses the initial fragment based on deep link, shared text, or normal home launch.
-- `util/Navigation.kt`: Contains the manual fragment transaction logic. This app does **not** use Jetpack Navigation.
+- `MainActivity.kt`: Chooses the initial fragment and contains the manual fragment transaction logic. This app does **not** use Jetpack Navigation.
 - `viewmodel/factory/ViewModelFactory.kt`: Manual factory combining Koin plus `SavedStateHandle`.
 - `util/FragmentX.kt`: Provides `amaiViewModels<T>()` to wire fragments to the custom factory.
 - `util/NhentaiX.kt`: Logic for mapping API DTOs to Room Entities.

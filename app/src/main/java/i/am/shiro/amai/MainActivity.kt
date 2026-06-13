@@ -4,8 +4,9 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.net.toUri
-import i.am.shiro.amai.util.startAtDetail
-import i.am.shiro.amai.util.startAtHome
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.commit
+import i.am.shiro.amai.fragment.HomeComposeFragment
 import timber.log.Timber
 
 class MainActivity : AppCompatActivity() {
@@ -19,7 +20,8 @@ class MainActivity : AppCompatActivity() {
 
         when (intent.action) {
             Intent.ACTION_VIEW -> {
-                startAtDetail(intent.data!!.pathSegments[1].toInt())
+                val bookId = intent.data!!.pathSegments[1].toInt()
+                setFragment(HomeComposeFragment(bookId))
             }
             Intent.ACTION_SEND -> {
                 try {
@@ -27,15 +29,21 @@ class MainActivity : AppCompatActivity() {
                         .toUri()
                         .lastPathSegment!!
                         .toInt()
-                    startAtDetail(bookId)
+                    setFragment(HomeComposeFragment(bookId))
                 } catch (e: Exception) {
                     Timber.e(e)
                     finish()
                 }
             }
             else -> {
-                startAtHome()
+                setFragment(HomeComposeFragment())
             }
+        }
+    }
+
+    private fun setFragment(fragment: Fragment) {
+        supportFragmentManager.commit {
+            add(R.id.fragmentContainer, fragment)
         }
     }
 }
