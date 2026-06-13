@@ -25,7 +25,7 @@ Start with these files when validating project facts:
 
 - **Build & Dependencies**: `settings.gradle`, `app/build.gradle`, `gradle.properties`.
 - **Runtime startup and DI**: `AmaiApplication.kt`, `koin/Modules.kt`.
-- **Navigation & Screen Flow**: `MainActivity.kt`, `fragment/`, `compose/HomeScreen.kt`, `fragment/HomeComposeFragment.kt`.
+- **Navigation & Screen Flow**: `MainActivity.kt`, `compose/HomeScreen.kt`.
 - **Room schema**: `data/AmaiDatabase.kt`, `app/schemas/`.
 - **Network API**: `network/Nhentai.kt`, `util/NhentaiX.kt`.
 - **Compose UI**: `compose/`.
@@ -34,7 +34,7 @@ Start with these files when validating project facts:
 
 - **Project Name**: `Amai`.
 - **Purpose**: Browse, search, view, favorite, and read galleries from `nhentai.net`.
-- **UI Architecture**: Hybrid (XML layouts/ViewBinding + Jetpack Compose).
+- **UI Architecture**: Pure Jetpack Compose.
 - **Tech Stack**: Room, Koin, Coroutines/Flow, Retrofit, Coil, Timber.
 
 ## Local Environment Notes
@@ -52,16 +52,15 @@ git -c safe.directory=C:/android_projects/Amai status --short
 
 ## Source Map
 
-- `MainActivity.kt`: Chooses the initial fragment and contains the manual fragment transaction logic. This app does **not** use Jetpack Navigation.
+- `MainActivity.kt`: Chooses the initial screen and contains the navigation logic. This app does **not** use Jetpack Navigation.
 - `viewmodel/factory/ViewModelFactory.kt`: Manual factory combining Koin plus `SavedStateHandle`.
-- `util/FragmentX.kt`: Provides `amaiViewModels<T>()` to wire fragments to the custom factory.
 - `util/NhentaiX.kt`: Logic for mapping API DTOs to Room Entities.
 
 ## Runtime Flow
 
-- `MainActivity` hosts a single `FragmentContainerView`.
-- App launch opens `HomeComposeFragment`, which acts as a navigator for Compose-based screens.
-- `HomeComposeFragment` manages navigation between `HomeScreen`, `SearchScreen`, `DetailScreen`, and `ReadScreen` using `Crossfade` and local state (`Destination`).
+- `MainActivity` hosts the Compose content.
+- App launch opens `MainActivity`, which acts as a navigator for Compose-based screens.
+- `MainActivity` manages navigation between `HomeScreen`, `SearchScreen`, `DetailScreen`, and `ReadScreen` using `Crossfade` and local state (`Destination`).
 - `HomeScreen` manages the browse (Nhentai) and favorites tabs. It uses `BrowseScreen` and `FavoritesScreen`.
 
 ## Data Model And Storage
@@ -85,8 +84,8 @@ git -c safe.directory=C:/android_projects/Amai status --short
 
 ## UI Conventions
 
-- **Hybrid View**: Compose screens are embedded in fragments via `ComposeView` with `DisposeOnViewTreeLifecycleDestroyed`.
-- **Theme**: Compose uses `AmaiTheme`. XML uses `Theme.Material3.Dark.NoActionBar`.
+- **Pure Compose**: The app has been fully migrated to Jetpack Compose. XML layouts and Fragments have been removed.
+- **Theme**: Compose uses `AmaiTheme`.
 - **Grid**: Browse, favorites, and detail layouts use adaptive grids with ~150 dp cells.
 - **Resources**: Use existing strings in `res/values/strings.xml` and icons in `res/drawable` before adding new assets.
 

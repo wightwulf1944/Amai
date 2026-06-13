@@ -29,8 +29,6 @@ android {
         }
     }
     buildFeatures {
-        // generate ViewBinding classes for layouts
-        viewBinding true
         // generate BuildConfig class
         buildConfig true
         // enable compose features
@@ -50,8 +48,6 @@ java {
 dependencies {
     implementation 'androidx.core:core-ktx:1.18.0'
     implementation 'androidx.activity:activity-compose:1.13.0'
-    implementation 'androidx.preference:preference:1.2.1'
-    implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.2.0'
     implementation 'androidx.room:room-runtime:2.8.4'
     implementation 'androidx.room:room-ktx:2.8.4'
     ksp 'androidx.room:room-compiler:2.8.4'
@@ -81,14 +77,8 @@ dependencies {
 //    implementation 'com.google.firebase:firebase-analytics'
 //    implementation 'com.google.firebase:firebase-crashlytics'
 
-    //    https://github.com/google/flexbox-layout
-    implementation 'com.google.android.flexbox:flexbox:3.0.0'
-
     //    https://github.com/JakeWharton/timber
     implementation 'com.jakewharton.timber:timber:5.0.1'
-
-    implementation 'com.github.lisawray.groupie:groupie:2.10.1'
-    implementation 'com.github.lisawray.groupie:groupie-viewbinding:2.10.1'
 
     implementation 'io.coil-kt.coil3:coil:3.5.0'
     implementation 'io.coil-kt.coil3:coil-compose:3.5.0'
