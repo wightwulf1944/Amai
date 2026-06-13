@@ -57,15 +57,13 @@ git -c safe.directory=C:/android_projects/Amai status --short
 - `viewmodel/factory/ViewModelFactory.kt`: Manual factory combining Koin plus `SavedStateHandle`.
 - `util/FragmentX.kt`: Provides `amaiViewModels<T>()` to wire fragments to the custom factory.
 - `util/NhentaiX.kt`: Logic for mapping API DTOs to Room Entities.
-- `widget/`: Contains custom UI components like `PageRecyclerView` (reader).
 
 ## Runtime Flow
 
 - `MainActivity` hosts a single `FragmentContainerView`.
 - App launch opens `HomeComposeFragment`, which acts as a navigator for Compose-based screens.
-- `HomeComposeFragment` manages navigation between `HomeScreen`, `SearchScreen`, and `DetailScreen` using `Crossfade` and local state (`Destination`).
+- `HomeComposeFragment` manages navigation between `HomeScreen`, `SearchScreen`, `DetailScreen`, and `ReadScreen` using `Crossfade` and local state (`Destination`).
 - `HomeScreen` manages the browse (Nhentai) and favorites tabs. It uses `BrowseScreen` and `FavoritesScreen`.
-- `ReadFragment` is XML-backed, using `PageRecyclerView` for the reader. It enters fullscreen while attached.
 
 ## Data Model And Storage
 
@@ -104,7 +102,6 @@ git -c safe.directory=C:/android_projects/Amai status --short
 
 - `DetailViewModel.kt`: Uses unbounded `retry()` in `loadRemote()`.
 - `!!` Usage: Many areas use non-null assertions; verify `SavedStateHandle` or `Intent` extras carefully.
-- `PageRecyclerView.java`: Handles volume-key page flips and tap zones. Changes here require manual testing on a device.
 - `Modules.kt`: Uses `.fallbackToDestructiveMigration(dropAllTables = true)`, which resets the DB on schema mismatches during development.
 
 ## Editing Guidelines

@@ -12,6 +12,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.Crossfade
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -20,6 +21,8 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.WindowInsetsControllerCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
@@ -27,15 +30,16 @@ import i.am.shiro.amai.MainActivity
 import i.am.shiro.amai.compose.AmaiTheme
 import i.am.shiro.amai.compose.DetailScreen
 import i.am.shiro.amai.compose.HomeScreen
+import i.am.shiro.amai.compose.ReadScreen
 import i.am.shiro.amai.compose.SearchScreen
 import i.am.shiro.amai.network.Nhentai
 import i.am.shiro.amai.util.amaiViewModels
 import i.am.shiro.amai.util.argument
-import i.am.shiro.amai.util.goToRead
 import i.am.shiro.amai.viewmodel.DetailViewModel
 import i.am.shiro.amai.viewmodel.FavoritesViewModel
 import i.am.shiro.amai.viewmodel.MainViewModel
 import i.am.shiro.amai.viewmodel.NhentaiViewModel
+import i.am.shiro.amai.viewmodel.ReadViewModel
 import i.am.shiro.amai.viewmodel.SearchViewModel
 import java.io.Serializable
 
@@ -43,6 +47,7 @@ private sealed class Destination : Serializable {
     data object Home : Destination()
     data object Search : Destination()
     data class Detail(val bookId: Int) : Destination()
+    data class Read(val bookId: Int, val pageIndex: Int) : Destination()
 }
 
 class HomeComposeFragment() : Fragment() {
@@ -58,6 +63,7 @@ class HomeComposeFragment() : Fragment() {
     private val favoritesViewModel by amaiViewModels<FavoritesViewModel>()
     private val searchViewModel by viewModels<SearchViewModel>()
     private val detailViewModel by amaiViewModels<DetailViewModel>()
+    private val readViewModel by amaiViewModels<ReadViewModel>()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -131,13 +137,37 @@ class HomeComposeFragment() : Fragment() {
                                             startActivity(intent)
                                         },
                                         onFavoriteToggle = detailViewModel::onFavoriteToggle,
-                                        onThumbnailClick = { goToRead(destination.bookId, it) },
+                                        onThumbnailClick = { pageIndex ->
+                                            readViewModel.setBookId(destination.bookId)
+                                            currentDestination = Destination.Read(destination.bookId, pageIndex)
+                                        },
                                         onTagClick = {
                                             mainViewModel.search(it)
                                             currentDestination = Destination.Home
                                         }
                                     )
                                 }
+                            }
+
+                            is Destination.Read -> {
+                                BackHandler {
+                                    currentDestination = Destination.Detail(destination.bookId)
+                                }
+
+                                DisposableEffect(Unit) {
+                                    val window = requireActivity().window
+                                    val controller = WindowInsetsControllerCompat(window, window.decorView)
+                                    controller.hide(WindowInsetsCompat.Type.statusBars())
+                                    controller.systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+                                    onDispose {
+                                        controller.show(WindowInsetsCompat.Type.statusBars())
+                                    }
+                                }
+
+                                ReadScreen(
+                                    viewModel = readViewModel,
+                                    initialPage = destination.pageIndex
+                                )
                             }
                         }
                     }

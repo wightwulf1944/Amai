@@ -9,13 +9,13 @@ import kotlinx.coroutines.launch
 
 class ReadViewModel(private val database: AmaiDatabase) : ViewModel() {
 
-    private var isLoaded = false
+    private var currentBookId: Int? = null
 
     val pagesLive = MutableLiveData<List<ImageEntity>>()
 
     fun setBookId(bookId: Int) {
-        if (isLoaded) return
-        else isLoaded = true
+        if (currentBookId == bookId) return
+        currentBookId = bookId
 
         viewModelScope.launch {
             val pages = database.imageDao.findByBookId(bookId)
