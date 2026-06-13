@@ -35,11 +35,13 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import coil.compose.AsyncImage
-import coil.compose.rememberAsyncImagePainter
-import coil.request.CachePolicy
-import coil.request.ImageRequest
-import coil.size.Precision
+import coil3.compose.AsyncImage
+import coil3.compose.rememberAsyncImagePainter
+import coil3.compose.rememberConstraintsSizeResolver
+import coil3.request.CachePolicy
+import coil3.request.ImageRequest
+import coil3.request.allowRgb565
+import coil3.size.Precision
 import i.am.shiro.amai.viewmodel.ReadViewModel
 import kotlinx.coroutines.launch
 
@@ -108,7 +110,7 @@ fun ReadScreen(
             ) { index ->
                 val page = pages[index]
                 val context = LocalContext.current
-                val sizeResolver = remember { ConstraintsSizeResolver() }
+                val sizeResolver = rememberConstraintsSizeResolver()
 
                 val thumbnailPainter = rememberAsyncImagePainter(
                     model = ImageRequest.Builder(context)
