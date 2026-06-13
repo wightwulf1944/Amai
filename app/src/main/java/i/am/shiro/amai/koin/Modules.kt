@@ -7,9 +7,16 @@ import i.am.shiro.amai.BuildConfig
 import i.am.shiro.amai.data.AmaiDatabase
 import i.am.shiro.amai.network.Nhentai
 import i.am.shiro.amai.network.UserAgentInterceptor
+import i.am.shiro.amai.viewmodel.DetailViewModel
+import i.am.shiro.amai.viewmodel.FavoritesViewModel
+import i.am.shiro.amai.viewmodel.MainViewModel
+import i.am.shiro.amai.viewmodel.NhentaiViewModel
+import i.am.shiro.amai.viewmodel.ReadViewModel
+import i.am.shiro.amai.viewmodel.SearchViewModel
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import org.koin.android.ext.koin.androidContext
+import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
@@ -46,4 +53,11 @@ val mainModule = module {
             .build()
             .create()
     }
+
+    viewModelOf(::MainViewModel)
+    viewModelOf(::SearchViewModel)
+    viewModelOf(::NhentaiViewModel)
+    viewModelOf(::FavoritesViewModel)
+    viewModelOf(::DetailViewModel)
+    viewModelOf(::ReadViewModel)
 }

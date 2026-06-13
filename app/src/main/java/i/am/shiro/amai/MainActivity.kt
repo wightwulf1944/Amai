@@ -8,10 +8,11 @@ import android.content.Intent.createChooser
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.BackHandler
+import androidx.activity.compose.LocalActivity
 import androidx.activity.compose.setContent
-import androidx.activity.viewModels
 import androidx.compose.animation.Crossfade
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
@@ -33,7 +34,7 @@ import i.am.shiro.amai.viewmodel.MainViewModel
 import i.am.shiro.amai.viewmodel.NhentaiViewModel
 import i.am.shiro.amai.viewmodel.ReadViewModel
 import i.am.shiro.amai.viewmodel.SearchViewModel
-import i.am.shiro.amai.viewmodel.factory.ViewModelFactory
+import org.koin.compose.viewmodel.koinViewModel
 import timber.log.Timber
 import java.io.Serializable
 
@@ -45,13 +46,6 @@ private sealed interface Destination : Serializable {
 }
 
 class MainActivity : ComponentActivity() {
-
-    private val mainViewModel by viewModels<MainViewModel>()
-    private val nhentaiViewModel by viewModels<NhentaiViewModel> { ViewModelFactory() }
-    private val favoritesViewModel by viewModels<FavoritesViewModel> { ViewModelFactory() }
-    private val searchViewModel by viewModels<SearchViewModel>()
-    private val detailViewModel by viewModels<DetailViewModel> { ViewModelFactory() }
-    private val readViewModel by viewModels<ReadViewModel> { ViewModelFactory() }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -81,28 +75,34 @@ class MainActivity : ComponentActivity() {
                         if (initialBookId == null) {
                             Destination.Home
                         } else {
-                            detailViewModel.load(initialBookId)
                             Destination.Detail(initialBookId)
                         }
                     )
                 }
 
+                val mainViewModel = koinViewModel<MainViewModel>(
+                    viewModelStoreOwner = LocalActivity.current as ComponentActivity
+                )
+
                 Crossfade(targetState = currentDestination, label = "navigation") { destination ->
                     when (destination) {
                         Destination.Home -> {
+                            val nhentaiViewModel = koinViewModel<NhentaiViewModel>()
+                            val favoritesViewModel = koinViewModel<FavoritesViewModel>()
                             HomeScreen(
                                 mainViewModel = mainViewModel,
                                 nhentaiViewModel = nhentaiViewModel,
                                 favoritesViewModel = favoritesViewModel,
                                 onSearchClick = { currentDestination = Destination.Search },
                                 onItemClick = { bookId ->
-                                    detailViewModel.load(bookId)
                                     currentDestination = Destination.Detail(bookId)
                                 }
                             )
                         }
 
                         Destination.Search -> {
+                            val searchViewModel = koinViewModel<SearchViewModel>()
+
                             BackHandler {
                                 currentDestination = Destination.Home
                             }
@@ -118,6 +118,11 @@ class MainActivity : ComponentActivity() {
                         }
 
                         is Destination.Detail -> {
+                            val detailViewModel = koinViewModel<DetailViewModel>()
+
+                            LaunchedEffect(destination.bookId) {
+                                detailViewModel.load(destination.bookId)
+                            }
                             BackHandler {
                                 currentDestination = Destination.Home
                             }
@@ -142,7 +147,6 @@ class MainActivity : ComponentActivity() {
                                         },
                                         onFavoriteToggle = detailViewModel::onFavoriteToggle,
                                         onThumbnailClick = { pageIndex ->
-                                            readViewModel.setBookId(destination.bookId)
                                             currentDestination = Destination.Read(destination.bookId, pageIndex)
                                         },
                                         onTagClick = {
@@ -155,6 +159,11 @@ class MainActivity : ComponentActivity() {
                         }
 
                         is Destination.Read -> {
+                            val readViewModel = koinViewModel<ReadViewModel>()
+
+                            LaunchedEffect(destination.bookId) {
+                                readViewModel.setBookId(destination.bookId)
+                            }
                             BackHandler {
                                 currentDestination = Destination.Detail(destination.bookId)
                             }
