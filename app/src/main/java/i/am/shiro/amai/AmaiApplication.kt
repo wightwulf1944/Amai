@@ -1,9 +1,6 @@
 package i.am.shiro.amai
 
 import android.app.Application
-import android.app.NotificationChannel
-import android.app.NotificationManager
-import androidx.core.content.getSystemService
 import coil3.ImageLoader
 import coil3.PlatformContext
 import coil3.SingletonImageLoader
@@ -27,13 +24,6 @@ class AmaiApplication : Application(), SingletonImageLoader.Factory {
             androidContext(this@AmaiApplication)
             modules(mainModule)
         }
-
-        val mChannel = NotificationChannel(
-            DEFAULT_CHANNEL_ID,
-            getString(R.string.app_name),
-            NotificationManager.IMPORTANCE_DEFAULT)
-
-        getSystemService<NotificationManager>()!!.createNotificationChannel(mChannel)
     }
 
     private fun initDebugTools() {
