@@ -14,17 +14,13 @@
     <string name="confirm_exit">Press back again to exit</string>
     <string name="sort">Sort</string>
     <string name="sort_by">Sort by</string>
-    <string-array name="sort_items_favorites">
-        <item>Newest first</item>
-        <item>Oldest first</item>
-    </string-array>
-    <string-array name="sort_items_nhentai">
-        <item>Newest</item>
-        <item>Popular</item>
-        <item>Popular Today</item>
-        <item>Popular Week</item>
-        <item>Popular Month</item>
-    </string-array>
+    <string name="newest_first">Newest first</string>
+    <string name="oldest_first">Oldest first</string>
+    <string name="newest">Newest</string>
+    <string name="popular">Popular</string>
+    <string name="popular_today">Popular Today</string>
+    <string name="popular_week">Popular Week</string>
+    <string name="popular_month">Popular Month</string>
     <string name="artists">Artists</string>
     <string name="groups">Groups</string>
     <string name="parodies">Parodies</string>

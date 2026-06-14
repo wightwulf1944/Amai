@@ -24,7 +24,6 @@ import androidx.compose.ui.unit.dp
 import i.am.shiro.amai.R
 import i.am.shiro.amai.model.DetailModel
 import i.am.shiro.amai.model.TagModel
-import i.am.shiro.amai.model.Thumbnail
 
 @Composable
 fun DetailContentHeader(
@@ -120,34 +119,3 @@ fun DetailContentHeaderPreview() {
         }
     }
 }
-
-private fun sampleModel() = DetailModel(
-    title = "Amai: The Sweetest Adventure",
-    pageCount = 256,
-    isFavorite = true,
-    artistTags = listOf(TagModel("artist", "shiro"), TagModel("artist", "kuro")),
-    groupTags = listOf(TagModel("group", "C86")),
-    parodyTags = listOf(TagModel("parody", "Original")),
-    characterTags = listOf(
-        TagModel("character", "Amai-chan"),
-        TagModel("character", "Mochi-kun")
-    ),
-    languageTags = listOf(
-        TagModel("language", "English"),
-        TagModel("language", "Japanese")
-    ),
-    categoryTags = listOf(TagModel("category", "Manga")),
-    generalTags = listOf(
-        TagModel("tag", "sweet"),
-        TagModel("tag", "comedy"),
-        TagModel("tag", "romance"),
-        TagModel("tag", "slice of life"),
-        TagModel("tag", "school life")
-    ),
-    thumbnails = List(5) { index ->
-        Thumbnail(
-            aspectRatio = 0.75f,
-            url = "https://example.com/thumb/$index.jpg"
-        )
-    }
-)

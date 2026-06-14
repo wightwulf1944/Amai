@@ -1,6 +1,7 @@
 package i.am.shiro.amai.compose
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -182,9 +183,10 @@ fun DetailContent(
         }
 
         itemsIndexed(model.thumbnails) { index, thumbnail ->
-            DetailContentThumbnail(
-                thumbnail = thumbnail,
-                onClick = { onThumbnailClick(index) }
+            BookThumbnail(
+                url =  thumbnail.url,
+                aspectRatio = thumbnail.aspectRatio,
+                modifier = Modifier.clickable(onClick = { onThumbnailClick(index) })
             )
         }
     }
@@ -220,7 +222,7 @@ fun DetailScreenPreview() {
     }
 }
 
-private fun sampleModel() = DetailModel(
+fun sampleModel() = DetailModel(
     title = "Amai: The Sweetest Adventure",
     pageCount = 256,
     isFavorite = true,

@@ -1,7 +1,6 @@
 package i.am.shiro.amai.compose
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -9,11 +8,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.plus
 import androidx.compose.foundation.lazy.staggeredgrid.LazyStaggeredGridState
-import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
-import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells.Adaptive
-import androidx.compose.foundation.lazy.staggeredgrid.items
 import androidx.compose.foundation.lazy.staggeredgrid.rememberLazyStaggeredGridState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Icon
@@ -43,6 +38,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import i.am.shiro.amai.R
 import i.am.shiro.amai.data.view.CachedPreviewView
+import i.am.shiro.amai.model.BookPreview
 import i.am.shiro.amai.network.Nhentai.Sort
 
 // TODO try jetpack paging library for loading content
@@ -148,28 +144,24 @@ fun BrowseContent(
         onRefresh = onRefresh,
         modifier = Modifier.fillMaxSize()
     ) {
-        LazyVerticalStaggeredGrid(
-            columns = Adaptive(150.dp),
-            modifier = Modifier.fillMaxSize(),
-            state = gridState,
-            contentPadding = contentPadding + PaddingValues(
-                start = 8.dp,
-                end = 8.dp,
-                bottom = 16.dp
-            ),
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
-            verticalItemSpacing = 8.dp
-        ) {
-            items(
-                items = books,
-                key = { it.bookId }
-            ) {
-                BrowseItem(
-                    book = it,
-                    onItemClick = onItemClick
+        val books = remember(books) {
+            books.map {
+                BookPreview(
+                    bookId = it.bookId,
+                    aspectRatio = it.thumbnailWidth.toFloat() / it.thumbnailHeight.toFloat(),
+                    thumbnailUrl = it.thumbnailUrl,
+                    title = it.title,
+                    showFavoriteBadge = it.isFavorite,
+                    pageCount = it.pageCount
                 )
             }
         }
+        BookGrid(
+            books = books,
+            onItemClick = onItemClick,
+            gridState = gridState,
+            contentPadding = contentPadding
+        )
 
         if (isLoading) {
             LinearProgressIndicator(
