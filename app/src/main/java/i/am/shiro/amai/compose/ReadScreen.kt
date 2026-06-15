@@ -3,13 +3,10 @@ package i.am.shiro.amai.compose
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.focusable
-import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
@@ -32,7 +29,6 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.key.Key
 import androidx.compose.ui.input.key.key
 import androidx.compose.ui.input.key.onKeyEvent
-import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -44,9 +40,6 @@ import coil3.request.ImageRequest
 import coil3.request.allowRgb565
 import coil3.size.Precision
 import i.am.shiro.amai.viewmodel.ReadViewModel
-import kotlinx.coroutines.launch
-
-private val TAP_ZONE_WIDTH = 80.dp
 
 @Composable
 fun ReadScreen(
@@ -140,39 +133,6 @@ fun ReadScreen(
                         .then(sizeResolver)
                 )
             }
-
-            // FIXME these tap zones prevent HorizontalPager from capturing swipes in these areas
-            Box(
-                modifier = Modifier
-                    .fillMaxHeight()
-                    .width(TAP_ZONE_WIDTH)
-                    .align(Alignment.CenterStart)
-                    .pointerInput(Unit) {
-                        detectTapGestures {
-                            if (pagerState.currentPage > 0) {
-                                scope.launch {
-                                    pagerState.animateScrollPageBy(-1)
-                                }
-                            }
-                        }
-                    }
-            )
-
-            Box(
-                modifier = Modifier
-                    .fillMaxHeight()
-                    .width(TAP_ZONE_WIDTH)
-                    .align(Alignment.CenterEnd)
-                    .pointerInput(Unit) {
-                        detectTapGestures {
-                            if (pagerState.currentPage < pages.size - 1) {
-                                scope.launch {
-                                    pagerState.animateScrollPageBy(1)
-                                }
-                            }
-                        }
-                    }
-            )
 
             PageCounter(
                 currentPage = pagerState.currentPage + 1,
