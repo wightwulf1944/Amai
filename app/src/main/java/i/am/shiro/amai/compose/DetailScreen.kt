@@ -3,13 +3,19 @@ package i.am.shiro.amai.compose
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.plus
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -30,9 +36,11 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -59,6 +67,7 @@ fun DetailScreen(
     )
 
     Scaffold(
+        contentWindowInsets = WindowInsets.navigationBars,
         snackbarHost = {
             SnackbarHost(snackbarHostState)
         },
@@ -71,12 +80,15 @@ fun DetailScreen(
             )
         },
         content = { innerPadding ->
-            DetailContent(
-                model = model,
-                onThumbnailClick = onThumbnailClick,
-                onTagClick = onTagClick,
-                contentPadding = innerPadding
-            )
+            Box {
+                DetailContent(
+                    model = model,
+                    onThumbnailClick = onThumbnailClick,
+                    onTagClick = onTagClick,
+                    contentPadding = innerPadding
+                )
+                NavigationBarScrim()
+            }
         }
     )
 }
@@ -103,6 +115,26 @@ fun FavoriteSnackbarEffect(
 }
 
 @Composable
+fun BoxScope.NavigationBarScrim() = Spacer(
+    Modifier
+        .align(Alignment.BottomCenter)
+        .fillMaxWidth()
+        .height(
+            with(LocalDensity.current) {
+                WindowInsets.navigationBars.getBottom(LocalDensity.current).toDp()
+            }
+        )
+        .background(
+            brush = Brush.verticalGradient(
+                colors = listOf(
+                    Color.Transparent,
+                    MaterialTheme.colorScheme.background
+                )
+            )
+        )
+)
+
+@Composable
 fun DetailTopBar(
     isFavorite: Boolean,
     onBackClick: () -> Unit,
@@ -116,7 +148,9 @@ fun DetailTopBar(
         modifier = Modifier
             .fillMaxWidth()
             .background(background)
-            .padding(horizontal = 16.dp, vertical = 8.dp)
+            .statusBarsPadding()
+            .padding(horizontal = 16.dp)
+            .padding(top = 4.dp)
     ) {
         Surface(
             color = MaterialTheme.colorScheme.surfaceContainer,
@@ -171,7 +205,7 @@ fun DetailContent(
     LazyVerticalGrid(
         columns = GridCells.Adaptive(150.dp),
         modifier = Modifier.fillMaxSize(),
-        contentPadding = contentPadding + PaddingValues(8.dp, 8.dp, 8.dp, 24.dp),
+        contentPadding = contentPadding + PaddingValues(8.dp),
         horizontalArrangement = Arrangement.spacedBy(8.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp),
     ) {
@@ -184,7 +218,7 @@ fun DetailContent(
 
         itemsIndexed(model.thumbnails) { index, thumbnail ->
             BookThumbnail(
-                url =  thumbnail.url,
+                url = thumbnail.url,
                 aspectRatio = thumbnail.aspectRatio,
                 modifier = Modifier.clickable(onClick = { onThumbnailClick(index) })
             )

@@ -24,11 +24,7 @@ fun BookGrid(
         columns = Adaptive(150.dp),
         modifier = Modifier.fillMaxSize(),
         state = gridState,
-        contentPadding = contentPadding + PaddingValues(
-            start = 8.dp,
-            end = 8.dp,
-            bottom = 16.dp
-        ),
+        contentPadding = contentPadding + PaddingValues(8.dp),
         horizontalArrangement = Arrangement.spacedBy(8.dp),
         verticalItemSpacing = 8.dp
     ) {

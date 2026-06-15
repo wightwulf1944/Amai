@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Background color for the initial app startup (matches backgroundDark in Color.kt) -->
+    <!-- Background color for the initial app startup (matches background in Color.kt) -->
     <color name="background">#161217</color>
-    <!-- Surface container color for navigation bar (matches surfaceContainerHighDark in Color.kt) -->
-    <color name="surface_container_high">#2F2731</color>
 </resources>

@@ -2,8 +2,6 @@
 <resources>
 
     <style name="AppTheme" parent="Theme.Material3.Dark.NoActionBar">
-        <item name="android:statusBarColor">@color/background</item>
-        <item name="android:navigationBarColor">@color/surface_container_high</item>
         <item name="android:colorBackground">@color/background</item>
     </style>
 

@@ -5,8 +5,10 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.staggeredgrid.LazyStaggeredGridState
 import androidx.compose.foundation.lazy.staggeredgrid.rememberLazyStaggeredGridState
 import androidx.compose.foundation.shape.CircleShape
@@ -67,6 +69,7 @@ fun FavoritesScreen(
     }
 
     Scaffold(
+        contentWindowInsets = WindowInsets(),
         topBar = {
             FavoriteTopBar(
                 onSearchSubmit = onSearchSubmit,
@@ -96,7 +99,9 @@ fun FavoriteTopBar(
         modifier = Modifier
             .fillMaxWidth()
             .background(background)
-            .padding(horizontal = 16.dp, vertical = 8.dp)
+            .statusBarsPadding()
+            .padding(horizontal = 16.dp)
+            .padding(top = 4.dp)
     ) {
         Surface(
             color = MaterialTheme.colorScheme.surfaceContainer,

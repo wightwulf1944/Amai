@@ -1,6 +1,7 @@
 package i.am.shiro.amai.compose
 
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.staggeredgrid.rememberLazyStaggeredGridState
 import androidx.compose.material3.Icon
@@ -52,6 +53,7 @@ fun HomeScreen(
     HomeBackHandler(snackbarHostState)
 
     Scaffold(
+        contentWindowInsets = WindowInsets(),
         bottomBar = {
             HomeBottomNavigation(
                 selectedTab = selectedTab,
