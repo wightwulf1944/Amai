@@ -1,12 +1,13 @@
 package i.am.shiro.amai.compose
 
-import android.view.ViewTreeObserver
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.isImeVisible
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.staggeredgrid.LazyStaggeredGridState
@@ -23,13 +24,10 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -37,15 +35,11 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.platform.LocalFocusManager
-import androidx.compose.ui.platform.LocalView
-import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import i.am.shiro.amai.FavoritesSort
 import i.am.shiro.amai.R
 import i.am.shiro.amai.data.view.FavoritesPreviewView
@@ -127,6 +121,7 @@ fun FavoriteTopBar(
     }
 }
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun SearchInput(
     modifier: Modifier = Modifier,
@@ -136,7 +131,7 @@ fun SearchInput(
 
     val focusManager = LocalFocusManager.current
 
-    val isImeVisible by keyboardAsState()
+    val isImeVisible = WindowInsets.isImeVisible
 
     LaunchedEffect(isImeVisible) {
         if (!isImeVisible) {
@@ -173,27 +168,6 @@ fun SearchInput(
             cursorBrush = SolidColor(MaterialTheme.colorScheme.primary)
         )
     }
-}
-
-// TODO once compose migration is complete and edge-to-edge is implemented, replace this
-//  with WindowInsets.isImeVisible
-@Composable
-fun keyboardAsState(): State<Boolean> {
-    val view = LocalView.current
-    var isImeVisible by remember { mutableStateOf(false) }
-
-    DisposableEffect(LocalWindowInfo.current) {
-        val listener = ViewTreeObserver.OnPreDrawListener {
-            val rootWindowInsets = ViewCompat.getRootWindowInsets(view)
-            isImeVisible = rootWindowInsets?.isVisible(WindowInsetsCompat.Type.ime()) == true
-            true
-        }
-        view.viewTreeObserver.addOnPreDrawListener(listener)
-        onDispose {
-            view.viewTreeObserver.removeOnPreDrawListener(listener)
-        }
-    }
-    return rememberUpdatedState(isImeVisible)
 }
 
 @Composable
