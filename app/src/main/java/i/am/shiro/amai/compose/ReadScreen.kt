@@ -15,8 +15,8 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -52,7 +52,7 @@ fun ReadScreen(
     viewModel: ReadViewModel,
     initialPage: Int,
 ) {
-    val pages by viewModel.pagesLive.observeAsState(emptyList())
+    val pages by viewModel.pages.collectAsState()
     val pagerState = rememberPagerState(initialPage = initialPage) { pages.size }
     val focusRequester = remember { FocusRequester() }
 
