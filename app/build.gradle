@@ -15,7 +15,7 @@ android {
     defaultConfig {
         applicationId "i.am.shiro.amai"
         minSdk 30
-        targetSdk 35
+        targetSdk 36
         versionCode 1
         versionName "1.1"
         proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
