@@ -15,7 +15,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -102,11 +101,12 @@ fun HomeScreen(
 
                         val initialTitle = stringResource(R.string.nhentai)
                         var title by remember { mutableStateOf(initialTitle) }
-                        var scrollTrigger by remember { mutableIntStateOf(0) }
+                        var shouldScrollToTop by remember { mutableStateOf(false) }
 
-                        LaunchedEffect(scrollTrigger) {
-                            if (scrollTrigger > 0) {
+                        LaunchedEffect(books) {
+                            if (shouldScrollToTop) {
                                 nhentaiGridState.scrollToItem(0)
+                                shouldScrollToTop = false
                             }
                         }
 
@@ -120,7 +120,7 @@ fun HomeScreen(
                             searchEvent?.let { event ->
                                 if (!event.isNhentaiConsumed) {
                                     title = event.query
-                                    scrollTrigger++
+                                    shouldScrollToTop = true
                                     nhentaiViewModel.onSearch(event.query)
                                     event.isNhentaiConsumed = true
                                 }
