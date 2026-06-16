@@ -9,7 +9,6 @@
         <item quantity="other">%1$d pages</item>
     </plurals>
     <string name="favorite">Favorite</string>
-    <string name="page_image">page image</string>
     <string name="back">back</string>
     <string name="confirm_exit">Press back again to exit</string>
     <string name="sort">Sort</string>
