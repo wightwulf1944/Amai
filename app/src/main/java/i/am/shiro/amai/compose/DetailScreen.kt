@@ -6,21 +6,17 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBars
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.plus
-import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.itemsIndexed
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
@@ -46,6 +42,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import i.am.shiro.amai.R
+import i.am.shiro.amai.compose.common.TopBarContainer
+import i.am.shiro.amai.compose.common.TopBarPill
 import i.am.shiro.amai.model.DetailModel
 import i.am.shiro.amai.model.TagModel
 import i.am.shiro.amai.model.Thumbnail
@@ -141,21 +139,8 @@ fun DetailTopBar(
     onShareClick: () -> Unit,
     onFavoriteToggle: (Boolean) -> Unit,
 ) {
-    val background = Brush.verticalGradient(
-        listOf(MaterialTheme.colorScheme.surface, Color.Transparent)
-    )
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .background(background)
-            .statusBarsPadding()
-            .padding(horizontal = 16.dp)
-            .padding(top = 4.dp)
-    ) {
-        Surface(
-            color = MaterialTheme.colorScheme.surfaceContainer,
-            shape = CircleShape
-        ) {
+    TopBarContainer {
+        TopBarPill {
             IconButton(onClick = onBackClick) {
                 Icon(
                     painter = painterResource(R.drawable.ic_arrow_back),
@@ -166,30 +151,25 @@ fun DetailTopBar(
 
         Spacer(modifier = Modifier.weight(1f))
 
-        Surface(
-            color = MaterialTheme.colorScheme.surfaceContainer,
-            shape = CircleShape
-        ) {
-            Row {
-                IconButton(onClick = onShareClick) {
-                    Icon(
-                        painter = painterResource(R.drawable.ic_share),
-                        contentDescription = stringResource(R.string.share)
-                    )
-                }
-                IconToggleButton(
-                    checked = isFavorite,
-                    onCheckedChange = { onFavoriteToggle(it) },
-                    colors = IconButtonDefaults.iconToggleButtonColors(
-                        checkedContainerColor = MaterialTheme.colorScheme.tertiaryContainer,
-                        checkedContentColor = MaterialTheme.colorScheme.onTertiaryContainer
-                    )
-                ) {
-                    Icon(
-                        painter = painterResource(R.drawable.ic_favorite),
-                        contentDescription = stringResource(R.string.favorite),
-                    )
-                }
+        TopBarPill {
+            IconButton(onClick = onShareClick) {
+                Icon(
+                    painter = painterResource(R.drawable.ic_share),
+                    contentDescription = stringResource(R.string.share)
+                )
+            }
+            IconToggleButton(
+                checked = isFavorite,
+                onCheckedChange = { onFavoriteToggle(it) },
+                colors = IconButtonDefaults.iconToggleButtonColors(
+                    checkedContainerColor = MaterialTheme.colorScheme.tertiaryContainer,
+                    checkedContentColor = MaterialTheme.colorScheme.onTertiaryContainer
+                )
+            ) {
+                Icon(
+                    painter = painterResource(R.drawable.ic_favorite),
+                    contentDescription = stringResource(R.string.favorite),
+                )
             }
         }
     }
