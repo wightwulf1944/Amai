@@ -13,7 +13,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fitOutside
 import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.plus
-import androidx.compose.foundation.layout.safeContent
+import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
@@ -177,8 +177,8 @@ fun DetailContent(
     onTagClick: (String) -> Unit,
     contentPadding: PaddingValues,
 ) {
-    val horizontalInsets = WindowInsets.safeContent.only(WindowInsetsSides.Horizontal)
-    val bottomInsets = WindowInsets.safeContent.only(WindowInsetsSides.Bottom)
+    val horizontalInsets = WindowInsets.safeDrawing.only(WindowInsetsSides.Horizontal)
+    val bottomInsets = WindowInsets.safeDrawing.only(WindowInsetsSides.Bottom)
     LazyVerticalGrid(
         columns = GridCells.Adaptive(150.dp),
         modifier = Modifier
