@@ -13,6 +13,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -41,12 +42,19 @@ import coil3.request.allowRgb565
 import coil3.size.Precision
 import i.am.shiro.amai.compose.common.AmaiTheme
 import i.am.shiro.amai.viewmodel.ReadViewModel
+import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun ReadScreen(
-    viewModel: ReadViewModel,
+    bookId: Int,
     initialPage: Int,
 ) {
+    val viewModel = koinViewModel<ReadViewModel>()
+
+    LaunchedEffect(bookId) {
+        viewModel.setBookId(bookId)
+    }
+
     val pages by viewModel.pages.collectAsState()
     val pagerState = rememberPagerState(initialPage = initialPage) { pages.size }
     val focusRequester = remember { FocusRequester() }

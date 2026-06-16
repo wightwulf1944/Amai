@@ -9,43 +9,47 @@ import android.graphics.Color
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.SystemBarStyle
-import androidx.activity.compose.BackHandler
-import androidx.activity.compose.LocalActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.animation.Crossfade
 import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.key
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.core.net.toUri
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
+import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
+import androidx.navigation3.runtime.NavKey
+import androidx.navigation3.runtime.entryProvider
+import androidx.navigation3.runtime.rememberNavBackStack
+import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
+import androidx.navigation3.ui.NavDisplay
 import i.am.shiro.amai.compose.DetailScreen
 import i.am.shiro.amai.compose.HomeScreen
 import i.am.shiro.amai.compose.ReadScreen
 import i.am.shiro.amai.compose.SearchScreen
 import i.am.shiro.amai.compose.common.AmaiTheme
 import i.am.shiro.amai.network.Nhentai
-import i.am.shiro.amai.viewmodel.DetailViewModel
 import i.am.shiro.amai.viewmodel.FavoritesViewModel
 import i.am.shiro.amai.viewmodel.MainViewModel
 import i.am.shiro.amai.viewmodel.NhentaiViewModel
-import i.am.shiro.amai.viewmodel.ReadViewModel
 import i.am.shiro.amai.viewmodel.SearchViewModel
+import kotlinx.serialization.Serializable
 import org.koin.compose.viewmodel.koinViewModel
 import timber.log.Timber
-import java.io.Serializable
 
-private sealed interface Destination : Serializable {
-    data object Home : Destination
-    data object Search : Destination
-    data class Detail(val bookId: Int) : Destination
-    data class Read(val bookId: Int, val pageIndex: Int) : Destination
+@Serializable
+sealed interface Route : NavKey {
+    @Serializable
+    data object Home : Route
+
+    @Serializable
+    data object Search : Route
+
+    @Serializable
+    data class Detail(val bookId: Int) : Route
+
+    @Serializable
+    data class Read(val bookId: Int, val pageIndex: Int) : Route
 }
 
 class MainActivity : ComponentActivity() {
@@ -61,6 +65,7 @@ class MainActivity : ComponentActivity() {
             Intent.ACTION_VIEW -> {
                 intent.data?.pathSegments?.getOrNull(1)?.toIntOrNull()
             }
+
             Intent.ACTION_SEND -> {
                 try {
                     intent.getStringExtra(EXTRA_TEXT)
@@ -72,129 +77,99 @@ class MainActivity : ComponentActivity() {
                     null
                 }
             }
+
             else -> null
         }
 
         setContent {
             AmaiTheme {
-                var currentDestination by rememberSaveable {
-                    mutableStateOf(
-                        if (initialBookId == null) {
-                            Destination.Home
-                        } else {
-                            Destination.Detail(initialBookId)
-                        }
-                    )
-                }
+                val mainViewModel = koinViewModel<MainViewModel>()
 
-                val mainViewModel = koinViewModel<MainViewModel>(
-                    viewModelStoreOwner = LocalActivity.current as ComponentActivity
+                val backStack = rememberNavBackStack(
+                    *if (initialBookId == null) {
+                        arrayOf(Route.Home)
+                    } else {
+                        arrayOf(Route.Home, Route.Detail(initialBookId))
+                    }
                 )
 
-                Crossfade(targetState = currentDestination, label = "navigation") { destination ->
-                    when (destination) {
-                        Destination.Home -> {
-                            val nhentaiViewModel = koinViewModel<NhentaiViewModel>()
-                            val favoritesViewModel = koinViewModel<FavoritesViewModel>()
+                NavDisplay(
+                    backStack = backStack,
+                    entryDecorators = listOf(
+                        rememberSaveableStateHolderNavEntryDecorator(),
+                        rememberViewModelStoreNavEntryDecorator()
+                    ),
+                    entryProvider = entryProvider {
+                        entry<Route.Home> {
                             HomeScreen(
                                 mainViewModel = mainViewModel,
-                                nhentaiViewModel = nhentaiViewModel,
-                                favoritesViewModel = favoritesViewModel,
-                                onSearchClick = { currentDestination = Destination.Search },
+                                nhentaiViewModel = koinViewModel<NhentaiViewModel>(),
+                                favoritesViewModel = koinViewModel<FavoritesViewModel>(),
+                                onSearchClick = {
+                                    backStack += Route.Search
+                                },
                                 onItemClick = { bookId ->
-                                    currentDestination = Destination.Detail(bookId)
+                                    backStack += Route.Detail(bookId)
                                 }
                             )
                         }
-
-                        Destination.Search -> {
+                        entry<Route.Search> {
                             val searchViewModel = koinViewModel<SearchViewModel>()
-
-                            BackHandler {
-                                currentDestination = Destination.Home
-                            }
                             val suggestions by searchViewModel.suggestions.collectAsState()
                             SearchScreen(
                                 suggestions = suggestions,
                                 onQueryChange = { searchViewModel.onQueryChange(it) },
                                 onSearch = {
                                     mainViewModel.search(it)
-                                    currentDestination = Destination.Home
+                                    backStack.removeLastOrNull()
                                 }
                             )
                         }
-
-                        is Destination.Detail -> {
-                            val detailViewModel = koinViewModel<DetailViewModel>()
-
-                            LaunchedEffect(destination.bookId) {
-                                detailViewModel.load(destination.bookId)
-                            }
-                            BackHandler {
-                                currentDestination = Destination.Home
-                            }
-
-                            key(destination.bookId) {
-                                val model by detailViewModel.uiState.collectAsState()
-                                model?.let { detailModel ->
-                                    DetailScreen(
-                                        model = detailModel,
-                                        onBackClick = {
-                                            currentDestination = Destination.Home
-                                        },
-                                        onShareClick = {
-                                            val bookUrl = "${Nhentai.WEBPAGE_BASE_URL}${destination.bookId}/"
-                                            val exclude = arrayOf(ComponentName(this, MainActivity::class.java))
-                                            val intent = Intent(Intent.ACTION_SEND)
-                                                .putExtra(EXTRA_TEXT, bookUrl)
-                                                .putExtra(EXTRA_EXCLUDE_COMPONENTS, exclude)
-                                                .setType("text/plain")
-                                                .let { createChooser(it, null) }
-                                            startActivity(intent)
-                                        },
-                                        onFavoriteToggle = detailViewModel::onFavoriteToggle,
-                                        onThumbnailClick = { pageIndex ->
-                                            currentDestination = Destination.Read(destination.bookId, pageIndex)
-                                        },
-                                        onTagClick = {
-                                            mainViewModel.search(it)
-                                            currentDestination = Destination.Home
-                                        }
-                                    )
+                        entry<Route.Detail> { key ->
+                            DetailScreen(
+                                bookId = key.bookId,
+                                onBackClick = { backStack.removeLastOrNull() },
+                                onShareClick = { share(key.bookId) },
+                                onThumbnailClick = { pageIndex ->
+                                    backStack += Route.Read(key.bookId, pageIndex)
+                                },
+                                onTagClick = {
+                                    mainViewModel.search(it)
+                                    backStack.removeLastOrNull()
                                 }
-                            }
+                            )
                         }
-
-                        is Destination.Read -> {
-                            val readViewModel = koinViewModel<ReadViewModel>()
-
-                            LaunchedEffect(destination.bookId) {
-                                readViewModel.setBookId(destination.bookId)
-                            }
-                            BackHandler {
-                                currentDestination = Destination.Detail(destination.bookId)
-                            }
-
-                            key(destination.bookId) {
-                                DisposableEffect(Unit) {
-                                    val window = window
-                                    val controller = WindowInsetsControllerCompat(window, window.decorView)
-                                    controller.hide(WindowInsetsCompat.Type.statusBars())
-                                    controller.systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
-                                    onDispose {
-                                        controller.show(WindowInsetsCompat.Type.statusBars())
-                                    }
+                        entry<Route.Read> { key ->
+                            DisposableEffect(Unit) {
+                                val window = window
+                                val controller =
+                                    WindowInsetsControllerCompat(window, window.decorView)
+                                controller.hide(WindowInsetsCompat.Type.statusBars())
+                                controller.systemBarsBehavior =
+                                    WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+                                onDispose {
+                                    controller.show(WindowInsetsCompat.Type.statusBars())
                                 }
-
-                                ReadScreen(
-                                    viewModel = readViewModel,
-                                    initialPage = destination.pageIndex
-                                )
                             }
+                            ReadScreen(
+                                bookId = key.bookId,
+                                initialPage = key.pageIndex
+                            )
                         }
                     }
-                }
+                )
             }
         }
+    }
+
+    private fun share(bookId: Int) {
+        val bookUrl = "${Nhentai.WEBPAGE_BASE_URL}${bookId}/"
+        val exclude = arrayOf(ComponentName(this, MainActivity::class.java))
+        val intent = Intent(Intent.ACTION_SEND)
+            .putExtra(EXTRA_TEXT, bookUrl)
+            .putExtra(EXTRA_EXCLUDE_COMPONENTS, exclude)
+            .setType("text/plain")
+            .let { createChooser(it, null) }
+        startActivity(intent)
     }
 }

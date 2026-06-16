@@ -30,6 +30,7 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -49,46 +50,56 @@ import i.am.shiro.amai.compose.common.TopBarPill
 import i.am.shiro.amai.model.DetailModel
 import i.am.shiro.amai.model.TagModel
 import i.am.shiro.amai.model.Thumbnail
+import i.am.shiro.amai.viewmodel.DetailViewModel
+import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun DetailScreen(
-    model: DetailModel,
+    bookId: Int,
     onBackClick: () -> Unit,
     onShareClick: () -> Unit,
-    onFavoriteToggle: (Boolean) -> Unit,
     onThumbnailClick: (Int) -> Unit,
     onTagClick: (String) -> Unit
 ) {
+    val detailViewModel = koinViewModel<DetailViewModel>()
+
+    LaunchedEffect(bookId) {
+        detailViewModel.load(bookId)
+    }
+
+    val model by detailViewModel.uiState.collectAsState()
     val snackbarHostState = remember { SnackbarHostState() }
 
-    FavoriteSnackbarEffect(
-        isFavorite = model.isFavorite,
-        snackbarHostState = snackbarHostState
-    )
+    model?.let {
+        FavoriteSnackbarEffect(
+            isFavorite = it.isFavorite,
+            snackbarHostState = snackbarHostState
+        )
 
-    Scaffold(
-        contentWindowInsets = WindowInsets(),
-        snackbarHost = {
-            SnackbarHost(snackbarHostState)
-        },
-        topBar = {
-            DetailTopBar(
-                isFavorite = model.isFavorite,
-                onBackClick = onBackClick,
-                onShareClick = onShareClick,
-                onFavoriteToggle = onFavoriteToggle
-            )
-        },
-        content = { innerPadding ->
-            DetailContent(
-                model = model,
-                onThumbnailClick = onThumbnailClick,
-                onTagClick = onTagClick,
-                contentPadding = innerPadding
-            )
-            NavigationBarScrim()
-        }
-    )
+        Scaffold(
+            contentWindowInsets = WindowInsets(),
+            snackbarHost = {
+                SnackbarHost(snackbarHostState)
+            },
+            topBar = {
+                DetailTopBar(
+                    isFavorite = it.isFavorite,
+                    onBackClick = onBackClick,
+                    onShareClick = onShareClick,
+                    onFavoriteToggle = detailViewModel::onFavoriteToggle
+                )
+            },
+            content = { innerPadding ->
+                DetailContent(
+                    model = it,
+                    onThumbnailClick = onThumbnailClick,
+                    onTagClick = onTagClick,
+                    contentPadding = innerPadding
+                )
+                NavigationBarScrim()
+            }
+        )
+    }
 }
 
 @Composable
@@ -226,10 +237,9 @@ fun DetailTopBarPreview() {
 fun DetailScreenPreview() {
     AmaiTheme {
         DetailScreen(
-            model = sampleModel(),
+            bookId = 0,
             onBackClick = {},
             onShareClick = {},
-            onFavoriteToggle = {},
             onThumbnailClick = {},
             onTagClick = {}
         )

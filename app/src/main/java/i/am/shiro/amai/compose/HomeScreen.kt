@@ -1,12 +1,7 @@
 package i.am.shiro.amai.compose
 
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.lazy.staggeredgrid.rememberLazyStaggeredGridState
 import androidx.compose.material3.Icon
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SnackbarHost
-import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteItem
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffold
@@ -45,14 +40,9 @@ fun HomeScreen(
         }
     }
 
-    val snackbarHostState = remember { SnackbarHostState() }
-
-    HomeBackHandler(snackbarHostState)
-
     HomeScaffold(
         selectedTab = selectedTab,
-        onTabSelected = { selectedTab = it },
-        snackbarHostState = snackbarHostState
+        onTabSelected = { selectedTab = it }
     ) {
         val favoritesGridState = rememberLazyStaggeredGridState()
         val nhentaiGridState = rememberLazyStaggeredGridState()
@@ -135,8 +125,7 @@ fun HomeScreen(
 fun HomeScaffold(
     selectedTab: HomeTab,
     onTabSelected: (HomeTab) -> Unit,
-    snackbarHostState: SnackbarHostState,
-    content: @Composable (PaddingValues) -> Unit,
+    content: @Composable () -> Unit,
 ) {
     NavigationSuiteScaffold(
         navigationItems = {
@@ -167,13 +156,7 @@ fun HomeScaffold(
                 }
             )
         },
-        content = {
-            Scaffold(
-                contentWindowInsets = WindowInsets(),
-                snackbarHost = { SnackbarHost(snackbarHostState) },
-                content = content
-            )
-        }
+        content = content
     )
 }
 
