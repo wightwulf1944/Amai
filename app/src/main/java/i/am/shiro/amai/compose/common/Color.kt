@@ -1,4 +1,4 @@
-package i.am.shiro.amai.compose
+package i.am.shiro.amai.compose.common
 
 import androidx.compose.ui.graphics.Color
 

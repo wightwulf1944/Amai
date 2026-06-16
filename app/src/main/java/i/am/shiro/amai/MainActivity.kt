@@ -25,11 +25,11 @@ import androidx.compose.runtime.setValue
 import androidx.core.net.toUri
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
-import i.am.shiro.amai.compose.AmaiTheme
 import i.am.shiro.amai.compose.DetailScreen
 import i.am.shiro.amai.compose.HomeScreen
 import i.am.shiro.amai.compose.ReadScreen
 import i.am.shiro.amai.compose.SearchScreen
+import i.am.shiro.amai.compose.common.AmaiTheme
 import i.am.shiro.amai.network.Nhentai
 import i.am.shiro.amai.viewmodel.DetailViewModel
 import i.am.shiro.amai.viewmodel.FavoritesViewModel

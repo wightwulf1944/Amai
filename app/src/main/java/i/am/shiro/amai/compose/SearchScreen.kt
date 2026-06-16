@@ -36,6 +36,7 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import i.am.shiro.amai.R
+import i.am.shiro.amai.compose.common.AmaiTheme
 
 // TODO: Use TextFieldValue.selection in SearchViewModel to provide suggestions based on cursor position instead of just splitting the string.
 @Composable
