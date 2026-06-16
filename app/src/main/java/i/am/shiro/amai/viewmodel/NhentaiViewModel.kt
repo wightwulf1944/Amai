@@ -90,7 +90,7 @@ class NhentaiViewModel(
                 if (query.isEmpty()) {
                     val response = nhentaiApi.getAll(page + 1)
                     onSearchSuccess(response)
-                } else if (query.matches(Regex("^id:\\d+\$"))) {
+                } else if (query.matches(Regex("""^id:\d+$"""))) {
                     val id = query.substringAfter("id:").toInt()
                     val response = nhentaiApi.getOne(id)
                     onGetBookSuccess(response)
