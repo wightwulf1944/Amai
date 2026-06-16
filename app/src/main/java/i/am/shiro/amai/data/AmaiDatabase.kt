@@ -10,8 +10,8 @@ import i.am.shiro.amai.data.dao.CachedDao
 import i.am.shiro.amai.data.dao.CachedPreviewDao
 import i.am.shiro.amai.data.dao.DetailDao
 import i.am.shiro.amai.data.dao.FavoriteDao
-import i.am.shiro.amai.data.dao.ImageDao
 import i.am.shiro.amai.data.dao.FavoritesPreviewDao
+import i.am.shiro.amai.data.dao.ImageDao
 import i.am.shiro.amai.data.dao.TagDao
 import i.am.shiro.amai.data.entity.BookEntity
 import i.am.shiro.amai.data.entity.CachedEntity

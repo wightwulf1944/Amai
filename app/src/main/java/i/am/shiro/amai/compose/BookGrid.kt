@@ -2,8 +2,13 @@ package i.am.shiro.amai.compose
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.plus
+import androidx.compose.foundation.layout.safeContent
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.lazy.staggeredgrid.LazyStaggeredGridState
 import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells.Adaptive
@@ -20,9 +25,12 @@ fun BookGrid(
     gridState: LazyStaggeredGridState,
     contentPadding: PaddingValues
 ) {
+    val horizontalInsets = WindowInsets.safeContent.only(WindowInsetsSides.Horizontal)
     LazyVerticalStaggeredGrid(
         columns = Adaptive(150.dp),
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier
+            .fillMaxSize()
+            .windowInsetsPadding(horizontalInsets),
         state = gridState,
         contentPadding = contentPadding + PaddingValues(8.dp),
         horizontalArrangement = Arrangement.spacedBy(8.dp),
