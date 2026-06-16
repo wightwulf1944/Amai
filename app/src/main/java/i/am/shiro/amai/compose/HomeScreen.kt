@@ -1,16 +1,15 @@
 package i.am.shiro.amai.compose
 
-import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.staggeredgrid.rememberLazyStaggeredGridState
 import androidx.compose.material3.Icon
-import androidx.compose.material3.NavigationBar
-import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
+import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteItem
+import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -19,7 +18,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import i.am.shiro.amai.R
@@ -51,132 +49,132 @@ fun HomeScreen(
 
     HomeBackHandler(snackbarHostState)
 
-    Scaffold(
-        contentWindowInsets = WindowInsets(),
-        bottomBar = {
-            HomeBottomNavigation(
-                selectedTab = selectedTab,
-                onTabSelected = { selectedTab = it }
-            )
-        },
-        snackbarHost = {
-            SnackbarHost(snackbarHostState)
-        },
-        content = { innerPadding ->
-            Box(modifier = Modifier.padding(innerPadding)) {
+    HomeScaffold(
+        selectedTab = selectedTab,
+        onTabSelected = { selectedTab = it },
+        snackbarHostState = snackbarHostState
+    ) {
+        val favoritesGridState = rememberLazyStaggeredGridState()
+        val nhentaiGridState = rememberLazyStaggeredGridState()
 
-                val favoritesGridState = rememberLazyStaggeredGridState()
-                val nhentaiGridState = rememberLazyStaggeredGridState()
+        when (selectedTab) {
+            HomeTab.FAVORITES -> {
+                val books by favoritesViewModel.books.collectAsState()
+                var shouldScrollToTop by remember { mutableStateOf(false) }
 
-                when (selectedTab) {
-                    HomeTab.FAVORITES -> {
-                        val books by favoritesViewModel.books.collectAsState()
-                        var shouldScrollToTop by remember { mutableStateOf(false) }
-
-                        LaunchedEffect(books) {
-                            if (shouldScrollToTop) {
-                                favoritesGridState.scrollToItem(0)
-                                shouldScrollToTop = false
-                            }
-                        }
-
-                        FavoritesScreen(
-                            books = books,
-                            onSortChanged = { sort ->
-                                shouldScrollToTop = true
-                                favoritesViewModel.onSort(sort)
-                            },
-                            onSearchSubmit = { searchQuery ->
-                                shouldScrollToTop = true
-                                favoritesViewModel.onSearch(searchQuery)
-                            },
-                            onItemClick = onItemClick,
-                            gridState = favoritesGridState
-                        )
-                    }
-
-                    HomeTab.NHENTAI -> {
-                        val books by nhentaiViewModel.books.collectAsState()
-                        val isLoading by nhentaiViewModel.isLoading.collectAsState()
-
-                        val initialTitle = stringResource(R.string.nhentai)
-                        var title by remember { mutableStateOf(initialTitle) }
-                        var shouldScrollToTop by remember { mutableStateOf(false) }
-
-                        LaunchedEffect(books) {
-                            if (shouldScrollToTop) {
-                                nhentaiGridState.scrollToItem(0)
-                                shouldScrollToTop = false
-                            }
-                        }
-
-                        LaunchedEffect(nhentaiGridState.canScrollForward) {
-                            if (!nhentaiGridState.canScrollForward) {
-                                nhentaiViewModel.onScrollToBottom()
-                            }
-                        }
-
-                        LaunchedEffect(searchEvent) {
-                            searchEvent?.let { event ->
-                                if (!event.isNhentaiConsumed) {
-                                    title = event.query
-                                    shouldScrollToTop = true
-                                    nhentaiViewModel.onSearch(event.query)
-                                    event.isNhentaiConsumed = true
-                                }
-                            }
-                        }
-
-                        BrowseScreen(
-                            title = title,
-                            books = books,
-                            isLoading = isLoading,
-                            onRefresh = nhentaiViewModel::onRefresh,
-                            onSortChanged = nhentaiViewModel::onSort,
-                            onSearchClick = onSearchClick,
-                            onItemClick = onItemClick,
-                            gridState = nhentaiGridState
-                        )
+                LaunchedEffect(books) {
+                    if (shouldScrollToTop) {
+                        favoritesGridState.scrollToItem(0)
+                        shouldScrollToTop = false
                     }
                 }
+
+                FavoritesScreen(
+                    books = books,
+                    onSortChanged = { sort ->
+                        shouldScrollToTop = true
+                        favoritesViewModel.onSort(sort)
+                    },
+                    onSearchSubmit = { searchQuery ->
+                        shouldScrollToTop = true
+                        favoritesViewModel.onSearch(searchQuery)
+                    },
+                    onItemClick = onItemClick,
+                    gridState = favoritesGridState
+                )
+            }
+
+            HomeTab.NHENTAI -> {
+                val books by nhentaiViewModel.books.collectAsState()
+                val isLoading by nhentaiViewModel.isLoading.collectAsState()
+
+                val initialTitle = stringResource(R.string.nhentai)
+                var title by remember { mutableStateOf(initialTitle) }
+                var shouldScrollToTop by remember { mutableStateOf(false) }
+
+                LaunchedEffect(books) {
+                    if (shouldScrollToTop) {
+                        nhentaiGridState.scrollToItem(0)
+                        shouldScrollToTop = false
+                    }
+                }
+
+                LaunchedEffect(nhentaiGridState.canScrollForward) {
+                    if (!nhentaiGridState.canScrollForward) {
+                        nhentaiViewModel.onScrollToBottom()
+                    }
+                }
+
+                LaunchedEffect(searchEvent) {
+                    searchEvent?.let { event ->
+                        if (!event.isNhentaiConsumed) {
+                            title = event.query
+                            shouldScrollToTop = true
+                            nhentaiViewModel.onSearch(event.query)
+                            event.isNhentaiConsumed = true
+                        }
+                    }
+                }
+
+                BrowseScreen(
+                    title = title,
+                    books = books,
+                    isLoading = isLoading,
+                    onRefresh = nhentaiViewModel::onRefresh,
+                    onSortChanged = nhentaiViewModel::onSort,
+                    onSearchClick = onSearchClick,
+                    onItemClick = onItemClick,
+                    gridState = nhentaiGridState
+                )
             }
         }
-    )
+    }
 }
 
 @Composable
-fun HomeBottomNavigation(
+fun HomeScaffold(
     selectedTab: HomeTab,
-    onTabSelected: (HomeTab) -> Unit
+    onTabSelected: (HomeTab) -> Unit,
+    snackbarHostState: SnackbarHostState,
+    content: @Composable (PaddingValues) -> Unit,
 ) {
-    NavigationBar {
-        NavigationBarItem(
-            selected = selectedTab == HomeTab.FAVORITES,
-            onClick = { onTabSelected(HomeTab.FAVORITES) },
-            icon = {
-                Icon(
-                    painter = painterResource(R.drawable.ic_favorite),
-                    contentDescription = null
-                )
-            },
-            label = {
-                Text(stringResource(R.string.favorites))
-            }
-        )
-        NavigationBarItem(
-            selected = selectedTab == HomeTab.NHENTAI,
-            onClick = { onTabSelected(HomeTab.NHENTAI) },
-            icon = {
-                Icon(
-                    painter = painterResource(R.drawable.ic_nhentai),
-                    contentDescription = null
-                )
-            },
-            label = {
-                Text(stringResource(R.string.nhentai))
-            }
-        )
-    }
+    NavigationSuiteScaffold(
+        navigationItems = {
+            NavigationSuiteItem(
+                selected = selectedTab == HomeTab.FAVORITES,
+                onClick = { onTabSelected(HomeTab.FAVORITES) },
+                icon = {
+                    Icon(
+                        painter = painterResource(R.drawable.ic_favorite),
+                        contentDescription = null
+                    )
+                },
+                label = {
+                    Text(stringResource(R.string.favorites))
+                }
+            )
+            NavigationSuiteItem(
+                selected = selectedTab == HomeTab.NHENTAI,
+                onClick = { onTabSelected(HomeTab.NHENTAI) },
+                icon = {
+                    Icon(
+                        painter = painterResource(R.drawable.ic_nhentai),
+                        contentDescription = null
+                    )
+                },
+                label = {
+                    Text(stringResource(R.string.nhentai))
+                }
+            )
+        },
+        content = {
+            Scaffold(
+                contentWindowInsets = WindowInsets(),
+                snackbarHost = { SnackbarHost(snackbarHostState) },
+                content = content
+            )
+        }
+    )
 }
 
 enum class HomeTab {
