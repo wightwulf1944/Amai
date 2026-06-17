@@ -12,15 +12,12 @@ import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.core.net.toUri
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
 import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.entryProvider
-import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
 import i.am.shiro.amai.compose.DetailScreen
@@ -28,11 +25,9 @@ import i.am.shiro.amai.compose.HomeScreen
 import i.am.shiro.amai.compose.ReadScreen
 import i.am.shiro.amai.compose.SearchScreen
 import i.am.shiro.amai.compose.common.AmaiTheme
+import i.am.shiro.amai.compose.common.rememberNavigator
 import i.am.shiro.amai.network.Nhentai
-import i.am.shiro.amai.viewmodel.FavoritesViewModel
 import i.am.shiro.amai.viewmodel.MainViewModel
-import i.am.shiro.amai.viewmodel.NhentaiViewModel
-import i.am.shiro.amai.viewmodel.SearchViewModel
 import kotlinx.serialization.Serializable
 import org.koin.compose.viewmodel.koinViewModel
 import timber.log.Timber
@@ -85,16 +80,16 @@ class MainActivity : ComponentActivity() {
             AmaiTheme {
                 val mainViewModel = koinViewModel<MainViewModel>()
 
-                val backStack = rememberNavBackStack(
-                    *if (initialBookId == null) {
+                val navigator = rememberNavigator(
+                    *if (initialBookId == null)
                         arrayOf(Route.Home)
-                    } else {
+                    else
                         arrayOf(Route.Home, Route.Detail(initialBookId))
-                    }
                 )
 
                 NavDisplay(
-                    backStack = backStack,
+                    backStack = navigator,
+                    onBack = navigator::popUnsafe,
                     entryDecorators = listOf(
                         rememberSaveableStateHolderNavEntryDecorator(),
                         rememberViewModelStoreNavEntryDecorator()
@@ -103,39 +98,35 @@ class MainActivity : ComponentActivity() {
                         entry<Route.Home> {
                             HomeScreen(
                                 mainViewModel = mainViewModel,
-                                nhentaiViewModel = koinViewModel<NhentaiViewModel>(),
-                                favoritesViewModel = koinViewModel<FavoritesViewModel>(),
                                 onSearchClick = {
-                                    backStack += Route.Search
+                                    navigator.push(Route.Search)
                                 },
                                 onItemClick = { bookId ->
-                                    backStack += Route.Detail(bookId)
+                                    navigator.push(Route.Detail(bookId))
                                 }
                             )
                         }
-                        entry<Route.Search> {
-                            val searchViewModel = koinViewModel<SearchViewModel>()
-                            val suggestions by searchViewModel.suggestions.collectAsState()
+                        entry<Route.Search> { key ->
                             SearchScreen(
-                                suggestions = suggestions,
-                                onQueryChange = { searchViewModel.onQueryChange(it) },
                                 onSearch = {
                                     mainViewModel.search(it)
-                                    backStack.removeLastOrNull()
+                                    navigator.pop(key)
                                 }
                             )
                         }
                         entry<Route.Detail> { key ->
                             DetailScreen(
                                 bookId = key.bookId,
-                                onBackClick = { backStack.removeLastOrNull() },
+                                onBackClick = {
+                                    navigator.pop(key)
+                                },
                                 onShareClick = { share(key.bookId) },
                                 onThumbnailClick = { pageIndex ->
-                                    backStack += Route.Read(key.bookId, pageIndex)
+                                    navigator.push(Route.Read(key.bookId, pageIndex))
                                 },
-                                onTagClick = {
-                                    mainViewModel.search(it)
-                                    backStack.removeLastOrNull()
+                                onTagClick = { tag ->
+                                    mainViewModel.search(tag)
+                                    navigator.pop(key)
                                 }
                             )
                         }

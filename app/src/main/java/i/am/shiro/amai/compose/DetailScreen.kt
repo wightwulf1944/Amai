@@ -59,47 +59,65 @@ fun DetailScreen(
     onBackClick: () -> Unit,
     onShareClick: () -> Unit,
     onThumbnailClick: (Int) -> Unit,
+    onTagClick: (String) -> Unit,
+    viewModel: DetailViewModel = koinViewModel()
+) {
+    LaunchedEffect(bookId) {
+        viewModel.load(bookId)
+    }
+
+    val model by viewModel.uiState.collectAsState()
+    model?.let {
+        DetailContent(
+            model = it,
+            onBackClick = onBackClick,
+            onShareClick = onShareClick,
+            onFavoriteToggle = viewModel::onFavoriteToggle,
+            onThumbnailClick = onThumbnailClick,
+            onTagClick = onTagClick
+        )
+    }
+}
+
+@Composable
+fun DetailContent(
+    model: DetailModel,
+    onBackClick: () -> Unit,
+    onShareClick: () -> Unit,
+    onFavoriteToggle: (Boolean) -> Unit,
+    onThumbnailClick: (Int) -> Unit,
     onTagClick: (String) -> Unit
 ) {
-    val detailViewModel = koinViewModel<DetailViewModel>()
-
-    LaunchedEffect(bookId) {
-        detailViewModel.load(bookId)
-    }
-
-    val model by detailViewModel.uiState.collectAsState()
     val snackbarHostState = remember { SnackbarHostState() }
 
-    model?.let {
-        FavoriteSnackbarEffect(
-            isFavorite = it.isFavorite,
-            snackbarHostState = snackbarHostState
-        )
+    FavoriteSnackbarEffect(
+        isFavorite = model.isFavorite,
+        snackbarHostState = snackbarHostState
+    )
 
-        Scaffold(
-            contentWindowInsets = WindowInsets(),
-            snackbarHost = {
-                SnackbarHost(snackbarHostState)
-            },
-            topBar = {
-                DetailTopBar(
-                    isFavorite = it.isFavorite,
-                    onBackClick = onBackClick,
-                    onShareClick = onShareClick,
-                    onFavoriteToggle = detailViewModel::onFavoriteToggle
-                )
-            },
-            content = { innerPadding ->
-                DetailContent(
-                    model = it,
-                    onThumbnailClick = onThumbnailClick,
-                    onTagClick = onTagClick,
-                    contentPadding = innerPadding
-                )
-                NavigationBarScrim()
-            }
-        )
-    }
+    Scaffold(
+        contentWindowInsets = WindowInsets(),
+        snackbarHost = {
+            SnackbarHost(snackbarHostState)
+        },
+        topBar = {
+            DetailTopBar(
+                isFavorite = model.isFavorite,
+                onBackClick = onBackClick,
+                onShareClick = onShareClick,
+                onFavoriteToggle = onFavoriteToggle
+            )
+        },
+        content = { innerPadding ->
+            DetailBody(
+                model = model,
+                onThumbnailClick = onThumbnailClick,
+                onTagClick = onTagClick,
+                contentPadding = innerPadding
+            )
+            NavigationBarScrim()
+        }
+    )
 }
 
 @Composable
@@ -182,7 +200,7 @@ fun DetailTopBar(
 }
 
 @Composable
-fun DetailContent(
+fun DetailBody(
     model: DetailModel,
     onThumbnailClick: (Int) -> Unit,
     onTagClick: (String) -> Unit,
@@ -234,12 +252,13 @@ fun DetailTopBarPreview() {
 
 @Preview
 @Composable
-fun DetailScreenPreview() {
+fun DetailContentPreview() {
     AmaiTheme {
-        DetailScreen(
-            bookId = 0,
+        DetailContent(
+            model = sampleModel(),
             onBackClick = {},
             onShareClick = {},
+            onFavoriteToggle = {},
             onThumbnailClick = {},
             onTagClick = {}
         )

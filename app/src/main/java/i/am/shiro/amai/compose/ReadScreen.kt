@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.MaterialTheme
@@ -41,6 +42,7 @@ import coil3.request.ImageRequest
 import coil3.request.allowRgb565
 import coil3.size.Precision
 import i.am.shiro.amai.compose.common.AmaiTheme
+import i.am.shiro.amai.data.entity.ImageEntity
 import i.am.shiro.amai.viewmodel.ReadViewModel
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -48,14 +50,25 @@ import org.koin.compose.viewmodel.koinViewModel
 fun ReadScreen(
     bookId: Int,
     initialPage: Int,
+    viewModel: ReadViewModel = koinViewModel()
 ) {
-    val viewModel = koinViewModel<ReadViewModel>()
-
     LaunchedEffect(bookId) {
         viewModel.setBookId(bookId)
     }
 
     val pages by viewModel.pages.collectAsState()
+
+    ReadContent(
+        pages = pages,
+        initialPage = initialPage
+    )
+}
+
+@Composable
+fun ReadContent(
+    pages: List<ImageEntity>,
+    initialPage: Int
+) {
     val pagerState = rememberPagerState(initialPage = initialPage) { pages.size }
     val focusRequester = remember { FocusRequester() }
 
@@ -64,10 +77,6 @@ fun ReadScreen(
     val volumeUpHandler = remember { KeyEventHandler(scope) }
 
     var turboOn by remember { mutableStateOf(false) }
-    val scale by animateFloatAsState(
-        targetValue = if (turboOn) 0.9f else 1f,
-        label = "pageScale"
-    )
 
     Box(
         modifier = Modifier
@@ -84,9 +93,7 @@ fun ReadScreen(
                                 pagerState.animateScrollPageBy(-1)
                             }
                         },
-                        onHoldChanged = {
-                            turboOn = it
-                        }
+                        onHoldChanged = { turboOn = it }
                     )
 
                     Key.VolumeUp -> volumeUpHandler.handleKeyEvent(
@@ -96,9 +103,7 @@ fun ReadScreen(
                                 pagerState.animateScrollPageBy(1)
                             }
                         },
-                        onHoldChanged = {
-                            turboOn = it
-                        }
+                        onHoldChanged = { turboOn = it }
                     )
 
                     else -> false
@@ -106,42 +111,11 @@ fun ReadScreen(
             }
     ) {
         if (pages.isNotEmpty()) {
-            HorizontalPager(
-                state = pagerState,
-                modifier = Modifier.fillMaxSize(),
-                key = { index -> if (index < pages.size) "${pages[index].bookId}_${pages[index].pageIndex}" else index },
-            ) { index ->
-                val page = pages[index]
-                val context = LocalContext.current
-                val sizeResolver = rememberConstraintsSizeResolver()
-
-                val thumbnailPainter = rememberAsyncImagePainter(
-                    model = ImageRequest.Builder(context)
-                        .data(page.thumbnailUrl)
-                        .size(sizeResolver)
-                        .allowRgb565(true)
-                        .precision(Precision.INEXACT)
-                        .build(),
-                    filterQuality = FilterQuality.None
-                )
-
-                AsyncImage(
-                    model = ImageRequest.Builder(context)
-                        .data(if (turboOn) null else page.url)
-                        .memoryCachePolicy(CachePolicy.DISABLED)
-                        .build(),
-                    placeholder = thumbnailPainter,
-                    fallback = thumbnailPainter,
-                    contentDescription = null,
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .graphicsLayer {
-                            scaleX = scale
-                            scaleY = scale
-                        }
-                        .then(sizeResolver)
-                )
-            }
+            ReadPager(
+                pages = pages,
+                pagerState = pagerState,
+                turboOn = turboOn
+            )
 
             PageCounter(
                 currentPage = pagerState.currentPage + 1,
@@ -156,7 +130,57 @@ fun ReadScreen(
         }
     }
 
-    focusRequester.requestFocus()
+    LaunchedEffect(Unit) {
+        focusRequester.requestFocus()
+    }
+}
+
+@Composable
+fun ReadPager(
+    pages: List<ImageEntity>,
+    pagerState: PagerState,
+    turboOn: Boolean
+) {
+    val scale by animateFloatAsState(
+        targetValue = if (turboOn) 0.9f else 1f,
+        label = "pageScale"
+    )
+    HorizontalPager(
+        state = pagerState,
+        modifier = Modifier.fillMaxSize(),
+        key = { index -> if (index < pages.size) "${pages[index].bookId}_${pages[index].pageIndex}" else index },
+    ) { index ->
+        val page = pages[index]
+        val context = LocalContext.current
+        val sizeResolver = rememberConstraintsSizeResolver()
+
+        val thumbnailPainter = rememberAsyncImagePainter(
+            model = ImageRequest.Builder(context)
+                .data(page.thumbnailUrl)
+                .size(sizeResolver)
+                .allowRgb565(true)
+                .precision(Precision.INEXACT)
+                .build(),
+            filterQuality = FilterQuality.None
+        )
+
+        AsyncImage(
+            model = ImageRequest.Builder(context)
+                .data(if (turboOn) null else page.url)
+                .memoryCachePolicy(CachePolicy.DISABLED)
+                .build(),
+            placeholder = thumbnailPainter,
+            fallback = thumbnailPainter,
+            contentDescription = null,
+            modifier = Modifier
+                .fillMaxSize()
+                .graphicsLayer {
+                    scaleX = scale
+                    scaleY = scale
+                }
+                .then(sizeResolver)
+        )
+    }
 }
 
 @Composable
@@ -183,6 +207,20 @@ private fun PageCounterPreview() {
             currentPage = 5,
             pageCount = 42,
             modifier = Modifier.padding(bottom = 16.dp)
+        )
+    }
+}
+
+@Preview
+@Composable
+private fun ReadContentPreview() {
+    AmaiTheme {
+        ReadContent(
+            pages = listOf(
+                ImageEntity(0, 0, 0, 0, "", 0, 0, ""),
+                ImageEntity(0, 1, 0, 0, "", 0, 0, "")
+            ),
+            initialPage = 0
         )
     }
 }

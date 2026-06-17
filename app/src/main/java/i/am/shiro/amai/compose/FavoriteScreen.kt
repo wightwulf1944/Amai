@@ -20,6 +20,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -40,9 +41,42 @@ import i.am.shiro.amai.compose.common.TopBarContainer
 import i.am.shiro.amai.compose.common.TopBarPill
 import i.am.shiro.amai.data.view.FavoritesPreviewView
 import i.am.shiro.amai.model.BookPreview
+import i.am.shiro.amai.viewmodel.FavoritesViewModel
+import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun FavoritesScreen(
+    onItemClick: (Int) -> Unit,
+    viewModel: FavoritesViewModel = koinViewModel()
+) {
+    val books by viewModel.books.collectAsState()
+    var shouldScrollToTop by remember { mutableStateOf(false) }
+    val gridState = rememberLazyStaggeredGridState()
+
+    LaunchedEffect(books) {
+        if (shouldScrollToTop) {
+            gridState.scrollToItem(0)
+            shouldScrollToTop = false
+        }
+    }
+
+    FavoritesContent(
+        books = books,
+        onSortChanged = { sort ->
+            shouldScrollToTop = true
+            viewModel.onSort(sort)
+        },
+        onSearchSubmit = { searchQuery ->
+            shouldScrollToTop = true
+            viewModel.onSearch(searchQuery)
+        },
+        onItemClick = onItemClick,
+        gridState = gridState
+    )
+}
+
+@Composable
+fun FavoritesContent(
     books: List<FavoritesPreviewView>,
     onSortChanged: (FavoritesSort) -> Unit,
     onSearchSubmit: (String) -> Unit,
@@ -67,11 +101,11 @@ fun FavoritesScreen(
             )
         },
         content = { innerPadding ->
-            FavoriteContent(
+            FavoritesBody(
                 books = books,
                 onItemClick = onItemClick,
                 gridState = gridState,
-                innerPadding
+                contentPadding = innerPadding
             )
         }
     )
@@ -152,7 +186,7 @@ fun SearchInput(
 }
 
 @Composable
-fun FavoriteContent(
+fun FavoritesBody(
     books: List<FavoritesPreviewView>,
     onItemClick: (Int) -> Unit,
     gridState: LazyStaggeredGridState,
@@ -180,7 +214,7 @@ fun FavoriteContent(
 
 @Preview
 @Composable
-fun FavoriteScreenPreview() {
+fun FavoritesContentPreview() {
     val mockBooks = List(7) { i ->
         val title = if (i == 2)
             "Sample Book 2 with a longer title Lorem ipsum dolor sit amet, consectetur adipiscing elit "
@@ -198,7 +232,7 @@ fun FavoriteScreenPreview() {
     }
 
     AmaiTheme {
-        FavoritesScreen(
+        FavoritesContent(
             books = mockBooks,
             onSortChanged = {},
             onSearchSubmit = {},

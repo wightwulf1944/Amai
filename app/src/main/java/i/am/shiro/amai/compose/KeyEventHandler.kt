@@ -7,6 +7,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.launch
 
+// TODO this can still be simplified
 /**
  * Utility to handle KeyEvents by throttling actions in a single worker coroutine
  */

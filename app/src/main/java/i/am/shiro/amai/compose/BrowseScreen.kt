@@ -16,6 +16,8 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -37,10 +39,66 @@ import i.am.shiro.amai.compose.common.TopBarPill
 import i.am.shiro.amai.data.view.CachedPreviewView
 import i.am.shiro.amai.model.BookPreview
 import i.am.shiro.amai.network.Nhentai.Sort
+import i.am.shiro.amai.viewmodel.MainViewModel
+import i.am.shiro.amai.viewmodel.NhentaiViewModel
+import org.koin.compose.viewmodel.koinViewModel
 
 // TODO try jetpack paging library for loading content
 @Composable
 fun BrowseScreen(
+    mainViewModel: MainViewModel,
+    onSearchClick: () -> Unit,
+    onItemClick: (Int) -> Unit,
+    viewModel: NhentaiViewModel = koinViewModel()
+) {
+    val books by viewModel.books.collectAsState()
+    val isLoading by viewModel.isLoading.collectAsState()
+    val searchEvent by mainViewModel.searchEvent.collectAsState(null)
+
+    val initialTitle = stringResource(R.string.nhentai)
+    var title by remember { mutableStateOf(initialTitle) }
+    var shouldScrollToTop by remember { mutableStateOf(false) }
+
+    val gridState = rememberLazyStaggeredGridState()
+
+    LaunchedEffect(books) {
+        if (shouldScrollToTop) {
+            gridState.scrollToItem(0)
+            shouldScrollToTop = false
+        }
+    }
+
+    LaunchedEffect(gridState.canScrollForward) {
+        if (!gridState.canScrollForward) {
+            viewModel.onScrollToBottom()
+        }
+    }
+
+    LaunchedEffect(searchEvent) {
+        searchEvent?.let { event ->
+            if (!event.isNhentaiConsumed) {
+                title = event.query
+                shouldScrollToTop = true
+                viewModel.onSearch(event.query)
+                event.isNhentaiConsumed = true
+            }
+        }
+    }
+
+    BrowseContent(
+        title = title,
+        books = books,
+        isLoading = isLoading,
+        onRefresh = viewModel::onRefresh,
+        onSortChanged = viewModel::onSort,
+        onSearchClick = onSearchClick,
+        onItemClick = onItemClick,
+        gridState = gridState
+    )
+}
+
+@Composable
+fun BrowseContent(
     title: String,
     books: List<CachedPreviewView>,
     isLoading: Boolean,
@@ -69,7 +127,7 @@ fun BrowseScreen(
             )
         },
         content = { innerPadding ->
-            BrowseContent(
+            BrowseBody(
                 books = books,
                 isLoading = isLoading,
                 onRefresh = onRefresh,
@@ -116,7 +174,7 @@ fun BrowseTopBar(
 }
 
 @Composable
-fun BrowseContent(
+fun BrowseBody(
     books: List<CachedPreviewView>,
     isLoading: Boolean,
     onRefresh: () -> Unit,
@@ -272,7 +330,7 @@ private enum class SearchMode {
 
 @Preview
 @Composable
-fun BrowseScreenPreview() {
+fun BrowseContentPreview() {
     val mockBooks = List(7) { i ->
         val title = if (i == 2)
             "Sample Book 2 with a longer title Lorem ipsum dolor sit amet, consectetur adipiscing elit "
@@ -290,7 +348,7 @@ fun BrowseScreenPreview() {
     }
 
     AmaiTheme {
-        BrowseScreen(
+        BrowseContent(
             title = "nhentai tag:\"big breasts\" artist:shiro",
             books = mockBooks,
             isLoading = false,

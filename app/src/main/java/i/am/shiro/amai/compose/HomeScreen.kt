@@ -1,6 +1,5 @@
 package i.am.shiro.amai.compose
 
-import androidx.compose.foundation.lazy.staggeredgrid.rememberLazyStaggeredGridState
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteItem
@@ -10,23 +9,18 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import i.am.shiro.amai.R
-import i.am.shiro.amai.viewmodel.FavoritesViewModel
 import i.am.shiro.amai.viewmodel.MainViewModel
-import i.am.shiro.amai.viewmodel.NhentaiViewModel
 
 @Composable
 fun HomeScreen(
     mainViewModel: MainViewModel,
-    nhentaiViewModel: NhentaiViewModel,
-    favoritesViewModel: FavoritesViewModel,
     onSearchClick: () -> Unit,
-    onItemClick: (Int) -> Unit,
+    onItemClick: (Int) -> Unit
 ) {
     var selectedTab by rememberSaveable { mutableStateOf(HomeTab.NHENTAI) }
 
@@ -42,79 +36,20 @@ fun HomeScreen(
 
     HomeScaffold(
         selectedTab = selectedTab,
-        onTabSelected = { selectedTab = it }
+        onTabSelected = { it: HomeTab -> selectedTab = it }
     ) {
-        val favoritesGridState = rememberLazyStaggeredGridState()
-        val nhentaiGridState = rememberLazyStaggeredGridState()
-
         when (selectedTab) {
             HomeTab.FAVORITES -> {
-                val books by favoritesViewModel.books.collectAsState()
-                var shouldScrollToTop by remember { mutableStateOf(false) }
-
-                LaunchedEffect(books) {
-                    if (shouldScrollToTop) {
-                        favoritesGridState.scrollToItem(0)
-                        shouldScrollToTop = false
-                    }
-                }
-
                 FavoritesScreen(
-                    books = books,
-                    onSortChanged = { sort ->
-                        shouldScrollToTop = true
-                        favoritesViewModel.onSort(sort)
-                    },
-                    onSearchSubmit = { searchQuery ->
-                        shouldScrollToTop = true
-                        favoritesViewModel.onSearch(searchQuery)
-                    },
-                    onItemClick = onItemClick,
-                    gridState = favoritesGridState
+                    onItemClick = onItemClick
                 )
             }
 
             HomeTab.NHENTAI -> {
-                val books by nhentaiViewModel.books.collectAsState()
-                val isLoading by nhentaiViewModel.isLoading.collectAsState()
-
-                val initialTitle = stringResource(R.string.nhentai)
-                var title by remember { mutableStateOf(initialTitle) }
-                var shouldScrollToTop by remember { mutableStateOf(false) }
-
-                LaunchedEffect(books) {
-                    if (shouldScrollToTop) {
-                        nhentaiGridState.scrollToItem(0)
-                        shouldScrollToTop = false
-                    }
-                }
-
-                LaunchedEffect(nhentaiGridState.canScrollForward) {
-                    if (!nhentaiGridState.canScrollForward) {
-                        nhentaiViewModel.onScrollToBottom()
-                    }
-                }
-
-                LaunchedEffect(searchEvent) {
-                    searchEvent?.let { event ->
-                        if (!event.isNhentaiConsumed) {
-                            title = event.query
-                            shouldScrollToTop = true
-                            nhentaiViewModel.onSearch(event.query)
-                            event.isNhentaiConsumed = true
-                        }
-                    }
-                }
-
                 BrowseScreen(
-                    title = title,
-                    books = books,
-                    isLoading = isLoading,
-                    onRefresh = nhentaiViewModel::onRefresh,
-                    onSortChanged = nhentaiViewModel::onSort,
+                    mainViewModel = mainViewModel,
                     onSearchClick = onSearchClick,
-                    onItemClick = onItemClick,
-                    gridState = nhentaiGridState
+                    onItemClick = onItemClick
                 )
             }
         }
