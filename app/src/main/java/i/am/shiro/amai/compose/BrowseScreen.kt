@@ -21,6 +21,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -38,35 +39,25 @@ import i.am.shiro.amai.compose.common.TopBarContainer
 import i.am.shiro.amai.compose.common.TopBarPill
 import i.am.shiro.amai.data.view.CachedPreviewView
 import i.am.shiro.amai.model.BookPreview
+import i.am.shiro.amai.model.SearchEvent
 import i.am.shiro.amai.network.Nhentai.Sort
-import i.am.shiro.amai.viewmodel.MainViewModel
 import i.am.shiro.amai.viewmodel.NhentaiViewModel
 import org.koin.compose.viewmodel.koinViewModel
 
 // TODO try jetpack paging library for loading content
 @Composable
 fun BrowseScreen(
-    mainViewModel: MainViewModel,
+    gridState: LazyStaggeredGridState,
+    searchEvent: SearchEvent?,
     onSearchClick: () -> Unit,
     onItemClick: (Int) -> Unit,
     viewModel: NhentaiViewModel = koinViewModel()
 ) {
     val books by viewModel.books.collectAsState()
     val isLoading by viewModel.isLoading.collectAsState()
-    val searchEvent by mainViewModel.searchEvent.collectAsState(null)
 
     val initialTitle = stringResource(R.string.nhentai)
-    var title by remember { mutableStateOf(initialTitle) }
-    var shouldScrollToTop by remember { mutableStateOf(false) }
-
-    val gridState = rememberLazyStaggeredGridState()
-
-    LaunchedEffect(books) {
-        if (shouldScrollToTop) {
-            gridState.scrollToItem(0)
-            shouldScrollToTop = false
-        }
-    }
+    var title by rememberSaveable { mutableStateOf(initialTitle) }
 
     LaunchedEffect(gridState.canScrollForward) {
         if (!gridState.canScrollForward) {
@@ -75,13 +66,11 @@ fun BrowseScreen(
     }
 
     LaunchedEffect(searchEvent) {
-        searchEvent?.let { event ->
-            if (!event.isNhentaiConsumed) {
-                title = event.query
-                shouldScrollToTop = true
-                viewModel.onSearch(event.query)
-                event.isNhentaiConsumed = true
-            }
+        if (searchEvent?.isProcessing == true) {
+            title = searchEvent.query
+            gridState.scrollToItem(0)
+            viewModel.onSearch(searchEvent.query)
+            searchEvent.isProcessing = false
         }
     }
 

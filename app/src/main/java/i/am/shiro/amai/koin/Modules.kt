@@ -9,7 +9,6 @@ import i.am.shiro.amai.network.Nhentai
 import i.am.shiro.amai.network.UserAgentInterceptor
 import i.am.shiro.amai.viewmodel.DetailViewModel
 import i.am.shiro.amai.viewmodel.FavoritesViewModel
-import i.am.shiro.amai.viewmodel.MainViewModel
 import i.am.shiro.amai.viewmodel.NhentaiViewModel
 import i.am.shiro.amai.viewmodel.ReadViewModel
 import i.am.shiro.amai.viewmodel.SearchViewModel
@@ -54,7 +53,6 @@ val mainModule = module {
             .create()
     }
 
-    viewModelOf(::MainViewModel)
     viewModelOf(::SearchViewModel)
     viewModelOf(::NhentaiViewModel)
     viewModelOf(::FavoritesViewModel)

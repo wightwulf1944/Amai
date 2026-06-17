@@ -12,6 +12,10 @@ import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.core.net.toUri
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
@@ -26,10 +30,9 @@ import i.am.shiro.amai.compose.ReadScreen
 import i.am.shiro.amai.compose.SearchScreen
 import i.am.shiro.amai.compose.common.AmaiTheme
 import i.am.shiro.amai.compose.common.rememberNavigator
+import i.am.shiro.amai.model.SearchEvent
 import i.am.shiro.amai.network.Nhentai
-import i.am.shiro.amai.viewmodel.MainViewModel
 import kotlinx.serialization.Serializable
-import org.koin.compose.viewmodel.koinViewModel
 import timber.log.Timber
 
 @Serializable
@@ -78,7 +81,7 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             AmaiTheme {
-                val mainViewModel = koinViewModel<MainViewModel>()
+                var searchEvent by rememberSaveable { mutableStateOf<SearchEvent?>(null) }
 
                 val navigator = rememberNavigator(
                     *if (initialBookId == null)
@@ -97,7 +100,7 @@ class MainActivity : ComponentActivity() {
                     entryProvider = entryProvider {
                         entry<Route.Home> {
                             HomeScreen(
-                                mainViewModel = mainViewModel,
+                                searchEvent = searchEvent,
                                 onSearchClick = {
                                     navigator.push(Route.Search)
                                 },
@@ -108,8 +111,8 @@ class MainActivity : ComponentActivity() {
                         }
                         entry<Route.Search> { key ->
                             SearchScreen(
-                                onSearch = {
-                                    mainViewModel.search(it)
+                                onSearch = { query ->
+                                    searchEvent = SearchEvent(query)
                                     navigator.pop(key)
                                 }
                             )
@@ -125,7 +128,7 @@ class MainActivity : ComponentActivity() {
                                     navigator.push(Route.Read(key.bookId, pageIndex))
                                 },
                                 onTagClick = { tag ->
-                                    mainViewModel.search(tag)
+                                    searchEvent = SearchEvent(tag)
                                     navigator.pop(key)
                                 }
                             )

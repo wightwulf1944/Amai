@@ -25,7 +25,7 @@ Start with these files when validating project facts:
 
 - **Build & Dependencies**: `settings.gradle`, `app/build.gradle`, `gradle.properties`.
 - **Runtime startup and DI**: `AmaiApplication.kt`, `koin/Modules.kt`.
-- **Navigation & Screen Flow**: `MainActivity.kt`, `compose/HomeScreen.kt`.
+- **Navigation & Screen Flow**: `MainActivity.kt` contains the navigation logic and global UI state like the active search query.
 - **Room schema**: `data/AmaiDatabase.kt`, `app/schemas/`.
 - **Network API**: `network/Nhentai.kt`, `util/NhentaiX.kt`.
 - **Compose UI**: `compose/`.
@@ -52,7 +52,7 @@ git -c safe.directory=C:/android_projects/Amai status --short
 
 ## Source Map
 
-- `MainActivity.kt`: Chooses the initial screen and contains the navigation logic. This app does **not** use Jetpack Navigation.
+- `MainActivity.kt`: Manages navigation and global state (`searchRequest`, `selectedTab`).
 - `viewmodel/factory/ViewModelFactory.kt`: Manual factory combining Koin plus `SavedStateHandle`.
 - `util/NhentaiX.kt`: Logic for mapping API DTOs to Room Entities.
 
@@ -60,7 +60,7 @@ git -c safe.directory=C:/android_projects/Amai status --short
 
 - `MainActivity` hosts the Compose content.
 - App launch opens `MainActivity`, which acts as a navigator for Compose-based screens.
-- `MainActivity` manages navigation between `HomeScreen`, `SearchScreen`, `DetailScreen`, and `ReadScreen` using `Crossfade` and local state (`Destination`).
+- `MainActivity` manages navigation between `HomeScreen`, `SearchScreen`, `DetailScreen`, and `ReadScreen` using `Crossfade` (via `NavDisplay`) and local state (`Route`).
 - `HomeScreen` manages the browse (Nhentai) and favorites tabs. It uses `BrowseScreen` and `FavoritesScreen`.
 
 ## Data Model And Storage
@@ -91,9 +91,8 @@ git -c safe.directory=C:/android_projects/Amai status --short
 
 ## ViewModel And Reactive Patterns
 
-- **Coroutines & Flow**: ViewModels use `StateFlow` and `SharedFlow` driven by `SavedStateHandle`. Business logic is handled in `viewModelScope`.
-- **Compose + Flow**: `collectAsState()` is used in Compose screens to observe state from ViewModels.
-- **Live Events**: `MainViewModel.searchEvent` is a `SharedFlow` for shared events between screens.
+- **Coroutines & Flow**: ViewModels use `StateFlow` driven by `SavedStateHandle`. Business logic is handled in `viewModelScope`.
+- **Compose + State**: `MainActivity` holds global state (`searchRequest`) using `rememberSaveable`. `BrowseScreen` uses `LaunchedEffect(searchRequest)` to drive ViewModel actions.
 - **State**: `DetailViewModel` uses `flatMapLatest` on `SavedStateHandle` to reactively load book details from Room.
 
 ## Known Code Quirks
