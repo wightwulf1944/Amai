@@ -1,6 +1,7 @@
 package i.am.shiro.amai.compose
 
-import androidx.compose.foundation.lazy.staggeredgrid.rememberLazyStaggeredGridState
+import androidx.annotation.DrawableRes
+import androidx.annotation.StringRes
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteItem
@@ -10,6 +11,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.saveable.rememberSaveableStateHolder
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -30,69 +32,56 @@ fun HomeScreen(
         }
     }
 
-    val favoritesGridState = rememberLazyStaggeredGridState()
-    val browseGridState = rememberLazyStaggeredGridState()
-
-    HomeScaffold(
-        selectedTab = selectedTab,
-        onTabSelected = { selectedTab = it }
+    NavigationSuiteScaffold(
+        navigationItems = {
+            HomeNavItem(
+                selected = selectedTab == HomeTab.FAVORITES,
+                onClick = { selectedTab = HomeTab.FAVORITES },
+                iconDrawableRes = R.drawable.ic_favorite,
+                labelStringRes = R.string.favorites
+            )
+            HomeNavItem(
+                selected = selectedTab == HomeTab.NHENTAI,
+                onClick = { selectedTab = HomeTab.NHENTAI },
+                iconDrawableRes = R.drawable.ic_nhentai,
+                labelStringRes = R.string.nhentai
+            )
+        }
     ) {
-        when (selectedTab) {
-            HomeTab.FAVORITES -> {
-                FavoritesScreen(
-                    gridState = favoritesGridState,
-                    onItemClick = onItemClick
-                )
-            }
+        val saveableStateHolder = rememberSaveableStateHolder()
+        saveableStateHolder.SaveableStateProvider(selectedTab) {
+            when (selectedTab) {
+                HomeTab.FAVORITES -> {
+                    FavoritesScreen(
+                        onItemClick = onItemClick
+                    )
+                }
 
-            HomeTab.NHENTAI -> {
-                BrowseScreen(
-                    gridState = browseGridState,
-                    searchEvent = searchEvent,
-                    onSearchClick = onSearchClick,
-                    onItemClick = onItemClick
-                )
+                HomeTab.NHENTAI -> {
+                    BrowseScreen(
+                        searchEvent = searchEvent,
+                        onSearchClick = onSearchClick,
+                        onItemClick = onItemClick
+                    )
+                }
             }
         }
     }
 }
 
 @Composable
-fun HomeScaffold(
-    selectedTab: HomeTab,
-    onTabSelected: (HomeTab) -> Unit,
-    content: @Composable () -> Unit,
+fun HomeNavItem(
+    selected: Boolean,
+    onClick: () -> Unit,
+    @DrawableRes iconDrawableRes: Int,
+    @StringRes labelStringRes: Int
 ) {
-    NavigationSuiteScaffold(
-        navigationItems = {
-            NavigationSuiteItem(
-                selected = selectedTab == HomeTab.FAVORITES,
-                onClick = { onTabSelected(HomeTab.FAVORITES) },
-                icon = {
-                    Icon(
-                        painter = painterResource(R.drawable.ic_favorite),
-                        contentDescription = null
-                    )
-                },
-                label = {
-                    Text(stringResource(R.string.favorites))
-                }
-            )
-            NavigationSuiteItem(
-                selected = selectedTab == HomeTab.NHENTAI,
-                onClick = { onTabSelected(HomeTab.NHENTAI) },
-                icon = {
-                    Icon(
-                        painter = painterResource(R.drawable.ic_nhentai),
-                        contentDescription = null
-                    )
-                },
-                label = {
-                    Text(stringResource(R.string.nhentai))
-                }
-            )
-        },
-        content = content
+    val label = stringResource(labelStringRes)
+    NavigationSuiteItem(
+        selected = selected,
+        onClick = onClick,
+        icon = { Icon(painterResource(iconDrawableRes), label) },
+        label = { Text(label) }
     )
 }
 

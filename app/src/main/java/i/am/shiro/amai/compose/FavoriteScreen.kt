@@ -46,11 +46,11 @@ import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun FavoritesScreen(
-    gridState: LazyStaggeredGridState,
     onItemClick: (Int) -> Unit,
     viewModel: FavoritesViewModel = koinViewModel()
 ) {
     val books by viewModel.books.collectAsState()
+    val gridState = rememberLazyStaggeredGridState()
     var shouldScrollToTop by remember { mutableStateOf(false) }
 
     LaunchedEffect(books) {
