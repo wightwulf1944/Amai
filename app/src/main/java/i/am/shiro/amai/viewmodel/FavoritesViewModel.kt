@@ -5,11 +5,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import i.am.shiro.amai.FavoritesSort
 import i.am.shiro.amai.data.AmaiDatabase
-import i.am.shiro.amai.data.view.FavoritesPreviewView
-import i.am.shiro.amai.util.invoke
+import i.am.shiro.amai.util.savedMutableStateFlow
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.stateIn
@@ -17,27 +15,21 @@ import kotlinx.coroutines.flow.stateIn
 @OptIn(ExperimentalCoroutinesApi::class)
 class FavoritesViewModel(
     handle: SavedStateHandle,
-    private val database: AmaiDatabase
+    database: AmaiDatabase
 ) : ViewModel() {
 
-    private var query by handle<String>("")
+    private val query by handle.savedMutableStateFlow("")
+    private val sort by handle.savedMutableStateFlow(FavoritesSort.New)
 
-    private var sort by handle<FavoritesSort>(FavoritesSort.New)
-
-    val books: StateFlow<List<FavoritesPreviewView>> = combine(
-        handle.getStateFlow("query", ""),
-        handle.getStateFlow("sort", FavoritesSort.New)
-    ) { q, s -> q to s }
-        .flatMapLatest { (q, s) ->
-            database.favoritesPreviewDao.find(q, s)
-        }
+    val favoriteBooks = combine(query, sort, ::Pair)
+        .flatMapLatest { (q, s) -> database.favoritesPreviewDao.find(q, s) }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
     fun onSearch(query: String) {
-        this.query = query
+        this.query.value = query
     }
 
     fun onSort(sort: FavoritesSort) {
-        this.sort = sort
+        this.sort.value = sort
     }
 }

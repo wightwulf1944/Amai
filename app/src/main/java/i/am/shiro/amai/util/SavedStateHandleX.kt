@@ -1,15 +1,16 @@
 package i.am.shiro.amai.util
 
 import androidx.lifecycle.SavedStateHandle
-import kotlin.properties.ReadWriteProperty
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlin.properties.ReadOnlyProperty
 import kotlin.reflect.KProperty
 
-operator fun <T> SavedStateHandle.invoke(default: T) = object : ReadWriteProperty<Any, T> {
+fun <T> SavedStateHandle.savedMutableStateFlow(default: T) =
+    object : ReadOnlyProperty<Any, MutableStateFlow<T>> {
 
-    override fun getValue(thisRef: Any, property: KProperty<*>): T =
-        get(property.name) ?: default
+        private var flow: MutableStateFlow<T>? = null
 
-    override fun setValue(thisRef: Any, property: KProperty<*>, value: T) {
-        set(property.name, value)
+        override fun getValue(thisRef: Any, property: KProperty<*>): MutableStateFlow<T> {
+            return flow ?: getMutableStateFlow(property.name, default).also { flow = it }
+        }
     }
-}

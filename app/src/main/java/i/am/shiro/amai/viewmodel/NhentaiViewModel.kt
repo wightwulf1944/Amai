@@ -2,6 +2,7 @@ package i.am.shiro.amai.viewmodel
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.serialization.saved
 import androidx.lifecycle.viewModelScope
 import androidx.room.withTransaction
 import i.am.shiro.amai.data.AmaiDatabase
@@ -10,7 +11,6 @@ import i.am.shiro.amai.data.view.CachedPreviewView
 import i.am.shiro.amai.network.GalleryDetailResponse
 import i.am.shiro.amai.network.Nhentai
 import i.am.shiro.amai.network.PaginatedResponse
-import i.am.shiro.amai.util.invoke
 import i.am.shiro.amai.util.toEntity
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -26,13 +26,13 @@ class NhentaiViewModel(
     private val nhentaiApi: Nhentai.Api
 ) : ViewModel() {
 
-    private var query by handle<String>("")
+    private var query by handle.saved { "" }
 
-    private var page by handle<Int>(0)
+    private var page by handle.saved { 0 }
 
-    private var sort by handle<Nhentai.Sort>(Nhentai.Sort.DATE)
+    private var sort by handle.saved { Nhentai.Sort.DATE }
 
-    private var isComplete by handle<Boolean>(false)
+    private var isComplete by handle.saved { false }
 
     val books: StateFlow<List<CachedPreviewView>> = database.cachedPreviewDao
         .getAll()

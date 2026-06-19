@@ -49,7 +49,7 @@ fun FavoritesScreen(
     onItemClick: (Int) -> Unit,
     viewModel: FavoritesViewModel = koinViewModel()
 ) {
-    val books by viewModel.books.collectAsState()
+    val books by viewModel.favoriteBooks.collectAsState()
     val gridState = rememberLazyStaggeredGridState()
     var shouldScrollToTop by remember { mutableStateOf(false) }
 

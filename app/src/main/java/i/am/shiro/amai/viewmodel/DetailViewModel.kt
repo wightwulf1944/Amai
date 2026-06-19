@@ -14,12 +14,11 @@ import i.am.shiro.amai.model.Thumbnail
 import i.am.shiro.amai.network.GalleryDetailResponse
 import i.am.shiro.amai.network.Nhentai
 import i.am.shiro.amai.util.imageEntities
-import i.am.shiro.amai.util.invoke
+import i.am.shiro.amai.util.savedMutableStateFlow
 import i.am.shiro.amai.util.tagEntities
 import i.am.shiro.amai.util.toEntity
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
@@ -33,15 +32,15 @@ class DetailViewModel(
     private val nhentaiApi: Nhentai.Api
 ) : ViewModel() {
 
-    private var bookId by handle<Int>(-1)
+    private val bookId by handle.savedMutableStateFlow(-1)
 
-    val uiState: StateFlow<DetailModel?> = handle.getStateFlow("bookId", -1)
+    val uiState = bookId
         .flatMapLatest { id -> database.detailDao.getDetail(id) }
         .map { it?.toDetailModel() }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), null)
 
     fun load(bookId: Int) {
-        this.bookId = bookId
+        this.bookId.value = bookId
 
         viewModelScope.launch {
             try {
@@ -57,9 +56,9 @@ class DetailViewModel(
         viewModelScope.launch {
             try {
                 if (isFavorite) {
-                    database.favoriteDao.insert(FavoriteEntity(bookId))
+                    database.favoriteDao.insert(FavoriteEntity(bookId.value))
                 } else {
-                    database.favoriteDao.deleteById(bookId)
+                    database.favoriteDao.deleteById(bookId.value)
                 }
             } catch (e: Exception) {
                 Timber.e(e)
