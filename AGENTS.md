@@ -1,114 +1,45 @@
 # AGENTS.md
 
-Guidance for AI agents working in this repository. The goal is to reduce repeat discovery and make changes that fit the existing Android app.
+Guidance for AI agents working in this repository.
 
-This document is a researched map, not a replacement for reading the code. Facts below include source files wherever practical; if a file disagrees with this guide, trust the file and update this guide as part of the change. Inform the user of any mismatch.
+## Mandatory Development Principles
 
-## Table of Contents
+- **Knowledge Persistence**: Whenever you make a mistake or learn a non-obvious project-specific fact, update this guide to avoid repeating the same error.
+- **Verification First**: Always read files before attempting any edits.
+- **Consistency**: If a file disagrees with this guide, trust the file and update this guide as part of the change. Inform the user of any mismatch.
+- **UI Architecture**: Prefer Jetpack Compose over XML layouts and Fragments. Always consider adding previews whenever you create new composables.
+- **Database integrity**: Whenever database schema changes are made, you MUST handle migrations.
 
-1. Source Of Truth
-2. Project Snapshot
-3. Local Environment Notes
-4. Source Map
-5. Runtime Flow
-6. Data Model And Storage
-7. Network
-8. UI Conventions
-9. ViewModel And Reactive Patterns
-10. Known Code Quirks
-11. Editing Guidelines
-12. Verification
+## Project Overview
 
-## Source Of Truth
+- **Project Name**: `Amai`
+- **Purpose**: Browse, search, view, favorite, and read galleries from `nhentai.net`.
+- **Primary Tech Stack**: Jetpack Compose, Jetpack Navigation 3, Room, Koin, Coroutines/Flow, Retrofit + Moshi, kotlinx.serialization, Coil, and Timber.
 
-Start with these files when validating project facts:
+## Source Map (Source of Truth)
+
+This document is a researched map, not a replacement for reading the code. Facts below include source files wherever practical. Use these files to validate project facts and understand the implementation:
 
 - **Build & Dependencies**: `settings.gradle`, `app/build.gradle`, `gradle.properties`.
-- **Runtime startup and DI**: `AmaiApplication.kt`, `koin/Modules.kt`.
-- **Navigation & Screen Flow**: `MainActivity.kt` contains the navigation logic and global UI state like the active search query.
-- **Room schema**: `data/AmaiDatabase.kt`, `app/schemas/`.
-- **Network API**: `network/Nhentai.kt`, `util/NhentaiX.kt`.
-- **Compose UI**: `compose/`.
+- **Runtime Startup & DI**: `AmaiApplication.kt`, `koin/Modules.kt`.
+- **Navigation & Flow**: `MainActivity.kt` (root navigation), `HomeScreen.kt` (tab management).
+- **Screens**: `BrowseScreen.kt`, `FavoritesScreen.kt`, `DetailScreen.kt`, `ReadScreen.kt`.
+- **Database & Schema**: `data/AmaiDatabase.kt` and `app/schemas/`.
+- **Network & API**: `network/Nhentai.kt`, `util/NhentaiX.kt`.
+- **API Documentation**: [Human-readable docs](https://nhentai.net/api/v2/docs) and [OpenAPI JSON](https://nhentai.net/api/v2/openapi.json).
 
-## Project Snapshot
+## Implementation Details & Known Quirks
 
-- **Project Name**: `Amai`.
-- **Purpose**: Browse, search, view, favorite, and read galleries from `nhentai.net`.
-- **UI Architecture**: Pure Jetpack Compose.
-- **Tech Stack**: Room, Koin, Coroutines/Flow, Retrofit, Coil, Timber.
+### State Management
+- **Tab State Preservation**: `HomeScreen` uses `SaveableStateHolder` to preserve tab state. Note that this **only** saves values that use `rememberSaveable`. Simple `remember` values are lost when switching tabs.
+- **Search Event Handling**: `MainActivity` holds a global `searchEvent` state. This is prop-drilled down through `HomeScreen` to `BrowseScreen`, which uses a `LaunchedEffect(searchEvent)` to trigger ViewModel actions.
+- **Side Effects & Navigation**: Use **callbacks** (not `LaunchedEffect`) for one-time UI reactions to user actions (e.g., scrolling to top after search/sort). `LaunchedEffect` re-triggers whenever a screen is re-composed during tab switching, leading to unintended "false-positive" events.
 
-## Local Environment Notes
+### Database
+- **Development Migration**: `Modules.kt` is configured with `.fallbackToDestructiveMigration(dropAllTables = true)`, which resets the database on schema mismatches during development.
 
-- `local.properties` is machine-specific. Verify `sdk.dir` before using.
-- Use Android Studio's JBR before running Gradle:
-```powershell
-$env:JAVA_HOME = "C:\Program Files\Android\Android Studio\jbr"
-.\gradlew.bat :app:assembleDebug
-```
-- Git safe directory helper:
-```powershell
-git -c safe.directory=C:/android_projects/Amai status --short
-```
-
-## Source Map
-
-- `MainActivity.kt`: Manages navigation and global state (`searchRequest`, `selectedTab`).
-- `viewmodel/factory/ViewModelFactory.kt`: Manual factory combining Koin plus `SavedStateHandle`.
-- `util/NhentaiX.kt`: Logic for mapping API DTOs to Room Entities.
-
-## Runtime Flow
-
-- `MainActivity` hosts the Compose content.
-- App launch opens `MainActivity`, which acts as a navigator for Compose-based screens.
-- `MainActivity` manages navigation between `HomeScreen`, `SearchScreen`, `DetailScreen`, and `ReadScreen` using `Crossfade` (via `NavDisplay`) and local state (`Route`).
-- `HomeScreen` manages the browse (Nhentai) and favorites tabs. It uses `BrowseScreen` and `FavoritesScreen`.
-
-## Data Model And Storage
-
-- **Database**: `AmaiDatabase` (Room).
-- **Caching Pattern**: `NhentaiViewModel` stores remote browse/search results in the `CachedEntity` table. `CachedPreviewView` (a DatabaseView) then joins these results with local favorite state for display.
-- **Persistence**: `FavoriteEntity` stores favorited book IDs. `FavoritesPreviewView` provides a joined view for the favorites screen.
-- **Migrations**: Uses `AutoMigration` for schema changes.
-- **Orphan Cleanup**: `BookDao.deleteOrphan()` is used to delete books no longer referenced by favorites or the current search cache.
-
-## Network
-
-- **API Documentation**: [Human-readable](https://nhentai.net/api/v2/docs) and [OpenAPI JSON](https://nhentai.net/api/v2/openapi.json).
-- **Base URLs**: Defined in `network/Nhentai.kt`.
-- **User-Agent**: Custom interceptor lives in `network/UserAgentInterceptor.kt`.
-- **Debug Logging**: `HttpLoggingInterceptor` is enabled in debug builds via `Modules.kt`.
-- **Capabilities & Limits**:
-    - The `galleries/{id}` endpoint supports an `include` query parameter (comma-separated: `comments`, `related`, `favorite`, `suggestions`) to fetch extra data in one request. This currently not implemented.
-    - A dedicated `/api/v2/galleries/popular` endpoint exists for trending content but is not yet implemented.
-    - **Intentional Omissions**: Authentication (API Key) and security challenge handling (POW/Captcha) are currently bypassed/ignored by design.
-
-## UI Conventions
-
-- **Pure Compose**: The app has been fully migrated to Jetpack Compose. XML layouts and Fragments have been removed.
-- **Theme**: Compose uses `AmaiTheme`.
-- **Grid**: Browse, favorites, and detail layouts use adaptive grids with ~150 dp cells.
-- **Resources**: Use existing strings in `res/values/strings.xml` and icons in `res/drawable` before adding new assets.
-
-## ViewModel And Reactive Patterns
-
-- **Coroutines & Flow**: ViewModels use `StateFlow` driven by `SavedStateHandle`. Business logic is handled in `viewModelScope`.
-- **Compose + State**: `MainActivity` holds global state (`searchRequest`) using `rememberSaveable`. `BrowseScreen` uses `LaunchedEffect(searchRequest)` to drive ViewModel actions.
-- **State**: `DetailViewModel` uses `flatMapLatest` on `SavedStateHandle` to reactively load book details from Room.
-
-## Known Code Quirks
-
-- `DetailViewModel.kt`: Uses unbounded `retry()` in `loadRemote()`.
-- `!!` Usage: Many areas use non-null assertions; verify `SavedStateHandle` or `Intent` extras carefully.
-- `Modules.kt`: Uses `.fallbackToDestructiveMigration(dropAllTables = true)`, which resets the DB on schema mismatches during development.
-
-## Editing Guidelines
-
-- **Respect user work**: Always run `git status --short` before editing.
-- **Architecture**: Do not refactor from hybrid to pure Compose unless requested.
-- **Room Migrations**: Increment `AmaiDatabase.version` and handle schema exports or use `AutoMigration` if changing entities.
-
-## Verification
-
-- **Lint**: Inspect `app/build/reports/lint-results-debug.html`.
-- **Previews**: Use Compose `@Preview` where available.
-- **Manual Flow**: Verify persistence and reader interactions manually, as there are no automated UI tests.
+### Unimplemented & Omitted Features
+- **Partial API Support**:
+    - The `galleries/{id}` endpoint supports an `include` query parameter (comma-separated: `comments`, `related`, `favorite`, `suggestions`) which is not yet implemented.
+    - The `/api/v2/galleries/popular` endpoint for trending content is not yet implemented.
+- **Intentional Omissions**: Authentication (API Keys) and security challenge handling (POW/Captcha) are currently bypassed or ignored by design.
