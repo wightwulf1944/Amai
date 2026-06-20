@@ -17,6 +17,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.ScaffoldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -39,6 +40,7 @@ import i.am.shiro.amai.R
 import i.am.shiro.amai.compose.common.AmaiTheme
 import i.am.shiro.amai.compose.common.TopBarContainer
 import i.am.shiro.amai.compose.common.TopBarPill
+import i.am.shiro.amai.compose.utils.asSymmetricHorizontal
 import i.am.shiro.amai.data.view.FavoritesPreviewView
 import i.am.shiro.amai.model.BookPreview
 import i.am.shiro.amai.viewmodel.FavoritesViewModel
@@ -93,7 +95,7 @@ fun FavoritesContent(
     }
 
     Scaffold(
-        contentWindowInsets = WindowInsets(),
+        contentWindowInsets = ScaffoldDefaults.contentWindowInsets.asSymmetricHorizontal(0.5f),
         topBar = {
             FavoriteTopBar(
                 onSearchSubmit = onSearchSubmit,

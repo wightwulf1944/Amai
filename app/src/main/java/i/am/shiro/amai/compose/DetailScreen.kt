@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fitOutside
-import androidx.compose.foundation.layout.plus
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -18,6 +17,7 @@ import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.IconToggleButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.ScaffoldDefaults
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
@@ -40,6 +40,8 @@ import i.am.shiro.amai.R
 import i.am.shiro.amai.compose.common.AmaiTheme
 import i.am.shiro.amai.compose.common.TopBarContainer
 import i.am.shiro.amai.compose.common.TopBarPill
+import i.am.shiro.amai.compose.utils.asSymmetricHorizontal
+import i.am.shiro.amai.compose.utils.union
 import i.am.shiro.amai.model.DetailModel
 import i.am.shiro.amai.model.TagModel
 import i.am.shiro.amai.model.Thumbnail
@@ -89,6 +91,7 @@ fun DetailContent(
     )
 
     Scaffold(
+        contentWindowInsets = ScaffoldDefaults.contentWindowInsets.asSymmetricHorizontal(0.5f),
         snackbarHost = {
             SnackbarHost(snackbarHostState)
         },
@@ -201,7 +204,7 @@ fun DetailBody(
     LazyVerticalGrid(
         columns = GridCells.Adaptive(150.dp),
         modifier = Modifier.fillMaxSize(),
-        contentPadding = contentPadding + PaddingValues(8.dp),
+        contentPadding = contentPadding union PaddingValues(8.dp),
         horizontalArrangement = Arrangement.spacedBy(8.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp),
     ) {

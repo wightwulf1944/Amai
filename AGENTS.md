@@ -9,7 +9,11 @@ Guidance for AI agents working in this repository.
 - **Consistency**: If a file disagrees with this guide, trust the file and update this guide as part of the change. Inform the user of any mismatch.
 - **UI Architecture**: Prefer Jetpack Compose over XML layouts and Fragments. Always consider adding previews whenever you create new composables.
 - **Database integrity**: Whenever database schema changes are made, you MUST handle migrations.
-- **Communication Style**: If the user asks a question or for a "check," answer it clearly. **DO NOT** use file-writing tools or propose code changes in that same turn unless explicitly asked to "fix", "refactor", or "apply changes". Wait for confirmation.
+- **Communication Style**: If the user asks a question or for a "check," answer it clearly. 
+    - **DO NOT** use file-writing tools or propose code changes in that same turn unless explicitly asked to "fix", "refactor", "apply changes", or "go ahead". 
+    - **"How" ≠ "Do"**: Interpret "How do I..." or "Is it possible to..." as a request for a technical explanation or code snippets for discussion only. Never touch the filesystem or apply changes in response to these queries.
+    - **Explain First, Edit Later**: Always provide a conceptual plan or code snippets in the chat for review before invoking any editing tools.
+    - **Verification of Intent**: If unsure whether the user wants a conceptual answer or an implementation, ask for clarification.
 
 ## Project Overview
 

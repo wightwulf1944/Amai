@@ -1,7 +1,6 @@
 package i.am.shiro.amai.compose
 
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -13,6 +12,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.ScaffoldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
@@ -37,6 +37,7 @@ import i.am.shiro.amai.R
 import i.am.shiro.amai.compose.common.AmaiTheme
 import i.am.shiro.amai.compose.common.TopBarContainer
 import i.am.shiro.amai.compose.common.TopBarPill
+import i.am.shiro.amai.compose.utils.asSymmetricHorizontal
 import i.am.shiro.amai.data.view.CachedPreviewView
 import i.am.shiro.amai.model.BookPreview
 import i.am.shiro.amai.model.SearchEvent
@@ -107,7 +108,7 @@ fun BrowseContent(
     }
 
     Scaffold(
-        contentWindowInsets = WindowInsets(),
+        contentWindowInsets = ScaffoldDefaults.contentWindowInsets.asSymmetricHorizontal(0.5f),
         topBar = {
             BrowseTopBar(
                 title = title,

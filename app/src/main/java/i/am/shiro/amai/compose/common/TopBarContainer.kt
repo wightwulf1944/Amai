@@ -16,6 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import i.am.shiro.amai.compose.utils.asSymmetricHorizontal
 
 @Composable
 fun TopBarContainer(
@@ -24,10 +25,13 @@ fun TopBarContainer(
     val background = Brush.verticalGradient(
         listOf(MaterialTheme.colorScheme.surface, Color.Transparent)
     )
-    val insets = WindowInsets.safeDrawing.only(WindowInsetsSides.Top + WindowInsetsSides.Horizontal)
+    val insets = WindowInsets.safeDrawing
+        .only(WindowInsetsSides.Top + WindowInsetsSides.Horizontal)
+        .asSymmetricHorizontal(0.5f)
     Row(
         modifier = Modifier
             .fillMaxWidth()
+            .padding(bottom = 8.dp)
             .background(background)
             .windowInsetsPadding(insets)
             .padding(horizontal = 16.dp)
