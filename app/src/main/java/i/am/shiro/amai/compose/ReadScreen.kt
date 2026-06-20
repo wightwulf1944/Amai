@@ -40,6 +40,8 @@ import coil3.request.ImageRequest
 import coil3.request.allowRgb565
 import coil3.size.Precision
 import i.am.shiro.amai.compose.common.AmaiTheme
+import i.am.shiro.amai.compose.utils.VolumeKeyHandler
+import i.am.shiro.amai.compose.utils.animateScrollPageBy
 import i.am.shiro.amai.data.entity.ImageEntity
 import i.am.shiro.amai.viewmodel.ReadViewModel
 import org.koin.compose.viewmodel.koinViewModel

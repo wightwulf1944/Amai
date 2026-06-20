@@ -1,4 +1,4 @@
-package i.am.shiro.amai.compose
+package i.am.shiro.amai.compose.utils
 
 import androidx.compose.ui.input.key.Key
 import androidx.compose.ui.input.key.KeyEvent

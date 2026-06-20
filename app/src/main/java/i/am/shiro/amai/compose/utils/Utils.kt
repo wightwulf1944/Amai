@@ -1,4 +1,4 @@
-package i.am.shiro.amai.compose
+package i.am.shiro.amai.compose.utils
 
 import androidx.compose.animation.core.spring
 import androidx.compose.foundation.pager.PagerState
