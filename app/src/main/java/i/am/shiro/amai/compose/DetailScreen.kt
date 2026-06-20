@@ -5,16 +5,9 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.WindowInsetsSides
-import androidx.compose.foundation.layout.asPaddingValues
-import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fitOutside
-import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.plus
-import androidx.compose.foundation.layout.safeDrawing
-import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -96,7 +89,6 @@ fun DetailContent(
     )
 
     Scaffold(
-        contentWindowInsets = WindowInsets(),
         snackbarHost = {
             SnackbarHost(snackbarHostState)
         },
@@ -206,15 +198,10 @@ fun DetailBody(
     onTagClick: (String) -> Unit,
     contentPadding: PaddingValues,
 ) {
-    val horizontalInsets = WindowInsets.safeDrawing.only(WindowInsetsSides.Horizontal)
-    val bottomInsets = WindowInsets.safeDrawing.only(WindowInsetsSides.Bottom)
     LazyVerticalGrid(
         columns = GridCells.Adaptive(150.dp),
-        modifier = Modifier
-            .fillMaxSize()
-            .windowInsetsPadding(horizontalInsets)
-            .consumeWindowInsets(bottomInsets),
-        contentPadding = contentPadding + bottomInsets.asPaddingValues() + PaddingValues(8.dp),
+        modifier = Modifier.fillMaxSize(),
+        contentPadding = contentPadding + PaddingValues(8.dp),
         horizontalArrangement = Arrangement.spacedBy(8.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp),
     ) {
