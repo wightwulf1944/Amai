@@ -9,6 +9,7 @@ Guidance for AI agents working in this repository.
 - **Consistency**: If a file disagrees with this guide, trust the file and update this guide as part of the change. Inform the user of any mismatch.
 - **UI Architecture**: Prefer Jetpack Compose over XML layouts and Fragments. Always consider adding previews whenever you create new composables.
 - **Database integrity**: Whenever database schema changes are made, you MUST handle migrations.
+- **Communication Style**: If the user asks a question or for a "check," answer it clearly. **DO NOT** use file-writing tools or propose code changes in that same turn unless explicitly asked to "fix", "refactor", or "apply changes". Wait for confirmation.
 
 ## Project Overview
 

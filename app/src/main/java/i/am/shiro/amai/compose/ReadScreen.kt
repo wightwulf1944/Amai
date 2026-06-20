@@ -28,8 +28,6 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.FilterQuality
 import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.input.key.Key
-import androidx.compose.ui.input.key.key
 import androidx.compose.ui.input.key.onKeyEvent
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
@@ -73,10 +71,19 @@ fun ReadContent(
     val focusRequester = remember { FocusRequester() }
 
     val scope = rememberCoroutineScope()
-    val volumeDownHandler = remember { KeyEventHandler(scope) }
-    val volumeUpHandler = remember { KeyEventHandler(scope) }
-
     var turboOn by remember { mutableStateOf(false) }
+    val handler = remember {
+        VolumeKeyHandler(
+            scope = scope,
+            onHoldChanged = { turboOn = it },
+            onVolumeDown = {
+                pagerState.animateScrollPageBy(-1)
+            },
+            onVolumeUp = {
+                pagerState.animateScrollPageBy(1)
+            }
+        )
+    }
 
     Box(
         modifier = Modifier
@@ -84,31 +91,7 @@ fun ReadContent(
             .background(Color.Black)
             .focusRequester(focusRequester)
             .focusable()
-            .onKeyEvent { keyEvent ->
-                when (keyEvent.key) {
-                    Key.VolumeDown -> volumeDownHandler.handleKeyEvent(
-                        keyEvent = keyEvent,
-                        onAction = {
-                            if (pagerState.currentPage > 0) {
-                                pagerState.animateScrollPageBy(-1)
-                            }
-                        },
-                        onHoldChanged = { turboOn = it }
-                    )
-
-                    Key.VolumeUp -> volumeUpHandler.handleKeyEvent(
-                        keyEvent = keyEvent,
-                        onAction = {
-                            if (pagerState.currentPage < pagerState.pageCount - 1) {
-                                pagerState.animateScrollPageBy(1)
-                            }
-                        },
-                        onHoldChanged = { turboOn = it }
-                    )
-
-                    else -> false
-                }
-            }
+            .onKeyEvent(handler::handleKeyEvent)
     ) {
         if (pages.isNotEmpty()) {
             ReadPager(
