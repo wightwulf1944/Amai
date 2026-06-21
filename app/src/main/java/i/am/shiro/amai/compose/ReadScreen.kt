@@ -4,9 +4,14 @@ import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.focusable
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeDrawing
+import androidx.compose.foundation.layout.safeDrawingPadding
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
@@ -71,9 +76,9 @@ fun ReadContent(
 ) {
     val pagerState = rememberPagerState(initialPage = initialPage) { pages.size }
     val focusRequester = remember { FocusRequester() }
+    var turboOn by remember { mutableStateOf(false) }
 
     val scope = rememberCoroutineScope()
-    var turboOn by remember { mutableStateOf(false) }
     val handler = remember {
         VolumeKeyHandler(
             scope = scope,
@@ -107,11 +112,9 @@ fun ReadContent(
                 pageCount = pages.size,
                 modifier = Modifier
                     .align(Alignment.BottomCenter)
-                    .navigationBarsPadding()
+                    .safeDrawingPadding()
                     .padding(bottom = 16.dp)
             )
-
-            // TODO show some visual indicator of reading progress like a bar or scrollthumb
         }
     }
 
@@ -158,6 +161,7 @@ fun ReadPager(
             fallback = thumbnailPainter,
             contentDescription = null,
             modifier = Modifier
+                .windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Horizontal))
                 .fillMaxSize()
                 .graphicsLayer {
                     scaleX = scale
