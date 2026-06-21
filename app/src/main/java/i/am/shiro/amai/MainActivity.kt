@@ -11,6 +11,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -19,11 +20,14 @@ import androidx.compose.runtime.setValue
 import androidx.core.net.toUri
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
+import androidx.core.view.WindowInsetsControllerCompat.BEHAVIOR_DEFAULT
+import androidx.core.view.WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
 import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
 import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
+import androidx.window.core.layout.WindowSizeClass
 import i.am.shiro.amai.compose.DetailScreen
 import i.am.shiro.amai.compose.HomeScreen
 import i.am.shiro.amai.compose.ReadScreen
@@ -81,6 +85,25 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             AmaiTheme {
+                val shouldShowStatusBars = currentWindowAdaptiveInfo().windowSizeClass
+                    .isHeightAtLeastBreakpoint(WindowSizeClass.HEIGHT_DP_MEDIUM_LOWER_BOUND)
+
+                DisposableEffect(shouldShowStatusBars) {
+                    val controller = WindowInsetsControllerCompat(window, window.decorView)
+                    if (shouldShowStatusBars) {
+                        controller.show(WindowInsetsCompat.Type.statusBars())
+                        controller.systemBarsBehavior = BEHAVIOR_DEFAULT
+
+                    } else {
+                        controller.hide(WindowInsetsCompat.Type.statusBars())
+                        controller.systemBarsBehavior = BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+                    }
+                    onDispose {
+                        controller.show(WindowInsetsCompat.Type.statusBars())
+                        controller.systemBarsBehavior = BEHAVIOR_DEFAULT
+                    }
+                }
+
                 var searchEvent by rememberSaveable { mutableStateOf<SearchEvent?>(null) }
 
                 val navigator = rememberNavigator(
@@ -134,17 +157,6 @@ class MainActivity : ComponentActivity() {
                             )
                         }
                         entry<Route.Read> { key ->
-                            DisposableEffect(Unit) {
-                                val window = window
-                                val controller =
-                                    WindowInsetsControllerCompat(window, window.decorView)
-                                controller.hide(WindowInsetsCompat.Type.statusBars())
-                                controller.systemBarsBehavior =
-                                    WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
-                                onDispose {
-                                    controller.show(WindowInsetsCompat.Type.statusBars())
-                                }
-                            }
                             ReadScreen(
                                 bookId = key.bookId,
                                 initialPage = key.pageIndex
