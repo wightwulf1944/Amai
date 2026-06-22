@@ -9,8 +9,13 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.text.input.InputTransformation
+import androidx.compose.foundation.text.input.TextFieldLineLimits
+import androidx.compose.foundation.text.input.TextFieldState
+import androidx.compose.foundation.text.input.byValue
+import androidx.compose.foundation.text.input.rememberTextFieldState
+import androidx.compose.foundation.text.input.setTextAndPlaceCursorAtEnd
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -19,20 +24,14 @@ import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import i.am.shiro.amai.R
@@ -60,23 +59,20 @@ fun SearchContent(
     initialQuery: String,
     onSearch: (String) -> Unit,
     suggestions: List<SearchSuggestion>,
-    onQueryChange: (TextFieldValue) -> Unit
+    onQueryChange: (String) -> Unit
 ) {
-    var textFieldValue by rememberSaveable(stateSaver = TextFieldValue.Saver) {
-        mutableStateOf(TextFieldValue(initialQuery, TextRange(initialQuery.length)))
-    }
+    val textFieldState = rememberTextFieldState(initialQuery)
 
-    LaunchedEffect(textFieldValue) {
-        onQueryChange(textFieldValue)
+    LaunchedEffect(textFieldState.text) {
+        onQueryChange(textFieldState.text.toString())
     }
 
     Scaffold { contentPadding ->
         Column(modifier = Modifier.padding(contentPadding)) {
 
             SearchInput(
-                value = textFieldValue,
-                onValueChange = { textFieldValue = it },
-                onSearch = { onSearch(textFieldValue.text) }
+                state = textFieldState,
+                onSearch = { onSearch(textFieldState.text.toString()) }
             )
 
             LazyColumn(
@@ -86,7 +82,7 @@ fun SearchContent(
                 items(suggestions) { suggestion ->
                     SuggestionItem(
                         text = suggestion.text,
-                        onClick = { textFieldValue = suggestion.textFieldValue }
+                        onClick = { textFieldState.setTextAndPlaceCursorAtEnd(suggestion.proposedValue) }
                     )
                 }
             }
@@ -96,8 +92,7 @@ fun SearchContent(
 
 @Composable
 fun SearchInput(
-    value: TextFieldValue,
-    onValueChange: (TextFieldValue) -> Unit,
+    state: TextFieldState,
     onSearch: () -> Unit
 ) {
     val focusRequester = remember { FocusRequester() }
@@ -107,8 +102,7 @@ fun SearchInput(
     }
 
     TextField(
-        value = value,
-        onValueChange = onValueChange,
+        state = state,
         modifier = Modifier
             .fillMaxWidth()
             .height(56.dp)
@@ -119,8 +113,11 @@ fun SearchInput(
             imeAction = ImeAction.Search,
             autoCorrectEnabled = false,
         ),
-        keyboardActions = KeyboardActions { onSearch() },
-        singleLine = true,
+        onKeyboardAction = { onSearch() },
+        lineLimits = TextFieldLineLimits.SingleLine,
+        inputTransformation = InputTransformation.byValue { _, proposed ->
+            proposed.toString().lowercase()
+        },
         colors = TextFieldDefaults.colors(
             focusedIndicatorColor = Color.Transparent,
             unfocusedIndicatorColor = Color.Transparent
