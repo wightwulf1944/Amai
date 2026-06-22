@@ -19,7 +19,6 @@ import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -38,131 +37,116 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import i.am.shiro.amai.R
 import i.am.shiro.amai.compose.common.AmaiTheme
+import i.am.shiro.amai.viewmodel.SearchSuggestion
 import i.am.shiro.amai.viewmodel.SearchViewModel
 import org.koin.compose.viewmodel.koinViewModel
 
-// TODO: Use TextFieldValue.selection in SearchViewModel to provide suggestions based on cursor position instead of just splitting the string.
 @Composable
 fun SearchScreen(
+    query: String,
     onSearch: (String) -> Unit,
     viewModel: SearchViewModel = koinViewModel()
 ) {
-    val suggestions by viewModel.suggestions.collectAsState()
-
     SearchContent(
-        suggestions = suggestions,
-        onQueryChange = viewModel::onQueryChange,
-        onSearch = onSearch
+        initialQuery = query,
+        onSearch = onSearch,
+        suggestions = viewModel.suggestions,
+        onQueryChange = viewModel::onQueryChange
     )
 }
 
 @Composable
 fun SearchContent(
-    suggestions: List<String>,
-    onQueryChange: (TextFieldValue) -> Unit,
-    onSearch: (String) -> Unit
+    initialQuery: String,
+    onSearch: (String) -> Unit,
+    suggestions: List<SearchSuggestion>,
+    onQueryChange: (TextFieldValue) -> Unit
 ) {
-    val focusRequester = remember { FocusRequester() }
-
     var textFieldValue by rememberSaveable(stateSaver = TextFieldValue.Saver) {
-        mutableStateOf(TextFieldValue(""))
+        mutableStateOf(TextFieldValue(initialQuery, TextRange(initialQuery.length)))
     }
 
     LaunchedEffect(textFieldValue) {
         onQueryChange(textFieldValue)
     }
 
-    LaunchedEffect(Unit) {
-        focusRequester.requestFocus()
-    }
-
     Scaffold { contentPadding ->
-        SearchBody(
-            textFieldValue = textFieldValue,
-            onTextFieldValueChange = { textFieldValue = it },
-            suggestions = suggestions,
-            onSearch = onSearch,
-            focusRequester = focusRequester,
-            contentPadding = contentPadding
-        )
-    }
-}
+        Column(modifier = Modifier.padding(contentPadding)) {
 
-@Composable
-fun SearchBody(
-    textFieldValue: TextFieldValue,
-    onTextFieldValueChange: (TextFieldValue) -> Unit,
-    suggestions: List<String>,
-    onSearch: (String) -> Unit,
-    focusRequester: FocusRequester,
-    contentPadding: PaddingValues
-) {
-    Column(modifier = Modifier.padding(contentPadding)) {
-        TextField(
-            value = textFieldValue,
-            onValueChange = onTextFieldValueChange,
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(56.dp)
-                .focusRequester(focusRequester),
-            placeholder = { Text(stringResource(R.string.search)) },
-            keyboardOptions = KeyboardOptions(
-                keyboardType = KeyboardType.Text,
-                imeAction = ImeAction.Search,
-                autoCorrectEnabled = false,
-            ),
-            keyboardActions = KeyboardActions(
+            SearchInput(
+                value = textFieldValue,
+                onValueChange = { textFieldValue = it },
                 onSearch = { onSearch(textFieldValue.text) }
-            ),
-            singleLine = true,
-            colors = TextFieldDefaults.colors(
-                focusedContainerColor = MaterialTheme.colorScheme.surfaceContainer,
-                unfocusedContainerColor = MaterialTheme.colorScheme.surfaceContainer,
-                focusedIndicatorColor = Color.Transparent,
-                unfocusedIndicatorColor = Color.Transparent
             )
-        )
 
-        LazyColumn(
-            modifier = Modifier.fillMaxSize(),
-            contentPadding = PaddingValues(bottom = 8.dp)
-        ) {
-            items(suggestions) { suggestion ->
-                SuggestionItem(
-                    suggestion = suggestion,
-                    onClick = {
-                        val words = textFieldValue.text.split(' ')
-                        val newText = words.dropLast(1).plus(suggestion).joinToString(" ")
-                        onTextFieldValueChange(
-                            TextFieldValue(
-                                text = newText,
-                                selection = TextRange(newText.length)
-                            )
-                        )
-                    }
-                )
+            LazyColumn(
+                modifier = Modifier.fillMaxSize(),
+                contentPadding = PaddingValues(bottom = 8.dp)
+            ) {
+                items(suggestions) { suggestion ->
+                    SuggestionItem(
+                        text = suggestion.text,
+                        onClick = { textFieldValue = suggestion.textFieldValue }
+                    )
+                }
             }
         }
     }
 }
 
 @Composable
-fun SuggestionItem(
-    suggestion: String,
-    onClick: () -> Unit
+fun SearchInput(
+    value: TextFieldValue,
+    onValueChange: (TextFieldValue) -> Unit,
+    onSearch: () -> Unit
 ) {
-    Text(
-        text = suggestion,
-        style = MaterialTheme.typography.bodyMedium,
+    val focusRequester = remember { FocusRequester() }
+
+    LaunchedEffect(Unit) {
+        focusRequester.requestFocus()
+    }
+
+    TextField(
+        value = value,
+        onValueChange = onValueChange,
         modifier = Modifier
             .fillMaxWidth()
-            .clickable(onClick = onClick)
-            .padding(horizontal = 16.dp, vertical = 8.dp)
+            .height(56.dp)
+            .focusRequester(focusRequester),
+        placeholder = { Text(stringResource(R.string.search)) },
+        keyboardOptions = KeyboardOptions(
+            keyboardType = KeyboardType.Text,
+            imeAction = ImeAction.Search,
+            autoCorrectEnabled = false,
+        ),
+        keyboardActions = KeyboardActions { onSearch() },
+        singleLine = true,
+        colors = TextFieldDefaults.colors(
+            focusedIndicatorColor = Color.Transparent,
+            unfocusedIndicatorColor = Color.Transparent
+        )
     )
-    HorizontalDivider(
-        thickness = 1.dp,
-        color = MaterialTheme.colorScheme.outlineVariant
-    )
+}
+
+@Composable
+fun SuggestionItem(
+    text: String,
+    onClick: () -> Unit
+) {
+    Column {
+        Text(
+            text = text,
+            style = MaterialTheme.typography.bodyMedium,
+            modifier = Modifier
+                .fillMaxWidth()
+                .clickable(onClick = onClick)
+                .padding(horizontal = 16.dp, vertical = 8.dp)
+        )
+        HorizontalDivider(
+            thickness = 1.dp,
+            color = MaterialTheme.colorScheme.outlineVariant
+        )
+    }
 }
 
 @Preview
@@ -170,7 +154,8 @@ fun SuggestionItem(
 private fun SearchContentPreview() {
     AmaiTheme {
         SearchContent(
-            suggestions = listOf("tag:artist", "tag:artistic"),
+            initialQuery = "",
+            suggestions = listOf(SearchSuggestion("tag:artist"), SearchSuggestion("tag:artistic")),
             onQueryChange = {},
             onSearch = {},
         )

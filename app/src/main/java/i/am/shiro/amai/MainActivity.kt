@@ -134,6 +134,7 @@ class MainActivity : ComponentActivity() {
                         }
                         entry<Route.Search> { key ->
                             SearchScreen(
+                                query = searchEvent?.query ?: "",
                                 onSearch = { query ->
                                     searchEvent = SearchEvent(query)
                                     navigator.pop(key)
