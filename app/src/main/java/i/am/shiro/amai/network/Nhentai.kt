@@ -4,15 +4,25 @@ import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query
 
+// hardcoded thumbnail and image urls may be incorrect. Refer to API docs for correct urls.
+// https://nhentai.net/api/v2/docs
 object Nhentai {
 
     const val WEBPAGE_BASE_URL = "https://nhentai.net/g/"
 
     const val API_BASE_URL = "https://nhentai.net/api/v2/"
 
-    const val THUMBNAIL_BASE_URL = "https://t1.nhentai.net/"
+    val thumbnailBaseUrl: String
+        get() {
+            val subdomain = arrayOf("t1", "t2", "t3", "t4").random()
+            return "https://$subdomain.nhentai.net/"
+        }
 
-    const val IMAGE_BASE_URL = "https://i4.nhentai.net/"
+    val imageBaseUrl: String
+        get() {
+            val subdomain = arrayOf("i1", "i2", "i3", "i4").random()
+            return "https://$subdomain.nhentai.net/"
+        }
 
     enum class Sort(private val s: String) {
         DATE("date"),
@@ -24,7 +34,6 @@ object Nhentai {
         override fun toString() = s
     }
 
-    // https://nhentai.net/api/v2/docs
     interface Api {
 
         @GET("search")
@@ -47,6 +56,7 @@ object Nhentai {
     }
 }
 
+@Suppress("PropertyName", "unused")
 class PaginatedResponse(
     val result: List<GalleryListItem>,
     val num_pages: Int,
@@ -54,6 +64,7 @@ class PaginatedResponse(
     val total: Int?
 )
 
+@Suppress("PropertyName", "unused")
 class GalleryListItem(
     val id: Int,
     val media_id: String,
@@ -67,6 +78,7 @@ class GalleryListItem(
     val blacklisted: Boolean
 )
 
+@Suppress("PropertyName", "unused")
 class GalleryDetailResponse(
     val id: Int,
     val media_id: String,
@@ -81,6 +93,7 @@ class GalleryDetailResponse(
     val pages: List<PageInfo>
 )
 
+@Suppress("unused")
 class GalleryTitle(
     val english: String,
     val japanese: String?,
@@ -93,6 +106,7 @@ class CoverInfo(
     val height: Int
 )
 
+@Suppress("unused")
 class TagResponse(
     val id: Int,
     val type: String,
@@ -102,6 +116,7 @@ class TagResponse(
     val count: Int
 )
 
+@Suppress("PropertyName")
 class PageInfo(
     val number: Int,
     val path: String,
