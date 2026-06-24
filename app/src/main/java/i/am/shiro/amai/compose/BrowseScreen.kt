@@ -48,7 +48,7 @@ import org.koin.compose.viewmodel.koinViewModel
 // TODO try jetpack paging library for loading content
 @Composable
 fun BrowseScreen(
-    searchEvent: SearchEvent?,
+    searchEvent: SearchEvent,
     onSearchClick: () -> Unit,
     onItemClick: (Int) -> Unit,
     viewModel: NhentaiViewModel = koinViewModel()
@@ -56,8 +56,7 @@ fun BrowseScreen(
     val books by viewModel.books.collectAsStateWithLifecycle()
 
     val gridState = rememberLazyStaggeredGridState()
-    val initialTitle = stringResource(R.string.nhentai)
-    var title by rememberSaveable { mutableStateOf(initialTitle) }
+    var title by rememberSaveable { mutableStateOf("") }
 
     LaunchedEffect(gridState.canScrollForward) {
         if (!gridState.canScrollForward) {
@@ -66,7 +65,7 @@ fun BrowseScreen(
     }
 
     LaunchedEffect(searchEvent) {
-        if (searchEvent?.isProcessing == true) {
+        if (searchEvent.isProcessing) {
             title = searchEvent.query
             gridState.scrollToItem(0)
             viewModel.search(searchEvent.query)

@@ -58,11 +58,18 @@ fun HomeScreen(
                 }
 
                 HomeTab.NHENTAI -> {
-                    BrowseScreen(
-                        searchEvent = searchEvent,
-                        onSearchClick = onSearchClick,
-                        onItemClick = onItemClick
-                    )
+                    if (searchEvent == null) {
+                        HomepageScreen(
+                            onSearchClick = onSearchClick,
+                            onItemClick = onItemClick
+                        )
+                    } else {
+                        BrowseScreen(
+                            searchEvent = searchEvent,
+                            onSearchClick = onSearchClick,
+                            onItemClick = onItemClick
+                        )
+                    }
                 }
             }
         }

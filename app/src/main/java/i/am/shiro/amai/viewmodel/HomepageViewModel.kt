@@ -10,7 +10,6 @@ import androidx.lifecycle.viewModelScope
 import androidx.room.withTransaction
 import i.am.shiro.amai.data.AmaiDatabase
 import i.am.shiro.amai.data.entity.CachedEntity
-import i.am.shiro.amai.network.GalleryDetailResponse
 import i.am.shiro.amai.network.Nhentai
 import i.am.shiro.amai.network.PaginatedResponse
 import i.am.shiro.amai.util.toEntity
@@ -19,17 +18,13 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
-class NhentaiViewModel(
+class HomepageViewModel(
     handle: SavedStateHandle,
     private val database: AmaiDatabase,
     private val nhentaiApi: Nhentai.Api
 ) : ViewModel() {
 
-    private var query by handle.saved { "" }
-
     private var page by handle.saved { 0 }
-
-    private var sort by handle.saved { Nhentai.Sort.DATE }
 
     private var isComplete by handle.saved { false }
 
@@ -56,21 +51,7 @@ class NhentaiViewModel(
         fetchRemotePage()
     }
 
-    fun sort(sort: Nhentai.Sort) {
-        if (this.sort == sort) return
-        this.sort = sort
-        refresh()
-    }
-
-    fun search(query: String) {
-        if (this.query == query) return
-        this.query = query
-        refresh()
-    }
-
     private fun fetchRemotePage() {
-        if (query.isEmpty()) return
-
         viewModelScope.launch {
             isLoading = true
             try {
@@ -80,29 +61,14 @@ class NhentaiViewModel(
                     database.bookDao.deleteOrphan()
                 }
 
-                // TODO do not handle "id:######" pattern searches
-                if (query.matches(Regex("""^id:\d+$"""))) {
-                    val id = query.substringAfter("id:").toInt()
-                    val response = nhentaiApi.getOne(id)
-                    onGetBookSuccess(response)
-                } else {
-                    val response = nhentaiApi.search(query, sort, page + 1)
-                    onSearchSuccess(response)
-                }
+                val response = nhentaiApi.getAll(page + 1)
+                onSearchSuccess(response)
             } catch (e: Exception) {
                 Timber.e(e)
             } finally {
                 isLoading = false
             }
         }
-    }
-
-    private suspend fun onGetBookSuccess(bookJson: GalleryDetailResponse) {
-        database.withTransaction {
-            database.cachedDao.insert(CachedEntity(0, bookJson.id))
-            database.bookDao.insert(bookJson.toEntity())
-        }
-        isComplete = true
     }
 
     private suspend fun onSearchSuccess(searchJson: PaginatedResponse) {

@@ -136,6 +136,7 @@ class MainActivity : ComponentActivity() {
                             SearchScreen(
                                 query = searchEvent?.query ?: "",
                                 onSearch = { query ->
+                                    // TODO route "id:######" pattern searches to DetailScreen
                                     searchEvent = SearchEvent(query)
                                     navigator.pop(key)
                                 }
