@@ -1,6 +1,5 @@
 package i.am.shiro.amai.viewmodel
 
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.room.withTransaction
@@ -14,12 +13,10 @@ import i.am.shiro.amai.model.Thumbnail
 import i.am.shiro.amai.network.GalleryDetailResponse
 import i.am.shiro.amai.network.Nhentai
 import i.am.shiro.amai.util.imageEntities
-import i.am.shiro.amai.util.savedMutableStateFlow
 import i.am.shiro.amai.util.tagEntities
 import i.am.shiro.amai.util.toEntity
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
@@ -27,21 +24,16 @@ import timber.log.Timber
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class DetailViewModel(
-    handle: SavedStateHandle,
+    private val bookId: Int,
     private val database: AmaiDatabase,
     private val nhentaiApi: Nhentai.Api
 ) : ViewModel() {
 
-    private val bookId by handle.savedMutableStateFlow(-1)
-
-    val uiState = bookId
-        .flatMapLatest { id -> database.detailDao.getDetail(id) }
+    val uiState = database.detailDao.getDetail(bookId)
         .map { it?.toDetailModel() }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), null)
 
-    fun load(bookId: Int) {
-        this.bookId.value = bookId
-
+    init {
         viewModelScope.launch {
             try {
                 val detailedBookJson = nhentaiApi.getOne(bookId)
@@ -56,9 +48,9 @@ class DetailViewModel(
         viewModelScope.launch {
             try {
                 if (isFavorite) {
-                    database.favoriteDao.insert(FavoriteEntity(bookId.value))
+                    database.favoriteDao.insert(FavoriteEntity(bookId))
                 } else {
-                    database.favoriteDao.deleteById(bookId.value)
+                    database.favoriteDao.deleteById(bookId)
                 }
             } catch (e: Exception) {
                 Timber.e(e)

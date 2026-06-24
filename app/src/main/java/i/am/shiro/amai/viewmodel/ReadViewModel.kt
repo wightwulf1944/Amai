@@ -1,21 +1,25 @@
 package i.am.shiro.amai.viewmodel
 
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import i.am.shiro.amai.data.AmaiDatabase
 import i.am.shiro.amai.data.entity.ImageEntity
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 
 class ReadViewModel(
+    private val bookId: Int,
     private val database: AmaiDatabase
 ) : ViewModel() {
 
-    val pages = MutableStateFlow<List<ImageEntity>>(emptyList())
+    var pages by mutableStateOf(emptyList<ImageEntity>())
+        private set
 
-    fun setBookId(bookId: Int) {
+    init {
         viewModelScope.launch {
-            pages.value = database.imageDao.findByBookId(bookId)
+            pages = database.imageDao.findByBookId(bookId)
         }
     }
 }

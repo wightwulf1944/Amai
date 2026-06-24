@@ -17,7 +17,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -33,6 +32,7 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import i.am.shiro.amai.R
 import i.am.shiro.amai.compose.common.AmaiTheme
 import i.am.shiro.amai.compose.common.TopBarContainer
@@ -53,8 +53,7 @@ fun BrowseScreen(
     onItemClick: (Int) -> Unit,
     viewModel: NhentaiViewModel = koinViewModel()
 ) {
-    val books by viewModel.books.collectAsState()
-    val isLoading by viewModel.isLoading.collectAsState()
+    val books by viewModel.books.collectAsStateWithLifecycle()
 
     val gridState = rememberLazyStaggeredGridState()
     val initialTitle = stringResource(R.string.nhentai)
@@ -62,7 +61,7 @@ fun BrowseScreen(
 
     LaunchedEffect(gridState.canScrollForward) {
         if (!gridState.canScrollForward) {
-            viewModel.onScrollToBottom()
+            viewModel.loadMore()
         }
     }
 
@@ -70,7 +69,7 @@ fun BrowseScreen(
         if (searchEvent?.isProcessing == true) {
             title = searchEvent.query
             gridState.scrollToItem(0)
-            viewModel.onSearch(searchEvent.query)
+            viewModel.search(searchEvent.query)
             searchEvent.isProcessing = false
         }
     }
@@ -78,9 +77,9 @@ fun BrowseScreen(
     BrowseContent(
         title = title,
         books = books,
-        isLoading = isLoading,
-        onRefresh = viewModel::onRefresh,
-        onSortChanged = viewModel::onSort,
+        isLoading = viewModel.isLoading,
+        onRefresh = viewModel::refresh,
+        onSortChanged = viewModel::sort,
         onSearchClick = onSearchClick,
         onItemClick = onItemClick,
         gridState = gridState

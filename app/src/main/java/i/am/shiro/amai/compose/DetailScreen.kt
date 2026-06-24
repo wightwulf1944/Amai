@@ -47,6 +47,7 @@ import i.am.shiro.amai.model.TagModel
 import i.am.shiro.amai.model.Thumbnail
 import i.am.shiro.amai.viewmodel.DetailViewModel
 import org.koin.compose.viewmodel.koinViewModel
+import org.koin.core.parameter.parametersOf
 
 @Composable
 fun DetailScreen(
@@ -55,12 +56,10 @@ fun DetailScreen(
     onShareClick: () -> Unit,
     onThumbnailClick: (Int) -> Unit,
     onTagClick: (String) -> Unit,
-    viewModel: DetailViewModel = koinViewModel()
-) {
-    LaunchedEffect(bookId) {
-        viewModel.load(bookId)
+    viewModel: DetailViewModel = koinViewModel {
+        parametersOf(bookId)
     }
-
+) {
     val model by viewModel.uiState.collectAsState()
     model?.let {
         DetailContent(

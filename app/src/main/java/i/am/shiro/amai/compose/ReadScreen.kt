@@ -20,7 +20,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -50,29 +49,26 @@ import i.am.shiro.amai.compose.utils.animateScrollPageBy
 import i.am.shiro.amai.data.entity.ImageEntity
 import i.am.shiro.amai.viewmodel.ReadViewModel
 import org.koin.compose.viewmodel.koinViewModel
+import org.koin.core.parameter.parametersOf
 
 @Composable
 fun ReadScreen(
     bookId: Int,
     initialPage: Int,
-    viewModel: ReadViewModel = koinViewModel()
-) {
-    LaunchedEffect(bookId) {
-        viewModel.setBookId(bookId)
+    viewModel: ReadViewModel = koinViewModel {
+        parametersOf(bookId)
     }
-
-    val pages by viewModel.pages.collectAsState()
-
+) {
     ReadContent(
-        pages = pages,
-        initialPage = initialPage
+        initialPage = initialPage,
+        pages = viewModel.pages
     )
 }
 
 @Composable
 fun ReadContent(
-    pages: List<ImageEntity>,
-    initialPage: Int
+    initialPage: Int,
+    pages: List<ImageEntity>
 ) {
     val pagerState = rememberPagerState(initialPage = initialPage) { pages.size }
     val focusRequester = remember { FocusRequester() }
