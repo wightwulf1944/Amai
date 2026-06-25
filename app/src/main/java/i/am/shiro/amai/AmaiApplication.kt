@@ -6,6 +6,8 @@ import coil3.PlatformContext
 import coil3.SingletonImageLoader
 import coil3.network.okhttp.OkHttpNetworkFetcherFactory
 import coil3.util.DebugLogger
+import i.am.shiro.amai.coil3.PageInterceptor
+import i.am.shiro.amai.coil3.ThumbnailInterceptor
 import i.am.shiro.amai.koin.mainModule
 import okhttp3.OkHttpClient
 import org.koin.android.ext.android.get
@@ -38,6 +40,8 @@ class AmaiApplication : Application(), SingletonImageLoader.Factory {
 
     override fun newImageLoader(context: PlatformContext) = ImageLoader.Builder(context)
         .components {
+            add(ThumbnailInterceptor())
+            add(PageInterceptor())
             add(OkHttpNetworkFetcherFactory(get<OkHttpClient>()))
         }
         .logger(DebugLogger())

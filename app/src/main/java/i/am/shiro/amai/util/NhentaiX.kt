@@ -5,7 +5,6 @@ import i.am.shiro.amai.data.entity.ImageEntity
 import i.am.shiro.amai.data.entity.TagEntity
 import i.am.shiro.amai.network.GalleryDetailResponse
 import i.am.shiro.amai.network.GalleryListItem
-import i.am.shiro.amai.network.Nhentai
 
 fun GalleryDetailResponse.toEntity() = BookEntity(
     bookId = id,
@@ -13,7 +12,7 @@ fun GalleryDetailResponse.toEntity() = BookEntity(
     pageCount = num_pages,
     thumbnailWidth = thumbnail.width,
     thumbnailHeight = thumbnail.height,
-    thumbnailUrl = Nhentai.thumbnailBaseUrl + thumbnail.path
+    thumbnailUrl = thumbnail.path
 )
 
 fun GalleryListItem.toEntity() = BookEntity(
@@ -22,7 +21,7 @@ fun GalleryListItem.toEntity() = BookEntity(
     pageCount = num_pages,
     thumbnailWidth = thumbnail_width,
     thumbnailHeight = thumbnail_height,
-    thumbnailUrl = Nhentai.thumbnailBaseUrl + thumbnail
+    thumbnailUrl = thumbnail
 )
 
 fun GalleryDetailResponse.tagEntities(): List<TagEntity> = tags.map {
@@ -39,9 +38,9 @@ fun GalleryDetailResponse.imageEntities(): List<ImageEntity> = pages.map { page 
         pageIndex = page.number,
         width = page.width,
         height = page.height,
-        url = Nhentai.imageBaseUrl + page.path,
+        url = page.path,
         thumbnailWidth = page.thumbnail_width,
         thumbnailHeight = page.thumbnail_height,
-        thumbnailUrl = Nhentai.thumbnailBaseUrl + page.thumbnail
+        thumbnailUrl = page.thumbnail
     )
 }

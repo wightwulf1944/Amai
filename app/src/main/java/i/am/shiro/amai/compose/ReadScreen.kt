@@ -6,6 +6,7 @@ import androidx.compose.foundation.focusable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.WindowInsetsSides
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
@@ -32,17 +33,14 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.FilterQuality
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.graphics.painter.ColorPainter
 import androidx.compose.ui.input.key.onKeyEvent
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
-import coil3.compose.rememberAsyncImagePainter
-import coil3.compose.rememberConstraintsSizeResolver
-import coil3.request.CachePolicy
-import coil3.request.ImageRequest
-import coil3.request.allowRgb565
-import coil3.size.Precision
+import coil3.compose.SubcomposeAsyncImage
+import i.am.shiro.amai.coil3.PageCoilModel
+import i.am.shiro.amai.coil3.ThumbnailCoilModel
 import i.am.shiro.amai.compose.common.AmaiTheme
 import i.am.shiro.amai.compose.utils.VolumeKeyHandler
 import i.am.shiro.amai.compose.utils.animateScrollPageBy
@@ -126,7 +124,7 @@ fun ReadPager(
     turboOn: Boolean
 ) {
     val scale by animateFloatAsState(
-        targetValue = if (turboOn) 0.9f else 1f,
+        targetValue = if (turboOn) 0.85f else 1f,
         label = "pageScale"
     )
     HorizontalPager(
@@ -135,36 +133,45 @@ fun ReadPager(
         key = { index -> if (index < pages.size) "${pages[index].bookId}_${pages[index].pageIndex}" else index },
     ) { index ->
         val page = pages[index]
-        val context = LocalContext.current
-        val sizeResolver = rememberConstraintsSizeResolver()
 
-        val thumbnailPainter = rememberAsyncImagePainter(
-            model = ImageRequest.Builder(context)
-                .data(page.thumbnailUrl)
-                .size(sizeResolver)
-                .allowRgb565(true)
-                .precision(Precision.INEXACT)
-                .build(),
-            filterQuality = FilterQuality.None
-        )
-
-        AsyncImage(
-            model = ImageRequest.Builder(context)
-                .data(if (turboOn) null else page.url)
-                .memoryCachePolicy(CachePolicy.DISABLED)
-                .build(),
-            placeholder = thumbnailPainter,
-            fallback = thumbnailPainter,
-            contentDescription = null,
-            modifier = Modifier
-                .windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Horizontal))
-                .fillMaxSize()
-                .graphicsLayer {
-                    scaleX = scale
-                    scaleY = scale
+        if (turboOn) {
+            AsyncImage(
+                model = ThumbnailCoilModel(page.thumbnailUrl),
+                filterQuality = FilterQuality.None,
+                contentDescription = null,
+                modifier = Modifier
+                    .windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Horizontal))
+                    .aspectRatio(page.thumbnailWidth.toFloat() / page.thumbnailHeight.toFloat())
+                    .graphicsLayer {
+                        scaleX = scale
+                        scaleY = scale
+                    },
+                placeholder = ColorPainter(Color.Gray)
+            )
+        } else {
+            SubcomposeAsyncImage(
+                model = PageCoilModel(page.url),
+                filterQuality = FilterQuality.High,
+                contentDescription = null,
+                modifier = Modifier
+                    .windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Horizontal))
+                    .aspectRatio(page.width.toFloat() / page.height.toFloat())
+                    .graphicsLayer {
+                        scaleX = scale
+                        scaleY = scale
+                    },
+                loading = {
+                    AsyncImage(
+                        model = ThumbnailCoilModel(page.thumbnailUrl),
+                        filterQuality = FilterQuality.None,
+                        contentDescription = null,
+                        modifier = Modifier
+                            .aspectRatio(page.thumbnailWidth.toFloat() / page.thumbnailHeight.toFloat()),
+                        placeholder = ColorPainter(Color.Gray)
+                    )
                 }
-                .then(sizeResolver)
-        )
+            )
+        }
     }
 }
 
