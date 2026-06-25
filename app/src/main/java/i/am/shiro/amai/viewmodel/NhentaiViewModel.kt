@@ -10,7 +10,6 @@ import androidx.lifecycle.viewModelScope
 import androidx.room.withTransaction
 import i.am.shiro.amai.data.AmaiDatabase
 import i.am.shiro.amai.data.entity.CachedEntity
-import i.am.shiro.amai.network.GalleryDetailResponse
 import i.am.shiro.amai.network.Nhentai
 import i.am.shiro.amai.network.PaginatedResponse
 import i.am.shiro.amai.util.toEntity
@@ -80,29 +79,14 @@ class NhentaiViewModel(
                     database.bookDao.deleteOrphan()
                 }
 
-                // TODO do not handle "id:######" pattern searches
-                if (query.matches(Regex("""^id:\d+$"""))) {
-                    val id = query.substringAfter("id:").toInt()
-                    val response = nhentaiApi.getOne(id)
-                    onGetBookSuccess(response)
-                } else {
-                    val response = nhentaiApi.search(query, sort, page + 1)
-                    onSearchSuccess(response)
-                }
+                val response = nhentaiApi.search(query, sort, page + 1)
+                onSearchSuccess(response)
             } catch (e: Exception) {
                 Timber.e(e)
             } finally {
                 isLoading = false
             }
         }
-    }
-
-    private suspend fun onGetBookSuccess(bookJson: GalleryDetailResponse) {
-        database.withTransaction {
-            database.cachedDao.insert(CachedEntity(0, bookJson.id))
-            database.bookDao.insert(bookJson.toEntity())
-        }
-        isComplete = true
     }
 
     private suspend fun onSearchSuccess(searchJson: PaginatedResponse) {

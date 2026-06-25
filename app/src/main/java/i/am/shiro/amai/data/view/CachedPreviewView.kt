@@ -2,6 +2,7 @@ package i.am.shiro.amai.data.view
 
 import androidx.room.DatabaseView
 
+// TODO replace this with embedded query Intermediate
 @DatabaseView(
     """
     SELECT 
