@@ -20,8 +20,8 @@ data class ImageEntity(
     val pageIndex: Int,
     val width: Int,
     val height: Int,
-    val url: String,
+    val path: String,
     val thumbnailWidth: Int,
     val thumbnailHeight: Int,
-    val thumbnailUrl: String
+    val thumbnailPath: String
 )

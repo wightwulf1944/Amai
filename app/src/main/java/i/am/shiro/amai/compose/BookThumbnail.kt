@@ -10,11 +10,11 @@ import i.am.shiro.amai.coil3.ThumbnailCoilModel
 
 @Composable
 fun BookThumbnail(
-    url: String,
+    path: String,
     aspectRatio: Float,
     modifier: Modifier = Modifier
 ) = AsyncImage(
-    model = ThumbnailCoilModel(url),
+    model = ThumbnailCoilModel(path),
     contentDescription = null,
     modifier = modifier
         .aspectRatio(aspectRatio)

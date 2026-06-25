@@ -180,7 +180,7 @@ fun BrowseBody(
                 BookPreview(
                     bookId = it.bookId,
                     aspectRatio = it.thumbnailWidth.toFloat() / it.thumbnailHeight.toFloat(),
-                    thumbnailUrl = it.thumbnailUrl,
+                    thumbnailPath = it.thumbnailPath,
                     title = it.title,
                     showFavoriteBadge = it.isFavorite,
                     pageCount = it.pageCount
@@ -330,7 +330,7 @@ fun BrowseContentPreview() {
             pageCount = 100 + i,
             thumbnailWidth = 50,
             thumbnailHeight = if (i % 2 == 0) 70 else 30, // Varied heights for staggered effect
-            thumbnailUrl = "",
+            thumbnailPath = "",
             isFavorite = i % 3 == 0
         )
     }

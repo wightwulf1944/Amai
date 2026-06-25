@@ -11,5 +11,5 @@ data class BookEntity(
     val pageCount: Int,
     val thumbnailWidth: Int,
     val thumbnailHeight: Int,
-    val thumbnailUrl: String
+    val thumbnailPath: String
 )

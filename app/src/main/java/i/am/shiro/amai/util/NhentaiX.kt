@@ -12,7 +12,7 @@ fun GalleryDetailResponse.toEntity() = BookEntity(
     pageCount = num_pages,
     thumbnailWidth = thumbnail.width,
     thumbnailHeight = thumbnail.height,
-    thumbnailUrl = thumbnail.path
+    thumbnailPath = thumbnail.path
 )
 
 fun GalleryListItem.toEntity() = BookEntity(
@@ -21,7 +21,7 @@ fun GalleryListItem.toEntity() = BookEntity(
     pageCount = num_pages,
     thumbnailWidth = thumbnail_width,
     thumbnailHeight = thumbnail_height,
-    thumbnailUrl = thumbnail
+    thumbnailPath = thumbnail
 )
 
 fun GalleryDetailResponse.tagEntities(): List<TagEntity> = tags.map {
@@ -38,9 +38,9 @@ fun GalleryDetailResponse.imageEntities(): List<ImageEntity> = pages.map { page 
         pageIndex = page.number,
         width = page.width,
         height = page.height,
-        url = page.path,
+        path = page.path,
         thumbnailWidth = page.thumbnail_width,
         thumbnailHeight = page.thumbnail_height,
-        thumbnailUrl = page.thumbnail
+        thumbnailPath = page.thumbnail
     )
 }

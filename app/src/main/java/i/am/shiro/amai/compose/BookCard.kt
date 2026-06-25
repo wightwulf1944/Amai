@@ -30,7 +30,7 @@ fun BookCard(
         )
     ) {
         BookThumbnail(
-            url = book.thumbnailUrl,
+            path = book.thumbnailPath,
             aspectRatio = book.aspectRatio
         )
 

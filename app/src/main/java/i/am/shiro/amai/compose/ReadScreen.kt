@@ -136,7 +136,7 @@ fun ReadPager(
 
         if (turboOn) {
             AsyncImage(
-                model = ThumbnailCoilModel(page.thumbnailUrl),
+                model = ThumbnailCoilModel(page.thumbnailPath),
                 filterQuality = FilterQuality.None,
                 contentDescription = null,
                 modifier = Modifier
@@ -150,7 +150,7 @@ fun ReadPager(
             )
         } else {
             SubcomposeAsyncImage(
-                model = PageCoilModel(page.url),
+                model = PageCoilModel(page.path),
                 filterQuality = FilterQuality.High,
                 contentDescription = null,
                 modifier = Modifier
@@ -162,7 +162,7 @@ fun ReadPager(
                     },
                 loading = {
                     AsyncImage(
-                        model = ThumbnailCoilModel(page.thumbnailUrl),
+                        model = ThumbnailCoilModel(page.thumbnailPath),
                         filterQuality = FilterQuality.None,
                         contentDescription = null,
                         modifier = Modifier

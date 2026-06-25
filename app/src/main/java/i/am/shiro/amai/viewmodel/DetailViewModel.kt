@@ -72,7 +72,7 @@ class DetailViewModel(
             val height = it.thumbnailHeight.coerceAtLeast(1).toFloat()
             Thumbnail(
                 aspectRatio = width / height,
-                url = it.thumbnailUrl
+                path = it.thumbnailPath
             )
         }
 

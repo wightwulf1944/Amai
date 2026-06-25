@@ -22,7 +22,7 @@ import i.am.shiro.amai.data.view.CachedPreviewView
 import i.am.shiro.amai.data.view.FavoritesPreviewView
 
 @Database(
-    version = 28,
+    version = 29,
     exportSchema = true,
     entities = [
         BookEntity::class,
@@ -36,7 +36,8 @@ import i.am.shiro.amai.data.view.FavoritesPreviewView
         CachedPreviewView::class,
     ],
     autoMigrations = [
-        AutoMigration(from = 27, to = 28, spec = AmaiDatabase.Migration27To28::class)
+        AutoMigration(from = 27, to = 28, spec = AmaiDatabase.Migration27To28::class),
+        AutoMigration(from = 28, to = 29, spec = AmaiDatabase.Migration28To29::class)
     ]
 )
 abstract class AmaiDatabase : RoomDatabase() {
@@ -63,4 +64,21 @@ abstract class AmaiDatabase : RoomDatabase() {
         toColumnName = "favoriteDate"
     )
     class Migration27To28 : AutoMigrationSpec
+
+    @RenameColumn(
+        tableName = "BookEntity",
+        fromColumnName = "thumbnailUrl",
+        toColumnName = "thumbnailPath"
+    )
+    @RenameColumn(
+        tableName = "ImageEntity",
+        fromColumnName = "thumbnailUrl",
+        toColumnName = "thumbnailPath"
+    )
+    @RenameColumn(
+        tableName = "ImageEntity",
+        fromColumnName = "url",
+        toColumnName = "path"
+    )
+    class Migration28To29 : AutoMigrationSpec
 }

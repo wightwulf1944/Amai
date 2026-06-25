@@ -216,7 +216,7 @@ fun DetailBody(
 
         itemsIndexed(model.thumbnails) { index, thumbnail ->
             BookThumbnail(
-                url = thumbnail.url,
+                path = thumbnail.path,
                 aspectRatio = thumbnail.aspectRatio,
                 modifier = Modifier.clickable(onClick = { onThumbnailClick(index) })
             )
@@ -280,7 +280,7 @@ fun sampleModel() = DetailModel(
     thumbnails = List(5) { index ->
         Thumbnail(
             aspectRatio = 0.75f,
-            url = "https://example.com/thumb/$index.jpg"
+            path = "https://example.com/thumb/$index.jpg"
         )
     }
 )

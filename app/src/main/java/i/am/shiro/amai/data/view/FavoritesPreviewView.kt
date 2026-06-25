@@ -2,7 +2,8 @@ package i.am.shiro.amai.data.view
 
 import androidx.room.DatabaseView
 
-@DatabaseView("""
+@DatabaseView(
+    """
     SELECT 
         bookId, 
         favoriteDate,
@@ -10,10 +11,11 @@ import androidx.room.DatabaseView
         pageCount, 
         thumbnailWidth, 
         thumbnailHeight,
-        thumbnailUrl
+        thumbnailPath
     FROM FavoriteEntity 
     LEFT JOIN BookEntity USING(bookId) 
-""")
+"""
+)
 class FavoritesPreviewView(
     val bookId: Int,
     val favoriteDate: Long,
@@ -21,5 +23,5 @@ class FavoritesPreviewView(
     val pageCount: Int,
     val thumbnailWidth: Int,
     val thumbnailHeight: Int,
-    val thumbnailUrl: String
+    val thumbnailPath: String
 )
