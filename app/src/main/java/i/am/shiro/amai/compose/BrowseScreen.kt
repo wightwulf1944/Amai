@@ -1,20 +1,14 @@
 package i.am.shiro.amai.compose
 
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.staggeredgrid.LazyStaggeredGridState
 import androidx.compose.foundation.lazy.staggeredgrid.rememberLazyStaggeredGridState
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.ScaffoldDefaults
 import androidx.compose.material3.Text
-import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -156,39 +150,6 @@ fun BrowseTopBar(
                     contentDescription = stringResource(R.string.search)
                 )
             }
-        }
-    }
-}
-
-// TODO move this to common compose package
-@Composable
-fun BrowseBody(
-    books: List<BookPreview>,
-    isLoading: Boolean,
-    onRefresh: () -> Unit,
-    onItemClick: (Int) -> Unit,
-    gridState: LazyStaggeredGridState,
-    contentPadding: PaddingValues
-) {
-    PullToRefreshBox(
-        isRefreshing = false,
-        onRefresh = onRefresh,
-        modifier = Modifier.fillMaxSize()
-    ) {
-        BookGrid(
-            books = books,
-            onItemClick = onItemClick,
-            gridState = gridState,
-            contentPadding = contentPadding
-        )
-
-        if (isLoading) {
-            LinearProgressIndicator(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .align(Alignment.BottomCenter)
-                    .height(4.dp)
-            )
         }
     }
 }
