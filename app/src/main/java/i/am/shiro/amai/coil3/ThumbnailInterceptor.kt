@@ -14,7 +14,7 @@ class ThumbnailInterceptor : Interceptor {
 
         if (data is ThumbnailCoilModel) {
             val newRequest = request.newBuilder()
-                .data(Nhentai.thumbnailBaseUrl + data.path)
+                .data(Nhentai.thumbnailBaseUrls.random() + data.path)
                 .diskCacheKey(data.toString())
                 .memoryCacheKey(data.toString())
                 .allowRgb565(true)

@@ -12,18 +12,19 @@ object Nhentai {
 
     const val API_BASE_URL = "https://nhentai.net/api/v2/"
 
-    val thumbnailBaseUrl: String
-        get() {
-            val subdomain = arrayOf("t1", "t2", "t3", "t4").random()
-            return "https://$subdomain.nhentai.net/"
-        }
+    val thumbnailBaseUrls = arrayOf(
+        "https://t1.nhentai.net/",
+        "https://t2.nhentai.net/",
+        "https://t3.nhentai.net/",
+        "https://t4.nhentai.net/"
+    )
 
-    val imageBaseUrl: String
-        get() {
-            val subdomain = arrayOf("i1", "i2", "i3", "i4").random()
-            return "https://$subdomain.nhentai.net/"
-        }
-
+    val imageBaseUrls = arrayOf(
+        "https://i1.nhentai.net/",
+        "https://i2.nhentai.net/",
+        "https://i3.nhentai.net/",
+        "https://i4.nhentai.net/"
+    )
 
     enum class Sort(private val s: String) {
         DATE("date"),

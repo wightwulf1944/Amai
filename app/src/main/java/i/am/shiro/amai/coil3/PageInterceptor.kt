@@ -13,7 +13,7 @@ class PageInterceptor : Interceptor {
 
         if (data is PageCoilModel) {
             val newRequest = request.newBuilder()
-                .data(Nhentai.imageBaseUrl + data.path)
+                .data(Nhentai.imageBaseUrls.random() + data.path)
                 .diskCacheKey(data.toString())
                 .memoryCacheKey(data.toString())
                 .memoryCachePolicy(CachePolicy.DISABLED)
