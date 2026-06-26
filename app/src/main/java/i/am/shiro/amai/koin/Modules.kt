@@ -7,6 +7,10 @@ import i.am.shiro.amai.BuildConfig
 import i.am.shiro.amai.data.AmaiDatabase
 import i.am.shiro.amai.network.Nhentai
 import i.am.shiro.amai.network.UserAgentInterceptor
+import i.am.shiro.amai.repository.BookRepository
+import i.am.shiro.amai.repository.FavoritesRepository
+import i.am.shiro.amai.repository.GalleryRepository
+import i.am.shiro.amai.repository.ReadRepository
 import i.am.shiro.amai.viewmodel.DetailViewModel
 import i.am.shiro.amai.viewmodel.FavoritesViewModel
 import i.am.shiro.amai.viewmodel.HomepageViewModel
@@ -22,6 +26,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.create
 
+// TODO use koin compiler for compiletime safety
 val mainModule = module {
     single {
         Room.databaseBuilder(androidContext(), AmaiDatabase::class.java, "amai")
@@ -53,6 +58,11 @@ val mainModule = module {
             .build()
             .create()
     }
+
+    single { BookRepository(get(), get()) }
+    single { GalleryRepository(get(), get()) }
+    single { ReadRepository(get()) }
+    single { FavoritesRepository(get()) }
 
     viewModelOf(::SearchViewModel)
     viewModelOf(::NhentaiViewModel)

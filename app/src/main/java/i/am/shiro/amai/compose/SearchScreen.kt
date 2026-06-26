@@ -113,7 +113,7 @@ fun SearchInput(
             imeAction = ImeAction.Search,
             autoCorrectEnabled = false,
         ),
-        onKeyboardAction = { onSearch() },
+        onKeyboardAction = { if (state.text.isNotEmpty()) onSearch() },
         lineLimits = TextFieldLineLimits.SingleLine,
         inputTransformation = InputTransformation.byValue { _, proposed ->
             proposed.toString().lowercase()

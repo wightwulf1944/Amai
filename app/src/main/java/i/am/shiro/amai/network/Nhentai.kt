@@ -58,6 +58,7 @@ object Nhentai {
     }
 }
 
+// TODO move these to DTO file
 @Suppress("PropertyName", "unused")
 class PaginatedResponse(
     val result: List<GalleryListItem>,
