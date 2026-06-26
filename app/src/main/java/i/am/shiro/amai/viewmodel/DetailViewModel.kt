@@ -29,7 +29,7 @@ class DetailViewModel(
     private val nhentaiApi: Nhentai.Api
 ) : ViewModel() {
 
-    val uiState = database.detailDao.getDetail(bookId)
+    val uiState = database.intermediateDao.getDetail(bookId)
         .map { it?.toDetailModel() }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), null)
 

@@ -10,10 +10,13 @@ import androidx.lifecycle.viewModelScope
 import androidx.room.withTransaction
 import i.am.shiro.amai.data.AmaiDatabase
 import i.am.shiro.amai.data.entity.CachedEntity
+import i.am.shiro.amai.data.intermediate.CachedPreviewIntermediate
+import i.am.shiro.amai.model.BookPreview
 import i.am.shiro.amai.network.Nhentai
 import i.am.shiro.amai.network.PaginatedResponse
 import i.am.shiro.amai.util.toEntity
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -28,7 +31,8 @@ class HomepageViewModel(
 
     private var isComplete by handle.saved { false }
 
-    val books = database.cachedPreviewDao.getAll()
+    val books = database.intermediateDao.getCachedPreviews()
+        .map { list -> list.map { it.toView() } }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
     var isLoading by mutableStateOf(false)
@@ -84,5 +88,17 @@ class HomepageViewModel(
         } else {
             isComplete = true
         }
+    }
+
+    // TODO move this to repository to de-duplicate
+    private fun CachedPreviewIntermediate.toView(): BookPreview {
+        return BookPreview(
+            bookId = book.bookId,
+            aspectRatio = book.thumbnailWidth.toFloat() / book.thumbnailHeight.toFloat(),
+            thumbnailPath = book.thumbnailPath,
+            title = book.title,
+            showFavoriteBadge = favorite != null,
+            pageCount = book.pageCount
+        )
     }
 }

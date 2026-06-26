@@ -41,7 +41,6 @@ import i.am.shiro.amai.compose.common.AmaiTheme
 import i.am.shiro.amai.compose.common.TopBarContainer
 import i.am.shiro.amai.compose.common.TopBarPill
 import i.am.shiro.amai.compose.utils.asSymmetricHorizontal
-import i.am.shiro.amai.data.view.FavoritesPreviewView
 import i.am.shiro.amai.model.BookPreview
 import i.am.shiro.amai.viewmodel.FavoritesViewModel
 import org.koin.compose.viewmodel.koinViewModel
@@ -79,7 +78,7 @@ fun FavoritesScreen(
 
 @Composable
 fun FavoritesContent(
-    books: List<FavoritesPreviewView>,
+    books: List<BookPreview>,
     onSortChanged: (FavoritesSort) -> Unit,
     onSearchSubmit: (String) -> Unit,
     onItemClick: (Int) -> Unit,
@@ -189,23 +188,11 @@ fun SearchInput(
 
 @Composable
 fun FavoritesBody(
-    books: List<FavoritesPreviewView>,
+    books: List<BookPreview>,
     onItemClick: (Int) -> Unit,
     gridState: LazyStaggeredGridState,
     contentPadding: PaddingValues
 ) {
-    val books = remember(books) {
-        books.map {
-            BookPreview(
-                bookId = it.bookId,
-                aspectRatio = it.thumbnailWidth.toFloat() / it.thumbnailHeight.toFloat(),
-                thumbnailPath = it.thumbnailPath,
-                title = it.title,
-                showFavoriteBadge = false,
-                pageCount = it.pageCount
-            )
-        }
-    }
     BookGrid(
         books = books,
         onItemClick = onItemClick,
@@ -222,14 +209,13 @@ fun FavoritesContentPreview() {
             "Sample Book 2 with a longer title Lorem ipsum dolor sit amet, consectetur adipiscing elit "
         else
             "Sample Book Title $i"
-        FavoritesPreviewView(
+        BookPreview(
             bookId = i,
-            favoriteDate = 0L,
             title = title,
             pageCount = 100 + i,
-            thumbnailWidth = 50,
-            thumbnailHeight = if (i % 2 == 0) 70 else 30, // Varied heights for staggered effect
-            thumbnailPath = ""
+            aspectRatio = if (i % 2 == 0) 50f / 70f else 50f / 30f,
+            thumbnailPath = "",
+            showFavoriteBadge = false
         )
     }
 

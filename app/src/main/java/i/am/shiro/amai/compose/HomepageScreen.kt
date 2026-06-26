@@ -23,7 +23,7 @@ import i.am.shiro.amai.R
 import i.am.shiro.amai.compose.common.TopBarContainer
 import i.am.shiro.amai.compose.common.TopBarPill
 import i.am.shiro.amai.compose.utils.asSymmetricHorizontal
-import i.am.shiro.amai.data.view.CachedPreviewView
+import i.am.shiro.amai.model.BookPreview
 import i.am.shiro.amai.viewmodel.HomepageViewModel
 import org.koin.androidx.compose.koinViewModel
 
@@ -56,7 +56,7 @@ fun HomepageScreen(
 
 @Composable
 fun HomepageContent(
-    books: List<CachedPreviewView>,
+    books: List<BookPreview>,
     isLoading: Boolean,
     onRefresh: () -> Unit,
     onSearchClick: () -> Unit,

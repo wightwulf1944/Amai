@@ -38,7 +38,6 @@ import i.am.shiro.amai.compose.common.AmaiTheme
 import i.am.shiro.amai.compose.common.TopBarContainer
 import i.am.shiro.amai.compose.common.TopBarPill
 import i.am.shiro.amai.compose.utils.asSymmetricHorizontal
-import i.am.shiro.amai.data.view.CachedPreviewView
 import i.am.shiro.amai.model.BookPreview
 import i.am.shiro.amai.model.SearchEvent
 import i.am.shiro.amai.network.Nhentai.Sort
@@ -88,7 +87,7 @@ fun BrowseScreen(
 @Composable
 fun BrowseContent(
     title: String,
-    books: List<CachedPreviewView>,
+    books: List<BookPreview>,
     isLoading: Boolean,
     onRefresh: () -> Unit,
     onSortChanged: (Sort) -> Unit,
@@ -161,9 +160,10 @@ fun BrowseTopBar(
     }
 }
 
+// TODO move this to common compose package
 @Composable
 fun BrowseBody(
-    books: List<CachedPreviewView>,
+    books: List<BookPreview>,
     isLoading: Boolean,
     onRefresh: () -> Unit,
     onItemClick: (Int) -> Unit,
@@ -175,18 +175,6 @@ fun BrowseBody(
         onRefresh = onRefresh,
         modifier = Modifier.fillMaxSize()
     ) {
-        val books = remember(books) {
-            books.map {
-                BookPreview(
-                    bookId = it.bookId,
-                    aspectRatio = it.thumbnailWidth.toFloat() / it.thumbnailHeight.toFloat(),
-                    thumbnailPath = it.thumbnailPath,
-                    title = it.title,
-                    showFavoriteBadge = it.isFavorite,
-                    pageCount = it.pageCount
-                )
-            }
-        }
         BookGrid(
             books = books,
             onItemClick = onItemClick,
@@ -324,14 +312,13 @@ fun BrowseContentPreview() {
             "Sample Book 2 with a longer title Lorem ipsum dolor sit amet, consectetur adipiscing elit "
         else
             "Sample Book Title $i"
-        CachedPreviewView(
+        BookPreview(
             bookId = i,
             title = title,
             pageCount = 100 + i,
-            thumbnailWidth = 50,
-            thumbnailHeight = if (i % 2 == 0) 70 else 30, // Varied heights for staggered effect
+            aspectRatio = if (i % 2 == 0) 50f / 70f else 50f / 30f,
             thumbnailPath = "",
-            isFavorite = i % 3 == 0
+            showFavoriteBadge = i % 3 == 0
         )
     }
 
