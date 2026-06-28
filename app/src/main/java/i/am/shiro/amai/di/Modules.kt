@@ -27,7 +27,6 @@ import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.create
 
-// TODO use koin compiler for compiletime safety
 val mainModule = module {
     single {
         Room.databaseBuilder(androidContext(), AmaiDatabase::class.java, "amai")
