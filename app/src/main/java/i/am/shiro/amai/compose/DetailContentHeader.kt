@@ -23,12 +23,12 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import i.am.shiro.amai.R
 import i.am.shiro.amai.compose.common.AmaiTheme
-import i.am.shiro.amai.model.DetailModel
-import i.am.shiro.amai.model.TagModel
+import i.am.shiro.amai.model.BookDetail
+import i.am.shiro.amai.model.Tag
 
 @Composable
 fun DetailContentHeader(
-    model: DetailModel,
+    model: BookDetail,
     onTagClick: (String) -> Unit
 ) {
     Column(
@@ -77,7 +77,7 @@ fun DetailContentHeader(
 @Composable
 private fun TagGroup(
     label: String,
-    tags: List<TagModel>,
+    tags: List<Tag>,
     onTagClick: (String) -> Unit
 ) {
     FlowRow(

@@ -7,10 +7,10 @@ import i.am.shiro.amai.data.entity.FavoriteEntity
 import i.am.shiro.amai.data.entity.ImageEntity
 import i.am.shiro.amai.data.entity.TagEntity
 import i.am.shiro.amai.data.intermediate.DetailIntermediate
-import i.am.shiro.amai.model.DetailModel
-import i.am.shiro.amai.model.TagModel
+import i.am.shiro.amai.model.BookDetail
+import i.am.shiro.amai.model.Tag
 import i.am.shiro.amai.model.Thumbnail
-import i.am.shiro.amai.network.GalleryDetailResponse
+import i.am.shiro.amai.network.GalleryDetailDto
 import i.am.shiro.amai.network.Nhentai
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -19,9 +19,9 @@ class BookRepository(
     private val database: AmaiDatabase,
     private val nhentaiApi: Nhentai.Api
 ) {
-    fun getBookDetail(bookId: Int): Flow<DetailModel?> {
+    fun getBookDetail(bookId: Int): Flow<BookDetail?> {
         return database.intermediateDao.getDetail(bookId)
-            .map { it?.toDetailModel() }
+            .map { it?.toBookDetail() }
     }
 
     suspend fun refreshBookDetail(bookId: Int) {
@@ -41,10 +41,10 @@ class BookRepository(
         }
     }
 
-    private fun DetailIntermediate.toDetailModel(): DetailModel {
+    private fun DetailIntermediate.toBookDetail(): BookDetail {
 
         val tagMap = tagEntities.groupBy(TagEntity::type) {
-            TagModel(it.type, it.name)
+            Tag(it.type, it.name)
         }
 
         val thumbnails = remoteImageEntities.map {
@@ -56,7 +56,7 @@ class BookRepository(
             )
         }
 
-        return DetailModel(
+        return BookDetail(
             title = bookEntity.title,
             pageCount = bookEntity.pageCount,
             isFavorite = favoriteEntity != null,
@@ -71,7 +71,7 @@ class BookRepository(
         )
     }
 
-    private fun GalleryDetailResponse.toEntity() =
+    private fun GalleryDetailDto.toEntity() =
         BookEntity(
             bookId = id,
             title = title.english,
@@ -81,7 +81,7 @@ class BookRepository(
             thumbnailPath = thumbnail.path
         )
 
-    private fun GalleryDetailResponse.tagEntities(): List<TagEntity> = tags.map {
+    private fun GalleryDetailDto.tagEntities(): List<TagEntity> = tags.map {
         TagEntity(
             bookId = id,
             name = it.name,
@@ -89,7 +89,7 @@ class BookRepository(
         )
     }
 
-    private fun GalleryDetailResponse.imageEntities(): List<ImageEntity> = pages.map { page ->
+    private fun GalleryDetailDto.imageEntities(): List<ImageEntity> = pages.map { page ->
         ImageEntity(
             bookId = id,
             pageIndex = page.number,

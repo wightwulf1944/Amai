@@ -42,8 +42,8 @@ import i.am.shiro.amai.compose.common.TopBarContainer
 import i.am.shiro.amai.compose.common.TopBarPill
 import i.am.shiro.amai.compose.utils.asSymmetricHorizontal
 import i.am.shiro.amai.compose.utils.union
-import i.am.shiro.amai.model.DetailModel
-import i.am.shiro.amai.model.TagModel
+import i.am.shiro.amai.model.BookDetail
+import i.am.shiro.amai.model.Tag
 import i.am.shiro.amai.model.Thumbnail
 import i.am.shiro.amai.viewmodel.DetailViewModel
 import org.koin.compose.viewmodel.koinViewModel
@@ -75,7 +75,7 @@ fun DetailScreen(
 
 @Composable
 fun DetailContent(
-    model: DetailModel,
+    model: BookDetail,
     onBackClick: () -> Unit,
     onShareClick: () -> Unit,
     onFavoriteToggle: (Boolean) -> Unit,
@@ -195,7 +195,7 @@ fun DetailTopBar(
 
 @Composable
 fun DetailBody(
-    model: DetailModel,
+    model: BookDetail,
     onThumbnailClick: (Int) -> Unit,
     onTagClick: (String) -> Unit,
     contentPadding: PaddingValues,
@@ -254,28 +254,28 @@ fun DetailContentPreview() {
     }
 }
 
-fun sampleModel() = DetailModel(
+fun sampleModel() = BookDetail(
     title = "Amai: The Sweetest Adventure",
     pageCount = 256,
     isFavorite = true,
-    artistTags = listOf(TagModel("artist", "shiro"), TagModel("artist", "kuro")),
-    groupTags = listOf(TagModel("group", "C86")),
-    parodyTags = listOf(TagModel("parody", "Original")),
+    artistTags = listOf(Tag("artist", "shiro"), Tag("artist", "kuro")),
+    groupTags = listOf(Tag("group", "C86")),
+    parodyTags = listOf(Tag("parody", "Original")),
     characterTags = listOf(
-        TagModel("character", "Amai-chan"),
-        TagModel("character", "Mochi-kun")
+        Tag("character", "Amai-chan"),
+        Tag("character", "Mochi-kun")
     ),
     languageTags = listOf(
-        TagModel("language", "English"),
-        TagModel("language", "Japanese")
+        Tag("language", "English"),
+        Tag("language", "Japanese")
     ),
-    categoryTags = listOf(TagModel("category", "Manga")),
+    categoryTags = listOf(Tag("category", "Manga")),
     generalTags = listOf(
-        TagModel("tag", "sweet"),
-        TagModel("tag", "comedy"),
-        TagModel("tag", "romance"),
-        TagModel("tag", "slice of life"),
-        TagModel("tag", "school life")
+        Tag("tag", "sweet"),
+        Tag("tag", "comedy"),
+        Tag("tag", "romance"),
+        Tag("tag", "slice of life"),
+        Tag("tag", "school life")
     ),
     thumbnails = List(5) { index ->
         Thumbnail(

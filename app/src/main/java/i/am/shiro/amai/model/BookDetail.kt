@@ -1,20 +1,21 @@
 package i.am.shiro.amai.model
 
-data class DetailModel(
+data class BookDetail(
     val title: String,
     val pageCount: Int,
     val isFavorite: Boolean,
-    val artistTags: List<TagModel>?,
-    val groupTags: List<TagModel>?,
-    val parodyTags: List<TagModel>?,
-    val characterTags: List<TagModel>?,
-    val languageTags: List<TagModel>?,
-    val categoryTags: List<TagModel>?,
-    val generalTags: List<TagModel>?,
+    val artistTags: List<Tag>?,
+    val groupTags: List<Tag>?,
+    val parodyTags: List<Tag>?,
+    val characterTags: List<Tag>?,
+    val languageTags: List<Tag>?,
+    val categoryTags: List<Tag>?,
+    val generalTags: List<Tag>?,
     val thumbnails: List<Thumbnail>
 )
 
-data class TagModel(
+// TODO type is not used anywhere but here. Construct query elswehere and remove type
+data class Tag(
     val type: String,
     val name: String
 ) {

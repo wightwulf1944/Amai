@@ -44,7 +44,7 @@ import i.am.shiro.amai.coil3.ThumbnailCoilModel
 import i.am.shiro.amai.compose.common.AmaiTheme
 import i.am.shiro.amai.compose.utils.VolumeKeyHandler
 import i.am.shiro.amai.compose.utils.animateScrollPageBy
-import i.am.shiro.amai.data.entity.ImageEntity
+import i.am.shiro.amai.model.Page
 import i.am.shiro.amai.viewmodel.ReadViewModel
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
@@ -66,7 +66,7 @@ fun ReadScreen(
 @Composable
 fun ReadContent(
     initialPage: Int,
-    pages: List<ImageEntity>
+    pages: List<Page>
 ) {
     val pagerState = rememberPagerState(initialPage = initialPage) { pages.size }
     val focusRequester = remember { FocusRequester() }
@@ -119,7 +119,7 @@ fun ReadContent(
 
 @Composable
 fun ReadPager(
-    pages: List<ImageEntity>,
+    pages: List<Page>,
     pagerState: PagerState,
     turboOn: Boolean
 ) {
@@ -130,7 +130,6 @@ fun ReadPager(
     HorizontalPager(
         state = pagerState,
         modifier = Modifier.fillMaxSize(),
-        key = { index -> if (index < pages.size) "${pages[index].bookId}_${pages[index].pageIndex}" else index },
     ) { index ->
         val page = pages[index]
 
@@ -141,7 +140,7 @@ fun ReadPager(
                 contentDescription = null,
                 modifier = Modifier
                     .windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Horizontal))
-                    .aspectRatio(page.thumbnailWidth.toFloat() / page.thumbnailHeight.toFloat())
+                    .aspectRatio(page.aspectRatio)
                     .graphicsLayer {
                         scaleX = scale
                         scaleY = scale
@@ -155,7 +154,7 @@ fun ReadPager(
                 contentDescription = null,
                 modifier = Modifier
                     .windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Horizontal))
-                    .aspectRatio(page.width.toFloat() / page.height.toFloat())
+                    .aspectRatio(page.aspectRatio)
                     .graphicsLayer {
                         scaleX = scale
                         scaleY = scale
@@ -165,8 +164,7 @@ fun ReadPager(
                         model = ThumbnailCoilModel(page.thumbnailPath),
                         filterQuality = FilterQuality.None,
                         contentDescription = null,
-                        modifier = Modifier
-                            .aspectRatio(page.thumbnailWidth.toFloat() / page.thumbnailHeight.toFloat()),
+                        modifier = Modifier.aspectRatio(page.aspectRatio),
                         placeholder = ColorPainter(Color.Gray)
                     )
                 }
@@ -209,8 +207,8 @@ private fun ReadContentPreview() {
     AmaiTheme {
         ReadContent(
             pages = listOf(
-                ImageEntity(0, 0, 0, 0, "", 0, 0, ""),
-                ImageEntity(0, 1, 0, 0, "", 0, 0, "")
+                Page(0, 0, "", 0f, "", 0f),
+                Page(0, 1, "", 0f, "", 0f)
             ),
             initialPage = 0
         )

@@ -6,8 +6,9 @@ import i.am.shiro.amai.data.entity.BookEntity
 import i.am.shiro.amai.data.entity.CachedEntity
 import i.am.shiro.amai.data.intermediate.CachedPreviewIntermediate
 import i.am.shiro.amai.model.BookPreview
-import i.am.shiro.amai.network.GalleryListItem
+import i.am.shiro.amai.network.GalleryListItemDto
 import i.am.shiro.amai.network.Nhentai
+import i.am.shiro.amai.network.PaginatedDto
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
@@ -32,7 +33,7 @@ class GalleryRepository(
         return response.num_pages
     }
 
-    private suspend fun saveToCache(page: Int, response: i.am.shiro.amai.network.PaginatedResponse) {
+    private suspend fun saveToCache(page: Int, response: PaginatedDto) {
         database.withTransaction {
             if (page == 1) {
                 database.cachedDao.deleteAll()
@@ -57,7 +58,7 @@ class GalleryRepository(
         )
     }
 
-    private fun GalleryListItem.toEntity() = BookEntity(
+    private fun GalleryListItemDto.toEntity() = BookEntity(
         bookId = id,
         title = english_title,
         pageCount = num_pages,
