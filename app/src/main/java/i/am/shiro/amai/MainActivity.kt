@@ -18,7 +18,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.core.net.toUri
-import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.WindowInsetsCompat.Type
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.core.view.WindowInsetsControllerCompat.BEHAVIOR_DEFAULT
 import androidx.core.view.WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
@@ -91,15 +91,15 @@ class MainActivity : ComponentActivity() {
                 DisposableEffect(shouldShowStatusBars) {
                     val controller = WindowInsetsControllerCompat(window, window.decorView)
                     if (shouldShowStatusBars) {
-                        controller.show(WindowInsetsCompat.Type.statusBars())
+                        controller.show(Type.statusBars())
                         controller.systemBarsBehavior = BEHAVIOR_DEFAULT
 
                     } else {
-                        controller.hide(WindowInsetsCompat.Type.statusBars())
+                        controller.hide(Type.statusBars())
                         controller.systemBarsBehavior = BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
                     }
                     onDispose {
-                        controller.show(WindowInsetsCompat.Type.statusBars())
+                        controller.show(Type.statusBars())
                         controller.systemBarsBehavior = BEHAVIOR_DEFAULT
                     }
                 }

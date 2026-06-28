@@ -7,7 +7,7 @@ import androidx.lifecycle.serialization.saved
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.compose.SavedStateHandleSaveableApi
 import androidx.lifecycle.viewmodel.compose.saveable
-import i.am.shiro.amai.network.Nhentai
+import i.am.shiro.amai.network.Nhentai.Sort
 import i.am.shiro.amai.repository.GalleryRepository
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.stateIn
@@ -24,7 +24,7 @@ class NhentaiViewModel(
 
     private var page by handle.saved { 0 }
 
-    private var sort by handle.saved { Nhentai.Sort.DATE }
+    private var sort by handle.saved { Sort.DATE }
 
     private var isComplete by handle.saved { false }
 
@@ -51,7 +51,7 @@ class NhentaiViewModel(
         fetchRemotePage()
     }
 
-    fun sort(sort: Nhentai.Sort) {
+    fun sort(sort: Sort) {
         if (this.sort == sort) return
         this.sort = sort
         refresh()

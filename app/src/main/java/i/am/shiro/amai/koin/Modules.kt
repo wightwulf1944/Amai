@@ -19,6 +19,7 @@ import i.am.shiro.amai.viewmodel.ReadViewModel
 import i.am.shiro.amai.viewmodel.SearchViewModel
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
+import okhttp3.logging.HttpLoggingInterceptor.Level
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
@@ -49,7 +50,7 @@ val mainModule = module {
                     .newBuilder()
                     .addInterceptor(
                         HttpLoggingInterceptor()
-                            .setLevel(if (BuildConfig.DEBUG) HttpLoggingInterceptor.Level.BODY else HttpLoggingInterceptor.Level.NONE)
+                            .setLevel(if (BuildConfig.DEBUG) Level.BODY else Level.NONE)
                     )
                     .build()
             )

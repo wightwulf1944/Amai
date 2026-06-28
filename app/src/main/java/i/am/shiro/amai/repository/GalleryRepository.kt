@@ -8,6 +8,7 @@ import i.am.shiro.amai.data.intermediate.CachedPreviewIntermediate
 import i.am.shiro.amai.model.BookPreview
 import i.am.shiro.amai.network.GalleryListItemDto
 import i.am.shiro.amai.network.Nhentai
+import i.am.shiro.amai.network.Nhentai.Sort
 import i.am.shiro.amai.network.PaginatedDto
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -27,7 +28,7 @@ class GalleryRepository(
         return response.num_pages
     }
 
-    suspend fun searchGalleryPage(query: String, sort: Nhentai.Sort, page: Int): Int {
+    suspend fun searchGalleryPage(query: String, sort: Sort, page: Int): Int {
         val response = nhentaiApi.search(query, sort, page)
         saveToCache(page, response)
         return response.num_pages
