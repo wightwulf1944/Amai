@@ -14,8 +14,6 @@ import androidx.compose.foundation.text.input.InputTransformation
 import androidx.compose.foundation.text.input.TextFieldLineLimits
 import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.foundation.text.input.byValue
-import androidx.compose.foundation.text.input.rememberTextFieldState
-import androidx.compose.foundation.text.input.setTextAndPlaceCursorAtEnd
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -24,6 +22,7 @@ import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
@@ -34,45 +33,46 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import i.am.shiro.amai.R
 import i.am.shiro.amai.ui.theme.AmaiTheme
 import i.am.shiro.amai.ui.viewmodel.SearchSuggestion
 import i.am.shiro.amai.ui.viewmodel.SearchViewModel
 import org.koin.compose.viewmodel.koinViewModel
+import org.koin.core.parameter.parametersOf
 
 @Composable
 fun SearchScreen(
-    query: String,
+    initialQuery: String,
     onSearch: (String) -> Unit,
-    viewModel: SearchViewModel = koinViewModel()
+    viewModel: SearchViewModel = koinViewModel {
+        parametersOf(initialQuery)
+    }
 ) {
+    val suggestions by viewModel.suggestionsFlow.collectAsStateWithLifecycle()
+
     SearchContent(
-        initialQuery = query,
-        onSearch = onSearch,
-        suggestions = viewModel.suggestions,
-        onQueryChange = viewModel::onQueryChange
+        textFieldState = viewModel.textFieldState,
+        onSearch = {
+            val text = viewModel.textFieldState.text
+            if (text.isNotEmpty()) onSearch(text.toString())
+        },
+        suggestions = suggestions,
     )
 }
 
 @Composable
 fun SearchContent(
-    initialQuery: String,
-    onSearch: (String) -> Unit,
+    textFieldState: TextFieldState,
+    onSearch: () -> Unit,
     suggestions: List<SearchSuggestion>,
-    onQueryChange: (String) -> Unit
 ) {
-    val textFieldState = rememberTextFieldState(initialQuery)
-
-    LaunchedEffect(textFieldState.text) {
-        onQueryChange(textFieldState.text.toString())
-    }
-
     Scaffold { contentPadding ->
         Column(modifier = Modifier.padding(contentPadding)) {
 
             SearchInput(
-                state = textFieldState,
-                onSearch = { onSearch(textFieldState.text.toString()) }
+                textFieldState = textFieldState,
+                onSearch = onSearch
             )
 
             LazyColumn(
@@ -82,7 +82,7 @@ fun SearchContent(
                 items(suggestions) { suggestion ->
                     SuggestionItem(
                         text = suggestion.text,
-                        onClick = { textFieldState.setTextAndPlaceCursorAtEnd(suggestion.proposedValue) }
+                        onClick = suggestion.onClick
                     )
                 }
             }
@@ -92,7 +92,7 @@ fun SearchContent(
 
 @Composable
 fun SearchInput(
-    state: TextFieldState,
+    textFieldState: TextFieldState,
     onSearch: () -> Unit
 ) {
     val focusRequester = remember { FocusRequester() }
@@ -102,7 +102,7 @@ fun SearchInput(
     }
 
     TextField(
-        state = state,
+        state = textFieldState,
         modifier = Modifier
             .fillMaxWidth()
             .height(56.dp)
@@ -113,7 +113,7 @@ fun SearchInput(
             imeAction = ImeAction.Search,
             autoCorrectEnabled = false,
         ),
-        onKeyboardAction = { if (state.text.isNotEmpty()) onSearch() },
+        onKeyboardAction = { onSearch() },
         lineLimits = TextFieldLineLimits.SingleLine,
         inputTransformation = InputTransformation.byValue { _, proposed ->
             proposed.toString().lowercase()
@@ -151,9 +151,8 @@ fun SuggestionItem(
 private fun SearchContentPreview() {
     AmaiTheme {
         SearchContent(
-            initialQuery = "",
+            textFieldState = TextFieldState(),
             suggestions = listOf(SearchSuggestion("tag:artist"), SearchSuggestion("tag:artistic")),
-            onQueryChange = {},
             onSearch = {},
         )
     }

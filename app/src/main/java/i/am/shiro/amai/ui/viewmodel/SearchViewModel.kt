@@ -1,44 +1,87 @@
 package i.am.shiro.amai.ui.viewmodel
 
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
+import androidx.compose.foundation.text.input.TextFieldState
+import androidx.compose.runtime.snapshotFlow
+import androidx.compose.ui.text.TextRange
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.compose.SavedStateHandleSaveableApi
+import androidx.lifecycle.viewmodel.compose.saveable
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 
-class SearchViewModel : ViewModel() {
+@OptIn(SavedStateHandleSaveableApi::class)
+class SearchViewModel(
+    handle: SavedStateHandle,
+    initialQuery: String
+) : ViewModel() {
 
     private val dictionary = listOf(
         "id:",
         "tag:",
         "artist:",
         "parody:",
+        "character:",
         "group:",
         "language:",
+        "category:",
+        "category:doujinshi",
+        "category:manga",
+        "category:misc",
         "pages:",
         "pages:>",
         "pages:<",
+        "favorites:",
+        "favorites:>",
+        "favorites:<",
         "uploaded:",
         "uploaded:>",
-        "uploaded:<"
+        "uploaded:<",
+        "title:",
+        "jtitle:"
     )
 
-    var suggestions by mutableStateOf(dictionary.map(::SearchSuggestion))
-        private set
+    val textFieldState by handle.saveable(saver = TextFieldState.Saver) {
+        TextFieldState(initialQuery)
+    }
 
-    // TODO: Use selection to provide suggestions based on cursor position instead of just splitting the string.
-    fun onQueryChange(query: String) {
-        val tokens = query.split(' ')
-        val filtered = dictionary.filter { it.startsWith(tokens.last()) }
-        val truncated = tokens.dropLast(1).joinToString(separator = " ")
-        suggestions = if (truncated.isEmpty()) {
-            filtered.map { SearchSuggestion(it) }
-        } else {
-            filtered.map { SearchSuggestion(it, "$truncated $it") }
+    val suggestionsFlow = snapshotFlow { textFieldState.text to textFieldState.selection }
+        .map { (text, selection) ->
+            if (selection.collapsed) {
+                getSuggestions(text, selection)
+            } else {
+                emptyList() // Hide suggestions when text is selected
+            }
         }
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
+
+    // This naively looks for whitespace to differentiate tokens and does not recognize escaped whitespace
+    fun getSuggestions(text: CharSequence, selection: TextRange): List<SearchSuggestion> {
+        val cursorIndex = selection.start
+
+        val start = text.lastIndexOf(' ', cursorIndex - 1)
+            .let { if (it == -1) 0 else it + 1 }
+
+        val end = text.indexOf(' ', cursorIndex)
+            .let { if (it == -1) text.length else it }
+
+        val currentWord = text.substring(start, cursorIndex)
+
+        return dictionary.filter { it.startsWith(currentWord) }
+            .map {
+                SearchSuggestion(it) {
+                    textFieldState.edit {
+                        replace(start, end, it)
+                        this.selection = TextRange(start + it.length)
+                    }
+                }
+            }
     }
 }
 
 data class SearchSuggestion(
     val text: String,
-    val proposedValue: String = text
+    val onClick: () -> Unit = {}
 )

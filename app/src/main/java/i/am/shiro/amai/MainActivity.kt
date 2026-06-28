@@ -118,7 +118,7 @@ class MainActivity : ComponentActivity() {
                         }
                         entry<Route.Search> { key ->
                             SearchScreen(
-                                query = searchEvent?.query ?: "",
+                                initialQuery = searchEvent?.query ?: "",
                                 onSearch = { query ->
                                     navigator.pop(key)
                                     if (query.matches(Regex("""^id:\d+$"""))) {
