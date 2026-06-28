@@ -259,24 +259,24 @@ fun sampleModel() = BookDetail(
     title = "Amai: The Sweetest Adventure",
     pageCount = 256,
     isFavorite = true,
-    artistTags = listOf(Tag("artist", "shiro"), Tag("artist", "kuro")),
-    groupTags = listOf(Tag("group", "C86")),
-    parodyTags = listOf(Tag("parody", "Original")),
+    artistTags = listOf(Tag("shiro", ""), Tag("kuro", "")),
+    groupTags = listOf(Tag("C86", "")),
+    parodyTags = listOf(Tag("Original", "")),
     characterTags = listOf(
-        Tag("character", "Amai-chan"),
-        Tag("character", "Mochi-kun")
+        Tag("Amai-chan", ""),
+        Tag("Mochi-kun", "")
     ),
     languageTags = listOf(
-        Tag("language", "English"),
-        Tag("language", "Japanese")
+        Tag("English", ""),
+        Tag("Japanese", "")
     ),
-    categoryTags = listOf(Tag("category", "Manga")),
+    categoryTags = listOf(Tag("Manga", "")),
     generalTags = listOf(
-        Tag("tag", "sweet"),
-        Tag("tag", "comedy"),
-        Tag("tag", "romance"),
-        Tag("tag", "slice of life"),
-        Tag("tag", "school life")
+        Tag("sweet", ""),
+        Tag("comedy", ""),
+        Tag("romance", ""),
+        Tag("slice of life", ""),
+        Tag("school life", "")
     ),
     thumbnails = List(5) { index ->
         Thumbnail(
