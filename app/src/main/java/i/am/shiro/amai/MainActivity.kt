@@ -23,36 +23,20 @@ import androidx.core.view.WindowInsetsControllerCompat
 import androidx.core.view.WindowInsetsControllerCompat.BEHAVIOR_DEFAULT
 import androidx.core.view.WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
 import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
-import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
 import androidx.window.core.layout.WindowSizeClass
-import i.am.shiro.amai.compose.DetailScreen
-import i.am.shiro.amai.compose.HomeScreen
-import i.am.shiro.amai.compose.ReadScreen
-import i.am.shiro.amai.compose.SearchScreen
-import i.am.shiro.amai.compose.common.AmaiTheme
-import i.am.shiro.amai.compose.common.rememberNavigator
+import i.am.shiro.amai.ui.DetailScreen
+import i.am.shiro.amai.ui.HomeScreen
+import i.am.shiro.amai.ui.ReadScreen
+import i.am.shiro.amai.ui.SearchScreen
+import i.am.shiro.amai.ui.theme.AmaiTheme
+import i.am.shiro.amai.ui.navigation.rememberNavigator
 import i.am.shiro.amai.model.SearchEvent
-import i.am.shiro.amai.network.Nhentai
-import kotlinx.serialization.Serializable
+import i.am.shiro.amai.data.remote.Nhentai
+import i.am.shiro.amai.ui.navigation.Route
 import timber.log.Timber
-
-@Serializable
-sealed interface Route : NavKey {
-    @Serializable
-    data object Home : Route
-
-    @Serializable
-    data object Search : Route
-
-    @Serializable
-    data class Detail(val bookId: Int) : Route
-
-    @Serializable
-    data class Read(val bookId: Int, val pageIndex: Int) : Route
-}
 
 class MainActivity : ComponentActivity() {
 
