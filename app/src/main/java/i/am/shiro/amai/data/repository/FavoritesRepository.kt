@@ -17,7 +17,6 @@ class FavoritesRepository(
     ): Flow<List<BookPreview>> {
         return database.intermediateDao.getAllFavorites()
             .combine(queryFlow) { list, q ->
-                // TODO improve search by matching more than just title
                 if (q.isBlank()) list else list.filter { it.book.title.contains(q, ignoreCase = true) }
             }
             .combine(sortFlow) { list, s ->
