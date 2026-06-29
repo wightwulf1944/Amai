@@ -44,7 +44,7 @@ class BookRepository(
     private fun DetailIntermediate.toBookDetail(): BookDetail {
 
         val tagMap = tagEntities.groupBy(TagEntity::type) {
-            val searchTag = if (it.name.any(Char::isWhitespace)) "\"$it.name\"" else it.name
+            val searchTag = if (it.name.any(Char::isWhitespace)) "\"${it.name}\"" else it.name
             Tag(it.name, "${it.type}:$searchTag")
         }
 
