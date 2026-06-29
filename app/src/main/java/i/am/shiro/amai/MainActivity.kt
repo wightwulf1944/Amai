@@ -12,6 +12,7 @@ import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -27,15 +28,15 @@ import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
 import androidx.window.core.layout.WindowSizeClass
+import i.am.shiro.amai.data.remote.Nhentai
+import i.am.shiro.amai.model.SearchEvent
 import i.am.shiro.amai.ui.DetailScreen
 import i.am.shiro.amai.ui.HomeScreen
 import i.am.shiro.amai.ui.ReadScreen
 import i.am.shiro.amai.ui.SearchScreen
-import i.am.shiro.amai.ui.theme.AmaiTheme
-import i.am.shiro.amai.ui.navigation.rememberNavigator
-import i.am.shiro.amai.model.SearchEvent
-import i.am.shiro.amai.data.remote.Nhentai
 import i.am.shiro.amai.ui.navigation.Route
+import i.am.shiro.amai.ui.navigation.rememberNavigator
+import i.am.shiro.amai.ui.theme.AmaiTheme
 import timber.log.Timber
 
 class MainActivity : ComponentActivity() {
@@ -69,24 +70,7 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             AmaiTheme {
-                val shouldShowStatusBars = currentWindowAdaptiveInfo().windowSizeClass
-                    .isHeightAtLeastBreakpoint(WindowSizeClass.HEIGHT_DP_MEDIUM_LOWER_BOUND)
-
-                DisposableEffect(shouldShowStatusBars) {
-                    val controller = WindowInsetsControllerCompat(window, window.decorView)
-                    if (shouldShowStatusBars) {
-                        controller.show(Type.statusBars())
-                        controller.systemBarsBehavior = BEHAVIOR_DEFAULT
-
-                    } else {
-                        controller.hide(Type.statusBars())
-                        controller.systemBarsBehavior = BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
-                    }
-                    onDispose {
-                        controller.show(Type.statusBars())
-                        controller.systemBarsBehavior = BEHAVIOR_DEFAULT
-                    }
-                }
+                StatusBarVisibilityEffect()
 
                 var searchEvent by rememberSaveable { mutableStateOf<SearchEvent?>(null) }
 
@@ -154,6 +138,28 @@ class MainActivity : ComponentActivity() {
                         }
                     }
                 )
+            }
+        }
+    }
+
+    @Composable
+    private fun StatusBarVisibilityEffect() {
+        val shouldShowStatusBars = currentWindowAdaptiveInfo().windowSizeClass
+            .isHeightAtLeastBreakpoint(WindowSizeClass.HEIGHT_DP_MEDIUM_LOWER_BOUND)
+
+        DisposableEffect(shouldShowStatusBars) {
+            val controller = WindowInsetsControllerCompat(window, window.decorView)
+            if (shouldShowStatusBars) {
+                controller.show(Type.statusBars())
+                controller.systemBarsBehavior = BEHAVIOR_DEFAULT
+
+            } else {
+                controller.hide(Type.statusBars())
+                controller.systemBarsBehavior = BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+            }
+            onDispose {
+                controller.show(Type.statusBars())
+                controller.systemBarsBehavior = BEHAVIOR_DEFAULT
             }
         }
     }
