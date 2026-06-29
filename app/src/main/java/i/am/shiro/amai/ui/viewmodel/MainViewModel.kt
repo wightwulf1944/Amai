@@ -48,5 +48,5 @@ sealed interface NhentaiRoute : NavKey {
     data class Browse(val query: String) : NhentaiRoute
 
     @Serializable
-    object Homepage : NhentaiRoute
+    data object Homepage : NhentaiRoute
 }
