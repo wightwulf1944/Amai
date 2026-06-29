@@ -3,8 +3,8 @@ package i.am.shiro.amai.ui.viewmodel
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import i.am.shiro.amai.model.FavoritesSort
 import i.am.shiro.amai.data.repository.FavoritesRepository
+import i.am.shiro.amai.model.FavoritesSort
 import i.am.shiro.amai.ui.viewmodel.utils.savedMutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.stateIn

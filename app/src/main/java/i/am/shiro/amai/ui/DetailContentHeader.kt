@@ -22,9 +22,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import i.am.shiro.amai.R
-import i.am.shiro.amai.ui.theme.AmaiTheme
 import i.am.shiro.amai.model.BookDetail
 import i.am.shiro.amai.model.Tag
+import i.am.shiro.amai.ui.theme.AmaiTheme
 
 @Composable
 fun DetailContentHeader(

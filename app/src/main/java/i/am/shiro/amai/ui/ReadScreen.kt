@@ -39,12 +39,12 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import coil3.compose.SubcomposeAsyncImage
+import i.am.shiro.amai.model.Page
 import i.am.shiro.amai.ui.image.PageModel
 import i.am.shiro.amai.ui.image.ThumbnailModel
 import i.am.shiro.amai.ui.theme.AmaiTheme
 import i.am.shiro.amai.ui.utils.VolumeKeyHandler
 import i.am.shiro.amai.ui.utils.animateScrollPageBy
-import i.am.shiro.amai.model.Page
 import i.am.shiro.amai.ui.viewmodel.ReadViewModel
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf

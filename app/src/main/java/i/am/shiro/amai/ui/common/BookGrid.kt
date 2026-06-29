@@ -10,8 +10,8 @@ import androidx.compose.foundation.lazy.staggeredgrid.items
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import i.am.shiro.amai.ui.utils.union
 import i.am.shiro.amai.model.BookPreview
+import i.am.shiro.amai.ui.utils.union
 
 @Composable
 fun BookGrid(

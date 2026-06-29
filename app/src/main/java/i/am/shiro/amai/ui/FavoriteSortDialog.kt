@@ -2,8 +2,8 @@ package i.am.shiro.amai.ui
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
-import i.am.shiro.amai.model.FavoritesSort
 import i.am.shiro.amai.R
+import i.am.shiro.amai.model.FavoritesSort
 import i.am.shiro.amai.ui.common.SelectionDialog
 
 @Composable

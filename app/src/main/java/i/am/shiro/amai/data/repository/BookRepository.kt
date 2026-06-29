@@ -7,11 +7,11 @@ import i.am.shiro.amai.data.local.entity.FavoriteEntity
 import i.am.shiro.amai.data.local.entity.ImageEntity
 import i.am.shiro.amai.data.local.entity.TagEntity
 import i.am.shiro.amai.data.local.intermediate.DetailIntermediate
+import i.am.shiro.amai.data.remote.Nhentai
+import i.am.shiro.amai.data.remote.dto.GalleryDetailDto
 import i.am.shiro.amai.model.BookDetail
 import i.am.shiro.amai.model.Tag
 import i.am.shiro.amai.model.Thumbnail
-import i.am.shiro.amai.data.remote.dto.GalleryDetailDto
-import i.am.shiro.amai.data.remote.Nhentai
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 

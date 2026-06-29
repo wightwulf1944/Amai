@@ -1,9 +1,9 @@
 package i.am.shiro.amai.data.repository
 
-import i.am.shiro.amai.model.FavoritesSort
 import i.am.shiro.amai.data.local.AmaiDatabase
 import i.am.shiro.amai.data.local.intermediate.FavoritesPreviewIntermediate
 import i.am.shiro.amai.model.BookPreview
+import i.am.shiro.amai.model.FavoritesSort
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map

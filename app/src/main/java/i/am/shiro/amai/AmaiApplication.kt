@@ -6,9 +6,9 @@ import coil3.PlatformContext
 import coil3.SingletonImageLoader
 import coil3.network.okhttp.OkHttpNetworkFetcherFactory
 import coil3.util.DebugLogger
+import i.am.shiro.amai.di.mainModule
 import i.am.shiro.amai.ui.image.PageInterceptor
 import i.am.shiro.amai.ui.image.ThumbnailInterceptor
-import i.am.shiro.amai.di.mainModule
 import okhttp3.OkHttpClient
 import org.koin.android.ext.android.get
 import org.koin.android.ext.koin.androidContext
