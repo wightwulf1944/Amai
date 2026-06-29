@@ -11,6 +11,7 @@ import i.am.shiro.amai.data.repository.BookRepository
 import i.am.shiro.amai.data.repository.FavoritesRepository
 import i.am.shiro.amai.data.repository.GalleryRepository
 import i.am.shiro.amai.data.repository.ReadRepository
+import i.am.shiro.amai.data.repository.SearchRepository
 import i.am.shiro.amai.ui.viewmodel.DetailViewModel
 import i.am.shiro.amai.ui.viewmodel.FavoritesViewModel
 import i.am.shiro.amai.ui.viewmodel.HomepageViewModel
@@ -63,6 +64,7 @@ val mainModule = module {
     single { GalleryRepository(get(), get()) }
     single { ReadRepository(get()) }
     single { FavoritesRepository(get()) }
+    single { SearchRepository() }
 
     viewModelOf(::SearchViewModel)
     viewModelOf(::NhentaiViewModel)

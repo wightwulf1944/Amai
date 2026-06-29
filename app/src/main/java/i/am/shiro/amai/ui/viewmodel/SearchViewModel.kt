@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.compose.SavedStateHandleSaveableApi
 import androidx.lifecycle.viewmodel.compose.saveable
+import i.am.shiro.amai.data.repository.SearchRepository
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
@@ -15,33 +16,9 @@ import kotlinx.coroutines.flow.stateIn
 @OptIn(SavedStateHandleSaveableApi::class)
 class SearchViewModel(
     handle: SavedStateHandle,
-    initialQuery: String
+    initialQuery: String,
+    private val repository: SearchRepository
 ) : ViewModel() {
-
-    private val dictionary = listOf(
-        "id:",
-        "tag:",
-        "artist:",
-        "parody:",
-        "character:",
-        "group:",
-        "language:",
-        "category:",
-        "category:doujinshi",
-        "category:manga",
-        "category:misc",
-        "pages:",
-        "pages:>",
-        "pages:<",
-        "favorites:",
-        "favorites:>",
-        "favorites:<",
-        "uploaded:",
-        "uploaded:>",
-        "uploaded:<",
-        "title:",
-        "jtitle:"
-    )
 
     val textFieldState by handle.saveable(saver = TextFieldState.Saver) {
         TextFieldState(initialQuery)
@@ -69,7 +46,7 @@ class SearchViewModel(
 
         val currentWord = text.substring(start, cursorIndex)
 
-        return dictionary.filter { it.startsWith(currentWord) }
+        return repository.getQueryPrefixes(currentWord)
             .map {
                 SearchSuggestion(it) {
                     textFieldState.edit {
