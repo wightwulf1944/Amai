@@ -6,14 +6,17 @@ Guidance for AI agents working in this repository.
 
 - **Knowledge Persistence**: Whenever you make a mistake or learn a non-obvious project-specific fact, update this guide to avoid repeating the same error.
 - **Verification First**: Always read files before attempting any edits.
-- **Consistency**: If a file disagrees with this guide, trust the file and update this guide as part of the change. Inform the user of any mismatch.
+- **Code is Truth**: The source code is the absolute authority. If it disagrees with this guide, update this guide to match the code.
 - **UI Architecture**: Prefer Jetpack Compose over XML layouts and Fragments. Always consider adding previews whenever you create new composables.
 - **Database integrity**: Whenever database schema changes are made, you MUST handle migrations.
-- **Communication Style**: If the user asks a question or for a "check," answer it clearly. 
-    - **DO NOT** use file-writing tools or propose code changes in that same turn unless explicitly asked to "fix", "refactor", "apply changes", or "go ahead". 
-    - **"How" ≠ "Do"**: Interpret "How do I..." or "Is it possible to..." as a request for a technical explanation or code snippets for discussion only. Never touch the filesystem or apply changes in response to these queries.
-    - **Explain First, Edit Later**: Always provide a conceptual plan or code snippets in the chat for review before invoking any editing tools.
-    - **Verification of Intent**: If unsure whether the user wants a conceptual answer or an implementation, ask for clarification.
+- **Tool Usage Policy**: 
+  - **NEVER** use file-writing tools unless explicitly asked to "apply", "fix", or "go ahead". Use only read-only tools for investigations and explanations.
+  - **DO NOT** use file-writing tools or propose code changes in that same turn unless explicitly asked to "fix", "refactor", "apply changes", or "go ahead".
+  - **"How" ≠ "Do"**: Interpret "How do I..." or "Is it possible to..." as a request for a technical explanation or code snippets for discussion only. Never touch the filesystem or apply changes in response to these queries.
+  - **Please investigate**: Interpret requests to investigate as a request for a technical explanation of an issue or code snippet. Never touch the filesystem or apply changes in response to these queries.
+  - **Explain First, Edit Later**: Always provide a conceptual plan or code snippets in the chat for review before invoking any editing tools.
+  - **Verification of Intent**: If unsure whether the user wants a conceptual answer or an implementation, ask for clarification.
+
 
 ## Project Overview
 
@@ -48,8 +51,6 @@ This document is a researched map, not a replacement for reading the code. Facts
 ## Implementation Details & Known Quirks
 
 ### State Management
-- **Tab State Preservation**: `HomeScreen` uses `SaveableStateHolder` to preserve tab state. Note that this **only** saves values that use `rememberSaveable`. Simple `remember` values are lost when switching tabs.
-- **Search Event Handling**: `MainActivity` holds a global `searchEvent` state. This is prop-drilled down through `HomeScreen` to `BrowseScreen`, which uses a `LaunchedEffect(searchEvent)` to trigger ViewModel actions.
 - **Side Effects & Navigation**: Use **callbacks** (not `LaunchedEffect`) for one-time UI reactions to user actions (e.g., scrolling to top after search/sort). `LaunchedEffect` re-triggers whenever a screen is re-composed during tab switching, leading to unintended "false-positive" events.
 
 ### Database
