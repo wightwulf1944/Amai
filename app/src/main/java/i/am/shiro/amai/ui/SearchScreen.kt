@@ -53,10 +53,7 @@ fun SearchScreen(
 
     SearchContent(
         textFieldState = viewModel.textFieldState,
-        onSearch = {
-            val text = viewModel.textFieldState.text
-            if (text.isNotEmpty()) onSearch(text.toString())
-        },
+        onSearch = { onSearch(viewModel.textFieldState.text.toString()) },
         suggestions = suggestions,
     )
 }
@@ -67,6 +64,7 @@ fun SearchContent(
     onSearch: () -> Unit,
     suggestions: List<SearchSuggestion>,
 ) {
+    // FIXME ime clips the bottom of this
     Scaffold { contentPadding ->
         Column(modifier = Modifier.padding(contentPadding)) {
 

@@ -17,13 +17,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import i.am.shiro.amai.R
+import i.am.shiro.amai.model.BookPreview
 import i.am.shiro.amai.ui.common.TopBarContainer
 import i.am.shiro.amai.ui.common.TopBarPill
+import i.am.shiro.amai.ui.theme.AmaiTheme
 import i.am.shiro.amai.ui.utils.asSymmetricHorizontal
-import i.am.shiro.amai.model.BookPreview
 import i.am.shiro.amai.ui.viewmodel.HomepageViewModel
 import org.koin.androidx.compose.koinViewModel
 
@@ -95,7 +97,7 @@ fun HomepageTopBar(
                     .weight(1f)
                     .align(Alignment.CenterVertically)
                     .padding(start = 16.dp),
-                style = MaterialTheme.typography.labelSmall,
+                style = MaterialTheme.typography.titleMedium,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
             )
@@ -106,5 +108,35 @@ fun HomepageTopBar(
                 )
             }
         }
+    }
+}
+
+@Preview
+@Composable
+fun HomepageContentPreview() {
+    val mockBooks = List(7) { i ->
+        val title = if (i == 2)
+            "Sample Book 2 with a longer title Lorem ipsum dolor sit amet, consectetur adipiscing elit "
+        else
+            "Sample Book Title $i"
+        BookPreview(
+            bookId = i,
+            title = title,
+            pageCount = 100 + i,
+            aspectRatio = if (i % 2 == 0) 50f / 70f else 50f / 30f,
+            thumbnailPath = "",
+            showFavoriteBadge = i % 3 == 0
+        )
+    }
+
+    AmaiTheme {
+        HomepageContent(
+            books = mockBooks,
+            isLoading = false,
+            onRefresh = {},
+            onSearchClick = {},
+            onItemClick = {},
+            gridState = rememberLazyStaggeredGridState()
+        )
     }
 }

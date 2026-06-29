@@ -7,50 +7,44 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteItem
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffold
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.saveable.rememberSaveableStateHolder
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
+import androidx.navigation3.runtime.entryProvider
+import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
+import androidx.navigation3.ui.NavDisplay
 import i.am.shiro.amai.R
-import i.am.shiro.amai.model.SearchEvent
+import i.am.shiro.amai.ui.viewmodel.MainViewModel
+import i.am.shiro.amai.ui.viewmodel.NhentaiRoute
 
 @Composable
 fun HomeScreen(
-    searchEvent: SearchEvent?,
     onSearchClick: () -> Unit,
-    onItemClick: (Int) -> Unit
+    onItemClick: (Int) -> Unit,
+    mainViewModel: MainViewModel
 ) {
-    var selectedTab by rememberSaveable { mutableStateOf(HomeTab.NHENTAI) }
-
-    LaunchedEffect(searchEvent) {
-        if (searchEvent?.isProcessing == true) {
-            selectedTab = HomeTab.NHENTAI
-        }
-    }
-
     NavigationSuiteScaffold(
         navigationItems = {
             HomeNavItem(
-                selected = selectedTab == HomeTab.FAVORITES,
-                onClick = { selectedTab = HomeTab.FAVORITES },
+                selected = mainViewModel.selectedHomeTab == HomeTab.FAVORITES,
+                onClick = { mainViewModel.selectedHomeTab = HomeTab.FAVORITES },
                 iconDrawableRes = R.drawable.ic_favorite,
                 labelStringRes = R.string.favorites
             )
             HomeNavItem(
-                selected = selectedTab == HomeTab.NHENTAI,
-                onClick = { selectedTab = HomeTab.NHENTAI },
+                selected = mainViewModel.selectedHomeTab == HomeTab.NHENTAI,
+                onClick = { mainViewModel.selectedHomeTab = HomeTab.NHENTAI },
                 iconDrawableRes = R.drawable.ic_nhentai,
                 labelStringRes = R.string.nhentai
             )
         }
     ) {
+        val vmStoreDecorator = rememberViewModelStoreNavEntryDecorator<NhentaiRoute>()
+        val holderDecorator = rememberSaveableStateHolderNavEntryDecorator<NhentaiRoute>()
         val saveableStateHolder = rememberSaveableStateHolder()
-        saveableStateHolder.SaveableStateProvider(selectedTab) {
-            when (selectedTab) {
+        saveableStateHolder.SaveableStateProvider(mainViewModel.selectedHomeTab) {
+            when (mainViewModel.selectedHomeTab) {
                 HomeTab.FAVORITES -> {
                     FavoritesScreen(
                         onItemClick = onItemClick
@@ -58,18 +52,25 @@ fun HomeScreen(
                 }
 
                 HomeTab.NHENTAI -> {
-                    if (searchEvent == null) {
-                        HomepageScreen(
-                            onSearchClick = onSearchClick,
-                            onItemClick = onItemClick
-                        )
-                    } else {
-                        BrowseScreen(
-                            searchEvent = searchEvent,
-                            onSearchClick = onSearchClick,
-                            onItemClick = onItemClick
-                        )
-                    }
+                    NavDisplay(
+                        backStack = mainViewModel.nhentaiNavStack,
+                        entryDecorators = listOf(holderDecorator, vmStoreDecorator),
+                        entryProvider = entryProvider {
+                            entry<NhentaiRoute.Homepage> {
+                                HomepageScreen(
+                                    onSearchClick = onSearchClick,
+                                    onItemClick = onItemClick
+                                )
+                            }
+                            entry<NhentaiRoute.Browse> {
+                                BrowseScreen(
+                                    searchQuery = it.query,
+                                    onSearchClick = onSearchClick,
+                                    onItemClick = onItemClick
+                                )
+                            }
+                        }
+                    )
                 }
             }
         }

@@ -14,10 +14,6 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.core.net.toUri
 import androidx.core.view.WindowInsetsCompat.Type
 import androidx.core.view.WindowInsetsControllerCompat
@@ -29,7 +25,6 @@ import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
 import androidx.window.core.layout.WindowSizeClass
 import i.am.shiro.amai.data.remote.Nhentai
-import i.am.shiro.amai.model.SearchEvent
 import i.am.shiro.amai.ui.DetailScreen
 import i.am.shiro.amai.ui.HomeScreen
 import i.am.shiro.amai.ui.ReadScreen
@@ -37,6 +32,8 @@ import i.am.shiro.amai.ui.SearchScreen
 import i.am.shiro.amai.ui.navigation.Route
 import i.am.shiro.amai.ui.navigation.rememberNavigator
 import i.am.shiro.amai.ui.theme.AmaiTheme
+import i.am.shiro.amai.ui.viewmodel.MainViewModel
+import org.koin.compose.viewmodel.koinActivityViewModel
 import timber.log.Timber
 
 class MainActivity : ComponentActivity() {
@@ -72,7 +69,7 @@ class MainActivity : ComponentActivity() {
             AmaiTheme {
                 StatusBarVisibilityEffect()
 
-                var searchEvent by rememberSaveable { mutableStateOf<SearchEvent?>(null) }
+                val viewModel = koinActivityViewModel<MainViewModel>()
 
                 val navigator = rememberNavigator(
                     *if (initialBookId == null)
@@ -91,7 +88,7 @@ class MainActivity : ComponentActivity() {
                     entryProvider = entryProvider {
                         entry<Route.Home> {
                             HomeScreen(
-                                searchEvent = searchEvent,
+                                mainViewModel = viewModel,
                                 onSearchClick = {
                                     navigator.push(Route.Search)
                                 },
@@ -102,14 +99,16 @@ class MainActivity : ComponentActivity() {
                         }
                         entry<Route.Search> { key ->
                             SearchScreen(
-                                initialQuery = searchEvent?.query ?: "",
+                                initialQuery = viewModel.currentSearch,
                                 onSearch = { query ->
                                     navigator.pop(key)
-                                    if (query.matches(Regex("""^id:\d+$"""))) {
+                                    if (query.isEmpty()) {
+                                        viewModel.goToHomepage()
+                                    } else if (query.matches(Regex("""^id:\d+$"""))) {
                                         val bookId = query.substringAfter("id:").toInt()
                                         navigator.push(Route.Detail(bookId))
                                     } else {
-                                        searchEvent = SearchEvent(query)
+                                        viewModel.search(query)
                                     }
                                 }
                             )
@@ -125,8 +124,8 @@ class MainActivity : ComponentActivity() {
                                     navigator.push(Route.Read(key.bookId, pageIndex))
                                 },
                                 onTagClick = { tag ->
-                                    searchEvent = SearchEvent(tag)
                                     navigator.pop(key)
+                                    viewModel.search(tag)
                                 }
                             )
                         }

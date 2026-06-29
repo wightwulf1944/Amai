@@ -17,10 +17,9 @@ import timber.log.Timber
 @OptIn(SavedStateHandleSaveableApi::class)
 class NhentaiViewModel(
     handle: SavedStateHandle,
+    private val query: String,
     private val repository: GalleryRepository
 ) : ViewModel() {
-
-    private var query by handle.saved { "" }
 
     private var page by handle.saved { 0 }
 
@@ -35,9 +34,7 @@ class NhentaiViewModel(
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
     init {
-        if (isLoading) {
-            fetchRemotePage()
-        }
+        if (isLoading) fetchRemotePage()
     }
 
     fun loadMore() {
@@ -54,12 +51,6 @@ class NhentaiViewModel(
     fun sort(sort: Sort) {
         if (this.sort == sort) return
         this.sort = sort
-        refresh()
-    }
-
-    fun search(query: String) {
-        if (this.query == query) return
-        this.query = query
         refresh()
     }
 

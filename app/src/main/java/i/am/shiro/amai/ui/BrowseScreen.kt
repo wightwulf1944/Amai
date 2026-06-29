@@ -14,7 +14,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -28,28 +27,29 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import i.am.shiro.amai.R
-import i.am.shiro.amai.ui.theme.AmaiTheme
+import i.am.shiro.amai.data.remote.Nhentai.Sort
+import i.am.shiro.amai.model.BookPreview
 import i.am.shiro.amai.ui.common.TopBarContainer
 import i.am.shiro.amai.ui.common.TopBarPill
+import i.am.shiro.amai.ui.theme.AmaiTheme
 import i.am.shiro.amai.ui.utils.asSymmetricHorizontal
-import i.am.shiro.amai.model.BookPreview
-import i.am.shiro.amai.model.SearchEvent
-import i.am.shiro.amai.data.remote.Nhentai.Sort
 import i.am.shiro.amai.ui.viewmodel.NhentaiViewModel
 import org.koin.compose.viewmodel.koinViewModel
+import org.koin.core.parameter.parametersOf
 
 // TODO try jetpack paging library for loading content
 @Composable
 fun BrowseScreen(
-    searchEvent: SearchEvent,
+    searchQuery: String,
     onSearchClick: () -> Unit,
     onItemClick: (Int) -> Unit,
-    viewModel: NhentaiViewModel = koinViewModel()
+    viewModel: NhentaiViewModel = koinViewModel {
+        parametersOf(searchQuery)
+    }
 ) {
     val books by viewModel.books.collectAsStateWithLifecycle()
 
     val gridState = rememberLazyStaggeredGridState()
-    var title by rememberSaveable { mutableStateOf("") }
 
     LaunchedEffect(gridState.canScrollForward) {
         if (!gridState.canScrollForward) {
@@ -57,17 +57,8 @@ fun BrowseScreen(
         }
     }
 
-    LaunchedEffect(searchEvent) {
-        if (searchEvent.isProcessing) {
-            title = searchEvent.query
-            gridState.scrollToItem(0)
-            viewModel.search(searchEvent.query)
-            searchEvent.isProcessing = false
-        }
-    }
-
     BrowseContent(
-        title = title,
+        title = searchQuery,
         books = books,
         isLoading = viewModel.isLoading,
         onRefresh = viewModel::refresh,
