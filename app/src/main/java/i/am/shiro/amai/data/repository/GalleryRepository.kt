@@ -5,11 +5,11 @@ import i.am.shiro.amai.data.local.AmaiDatabase
 import i.am.shiro.amai.data.local.entity.BookEntity
 import i.am.shiro.amai.data.local.entity.CachedEntity
 import i.am.shiro.amai.data.local.intermediate.CachedPreviewIntermediate
-import i.am.shiro.amai.model.BookPreview
-import i.am.shiro.amai.data.remote.dto.GalleryListItemDto
 import i.am.shiro.amai.data.remote.Nhentai
 import i.am.shiro.amai.data.remote.Nhentai.Sort
+import i.am.shiro.amai.data.remote.dto.GalleryListItemDto
 import i.am.shiro.amai.data.remote.dto.PaginatedDto
+import i.am.shiro.amai.model.BookPreview
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
@@ -23,24 +23,28 @@ class GalleryRepository(
     }
 
     suspend fun fetchGalleryPage(page: Int): Int {
+        if (page == 1) deleteCache()
         val response = nhentaiApi.getAll(page)
-        saveToCache(page, response)
+        saveToCache(response)
         return response.num_pages
     }
 
     suspend fun searchGalleryPage(query: String, sort: Sort, page: Int): Int {
+        if (page == 1) deleteCache()
         val response = nhentaiApi.search(query, sort, page)
-        saveToCache(page, response)
+        saveToCache(response)
         return response.num_pages
     }
 
-    private suspend fun saveToCache(page: Int, response: PaginatedDto) {
+    private suspend fun deleteCache() {
         database.withTransaction {
-            if (page == 1) {
-                database.cachedDao.deleteAll()
-                database.bookDao.deleteOrphan()
-            }
+            database.cachedDao.deleteAll()
+            database.bookDao.deleteOrphan()
+        }
+    }
 
+    private suspend fun saveToCache(response: PaginatedDto) {
+        database.withTransaction {
             for (bookJson in response.result) {
                 database.cachedDao.insert(CachedEntity(0, bookJson.id))
                 database.bookDao.insert(bookJson.toEntity())
