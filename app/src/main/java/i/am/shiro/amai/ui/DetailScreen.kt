@@ -56,7 +56,7 @@ fun DetailScreen(
     onBackClick: () -> Unit,
     onShareClick: () -> Unit,
     onThumbnailClick: (Int) -> Unit,
-    onTagClick: (String) -> Unit,
+    onTagClick: (Tag) -> Unit,
     viewModel: DetailViewModel = koinViewModel {
         parametersOf(bookId)
     }
@@ -81,7 +81,7 @@ fun DetailContent(
     onShareClick: () -> Unit,
     onFavoriteToggle: (Boolean) -> Unit,
     onThumbnailClick: (Int) -> Unit,
-    onTagClick: (String) -> Unit
+    onTagClick: (Tag) -> Unit
 ) {
     val snackbarHostState = remember { SnackbarHostState() }
 
@@ -198,7 +198,7 @@ fun DetailTopBar(
 fun DetailBody(
     model: BookDetail,
     onThumbnailClick: (Int) -> Unit,
-    onTagClick: (String) -> Unit,
+    onTagClick: (Tag) -> Unit,
     contentPadding: PaddingValues,
 ) {
     LazyVerticalGrid(
@@ -259,24 +259,24 @@ fun sampleModel() = BookDetail(
     title = "Amai: The Sweetest Adventure",
     pageCount = 256,
     isFavorite = true,
-    artistTags = listOf(Tag("shiro", ""), Tag("kuro", "")),
-    groupTags = listOf(Tag("C86", "")),
-    parodyTags = listOf(Tag("Original", "")),
+    artistTags = listOf(Tag(0, "shiro", ""), Tag(0, "kuro", "")),
+    groupTags = listOf(Tag(0, "C86", "")),
+    parodyTags = listOf(Tag(0, "Original", "")),
     characterTags = listOf(
-        Tag("Amai-chan", ""),
-        Tag("Mochi-kun", "")
+        Tag(0, "Amai-chan", ""),
+        Tag(0, "Mochi-kun", "")
     ),
     languageTags = listOf(
-        Tag("English", ""),
-        Tag("Japanese", "")
+        Tag(0, "English", ""),
+        Tag(0, "Japanese", "")
     ),
-    categoryTags = listOf(Tag("Manga", "")),
+    categoryTags = listOf(Tag(0, "Manga", "")),
     generalTags = listOf(
-        Tag("sweet", ""),
-        Tag("comedy", ""),
-        Tag("romance", ""),
-        Tag("slice of life", ""),
-        Tag("school life", "")
+        Tag(0, "sweet", ""),
+        Tag(0, "comedy", ""),
+        Tag(0, "romance", ""),
+        Tag(0, "slice of life", ""),
+        Tag(0, "school life", "")
     ),
     thumbnails = List(5) { index ->
         Thumbnail(

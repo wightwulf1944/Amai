@@ -53,7 +53,6 @@ object Nhentai {
             @Query("per_page") perPage: Int? = null
         ): PaginatedDto
 
-        // TODO use this to get precise results on tag click
         @GET("galleries/tagged")
         suspend fun getTagged(
             @Query("tag_id") tagId: Int,

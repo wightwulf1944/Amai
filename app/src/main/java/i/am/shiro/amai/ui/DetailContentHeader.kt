@@ -29,7 +29,7 @@ import i.am.shiro.amai.ui.theme.AmaiTheme
 @Composable
 fun DetailContentHeader(
     model: BookDetail,
-    onTagClick: (String) -> Unit
+    onTagClick: (Tag) -> Unit
 ) {
     Column(
         modifier = Modifier
@@ -78,7 +78,7 @@ fun DetailContentHeader(
 private fun TagGroup(
     label: String,
     tags: List<Tag>,
-    onTagClick: (String) -> Unit
+    onTagClick: (Tag) -> Unit
 ) {
     FlowRow(
         modifier = Modifier.fillMaxWidth(),
@@ -100,7 +100,7 @@ private fun TagGroup(
                 color = MaterialTheme.colorScheme.onSurface,
                 modifier = Modifier
                     .clip(CircleShape)
-                    .clickable { onTagClick(tag.query) }
+                    .clickable { onTagClick(tag) }
                     .background(MaterialTheme.colorScheme.surfaceContainer)
                     .padding(vertical = 4.dp, horizontal = 12.dp)
             )

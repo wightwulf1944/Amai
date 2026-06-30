@@ -33,17 +33,17 @@ import i.am.shiro.amai.ui.common.TopBarContainer
 import i.am.shiro.amai.ui.common.TopBarPill
 import i.am.shiro.amai.ui.theme.AmaiTheme
 import i.am.shiro.amai.ui.utils.asSymmetricHorizontal
-import i.am.shiro.amai.ui.viewmodel.NhentaiViewModel
+import i.am.shiro.amai.ui.viewmodel.NhentaiSearchViewModel
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
 
 // TODO try jetpack paging library for loading content
 @Composable
-fun BrowseScreen(
+fun NhentaiSearchGallery(
     searchQuery: String,
     onSearchClick: () -> Unit,
     onItemClick: (Int) -> Unit,
-    viewModel: NhentaiViewModel = koinViewModel {
+    viewModel: NhentaiSearchViewModel = koinViewModel {
         parametersOf(searchQuery)
     }
 ) {
@@ -57,8 +57,8 @@ fun BrowseScreen(
         }
     }
 
-    BrowseContent(
-        title = searchQuery,
+    GalleryContent(
+        title = stringResource(R.string.search_format, searchQuery.tokenize()),
         books = books,
         isLoading = viewModel.isLoading,
         onRefresh = viewModel::refresh,
@@ -70,7 +70,7 @@ fun BrowseScreen(
 }
 
 @Composable
-fun BrowseContent(
+fun GalleryContent(
     title: String,
     books: List<BookPreview>,
     isLoading: Boolean,
@@ -120,7 +120,7 @@ fun BrowseTopBar(
     TopBarContainer {
         TopBarPill {
             Text(
-                text = title.tokenize(),
+                text = title,
                 modifier = Modifier
                     .weight(1f)
                     .align(Alignment.CenterVertically)
@@ -258,7 +258,7 @@ private enum class SearchMode {
 
 @Preview
 @Composable
-fun BrowseContentPreview() {
+fun GalleryContentPreview() {
     val mockBooks = List(7) { i ->
         val title = if (i == 2)
             "Sample Book 2 with a longer title Lorem ipsum dolor sit amet, consectetur adipiscing elit "
@@ -275,7 +275,7 @@ fun BrowseContentPreview() {
     }
 
     AmaiTheme {
-        BrowseContent(
+        GalleryContent(
             title = "nhentai tag:\"big breasts\" artist:shiro",
             books = mockBooks,
             isLoading = false,

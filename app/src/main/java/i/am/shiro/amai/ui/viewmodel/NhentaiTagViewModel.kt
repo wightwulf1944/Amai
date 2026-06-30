@@ -7,6 +7,7 @@ import androidx.lifecycle.serialization.saved
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.compose.SavedStateHandleSaveableApi
 import androidx.lifecycle.viewmodel.compose.saveable
+import i.am.shiro.amai.data.remote.Nhentai.Sort
 import i.am.shiro.amai.data.repository.GalleryRepository
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.stateIn
@@ -14,12 +15,15 @@ import kotlinx.coroutines.launch
 import timber.log.Timber
 
 @OptIn(SavedStateHandleSaveableApi::class)
-class HomepageViewModel(
+class NhentaiTagViewModel(
     handle: SavedStateHandle,
+    private val tagId: Int,
     private val repository: GalleryRepository
 ) : ViewModel() {
 
     private var page by handle.saved { 0 }
+
+    private var sort by handle.saved { Sort.DATE }
 
     private var isComplete by handle.saved { false }
 
@@ -34,7 +38,7 @@ class HomepageViewModel(
     }
 
     fun loadMore() {
-        if (isLoading || isComplete) return
+        if (isComplete || isLoading) return
         fetchRemotePage()
     }
 
@@ -44,12 +48,18 @@ class HomepageViewModel(
         fetchRemotePage()
     }
 
+    fun sort(sort: Sort) {
+        if (this.sort == sort) return
+        this.sort = sort
+        refresh()
+    }
+
     private fun fetchRemotePage() {
         isLoading = true
         viewModelScope.launch {
             try {
-                val totalPages = repository.fetchGalleryPage(page + 1)
-                
+                val totalPages = repository.getTaggedGalleryPage(tagId, sort, page + 1)
+
                 if (page < totalPages) {
                     page++
                 } else {

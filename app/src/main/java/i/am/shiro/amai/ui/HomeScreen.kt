@@ -55,14 +55,22 @@ fun HomeScreen(
                         backStack = state.nhentaiNavStack,
                         entryDecorators = listOf(holderDecorator, vmStoreDecorator),
                         entryProvider = entryProvider {
-                            entry<NhentaiRoute.Homepage> {
-                                HomepageScreen(
+                            entry<NhentaiRoute.Latest> {
+                                NhentaiLatestGallery(
                                     onSearchClick = onSearchClick,
                                     onItemClick = onItemClick
                                 )
                             }
-                            entry<NhentaiRoute.Browse> {
-                                BrowseScreen(
+                            entry<NhentaiRoute.Tag> {
+                                NhentaiTagGallery(
+                                    tagId = it.tagId,
+                                    tagName = it.tagName,
+                                    onSearchClick = onSearchClick,
+                                    onItemClick = onItemClick
+                                )
+                            }
+                            entry<NhentaiRoute.Search> {
+                                NhentaiSearchGallery(
                                     searchQuery = it.query,
                                     onSearchClick = onSearchClick,
                                     onItemClick = onItemClick

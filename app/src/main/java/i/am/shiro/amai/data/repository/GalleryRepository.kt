@@ -36,6 +36,13 @@ class GalleryRepository(
         return response.num_pages
     }
 
+    suspend fun getTaggedGalleryPage(tagId: Int, sort: Sort, page: Int): Int {
+        if (page == 1) deleteCache()
+        val response = nhentaiApi.getTagged(tagId, sort, page)
+        saveToCache(response)
+        return response.num_pages
+    }
+
     private suspend fun deleteCache() {
         database.withTransaction {
             database.cachedDao.deleteAll()

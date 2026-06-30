@@ -11,6 +11,7 @@ import androidx.compose.runtime.setValue
 import androidx.navigation3.runtime.NavBackStack
 import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.rememberNavBackStack
+import i.am.shiro.amai.model.Tag
 import kotlinx.serialization.Serializable
 
 @Stable
@@ -20,20 +21,22 @@ class HomeScreenState(
 ) {
     var selectedTab by selectedTabState
 
-    fun search(query: String) {
+    fun goToLatest() {
         selectedTab = HomeScreenTab.NHENTAI
         nhentaiNavStack.clear()
-        nhentaiNavStack.add(NhentaiRoute.Browse(query))
+        nhentaiNavStack.add(NhentaiRoute.Latest)
     }
 
-    fun search(tagId: Int) {
-        TODO()
-    }
-
-    fun goToHomepage() {
+    fun goToTag(tag: Tag) {
         selectedTab = HomeScreenTab.NHENTAI
         nhentaiNavStack.clear()
-        nhentaiNavStack.add(NhentaiRoute.Homepage)
+        nhentaiNavStack.add(NhentaiRoute.Tag(tag.id, tag.name))
+    }
+
+    fun goToSearch(query: String) {
+        selectedTab = HomeScreenTab.NHENTAI
+        nhentaiNavStack.clear()
+        nhentaiNavStack.add(NhentaiRoute.Search(query))
     }
 }
 
@@ -41,7 +44,7 @@ class HomeScreenState(
 @Suppress("UNCHECKED_CAST")
 fun rememberHomeScreenState(): HomeScreenState {
     val selectedTabState = rememberSaveable { mutableStateOf(HomeScreenTab.NHENTAI) }
-    val mutableNavStack = rememberNavBackStack(NhentaiRoute.Homepage)
+    val mutableNavStack = rememberNavBackStack(NhentaiRoute.Latest)
     return remember {
         HomeScreenState(
             selectedTabState = selectedTabState,
@@ -57,8 +60,11 @@ enum class HomeScreenTab {
 @Serializable
 sealed interface NhentaiRoute : NavKey {
     @Serializable
-    data class Browse(val query: String) : NhentaiRoute
+    data object Latest : NhentaiRoute
 
     @Serializable
-    data object Homepage : NhentaiRoute
+    data class Tag(val tagId: Int, val tagName: String) : NhentaiRoute
+
+    @Serializable
+    data class Search(val query: String) : NhentaiRoute
 }

@@ -18,7 +18,7 @@ import i.am.shiro.amai.data.local.entity.ImageEntity
 import i.am.shiro.amai.data.local.entity.TagEntity
 
 @Database(
-    version = 30,
+    version = 31,
     exportSchema = true,
     entities = [
         BookEntity::class,
@@ -31,6 +31,7 @@ import i.am.shiro.amai.data.local.entity.TagEntity
         AutoMigration(from = 27, to = 28, spec = AmaiDatabase.Migration27To28::class),
         AutoMigration(from = 28, to = 29, spec = AmaiDatabase.Migration28To29::class),
         AutoMigration(from = 29, to = 30),
+        AutoMigration(from = 30, to = 31),
     ]
 )
 abstract class AmaiDatabase : RoomDatabase() {

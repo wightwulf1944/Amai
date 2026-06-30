@@ -26,15 +26,15 @@ import i.am.shiro.amai.ui.common.TopBarContainer
 import i.am.shiro.amai.ui.common.TopBarPill
 import i.am.shiro.amai.ui.theme.AmaiTheme
 import i.am.shiro.amai.ui.utils.asSymmetricHorizontal
-import i.am.shiro.amai.ui.viewmodel.HomepageViewModel
+import i.am.shiro.amai.ui.viewmodel.NhentaiLatestViewModel
 import org.koin.androidx.compose.koinViewModel
 
 // TODO try jetpack paging library for loading content
 @Composable
-fun HomepageScreen(
+fun NhentaiLatestGallery(
     onSearchClick: () -> Unit,
     onItemClick: (Int) -> Unit,
-    viewModel: HomepageViewModel = koinViewModel()
+    viewModel: NhentaiLatestViewModel = koinViewModel()
 ) {
     val books by viewModel.books.collectAsStateWithLifecycle()
 
@@ -92,7 +92,7 @@ fun HomepageTopBar(
     TopBarContainer {
         TopBarPill {
             Text(
-                text = stringResource(R.string.nhentai),
+                text = stringResource(R.string.latest),
                 modifier = Modifier
                     .weight(1f)
                     .align(Alignment.CenterVertically)

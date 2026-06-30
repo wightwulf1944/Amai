@@ -1,5 +1,6 @@
 package i.am.shiro.amai.data.local.entity
 
+import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.ForeignKey.Companion.CASCADE
@@ -16,6 +17,8 @@ import androidx.room.ForeignKey.Companion.CASCADE
     ]
 )
 class TagEntity(
+    @ColumnInfo(defaultValue = "0")
+    val id: Int,
     val bookId: Int,
     val type: String,
     val name: String

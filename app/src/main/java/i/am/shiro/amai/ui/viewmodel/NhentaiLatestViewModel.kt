@@ -7,7 +7,6 @@ import androidx.lifecycle.serialization.saved
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.compose.SavedStateHandleSaveableApi
 import androidx.lifecycle.viewmodel.compose.saveable
-import i.am.shiro.amai.data.remote.Nhentai.Sort
 import i.am.shiro.amai.data.repository.GalleryRepository
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.stateIn
@@ -15,19 +14,16 @@ import kotlinx.coroutines.launch
 import timber.log.Timber
 
 @OptIn(SavedStateHandleSaveableApi::class)
-class NhentaiViewModel(
+class NhentaiLatestViewModel(
     handle: SavedStateHandle,
-    private val query: String,
     private val repository: GalleryRepository
 ) : ViewModel() {
 
     private var page by handle.saved { 0 }
 
-    private var sort by handle.saved { Sort.DATE }
-
     private var isComplete by handle.saved { false }
 
-    var isLoading by handle.saveable { mutableStateOf(false) }
+    var isLoading by handle.saveable { mutableStateOf(true) }
         private set
 
     val books = repository.getCachedBooks()
@@ -38,7 +34,7 @@ class NhentaiViewModel(
     }
 
     fun loadMore() {
-        if (isComplete || isLoading) return
+        if (isLoading || isComplete) return
         fetchRemotePage()
     }
 
@@ -48,17 +44,11 @@ class NhentaiViewModel(
         fetchRemotePage()
     }
 
-    fun sort(sort: Sort) {
-        if (this.sort == sort) return
-        this.sort = sort
-        refresh()
-    }
-
     private fun fetchRemotePage() {
         isLoading = true
         viewModelScope.launch {
             try {
-                val totalPages = repository.searchGalleryPage(query, sort, page + 1)
+                val totalPages = repository.fetchGalleryPage(page + 1)
 
                 if (page < totalPages) {
                     page++

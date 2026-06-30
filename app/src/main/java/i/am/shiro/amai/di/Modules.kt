@@ -14,8 +14,9 @@ import i.am.shiro.amai.data.repository.ReadRepository
 import i.am.shiro.amai.data.repository.SearchRepository
 import i.am.shiro.amai.ui.viewmodel.DetailViewModel
 import i.am.shiro.amai.ui.viewmodel.FavoritesViewModel
-import i.am.shiro.amai.ui.viewmodel.HomepageViewModel
-import i.am.shiro.amai.ui.viewmodel.NhentaiViewModel
+import i.am.shiro.amai.ui.viewmodel.NhentaiLatestViewModel
+import i.am.shiro.amai.ui.viewmodel.NhentaiSearchViewModel
+import i.am.shiro.amai.ui.viewmodel.NhentaiTagViewModel
 import i.am.shiro.amai.ui.viewmodel.ReadViewModel
 import i.am.shiro.amai.ui.viewmodel.SearchViewModel
 import okhttp3.OkHttpClient
@@ -67,9 +68,10 @@ val mainModule = module {
     single { SearchRepository() }
 
     viewModelOf(::SearchViewModel)
-    viewModelOf(::NhentaiViewModel)
     viewModelOf(::FavoritesViewModel)
+    viewModelOf(::NhentaiLatestViewModel)
+    viewModelOf(::NhentaiSearchViewModel)
+    viewModelOf(::NhentaiTagViewModel)
     viewModelOf(::DetailViewModel)
     viewModelOf(::ReadViewModel)
-    viewModelOf(::HomepageViewModel)
 }

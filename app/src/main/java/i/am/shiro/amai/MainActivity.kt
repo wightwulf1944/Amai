@@ -110,12 +110,12 @@ class MainActivity : ComponentActivity() {
                                     navigator.pop(key)
 
                                     if (query.isEmpty()) {
-                                        homeScreenState.goToHomepage()
+                                        homeScreenState.goToLatest()
                                     } else if (query.matches(Regex("""^id:\d+$"""))) {
                                         val bookId = query.substringAfter("id:").toInt()
                                         navigator.push(Route.Detail(bookId))
                                     } else {
-                                        homeScreenState.search(query)
+                                        homeScreenState.goToSearch(query)
                                     }
                                 }
                             )
@@ -131,9 +131,9 @@ class MainActivity : ComponentActivity() {
                                     navigator.push(Route.Read(key.bookId, pageIndex))
                                 },
                                 onTagClick = { tag ->
-                                    searchScreenQuery = tag
+                                    searchScreenQuery = tag.query
                                     navigator.pop(key)
-                                    homeScreenState.search(tag)
+                                    homeScreenState.goToTag(tag)
                                 }
                             )
                         }

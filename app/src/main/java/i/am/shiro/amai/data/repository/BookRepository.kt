@@ -45,7 +45,7 @@ class BookRepository(
 
         val tagMap = tagEntities.groupBy(TagEntity::type) {
             val searchTag = if (it.name.any(Char::isWhitespace)) "\"${it.name}\"" else it.name
-            Tag(it.name, "${it.type}:$searchTag")
+            Tag(it.id, it.name, "${it.type}:$searchTag")
         }
 
         val thumbnails = remoteImageEntities.map {
@@ -84,6 +84,7 @@ class BookRepository(
 
     private fun GalleryDetailDto.tagEntities(): List<TagEntity> = tags.map {
         TagEntity(
+            id = it.id,
             bookId = id,
             name = it.name,
             type = it.type
