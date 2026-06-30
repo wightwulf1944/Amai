@@ -15,7 +15,6 @@ import i.am.shiro.amai.data.repository.SearchRepository
 import i.am.shiro.amai.ui.viewmodel.DetailViewModel
 import i.am.shiro.amai.ui.viewmodel.FavoritesViewModel
 import i.am.shiro.amai.ui.viewmodel.HomepageViewModel
-import i.am.shiro.amai.ui.viewmodel.MainViewModel
 import i.am.shiro.amai.ui.viewmodel.NhentaiViewModel
 import i.am.shiro.amai.ui.viewmodel.ReadViewModel
 import i.am.shiro.amai.ui.viewmodel.SearchViewModel
@@ -73,5 +72,4 @@ val mainModule = module {
     viewModelOf(::DetailViewModel)
     viewModelOf(::ReadViewModel)
     viewModelOf(::HomepageViewModel)
-    viewModelOf(::MainViewModel)
 }

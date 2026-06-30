@@ -11,49 +11,48 @@ import androidx.compose.runtime.saveable.rememberSaveableStateHolder
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
+import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
 import i.am.shiro.amai.R
-import i.am.shiro.amai.ui.viewmodel.MainViewModel
-import i.am.shiro.amai.ui.viewmodel.NhentaiRoute
 
 @Composable
 fun HomeScreen(
+    state: HomeScreenState,
     onSearchClick: () -> Unit,
     onItemClick: (Int) -> Unit,
-    mainViewModel: MainViewModel
 ) {
     NavigationSuiteScaffold(
         navigationItems = {
             HomeNavItem(
-                selected = mainViewModel.selectedHomeTab == HomeTab.FAVORITES,
-                onClick = { mainViewModel.selectedHomeTab = HomeTab.FAVORITES },
+                selected = state.selectedTab == HomeScreenTab.FAVORITES,
+                onClick = { state.selectedTab = HomeScreenTab.FAVORITES },
                 iconDrawableRes = R.drawable.ic_favorite,
                 labelStringRes = R.string.favorites
             )
             HomeNavItem(
-                selected = mainViewModel.selectedHomeTab == HomeTab.NHENTAI,
-                onClick = { mainViewModel.selectedHomeTab = HomeTab.NHENTAI },
+                selected = state.selectedTab == HomeScreenTab.NHENTAI,
+                onClick = { state.selectedTab = HomeScreenTab.NHENTAI },
                 iconDrawableRes = R.drawable.ic_nhentai,
                 labelStringRes = R.string.nhentai
             )
         }
     ) {
-        val vmStoreDecorator = rememberViewModelStoreNavEntryDecorator<NhentaiRoute>()
-        val holderDecorator = rememberSaveableStateHolderNavEntryDecorator<NhentaiRoute>()
+        val vmStoreDecorator = rememberViewModelStoreNavEntryDecorator<NavKey>()
+        val holderDecorator = rememberSaveableStateHolderNavEntryDecorator<NavKey>()
         val saveableStateHolder = rememberSaveableStateHolder()
-        saveableStateHolder.SaveableStateProvider(mainViewModel.selectedHomeTab) {
-            when (mainViewModel.selectedHomeTab) {
-                HomeTab.FAVORITES -> {
+        saveableStateHolder.SaveableStateProvider(state.selectedTab) {
+            when (state.selectedTab) {
+                HomeScreenTab.FAVORITES -> {
                     FavoritesScreen(
                         onItemClick = onItemClick
                     )
                 }
 
-                HomeTab.NHENTAI -> {
+                HomeScreenTab.NHENTAI -> {
                     NavDisplay(
-                        backStack = mainViewModel.nhentaiNavStack,
+                        backStack = state.nhentaiNavStack,
                         entryDecorators = listOf(holderDecorator, vmStoreDecorator),
                         entryProvider = entryProvider {
                             entry<NhentaiRoute.Homepage> {
@@ -91,8 +90,4 @@ fun HomeNavItem(
         icon = { Icon(painterResource(iconDrawableRes), label) },
         label = { Text(label) }
     )
-}
-
-enum class HomeTab {
-    FAVORITES, NHENTAI
 }

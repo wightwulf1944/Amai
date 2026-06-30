@@ -14,6 +14,10 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.core.net.toUri
 import androidx.core.view.WindowInsetsCompat.Type
 import androidx.core.view.WindowInsetsControllerCompat
@@ -31,9 +35,8 @@ import i.am.shiro.amai.ui.ReadScreen
 import i.am.shiro.amai.ui.SearchScreen
 import i.am.shiro.amai.ui.navigation.Route
 import i.am.shiro.amai.ui.navigation.rememberNavigator
+import i.am.shiro.amai.ui.rememberHomeScreenState
 import i.am.shiro.amai.ui.theme.AmaiTheme
-import i.am.shiro.amai.ui.viewmodel.MainViewModel
-import org.koin.compose.viewmodel.koinActivityViewModel
 import timber.log.Timber
 
 class MainActivity : ComponentActivity() {
@@ -69,7 +72,9 @@ class MainActivity : ComponentActivity() {
             AmaiTheme {
                 StatusBarVisibilityEffect()
 
-                val viewModel = koinActivityViewModel<MainViewModel>()
+                val homeScreenState = rememberHomeScreenState()
+
+                var searchScreenQuery by rememberSaveable { mutableStateOf("") }
 
                 val navigator = rememberNavigator(
                     *if (initialBookId == null)
@@ -88,7 +93,7 @@ class MainActivity : ComponentActivity() {
                     entryProvider = entryProvider {
                         entry<Route.Home> {
                             HomeScreen(
-                                mainViewModel = viewModel,
+                                state = homeScreenState,
                                 onSearchClick = {
                                     navigator.push(Route.Search)
                                 },
@@ -99,16 +104,18 @@ class MainActivity : ComponentActivity() {
                         }
                         entry<Route.Search> { key ->
                             SearchScreen(
-                                initialQuery = viewModel.currentSearch,
+                                initialQuery = searchScreenQuery,
                                 onSearch = { query ->
+                                    searchScreenQuery = query
                                     navigator.pop(key)
+
                                     if (query.isEmpty()) {
-                                        viewModel.goToHomepage()
+                                        homeScreenState.goToHomepage()
                                     } else if (query.matches(Regex("""^id:\d+$"""))) {
                                         val bookId = query.substringAfter("id:").toInt()
                                         navigator.push(Route.Detail(bookId))
                                     } else {
-                                        viewModel.search(query)
+                                        homeScreenState.search(query)
                                     }
                                 }
                             )
@@ -125,7 +132,7 @@ class MainActivity : ComponentActivity() {
                                 },
                                 onTagClick = { tag ->
                                     navigator.pop(key)
-                                    viewModel.search(tag)
+                                    homeScreenState.search(tag)
                                 }
                             )
                         }
