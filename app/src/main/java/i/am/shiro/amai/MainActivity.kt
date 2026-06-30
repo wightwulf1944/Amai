@@ -131,6 +131,7 @@ class MainActivity : ComponentActivity() {
                                     navigator.push(Route.Read(key.bookId, pageIndex))
                                 },
                                 onTagClick = { tag ->
+                                    searchScreenQuery = tag
                                     navigator.pop(key)
                                     homeScreenState.search(tag)
                                 }
