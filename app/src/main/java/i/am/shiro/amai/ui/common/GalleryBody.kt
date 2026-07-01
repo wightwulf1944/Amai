@@ -1,4 +1,4 @@
-package i.am.shiro.amai.ui
+package i.am.shiro.amai.ui.common
 
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
@@ -12,10 +12,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import i.am.shiro.amai.model.BookPreview
-import i.am.shiro.amai.ui.common.BookGrid
 
 @Composable
-fun BrowseBody(
+fun GalleryBody(
     books: List<BookPreview>,
     isLoading: Boolean,
     onRefresh: () -> Unit,

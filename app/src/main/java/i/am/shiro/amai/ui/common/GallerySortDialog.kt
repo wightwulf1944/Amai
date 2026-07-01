@@ -1,13 +1,12 @@
-package i.am.shiro.amai.ui
+package i.am.shiro.amai.ui.common
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
 import i.am.shiro.amai.R
 import i.am.shiro.amai.data.remote.Nhentai.Sort
-import i.am.shiro.amai.ui.common.SelectionDialog
 
 @Composable
-fun BrowseSortDialog(
+fun GallerySortDialog(
     onDismissRequest: () -> Unit,
     onSortChanged: (Sort) -> Unit
 ) {

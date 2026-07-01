@@ -6,6 +6,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 
 @Composable
 fun TopBarPill(
@@ -15,6 +16,9 @@ fun TopBarPill(
         color = MaterialTheme.colorScheme.surfaceContainer,
         shape = CircleShape
     ) {
-        Row(content = content)
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            content = content
+        )
     }
 }

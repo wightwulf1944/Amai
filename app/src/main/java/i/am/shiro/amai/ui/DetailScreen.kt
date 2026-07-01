@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fitOutside
@@ -16,8 +17,6 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.IconToggleButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.ScaffoldDefaults
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
@@ -40,11 +39,11 @@ import i.am.shiro.amai.R
 import i.am.shiro.amai.model.BookDetail
 import i.am.shiro.amai.model.Tag
 import i.am.shiro.amai.model.Thumbnail
+import i.am.shiro.amai.ui.common.AmaiScaffold
 import i.am.shiro.amai.ui.common.BookThumbnail
 import i.am.shiro.amai.ui.common.TopBarContainer
 import i.am.shiro.amai.ui.common.TopBarPill
 import i.am.shiro.amai.ui.theme.AmaiTheme
-import i.am.shiro.amai.ui.utils.asSymmetricHorizontal
 import i.am.shiro.amai.ui.utils.union
 import i.am.shiro.amai.ui.viewmodel.DetailViewModel
 import org.koin.compose.viewmodel.koinViewModel
@@ -90,8 +89,7 @@ fun DetailContent(
         snackbarHostState = snackbarHostState
     )
 
-    Scaffold(
-        contentWindowInsets = ScaffoldDefaults.contentWindowInsets.asSymmetricHorizontal(0.5f),
+    AmaiScaffold(
         snackbarHost = {
             SnackbarHost(snackbarHostState)
         },
@@ -152,44 +150,42 @@ fun NavigationBarScrim() = Spacer(
 )
 
 @Composable
-fun DetailTopBar(
+private fun RowScope.DetailTopBar(
     isFavorite: Boolean,
     onBackClick: () -> Unit,
     onShareClick: () -> Unit,
     onFavoriteToggle: (Boolean) -> Unit,
 ) {
-    TopBarContainer {
-        TopBarPill {
-            IconButton(onClick = onBackClick) {
-                Icon(
-                    painter = painterResource(R.drawable.ic_arrow_back),
-                    contentDescription = stringResource(R.string.back)
-                )
-            }
+    TopBarPill {
+        IconButton(onClick = onBackClick) {
+            Icon(
+                painter = painterResource(R.drawable.ic_arrow_back),
+                contentDescription = stringResource(R.string.back)
+            )
         }
+    }
 
-        Spacer(modifier = Modifier.weight(1f))
+    Spacer(modifier = Modifier.weight(1f))
 
-        TopBarPill {
-            IconButton(onClick = onShareClick) {
-                Icon(
-                    painter = painterResource(R.drawable.ic_share),
-                    contentDescription = stringResource(R.string.share)
-                )
-            }
-            IconToggleButton(
-                checked = isFavorite,
-                onCheckedChange = { onFavoriteToggle(it) },
-                colors = IconButtonDefaults.iconToggleButtonColors(
-                    checkedContainerColor = MaterialTheme.colorScheme.tertiaryContainer,
-                    checkedContentColor = MaterialTheme.colorScheme.onTertiaryContainer
-                )
-            ) {
-                Icon(
-                    painter = painterResource(R.drawable.ic_favorite),
-                    contentDescription = stringResource(R.string.favorite),
-                )
-            }
+    TopBarPill {
+        IconButton(onClick = onShareClick) {
+            Icon(
+                painter = painterResource(R.drawable.ic_share),
+                contentDescription = stringResource(R.string.share)
+            )
+        }
+        IconToggleButton(
+            checked = isFavorite,
+            onCheckedChange = { onFavoriteToggle(it) },
+            colors = IconButtonDefaults.iconToggleButtonColors(
+                checkedContainerColor = MaterialTheme.colorScheme.tertiaryContainer,
+                checkedContentColor = MaterialTheme.colorScheme.onTertiaryContainer
+            )
+        ) {
+            Icon(
+                painter = painterResource(R.drawable.ic_favorite),
+                contentDescription = stringResource(R.string.favorite),
+            )
         }
     }
 }
@@ -230,12 +226,14 @@ fun DetailBody(
 fun DetailTopBarPreview() {
     AmaiTheme {
         Surface {
-            DetailTopBar(
-                isFavorite = false,
-                onBackClick = {},
-                onShareClick = {},
-                onFavoriteToggle = {}
-            )
+            TopBarContainer {
+                DetailTopBar(
+                    isFavorite = false,
+                    onBackClick = {},
+                    onShareClick = {},
+                    onFavoriteToggle = {}
+                )
+            }
         }
     }
 }

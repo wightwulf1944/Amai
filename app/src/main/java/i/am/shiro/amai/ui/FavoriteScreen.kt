@@ -16,8 +16,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.ScaffoldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -38,11 +36,10 @@ import androidx.compose.ui.unit.dp
 import i.am.shiro.amai.R
 import i.am.shiro.amai.model.BookPreview
 import i.am.shiro.amai.model.FavoritesSort
+import i.am.shiro.amai.ui.common.AmaiScaffold
 import i.am.shiro.amai.ui.common.BookGrid
-import i.am.shiro.amai.ui.common.TopBarContainer
 import i.am.shiro.amai.ui.common.TopBarPill
 import i.am.shiro.amai.ui.theme.AmaiTheme
-import i.am.shiro.amai.ui.utils.asSymmetricHorizontal
 import i.am.shiro.amai.ui.viewmodel.FavoritesViewModel
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -94,8 +91,7 @@ fun FavoritesContent(
         )
     }
 
-    Scaffold(
-        contentWindowInsets = ScaffoldDefaults.contentWindowInsets.asSymmetricHorizontal(0.5f),
+    AmaiScaffold(
         topBar = {
             FavoriteTopBar(
                 onSearchSubmit = onSearchSubmit,
@@ -114,26 +110,23 @@ fun FavoritesContent(
 }
 
 @Composable
-fun FavoriteTopBar(
+private fun FavoriteTopBar(
     onSearchSubmit: (String) -> Unit,
     onSortClick: () -> Unit
 ) {
-    TopBarContainer {
-        TopBarPill {
-            SearchInput(
-                modifier = Modifier
-                    .weight(1f)
-                    .align(Alignment.CenterVertically)
-                    .padding(start = 16.dp),
-                onSearchSubmit = onSearchSubmit
-            )
+    TopBarPill {
+        SearchInput(
+            modifier = Modifier
+                .weight(1f)
+                .padding(start = 16.dp),
+            onSearchSubmit = onSearchSubmit
+        )
 
-            IconButton(onClick = onSortClick) {
-                Icon(
-                    painter = painterResource(R.drawable.ic_sort),
-                    contentDescription = stringResource(R.string.sort)
-                )
-            }
+        IconButton(onClick = onSortClick) {
+            Icon(
+                painter = painterResource(R.drawable.ic_sort),
+                contentDescription = stringResource(R.string.sort)
+            )
         }
     }
 }

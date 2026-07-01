@@ -30,6 +30,5 @@
     <string name="added_to_favorites">Added to favorites</string>
     <string name="removed_from_favorites">Removed from favorites</string>
     <string name="latest">Latest</string>
-    <string name="tagged_format">Tagged: %1$s</string>
-    <string name="search_format">Search: %1$s</string>
+    <string name="tagged">Tagged</string>
 </resources>

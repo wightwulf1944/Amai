@@ -6,26 +6,20 @@ import androidx.compose.foundation.lazy.staggeredgrid.rememberLazyStaggeredGridS
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.ScaffoldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import i.am.shiro.amai.R
 import i.am.shiro.amai.model.BookPreview
-import i.am.shiro.amai.ui.common.TopBarContainer
+import i.am.shiro.amai.ui.common.AmaiScaffold
+import i.am.shiro.amai.ui.common.GalleryBody
 import i.am.shiro.amai.ui.common.TopBarPill
-import i.am.shiro.amai.ui.theme.AmaiTheme
-import i.am.shiro.amai.ui.utils.asSymmetricHorizontal
 import i.am.shiro.amai.ui.viewmodel.NhentaiLatestViewModel
 import org.koin.androidx.compose.koinViewModel
 
@@ -46,7 +40,7 @@ fun NhentaiLatestGallery(
         }
     }
 
-    HomepageContent(
+    LatestGalleryContent(
         books = books,
         isLoading = viewModel.isLoading,
         onRefresh = viewModel::refresh,
@@ -57,23 +51,22 @@ fun NhentaiLatestGallery(
 }
 
 @Composable
-fun HomepageContent(
+private fun LatestGalleryContent(
     books: List<BookPreview>,
     isLoading: Boolean,
     onRefresh: () -> Unit,
     onSearchClick: () -> Unit,
     onItemClick: (Int) -> Unit,
-    gridState: LazyStaggeredGridState
+    gridState: LazyStaggeredGridState,
 ) {
-    Scaffold(
-        contentWindowInsets = ScaffoldDefaults.contentWindowInsets.asSymmetricHorizontal(0.5f),
+    AmaiScaffold(
         topBar = {
-            HomepageTopBar(
+            LatestGalleryTopBar(
                 onSearchClick = onSearchClick
             )
         },
         content = { innerPadding ->
-            BrowseBody(
+            GalleryBody(
                 books = books,
                 isLoading = isLoading,
                 onRefresh = onRefresh,
@@ -86,57 +79,23 @@ fun HomepageContent(
 }
 
 @Composable
-fun HomepageTopBar(
+private fun LatestGalleryTopBar(
     onSearchClick: () -> Unit
 ) {
-    TopBarContainer {
-        TopBarPill {
-            Text(
-                text = stringResource(R.string.latest),
-                modifier = Modifier
-                    .weight(1f)
-                    .align(Alignment.CenterVertically)
-                    .padding(start = 16.dp),
-                style = MaterialTheme.typography.titleMedium,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis
+    TopBarPill {
+        Text(
+            text = stringResource(R.string.latest),
+            style = MaterialTheme.typography.titleSmall,
+            color = MaterialTheme.colorScheme.secondary,
+            modifier = Modifier
+                .weight(1f)
+                .padding(start = 16.dp),
+        )
+        IconButton(onClick = onSearchClick) {
+            Icon(
+                painter = painterResource(R.drawable.ic_search),
+                contentDescription = stringResource(R.string.search)
             )
-            IconButton(onClick = onSearchClick) {
-                Icon(
-                    painter = painterResource(R.drawable.ic_search),
-                    contentDescription = stringResource(R.string.search)
-                )
-            }
         }
-    }
-}
-
-@Preview
-@Composable
-fun HomepageContentPreview() {
-    val mockBooks = List(7) { i ->
-        val title = if (i == 2)
-            "Sample Book 2 with a longer title Lorem ipsum dolor sit amet, consectetur adipiscing elit "
-        else
-            "Sample Book Title $i"
-        BookPreview(
-            bookId = i,
-            title = title,
-            pageCount = 100 + i,
-            aspectRatio = if (i % 2 == 0) 50f / 70f else 50f / 30f,
-            thumbnailPath = "",
-            showFavoriteBadge = i % 3 == 0
-        )
-    }
-
-    AmaiTheme {
-        HomepageContent(
-            books = mockBooks,
-            isLoading = false,
-            onRefresh = {},
-            onSearchClick = {},
-            onItemClick = {},
-            gridState = rememberLazyStaggeredGridState()
-        )
     }
 }
