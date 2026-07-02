@@ -5,6 +5,7 @@ import androidx.compose.ui.res.stringResource
 import i.am.shiro.amai.R
 import i.am.shiro.amai.data.remote.Nhentai.Sort
 
+// TODO replace this with a context menu
 @Composable
 fun GallerySortDialog(
     onDismissRequest: () -> Unit,

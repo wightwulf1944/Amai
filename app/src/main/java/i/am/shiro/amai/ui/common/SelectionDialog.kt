@@ -8,6 +8,7 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 
+// TODO Deprecate this
 @Composable
 fun <T> SelectionDialog(
     title: String,
@@ -15,7 +16,6 @@ fun <T> SelectionDialog(
     onDismissRequest: () -> Unit,
     onSortChanged: (T) -> Unit
 ) {
-    // TODO replace this with simple Dialog composable
     AlertDialog(
         onDismissRequest = onDismissRequest,
         title = {

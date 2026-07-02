@@ -6,6 +6,7 @@ import i.am.shiro.amai.R
 import i.am.shiro.amai.model.FavoritesSort
 import i.am.shiro.amai.ui.common.SelectionDialog
 
+// TODO replace this with a context menu
 @Composable
 fun FavoriteSortDialog(
     onDismissRequest: () -> Unit,
