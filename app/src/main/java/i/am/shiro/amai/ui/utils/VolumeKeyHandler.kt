@@ -10,8 +10,8 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.combineTransform
 import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
@@ -28,17 +28,16 @@ class VolumeKeyHandler(
     private val upPressed = MutableStateFlow(false)
 
     init {
-        val actionFlow = combine(downPressed, upPressed) { down, up ->
+        val actionFlow = combineTransform(downPressed, upPressed) { down, up ->
             when {
-                down && !up -> onVolumeDown
-                up && !down -> onVolumeUp
-                else -> null
+                down && !up -> emit(onVolumeDown)
+                up && !down -> emit(onVolumeUp)
             }
         }
 
         scope.launch {
             while (isActive) {
-                val action = actionFlow.filterNotNull().first()
+                val action = actionFlow.first()
                 val elapsed = measureTime {
                     action()
                 }
@@ -51,12 +50,8 @@ class VolumeKeyHandler(
 
         scope.launch {
             isAnyPressedFlow.collectLatest { isAnyPressed ->
-                if (isAnyPressed) {
-                    delay(300.milliseconds)
-                    onHoldChanged(true)
-                } else {
-                    onHoldChanged(false)
-                }
+                if (isAnyPressed) delay(300.milliseconds)
+                onHoldChanged(isAnyPressed)
             }
         }
     }
