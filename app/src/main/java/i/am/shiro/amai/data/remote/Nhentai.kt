@@ -14,14 +14,14 @@ object Nhentai {
 
     const val API_BASE_URL = "https://nhentai.net/api/v2/"
 
-    val thumbnailBaseUrls = arrayOf(
+    val thumbnailBaseUrls = listOf(
         "https://t1.nhentai.net/",
         "https://t2.nhentai.net/",
         "https://t3.nhentai.net/",
         "https://t4.nhentai.net/"
     )
 
-    val imageBaseUrls = arrayOf(
+    val imageBaseUrls = listOf(
         "https://i1.nhentai.net/",
         "https://i2.nhentai.net/",
         "https://i3.nhentai.net/",

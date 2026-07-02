@@ -6,7 +6,7 @@ import i.am.shiro.amai.data.local.entity.BookEntity
 import i.am.shiro.amai.data.local.entity.CachedEntity
 import i.am.shiro.amai.data.local.entity.FavoriteEntity
 
-data class CachedPreviewIntermediate(
+class CachedPreviewIntermediate(
     @Embedded
     val cached: CachedEntity,
 

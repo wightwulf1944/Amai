@@ -5,7 +5,7 @@ import androidx.room.Relation
 import i.am.shiro.amai.data.local.entity.BookEntity
 import i.am.shiro.amai.data.local.entity.FavoriteEntity
 
-data class FavoritesPreviewIntermediate(
+class FavoritesPreviewIntermediate(
     @Embedded
     val favorite: FavoriteEntity,
 

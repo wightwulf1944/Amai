@@ -14,19 +14,17 @@ class FavoritesRepository(
     fun getFavorites(
         queryFlow: Flow<String>,
         sortFlow: Flow<FavoritesSort>
-    ): Flow<List<BookPreview>> {
-        return database.intermediateDao.getAllFavorites()
-            .combine(queryFlow) { list, q ->
-                if (q.isBlank()) list else list.filter { it.book.title.contains(q, ignoreCase = true) }
+    ) = database.intermediateDao.getAllFavorites()
+        .combine(queryFlow) { list, q ->
+            if (q.isBlank()) list else list.filter { it.book.title.contains(q, ignoreCase = true) }
+        }
+        .combine(sortFlow) { list, s ->
+            when (s) {
+                FavoritesSort.New -> list.sortedByDescending { it.favorite.favoriteDate }
+                FavoritesSort.Old -> list.sortedBy { it.favorite.favoriteDate }
             }
-            .combine(sortFlow) { list, s ->
-                when (s) {
-                    FavoritesSort.New -> list.sortedByDescending { it.favorite.favoriteDate }
-                    FavoritesSort.Old -> list.sortedBy { it.favorite.favoriteDate }
-                }
-            }
-            .map { list -> list.map { it.toView() } }
-    }
+        }
+        .map { list -> list.map { it.toView() } }
 
     private fun FavoritesPreviewIntermediate.toView() = BookPreview(
         bookId = favorite.bookId,

@@ -48,7 +48,7 @@ class NhentaiLatestViewModel(
         isLoading = true
         viewModelScope.launch {
             try {
-                val totalPages = repository.fetchGalleryPage(page + 1)
+                val totalPages = repository.getLatestGalleryPage(page + 1)
 
                 if (page < totalPages) {
                     page++

@@ -3,7 +3,6 @@ package i.am.shiro.amai.data.local.entity
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.ForeignKey.Companion.NO_ACTION
-import androidx.room.Ignore
 
 @Entity(
     primaryKeys = ["bookId"],
@@ -16,13 +15,7 @@ import androidx.room.Ignore
         )
     ]
 )
-data class FavoriteEntity(
+class FavoriteEntity(
     val bookId: Int,
-    val favoriteDate: Long
-) {
-    @Ignore
-    constructor(bookId: Int) : this (
-        bookId = bookId,
-        favoriteDate = System.currentTimeMillis()
-    )
-}
+    val favoriteDate: Long = System.currentTimeMillis()
+)

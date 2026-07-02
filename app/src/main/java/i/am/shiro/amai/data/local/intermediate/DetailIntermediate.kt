@@ -7,7 +7,7 @@ import i.am.shiro.amai.data.local.entity.FavoriteEntity
 import i.am.shiro.amai.data.local.entity.ImageEntity
 import i.am.shiro.amai.data.local.entity.TagEntity
 
-data class DetailIntermediate(
+class DetailIntermediate(
     @Embedded val bookEntity: BookEntity,
     @Relation(
         parentColumn = "bookId",

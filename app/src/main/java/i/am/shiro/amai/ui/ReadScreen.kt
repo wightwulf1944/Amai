@@ -133,18 +133,20 @@ fun ReadPager(
     ) { index ->
         val page = pages[index]
 
+        val imageModifier = Modifier
+            .windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Horizontal))
+            .aspectRatio(page.aspectRatio)
+            .graphicsLayer {
+                scaleX = scale
+                scaleY = scale
+            }
+
         if (turboOn) {
             AsyncImage(
                 model = ThumbnailModel(page.thumbnailPath),
                 filterQuality = FilterQuality.None,
                 contentDescription = null,
-                modifier = Modifier
-                    .windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Horizontal))
-                    .aspectRatio(page.aspectRatio)
-                    .graphicsLayer {
-                        scaleX = scale
-                        scaleY = scale
-                    },
+                modifier = imageModifier,
                 placeholder = ColorPainter(Color.Gray)
             )
         } else {
@@ -152,13 +154,7 @@ fun ReadPager(
                 model = PageModel(page.path),
                 filterQuality = FilterQuality.High,
                 contentDescription = null,
-                modifier = Modifier
-                    .windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Horizontal))
-                    .aspectRatio(page.aspectRatio)
-                    .graphicsLayer {
-                        scaleX = scale
-                        scaleY = scale
-                    },
+                modifier = imageModifier,
                 loading = {
                     AsyncImage(
                         model = ThumbnailModel(page.thumbnailPath),

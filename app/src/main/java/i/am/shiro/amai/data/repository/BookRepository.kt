@@ -12,17 +12,14 @@ import i.am.shiro.amai.data.remote.dto.GalleryDetailDto
 import i.am.shiro.amai.model.BookDetail
 import i.am.shiro.amai.model.Tag
 import i.am.shiro.amai.model.Thumbnail
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
 class BookRepository(
     private val database: AmaiDatabase,
     private val nhentaiApi: Nhentai.Api
 ) {
-    fun getBookDetail(bookId: Int): Flow<BookDetail?> {
-        return database.intermediateDao.getDetail(bookId)
-            .map { it?.toBookDetail() }
-    }
+    fun getBookDetail(bookId: Int) = database.intermediateDao.getDetail(bookId)
+        .map { it?.toBookDetail() }
 
     suspend fun refreshBookDetail(bookId: Int) {
         val detailedBookJson = nhentaiApi.getOne(bookId)
