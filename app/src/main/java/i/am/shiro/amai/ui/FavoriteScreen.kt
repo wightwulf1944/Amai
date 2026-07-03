@@ -3,8 +3,9 @@ package i.am.shiro.amai.ui
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.isImeVisible
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.staggeredgrid.LazyStaggeredGridState
@@ -82,20 +83,11 @@ fun FavoritesContent(
     onItemClick: (Int) -> Unit,
     gridState: LazyStaggeredGridState
 ) {
-    var showSortDialog by remember { mutableStateOf(false) }
-
-    if (showSortDialog) {
-        FavoriteSortDialog(
-            onDismissRequest = { showSortDialog = false },
-            onSortChanged = onSortChanged
-        )
-    }
-
     AmaiScaffold(
         topBar = {
             FavoriteTopBar(
                 onSearchSubmit = onSearchSubmit,
-                onSortClick = { showSortDialog = true }
+                onSortChanged = onSortChanged
             )
         },
         content = { innerPadding ->
@@ -110,31 +102,38 @@ fun FavoritesContent(
 }
 
 @Composable
-private fun FavoriteTopBar(
+private fun RowScope.FavoriteTopBar(
     onSearchSubmit: (String) -> Unit,
-    onSortClick: () -> Unit
+    onSortChanged: (FavoritesSort) -> Unit
 ) {
+    TopBarPill(modifier = Modifier.weight(1f)) {
+        SearchInput(onSearchSubmit = onSearchSubmit)
+    }
     TopBarPill {
-        SearchInput(
-            modifier = Modifier
-                .weight(1f)
-                .padding(start = 16.dp),
-            onSearchSubmit = onSearchSubmit
-        )
-
-        IconButton(onClick = onSortClick) {
+        // synced with FavoritesViewModel
+        var sort by remember { mutableStateOf(FavoritesSort.New) }
+        var expanded by remember { mutableStateOf(false) }
+        IconButton(onClick = { expanded = true }) {
             Icon(
                 painter = painterResource(R.drawable.ic_sort),
                 contentDescription = stringResource(R.string.sort)
             )
         }
+        FavoritesSortMenu(
+            selected = sort,
+            expanded = expanded,
+            onDismissRequest = { expanded = false },
+            onSortChanged = {
+                sort = it
+                onSortChanged(it)
+            }
+        )
     }
 }
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun SearchInput(
-    modifier: Modifier = Modifier,
     onSearchSubmit: (String) -> Unit
 ) {
     var text by remember { mutableStateOf("") }
@@ -149,35 +148,38 @@ fun SearchInput(
         }
     }
 
-    Box(
-        modifier = modifier,
-        contentAlignment = Alignment.CenterStart
-    ) {
-        if (text.isEmpty()) {
-            Text(
-                text = stringResource(R.string.search),
-                style = MaterialTheme.typography.bodyLarge,
-                color = LocalContentColor.current.copy(alpha = 0.5f)
-            )
+    BasicTextField(
+        value = text,
+        onValueChange = { text = it },
+        modifier = Modifier.fillMaxSize(),
+        textStyle = MaterialTheme.typography.bodyLarge.copy(
+            color = LocalContentColor.current
+        ),
+        keyboardOptions = KeyboardOptions(
+            imeAction = ImeAction.Search
+        ),
+        keyboardActions = KeyboardActions {
+            onSearchSubmit(text)
+            focusManager.clearFocus()
+        },
+        singleLine = true,
+        cursorBrush = SolidColor(MaterialTheme.colorScheme.primary),
+        decorationBox = { innerTextField ->
+            Box(
+                modifier = Modifier.padding(horizontal = 16.dp),
+                contentAlignment = Alignment.CenterStart
+            ) {
+                if (text.isEmpty()) {
+                    Text(
+                        text = stringResource(R.string.search),
+                        style = MaterialTheme.typography.bodyLarge,
+                        color = LocalContentColor.current.copy(alpha = 0.5f)
+                    )
+                }
+                innerTextField()
+            }
         }
-        BasicTextField(
-            value = text,
-            onValueChange = { text = it },
-            modifier = Modifier.fillMaxWidth(),
-            textStyle = MaterialTheme.typography.bodyLarge.copy(
-                color = LocalContentColor.current
-            ),
-            keyboardOptions = KeyboardOptions(
-                imeAction = ImeAction.Search
-            ),
-            keyboardActions = KeyboardActions {
-                onSearchSubmit(text)
-                focusManager.clearFocus()
-            },
-            singleLine = true,
-            cursorBrush = SolidColor(MaterialTheme.colorScheme.primary)
-        )
-    }
+    )
 }
 
 @Composable

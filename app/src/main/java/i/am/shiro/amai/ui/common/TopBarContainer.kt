@@ -1,11 +1,15 @@
 package i.am.shiro.amai.ui.common
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.add
+import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.union
 import androidx.compose.foundation.layout.windowInsetsPadding
@@ -30,11 +34,14 @@ fun TopBarContainer(
         .add(WindowInsets(left = 16.dp, right = 16.dp, top = 4.dp))
         .union(WindowInsets(top = 6.dp))
     Row(
+        horizontalArrangement = Arrangement.spacedBy(2.dp),
         modifier = Modifier
             .fillMaxWidth()
+            .height(IntrinsicSize.Min)
             .padding(bottom = 8.dp)
             .background(background)
-            .windowInsetsPadding(insets),
+            .windowInsetsPadding(insets)
+            .defaultMinSize(minHeight = 48.dp),
         content = content
     )
 }

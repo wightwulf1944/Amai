@@ -1,6 +1,7 @@
 package i.am.shiro.amai.ui
 
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.staggeredgrid.LazyStaggeredGridState
 import androidx.compose.foundation.lazy.staggeredgrid.rememberLazyStaggeredGridState
@@ -14,7 +15,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -26,7 +26,7 @@ import i.am.shiro.amai.data.remote.Nhentai.Sort
 import i.am.shiro.amai.model.BookPreview
 import i.am.shiro.amai.ui.common.AmaiScaffold
 import i.am.shiro.amai.ui.common.GalleryBody
-import i.am.shiro.amai.ui.common.GallerySortDialog
+import i.am.shiro.amai.ui.common.GallerySortMenu
 import i.am.shiro.amai.ui.common.TopBarPill
 import i.am.shiro.amai.ui.viewmodel.NhentaiTagViewModel
 import org.koin.compose.viewmodel.koinViewModel
@@ -75,20 +75,11 @@ private fun TagGalleryContent(
     onItemClick: (Int) -> Unit,
     gridState: LazyStaggeredGridState,
 ) {
-    var showSortDialog by remember { mutableStateOf(false) }
-
-    if (showSortDialog) {
-        GallerySortDialog(
-            onDismissRequest = { showSortDialog = false },
-            onSortChanged = onSortChanged
-        )
-    }
-
     AmaiScaffold(
         topBar = {
             TagGalleryTopBar(
                 tagName = tagName,
-                onSortClick = { showSortDialog = true },
+                onSortChanged = onSortChanged,
                 onSearchClick = onSearchClick
             )
         },
@@ -106,12 +97,12 @@ private fun TagGalleryContent(
 }
 
 @Composable
-private fun TagGalleryTopBar(
+private fun RowScope.TagGalleryTopBar(
     tagName: String,
-    onSortClick: () -> Unit,
+    onSortChanged: (Sort) -> Unit,
     onSearchClick: () -> Unit
 ) {
-    TopBarPill {
+    TopBarPill(modifier = Modifier.weight(1f)) {
         Row(modifier = Modifier.weight(1f)) {
             Text(
                 text = stringResource(R.string.tagged),
@@ -127,15 +118,8 @@ private fun TagGalleryTopBar(
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
                 modifier = Modifier
-                    .weight(1f)
                     .alignByBaseline()
-                    .padding(start = 6.dp)
-            )
-        }
-        IconButton(onClick = onSortClick) {
-            Icon(
-                painter = painterResource(R.drawable.ic_sort),
-                contentDescription = stringResource(R.string.sort)
+                    .padding(start = 6.dp, end = 4.dp)
             )
         }
         IconButton(onClick = onSearchClick) {
@@ -144,5 +128,25 @@ private fun TagGalleryTopBar(
                 contentDescription = stringResource(R.string.search)
             )
         }
+    }
+    TopBarPill {
+        // synced with NhentaiTagViewModel
+        var sort by remember { mutableStateOf(Sort.DATE) }
+        var expanded by remember { mutableStateOf(false) }
+        IconButton(onClick = { expanded = true }) {
+            Icon(
+                painter = painterResource(R.drawable.ic_sort),
+                contentDescription = stringResource(R.string.sort)
+            )
+        }
+        GallerySortMenu(
+            selected = sort,
+            expanded = expanded,
+            onDismissRequest = { expanded = false },
+            onSortChanged = {
+                sort = it
+                onSortChanged(it)
+            }
+        )
     }
 }

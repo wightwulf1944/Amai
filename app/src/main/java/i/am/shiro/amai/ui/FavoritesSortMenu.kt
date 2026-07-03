@@ -4,21 +4,23 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
 import i.am.shiro.amai.R
 import i.am.shiro.amai.model.FavoritesSort
-import i.am.shiro.amai.ui.common.SelectionDialog
+import i.am.shiro.amai.ui.common.SortMenu
 
-// TODO replace this with a context menu
 @Composable
-fun FavoriteSortDialog(
+fun FavoritesSortMenu(
+    selected: FavoritesSort,
+    expanded: Boolean,
     onDismissRequest: () -> Unit,
     onSortChanged: (FavoritesSort) -> Unit
 ) {
-    SelectionDialog(
-        title = stringResource(R.string.sort_by),
-        options = listOf(
+    SortMenu(
+        selected = selected,
+        expanded = expanded,
+        onDismissRequest = onDismissRequest,
+        onSortChanged = onSortChanged,
+        sortOptions = listOf(
             stringResource(R.string.newest_first) to FavoritesSort.New,
             stringResource(R.string.oldest_first) to FavoritesSort.Old
         ),
-        onDismissRequest = onDismissRequest,
-        onSortChanged = onSortChanged
     )
 }
