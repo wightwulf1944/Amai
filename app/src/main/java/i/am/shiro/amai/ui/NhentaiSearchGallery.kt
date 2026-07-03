@@ -1,6 +1,7 @@
 package i.am.shiro.amai.ui
 
-import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.staggeredgrid.LazyStaggeredGridState
@@ -104,23 +105,24 @@ private fun RowScope.SearchGalleryTopBar(
     onSearchClick: () -> Unit
 ) {
     TopBarPill(modifier = Modifier.weight(1f)) {
-        Row(modifier = Modifier.weight(1f)) {
+        FlowRow(
+            modifier = Modifier
+                .weight(1f)
+                .padding(start = 16.dp, end = 4.dp),
+            horizontalArrangement = Arrangement.spacedBy(6.dp),
+        ) {
             Text(
                 text = stringResource(R.string.search),
-                style = MaterialTheme.typography.titleSmall,
+                style = MaterialTheme.typography.titleMedium,
                 color = MaterialTheme.colorScheme.secondary,
-                modifier = Modifier
-                    .alignByBaseline()
-                    .padding(start = 16.dp),
+                modifier = Modifier.alignByBaseline()
             )
             Text(
                 text = query.tokenize(),
-                style = MaterialTheme.typography.labelSmall,
+                style = MaterialTheme.typography.labelMedium,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
-                modifier = Modifier
-                    .alignByBaseline()
-                    .padding(start = 6.dp, end = 4.dp)
+                modifier = Modifier.alignByBaseline()
             )
         }
         IconButton(onClick = onSearchClick) {

@@ -12,10 +12,10 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.itemsIndexed
+import androidx.compose.material3.FilledTonalIconToggleButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
-import androidx.compose.material3.IconToggleButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
@@ -44,7 +44,6 @@ import i.am.shiro.amai.ui.common.BookThumbnail
 import i.am.shiro.amai.ui.common.TopBarContainer
 import i.am.shiro.amai.ui.common.TopBarPill
 import i.am.shiro.amai.ui.theme.AmaiTheme
-import i.am.shiro.amai.ui.utils.union
 import i.am.shiro.amai.ui.viewmodel.DetailViewModel
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
@@ -174,10 +173,10 @@ private fun RowScope.DetailTopBar(
                 contentDescription = stringResource(R.string.share)
             )
         }
-        IconToggleButton(
+        FilledTonalIconToggleButton(
             checked = isFavorite,
             onCheckedChange = { onFavoriteToggle(it) },
-            colors = IconButtonDefaults.iconToggleButtonColors(
+            colors = IconButtonDefaults.filledTonalIconToggleButtonColors(
                 checkedContainerColor = MaterialTheme.colorScheme.tertiaryContainer,
                 checkedContentColor = MaterialTheme.colorScheme.onTertiaryContainer
             )
@@ -200,7 +199,7 @@ fun DetailBody(
     LazyVerticalGrid(
         columns = GridCells.Adaptive(150.dp),
         modifier = Modifier.fillMaxSize(),
-        contentPadding = contentPadding union PaddingValues(8.dp),
+        contentPadding = contentPadding,
         horizontalArrangement = Arrangement.spacedBy(8.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp),
     ) {
