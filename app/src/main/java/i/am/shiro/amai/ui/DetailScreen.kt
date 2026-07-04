@@ -30,7 +30,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.layout.WindowInsetsRulers.Companion.NavigationBars
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -44,6 +46,7 @@ import i.am.shiro.amai.ui.common.BookThumbnail
 import i.am.shiro.amai.ui.common.TopBarContainer
 import i.am.shiro.amai.ui.common.TopBarPill
 import i.am.shiro.amai.ui.theme.AmaiTheme
+import i.am.shiro.amai.ui.utils.Toggle
 import i.am.shiro.amai.ui.viewmodel.DetailViewModel
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
@@ -173,9 +176,13 @@ private fun RowScope.DetailTopBar(
                 contentDescription = stringResource(R.string.share)
             )
         }
+        val haptic = LocalHapticFeedback.current
         FilledTonalIconToggleButton(
             checked = isFavorite,
-            onCheckedChange = { onFavoriteToggle(it) },
+            onCheckedChange = {
+                haptic.performHapticFeedback(HapticFeedbackType.Toggle(it))
+                onFavoriteToggle(it)
+            },
             colors = IconButtonDefaults.filledTonalIconToggleButtonColors(
                 checkedContainerColor = MaterialTheme.colorScheme.tertiaryContainer,
                 checkedContentColor = MaterialTheme.colorScheme.onTertiaryContainer

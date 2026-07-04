@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.calculateEndPadding
 import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.pager.PagerState
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.style.TextDecoration
@@ -141,4 +142,9 @@ fun String.tokenize(): AnnotatedString {
 
 private enum class SearchMode {
     START, CONTINUE, END, END_QUOTE
+}
+
+@Suppress("FunctionName")
+fun HapticFeedbackType.Companion.Toggle(on: Boolean): HapticFeedbackType {
+    return if (on) HapticFeedbackType.ToggleOn else HapticFeedbackType.ToggleOff
 }
