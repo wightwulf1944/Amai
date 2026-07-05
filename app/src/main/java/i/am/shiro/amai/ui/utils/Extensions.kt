@@ -5,11 +5,13 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.calculateEndPadding
 import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.pager.PagerState
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.style.TextDecoration
-import androidx.compose.ui.unit.LayoutDirection
 
 suspend fun PagerState.animateScrollPageBy(value: Int) {
     val targetPage = currentPage + value
@@ -22,15 +24,22 @@ suspend fun PagerState.animateScrollPageBy(value: Int) {
 }
 
 /**
- * Returns a formatted string of the [PaddingValues] for the given [layoutDirection].
- * Useful for logging and debugging.
+ * Logs the values of [PaddingValues] to the provided [logger] during composition
+ * and whenever any of the padding values change.
  */
-fun PaddingValues.format(layoutDirection: LayoutDirection): String {
+@Composable
+fun PaddingValues.debug(logger: (String) -> Unit): PaddingValues {
+    val layoutDirection = LocalLayoutDirection.current
     val start = calculateStartPadding(layoutDirection)
     val top = calculateTopPadding()
     val end = calculateEndPadding(layoutDirection)
     val bottom = calculateBottomPadding()
-    return "PaddingValues(start=$start, top=$top, end=$end, bottom=$bottom)"
+
+    LaunchedEffect(start, top, end, bottom) {
+        logger("PaddingValues(start=$start, top=$top, end=$end, bottom=$bottom)")
+    }
+
+    return this
 }
 
 fun String.tokenize(): AnnotatedString {
