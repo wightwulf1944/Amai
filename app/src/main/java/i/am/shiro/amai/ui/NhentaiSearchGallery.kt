@@ -29,7 +29,6 @@ import i.am.shiro.amai.ui.common.AmaiScaffold
 import i.am.shiro.amai.ui.common.GalleryBody
 import i.am.shiro.amai.ui.common.GallerySortMenu
 import i.am.shiro.amai.ui.common.TopBarPill
-import i.am.shiro.amai.ui.utils.tokenize
 import i.am.shiro.amai.ui.viewmodel.NhentaiSearchViewModel
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
@@ -118,7 +117,7 @@ private fun RowScope.SearchGalleryTopBar(
                 modifier = Modifier.alignByBaseline()
             )
             Text(
-                text = query.tokenize(),
+                text = query,
                 style = MaterialTheme.typography.labelMedium,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
