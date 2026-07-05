@@ -4,6 +4,7 @@ import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.focusable
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.aspectRatio
@@ -68,6 +69,8 @@ fun ReadContent(
     initialPage: Int,
     pages: List<Page>
 ) {
+    if (pages.isEmpty()) return
+
     val pagerState = rememberPagerState(initialPage = initialPage) { pages.size }
     val focusRequester = remember { FocusRequester() }
     var turboOn by remember { mutableStateOf(false) }
@@ -89,27 +92,21 @@ fun ReadContent(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color.Black)
+            .background(MaterialTheme.colorScheme.surfaceContainerLowest)
             .focusRequester(focusRequester)
             .focusable()
             .onKeyEvent(handler::handleKeyEvent)
     ) {
-        if (pages.isNotEmpty()) {
-            ReadPager(
-                pages = pages,
-                pagerState = pagerState,
-                turboOn = turboOn
-            )
+        ReadPager(
+            pages = pages,
+            pagerState = pagerState,
+            turboOn = turboOn
+        )
 
-            PageCounter(
-                currentPage = pagerState.currentPage + 1,
-                pageCount = pages.size,
-                modifier = Modifier
-                    .align(Alignment.BottomCenter)
-                    .safeDrawingPadding()
-                    .padding(bottom = 16.dp)
-            )
-        }
+        PageCounter(
+            currentPage = pagerState.currentPage + 1,
+            pageCount = pages.size
+        )
     }
 
     LaunchedEffect(Unit) {
@@ -129,58 +126,62 @@ fun ReadPager(
     )
     HorizontalPager(
         state = pagerState,
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier.fillMaxSize()
     ) { index ->
-        val page = pages[index]
-
-        val imageModifier = Modifier
-            .windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Horizontal))
-            .aspectRatio(page.aspectRatio)
-            .graphicsLayer {
-                scaleX = scale
-                scaleY = scale
-            }
-
-        if (turboOn) {
-            AsyncImage(
-                model = ThumbnailModel(page.thumbnailPath),
-                filterQuality = FilterQuality.None,
-                contentDescription = null,
-                modifier = imageModifier,
-                placeholder = ColorPainter(Color.Gray)
-            )
-        } else {
-            SubcomposeAsyncImage(
-                model = PageModel(page.path),
-                filterQuality = FilterQuality.High,
-                contentDescription = null,
-                modifier = imageModifier,
-                loading = {
-                    AsyncImage(
-                        model = ThumbnailModel(page.thumbnailPath),
-                        filterQuality = FilterQuality.None,
-                        contentDescription = null,
-                        modifier = Modifier.aspectRatio(page.aspectRatio),
-                        placeholder = ColorPainter(Color.Gray)
-                    )
+        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+            val page = pages[index]
+            val imageModifier = Modifier
+                .windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Horizontal))
+                .aspectRatio(page.aspectRatio)
+                .graphicsLayer {
+                    scaleX = scale
+                    scaleY = scale
                 }
-            )
+
+            if (turboOn) {
+                AsyncImage(
+                    model = ThumbnailModel(page.thumbnailPath),
+                    filterQuality = FilterQuality.None,
+                    contentDescription = null,
+                    modifier = imageModifier,
+                    placeholder = ColorPainter(Color.Gray)
+                )
+            } else {
+                SubcomposeAsyncImage(
+                    model = PageModel(page.path),
+                    filterQuality = FilterQuality.High,
+                    contentDescription = null,
+                    modifier = imageModifier,
+                    loading = {
+                        AsyncImage(
+                            model = ThumbnailModel(page.thumbnailPath),
+                            filterQuality = FilterQuality.None,
+                            contentDescription = null,
+                            modifier = Modifier.aspectRatio(page.aspectRatio),
+                            placeholder = ColorPainter(Color.Gray)
+                        )
+                    }
+                )
+            }
         }
     }
 }
 
 @Composable
-private fun PageCounter(
+private fun BoxScope.PageCounter(
     currentPage: Int,
     pageCount: Int,
-    modifier: Modifier
 ) {
+    val bg = MaterialTheme.colorScheme.surfaceContainerLowest.copy(alpha = 0.5f)
     Text(
         text = "$currentPage/$pageCount",
-        color = Color.White,
+        color = MaterialTheme.colorScheme.onSurface,
         style = MaterialTheme.typography.bodyLarge,
-        modifier = modifier
-            .background(Color.Black.copy(alpha = 0.5f), CircleShape)
+        modifier = Modifier
+            .align(Alignment.BottomCenter)
+            .safeDrawingPadding()
+            .padding(bottom = 16.dp)
+            .background(bg, CircleShape)
             .padding(horizontal = 6.dp, vertical = 2.dp)
     )
 }
@@ -189,11 +190,12 @@ private fun PageCounter(
 @Composable
 private fun PageCounterPreview() {
     AmaiTheme {
-        PageCounter(
-            currentPage = 5,
-            pageCount = 42,
-            modifier = Modifier.padding(bottom = 16.dp)
-        )
+        Box {
+            PageCounter(
+                currentPage = 5,
+                pageCount = 42
+            )
+        }
     }
 }
 
@@ -203,8 +205,8 @@ private fun ReadContentPreview() {
     AmaiTheme {
         ReadContent(
             pages = listOf(
-                Page(0, 0, "", 0f, "", 0f),
-                Page(0, 1, "", 0f, "", 0f)
+                Page(0, 0, "", 1f, "", 0f),
+                Page(0, 1, "", 1f, "", 0f)
             ),
             initialPage = 0
         )
