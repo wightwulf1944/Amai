@@ -2,13 +2,13 @@ package i.am.shiro.amai.ui
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.FlowRow
-import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.staggeredgrid.LazyStaggeredGridState
 import androidx.compose.foundation.lazy.staggeredgrid.rememberLazyStaggeredGridState
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -25,9 +25,9 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import i.am.shiro.amai.R
 import i.am.shiro.amai.data.remote.Nhentai.Sort
 import i.am.shiro.amai.model.BookPreview
-import i.am.shiro.amai.ui.common.AmaiScaffold
 import i.am.shiro.amai.ui.common.GalleryBody
 import i.am.shiro.amai.ui.common.GallerySortMenu
+import i.am.shiro.amai.ui.common.TopBarContainer
 import i.am.shiro.amai.ui.common.TopBarPill
 import i.am.shiro.amai.ui.viewmodel.NhentaiTagViewModel
 import org.koin.compose.viewmodel.koinViewModel
@@ -76,7 +76,7 @@ private fun TagGalleryContent(
     onItemClick: (Int) -> Unit,
     gridState: LazyStaggeredGridState,
 ) {
-    AmaiScaffold(
+    Scaffold(
         topBar = {
             TagGalleryTopBar(
                 tagName = tagName,
@@ -98,57 +98,59 @@ private fun TagGalleryContent(
 }
 
 @Composable
-private fun RowScope.TagGalleryTopBar(
+private fun TagGalleryTopBar(
     tagName: String,
     onSortChanged: (Sort) -> Unit,
     onSearchClick: () -> Unit
 ) {
-    TopBarPill(modifier = Modifier.weight(1f)) {
-        FlowRow(
-            modifier = Modifier
-                .weight(1f)
-                .padding(start = 16.dp, end = 4.dp),
-            horizontalArrangement = Arrangement.spacedBy(6.dp),
-        ) {
-            Text(
-                text = stringResource(R.string.tagged),
-                style = MaterialTheme.typography.titleMedium,
-                color = MaterialTheme.colorScheme.secondary,
-                modifier = Modifier.alignByBaseline()
-            )
-            Text(
-                text = tagName,
-                style = MaterialTheme.typography.labelMedium,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
-                modifier = Modifier.alignByBaseline()
-            )
-        }
-        IconButton(onClick = onSearchClick) {
-            Icon(
-                painter = painterResource(R.drawable.ic_search),
-                contentDescription = stringResource(R.string.search)
-            )
-        }
-    }
-    TopBarPill {
-        // synced with NhentaiTagViewModel
-        var sort by remember { mutableStateOf(Sort.DATE) }
-        var expanded by remember { mutableStateOf(false) }
-        IconButton(onClick = { expanded = true }) {
-            Icon(
-                painter = painterResource(R.drawable.ic_sort),
-                contentDescription = stringResource(R.string.sort)
-            )
-        }
-        GallerySortMenu(
-            selected = sort,
-            expanded = expanded,
-            onDismissRequest = { expanded = false },
-            onSortChanged = {
-                sort = it
-                onSortChanged(it)
+    TopBarContainer {
+        TopBarPill(modifier = Modifier.weight(1f)) {
+            FlowRow(
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(start = 16.dp, end = 4.dp),
+                horizontalArrangement = Arrangement.spacedBy(6.dp),
+            ) {
+                Text(
+                    text = stringResource(R.string.tagged),
+                    style = MaterialTheme.typography.titleMedium,
+                    color = MaterialTheme.colorScheme.secondary,
+                    modifier = Modifier.alignByBaseline()
+                )
+                Text(
+                    text = tagName,
+                    style = MaterialTheme.typography.labelMedium,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    modifier = Modifier.alignByBaseline()
+                )
             }
-        )
+            IconButton(onClick = onSearchClick) {
+                Icon(
+                    painter = painterResource(R.drawable.ic_search),
+                    contentDescription = stringResource(R.string.search)
+                )
+            }
+        }
+        TopBarPill {
+            // synced with NhentaiTagViewModel
+            var sort by remember { mutableStateOf(Sort.DATE) }
+            var expanded by remember { mutableStateOf(false) }
+            IconButton(onClick = { expanded = true }) {
+                Icon(
+                    painter = painterResource(R.drawable.ic_sort),
+                    contentDescription = stringResource(R.string.sort)
+                )
+            }
+            GallerySortMenu(
+                selected = sort,
+                expanded = expanded,
+                onDismissRequest = { expanded = false },
+                onSortChanged = {
+                    sort = it
+                    onSortChanged(it)
+                }
+            )
+        }
     }
 }

@@ -6,6 +6,7 @@ import androidx.compose.foundation.lazy.staggeredgrid.rememberLazyStaggeredGridS
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -17,8 +18,8 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import i.am.shiro.amai.R
 import i.am.shiro.amai.model.BookPreview
-import i.am.shiro.amai.ui.common.AmaiScaffold
 import i.am.shiro.amai.ui.common.GalleryBody
+import i.am.shiro.amai.ui.common.TopBarContainer
 import i.am.shiro.amai.ui.common.TopBarPill
 import i.am.shiro.amai.ui.viewmodel.NhentaiLatestViewModel
 import org.koin.androidx.compose.koinViewModel
@@ -59,7 +60,7 @@ private fun LatestGalleryContent(
     onItemClick: (Int) -> Unit,
     gridState: LazyStaggeredGridState,
 ) {
-    AmaiScaffold(
+    Scaffold(
         topBar = {
             LatestGalleryTopBar(
                 onSearchClick = onSearchClick
@@ -82,20 +83,22 @@ private fun LatestGalleryContent(
 private fun LatestGalleryTopBar(
     onSearchClick: () -> Unit
 ) {
-    TopBarPill {
-        Text(
-            text = stringResource(R.string.latest),
-            style = MaterialTheme.typography.titleMedium,
-            color = MaterialTheme.colorScheme.secondary,
-            modifier = Modifier
-                .weight(1f)
-                .padding(start = 16.dp),
-        )
-        IconButton(onClick = onSearchClick) {
-            Icon(
-                painter = painterResource(R.drawable.ic_search),
-                contentDescription = stringResource(R.string.search)
+    TopBarContainer {
+        TopBarPill {
+            Text(
+                text = stringResource(R.string.latest),
+                style = MaterialTheme.typography.titleMedium,
+                color = MaterialTheme.colorScheme.secondary,
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(start = 16.dp),
             )
+            IconButton(onClick = onSearchClick) {
+                Icon(
+                    painter = painterResource(R.drawable.ic_search),
+                    contentDescription = stringResource(R.string.search)
+                )
+            }
         }
     }
 }

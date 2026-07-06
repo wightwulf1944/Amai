@@ -2,8 +2,6 @@ package i.am.shiro.amai.ui
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.isImeVisible
@@ -17,6 +15,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -37,8 +36,8 @@ import androidx.compose.ui.unit.dp
 import i.am.shiro.amai.R
 import i.am.shiro.amai.model.BookPreview
 import i.am.shiro.amai.model.FavoritesSort
-import i.am.shiro.amai.ui.common.AmaiScaffold
 import i.am.shiro.amai.ui.common.BookGrid
+import i.am.shiro.amai.ui.common.TopBarContainer
 import i.am.shiro.amai.ui.common.TopBarPill
 import i.am.shiro.amai.ui.theme.AmaiTheme
 import i.am.shiro.amai.ui.viewmodel.FavoritesViewModel
@@ -83,7 +82,7 @@ fun FavoritesContent(
     onItemClick: (Int) -> Unit,
     gridState: LazyStaggeredGridState
 ) {
-    AmaiScaffold(
+    Scaffold(
         topBar = {
             FavoriteTopBar(
                 onSearchSubmit = onSearchSubmit,
@@ -91,7 +90,7 @@ fun FavoritesContent(
             )
         },
         content = { innerPadding ->
-            FavoritesBody(
+            BookGrid(
                 books = books,
                 onItemClick = onItemClick,
                 gridState = gridState,
@@ -102,32 +101,34 @@ fun FavoritesContent(
 }
 
 @Composable
-private fun RowScope.FavoriteTopBar(
+private fun FavoriteTopBar(
     onSearchSubmit: (String) -> Unit,
     onSortChanged: (FavoritesSort) -> Unit
 ) {
-    TopBarPill(modifier = Modifier.weight(1f)) {
-        SearchInput(onSearchSubmit = onSearchSubmit)
-    }
-    TopBarPill {
-        // synced with FavoritesViewModel
-        var sort by remember { mutableStateOf(FavoritesSort.New) }
-        var expanded by remember { mutableStateOf(false) }
-        IconButton(onClick = { expanded = true }) {
-            Icon(
-                painter = painterResource(R.drawable.ic_sort),
-                contentDescription = stringResource(R.string.sort)
+    TopBarContainer {
+        TopBarPill(modifier = Modifier.weight(1f)) {
+            SearchInput(onSearchSubmit = onSearchSubmit)
+        }
+        TopBarPill {
+            // synced with FavoritesViewModel
+            var sort by remember { mutableStateOf(FavoritesSort.New) }
+            var expanded by remember { mutableStateOf(false) }
+            IconButton(onClick = { expanded = true }) {
+                Icon(
+                    painter = painterResource(R.drawable.ic_sort),
+                    contentDescription = stringResource(R.string.sort)
+                )
+            }
+            FavoritesSortMenu(
+                selected = sort,
+                expanded = expanded,
+                onDismissRequest = { expanded = false },
+                onSortChanged = {
+                    sort = it
+                    onSortChanged(it)
+                }
             )
         }
-        FavoritesSortMenu(
-            selected = sort,
-            expanded = expanded,
-            onDismissRequest = { expanded = false },
-            onSortChanged = {
-                sort = it
-                onSortChanged(it)
-            }
-        )
     }
 }
 
@@ -179,21 +180,6 @@ fun SearchInput(
                 innerTextField()
             }
         }
-    )
-}
-
-@Composable
-fun FavoritesBody(
-    books: List<BookPreview>,
-    onItemClick: (Int) -> Unit,
-    gridState: LazyStaggeredGridState,
-    contentPadding: PaddingValues
-) {
-    BookGrid(
-        books = books,
-        onItemClick = onItemClick,
-        gridState = gridState,
-        contentPadding = contentPadding
     )
 }
 

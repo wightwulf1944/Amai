@@ -4,11 +4,13 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fitOutside
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.plus
+import androidx.compose.foundation.layout.windowInsetsBottomHeight
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -18,6 +20,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
@@ -32,7 +35,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
-import androidx.compose.ui.layout.WindowInsetsRulers.Companion.NavigationBars
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -42,7 +44,6 @@ import i.am.shiro.amai.R
 import i.am.shiro.amai.model.BookDetail
 import i.am.shiro.amai.model.Tag
 import i.am.shiro.amai.model.Thumbnail
-import i.am.shiro.amai.ui.common.AmaiScaffold
 import i.am.shiro.amai.ui.common.BookThumbnail
 import i.am.shiro.amai.ui.common.TopBarContainer
 import i.am.shiro.amai.ui.common.TopBarPill
@@ -93,7 +94,7 @@ fun DetailContent(
         snackbarHostState = snackbarHostState
     )
 
-    AmaiScaffold(
+    Scaffold(
         snackbarHost = {
             SnackbarHost(snackbarHostState)
         },
@@ -105,6 +106,9 @@ fun DetailContent(
                 onFavoriteToggle = onFavoriteToggle
             )
         },
+        bottomBar = {
+            NavigationBarScrim()
+        },
         content = { innerPadding ->
             DetailBody(
                 model = model,
@@ -112,7 +116,6 @@ fun DetailContent(
                 onTagClick = onTagClick,
                 contentPadding = innerPadding
             )
-            NavigationBarScrim()
         }
     )
 }
@@ -139,10 +142,54 @@ fun FavoriteSnackbarEffect(
 }
 
 @Composable
-fun NavigationBarScrim() = Spacer(
+private fun DetailTopBar(
+    isFavorite: Boolean,
+    onBackClick: () -> Unit,
+    onShareClick: () -> Unit,
+    onFavoriteToggle: (Boolean) -> Unit,
+) {
+    TopBarContainer(Arrangement.SpaceBetween) {
+        TopBarPill {
+            IconButton(onClick = onBackClick) {
+                Icon(
+                    painter = painterResource(R.drawable.ic_arrow_back),
+                    contentDescription = stringResource(R.string.back)
+                )
+            }
+        }
+        TopBarPill {
+            IconButton(onClick = onShareClick) {
+                Icon(
+                    painter = painterResource(R.drawable.ic_share),
+                    contentDescription = stringResource(R.string.share)
+                )
+            }
+            val haptic = LocalHapticFeedback.current
+            FilledTonalIconToggleButton(
+                checked = isFavorite,
+                onCheckedChange = {
+                    haptic.performHapticFeedback(HapticFeedbackType.Toggle(it))
+                    onFavoriteToggle(it)
+                },
+                colors = IconButtonDefaults.filledTonalIconToggleButtonColors(
+                    checkedContainerColor = MaterialTheme.colorScheme.tertiaryContainer,
+                    checkedContentColor = MaterialTheme.colorScheme.onTertiaryContainer
+                )
+            ) {
+                Icon(
+                    painter = painterResource(R.drawable.ic_favorite),
+                    contentDescription = stringResource(R.string.favorite),
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun NavigationBarScrim() = Spacer(
     Modifier
-        .fillMaxSize()
-        .fitOutside(NavigationBars.current)
+        .fillMaxWidth()
+        .windowInsetsBottomHeight(WindowInsets.navigationBars)
         .background(
             brush = Brush.verticalGradient(
                 colors = listOf(
@@ -152,51 +199,6 @@ fun NavigationBarScrim() = Spacer(
             )
         )
 )
-
-@Composable
-private fun RowScope.DetailTopBar(
-    isFavorite: Boolean,
-    onBackClick: () -> Unit,
-    onShareClick: () -> Unit,
-    onFavoriteToggle: (Boolean) -> Unit,
-) {
-    TopBarPill {
-        IconButton(onClick = onBackClick) {
-            Icon(
-                painter = painterResource(R.drawable.ic_arrow_back),
-                contentDescription = stringResource(R.string.back)
-            )
-        }
-    }
-
-    Spacer(modifier = Modifier.weight(1f))
-
-    TopBarPill {
-        IconButton(onClick = onShareClick) {
-            Icon(
-                painter = painterResource(R.drawable.ic_share),
-                contentDescription = stringResource(R.string.share)
-            )
-        }
-        val haptic = LocalHapticFeedback.current
-        FilledTonalIconToggleButton(
-            checked = isFavorite,
-            onCheckedChange = {
-                haptic.performHapticFeedback(HapticFeedbackType.Toggle(it))
-                onFavoriteToggle(it)
-            },
-            colors = IconButtonDefaults.filledTonalIconToggleButtonColors(
-                checkedContainerColor = MaterialTheme.colorScheme.tertiaryContainer,
-                checkedContentColor = MaterialTheme.colorScheme.onTertiaryContainer
-            )
-        ) {
-            Icon(
-                painter = painterResource(R.drawable.ic_favorite),
-                contentDescription = stringResource(R.string.favorite),
-            )
-        }
-    }
-}
 
 @Composable
 fun DetailBody(
@@ -209,8 +211,8 @@ fun DetailBody(
         columns = GridCells.Adaptive(150.dp),
         modifier = Modifier.fillMaxSize(),
         contentPadding = contentPadding
-            .plus(PaddingValues(top = 8.dp))
-            .union(PaddingValues(8.dp)),
+            .plus(PaddingValues(vertical = 8.dp))
+            .union(PaddingValues(horizontal = 8.dp)),
         horizontalArrangement = Arrangement.spacedBy(8.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp),
     ) {
@@ -236,14 +238,7 @@ fun DetailBody(
 fun DetailTopBarPreview() {
     AmaiTheme {
         Surface {
-            TopBarContainer {
-                DetailTopBar(
-                    isFavorite = false,
-                    onBackClick = {},
-                    onShareClick = {},
-                    onFavoriteToggle = {}
-                )
-            }
+            DetailTopBar(false, {}, {}, {})
         }
     }
 }

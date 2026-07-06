@@ -22,6 +22,7 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun TopBarContainer(
+    horizontalArrangement: Arrangement.Horizontal = Arrangement.spacedBy(4.dp),
     content: @Composable RowScope.() -> Unit
 ) {
     val background = Brush.verticalGradient(
@@ -30,7 +31,7 @@ fun TopBarContainer(
     val insets = TopAppBarDefaults.windowInsets
         .union(WindowInsets(top = 8.dp))
     Row(
-        horizontalArrangement = Arrangement.spacedBy(4.dp),
+        horizontalArrangement = horizontalArrangement,
         modifier = Modifier
             .fillMaxWidth()
             .height(IntrinsicSize.Min)
