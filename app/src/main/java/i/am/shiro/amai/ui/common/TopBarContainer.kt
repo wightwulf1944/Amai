@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.add
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -29,15 +28,14 @@ fun TopBarContainer(
         listOf(MaterialTheme.colorScheme.surface, Color.Transparent)
     )
     val insets = TopAppBarDefaults.windowInsets
-        .add(WindowInsets(left = 16.dp, right = 16.dp))
         .union(WindowInsets(top = 8.dp))
     Row(
         horizontalArrangement = Arrangement.spacedBy(4.dp),
         modifier = Modifier
             .fillMaxWidth()
             .height(IntrinsicSize.Min)
-            .padding(bottom = 8.dp)
             .background(background)
+            .padding(horizontal = 16.dp)
             .windowInsetsPadding(insets)
             .defaultMinSize(minHeight = 48.dp),
         content = content
