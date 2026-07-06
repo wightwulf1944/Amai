@@ -5,9 +5,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.FlowRow
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.HorizontalDivider
@@ -46,12 +44,10 @@ fun DetailContentHeader(
         Text(
             text = pluralStringResource(R.plurals.pages_format, model.pageCount, model.pageCount),
             style = MaterialTheme.typography.bodySmall,
+            modifier = Modifier.padding(bottom = 16.dp)
         )
 
-        Spacer(modifier = Modifier.height(16.dp))
-
-        // Define the order and labels for your tag groups
-        val groups = listOf(
+        listOf(
             R.string.artists to model.artistTags,
             R.string.groups to model.groupTags,
             R.string.parodies to model.parodyTags,
@@ -59,17 +55,12 @@ fun DetailContentHeader(
             R.string.language to model.languageTags,
             R.string.categories to model.categoryTags,
             R.string.tags to model.generalTags
-        )
-
-        groups.forEach { (resId, tags) ->
-            if (tags != null) {
-                TagGroup(
-                    label = stringResource(resId),
-                    tags = tags,
-                    onTagClick = onTagClick
-                )
-                Spacer(modifier = Modifier.height(8.dp))
-            }
+        ).forEach { (resId, tags) ->
+            TagGroup(
+                label = stringResource(resId),
+                tags = tags,
+                onTagClick = onTagClick
+            )
         }
     }
 }
@@ -77,20 +68,22 @@ fun DetailContentHeader(
 @Composable
 private fun TagGroup(
     label: String,
-    tags: List<Tag>,
+    tags: List<Tag>?,
     onTagClick: (Tag) -> Unit
 ) {
+    if (tags == null) return
+
     FlowRow(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(bottom = 8.dp),
         horizontalArrangement = Arrangement.spacedBy(4.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        // Text style and vertical padding must match to align items
-
         Text(
             text = label,
             style = MaterialTheme.typography.bodyMedium,
-            modifier = Modifier.padding(vertical = 4.dp)
+            modifier = Modifier.alignByBaseline()
         )
 
         tags.forEach { tag ->
@@ -99,6 +92,7 @@ private fun TagGroup(
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurface,
                 modifier = Modifier
+                    .alignByBaseline()
                     .clip(CircleShape)
                     .clickable { onTagClick(tag) }
                     .background(MaterialTheme.colorScheme.surfaceContainer)
