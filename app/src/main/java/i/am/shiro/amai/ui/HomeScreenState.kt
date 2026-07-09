@@ -21,22 +21,17 @@ class HomeScreenState(
 ) {
     var selectedTab by selectedTabState
 
-    fun goToLatest() {
-        selectedTab = HomeScreenTab.NHENTAI
-        nhentaiNavStack.clear()
-        nhentaiNavStack.add(NhentaiRoute.Latest)
-    }
+    fun goToLatest() = goTo(NhentaiRoute.Latest)
 
-    fun goToTag(tag: Tag) {
-        selectedTab = HomeScreenTab.NHENTAI
-        nhentaiNavStack.clear()
-        nhentaiNavStack.add(NhentaiRoute.Tag(tag.id, tag.name))
-    }
+    fun goToTag(tag: Tag) = goTo(NhentaiRoute.Tag(tag.id, tag.name))
 
-    fun goToSearch(query: String) {
+    fun goToSearch(query: String) = goTo(NhentaiRoute.Search(query))
+
+    private fun goTo(destination: NavKey) {
         selectedTab = HomeScreenTab.NHENTAI
-        nhentaiNavStack.clear()
-        nhentaiNavStack.add(NhentaiRoute.Search(query))
+        if (nhentaiNavStack.lastOrNull() != destination) {
+            nhentaiNavStack.add(destination)
+        }
     }
 }
 

@@ -16,8 +16,8 @@ interface IntermediateDao {
     fun getDetail(bookId: Int): Flow<DetailIntermediate?>
 
     @Transaction
-    @Query("SELECT * FROM CachedEntity ORDER BY id")
-    fun getCachedPreviews(): Flow<List<CachedPreviewIntermediate>>
+    @Query("SELECT * FROM CachedEntity WHERE cacheKey=:cacheKey ORDER BY id")
+    fun getCachedPreviews(cacheKey: String): Flow<List<CachedPreviewIntermediate>>
 
     @Transaction
     @Query("SELECT * FROM FavoriteEntity")

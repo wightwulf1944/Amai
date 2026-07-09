@@ -2,6 +2,11 @@ package i.am.shiro.amai.ui
 
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.scaleOut
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.displayCutout
@@ -65,6 +70,9 @@ fun HomeScreen(
 
                 HomeScreenTab.NHENTAI -> {
                     NavDisplay(
+                        transitionSpec = { pushTransition },
+                        popTransitionSpec = { popTransition },
+                        predictivePopTransitionSpec = { popTransition },
                         backStack = state.nhentaiNavStack,
                         entryDecorators = listOf(holderDecorator, vmStoreDecorator),
                         entryProvider = entryProvider {
@@ -112,3 +120,9 @@ fun HomeNavItem(
         label = { Text(label) }
     )
 }
+
+private val pushTransition =
+    scaleIn(initialScale = 1.05f) + fadeIn() togetherWith scaleOut(targetScale = 0.95f) + fadeOut()
+
+private val popTransition =
+    scaleIn(initialScale = 0.95f) + fadeIn() togetherWith scaleOut(targetScale = 1.05f) + fadeOut()

@@ -23,12 +23,14 @@ import androidx.core.view.WindowInsetsCompat.Type
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.core.view.WindowInsetsControllerCompat.BEHAVIOR_DEFAULT
 import androidx.core.view.WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
 import androidx.window.core.layout.WindowSizeClass
 import i.am.shiro.amai.data.remote.Nhentai
+import i.am.shiro.amai.data.repository.GalleryRepository
 import i.am.shiro.amai.ui.DetailScreen
 import i.am.shiro.amai.ui.HomeScreen
 import i.am.shiro.amai.ui.ReadScreen
@@ -37,9 +39,13 @@ import i.am.shiro.amai.ui.navigation.Route
 import i.am.shiro.amai.ui.navigation.rememberNavigator
 import i.am.shiro.amai.ui.rememberHomeScreenState
 import i.am.shiro.amai.ui.theme.AmaiTheme
+import kotlinx.coroutines.launch
+import org.koin.android.ext.android.inject
 import timber.log.Timber
 
 class MainActivity : ComponentActivity() {
+
+    private val repository: GalleryRepository by inject()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         enableEdgeToEdge(
@@ -47,6 +53,12 @@ class MainActivity : ComponentActivity() {
             navigationBarStyle = SystemBarStyle.dark(Color.TRANSPARENT)
         )
         super.onCreate(savedInstanceState)
+
+        if (savedInstanceState == null) {
+            lifecycleScope.launch {
+                repository.clearAllCache()
+            }
+        }
 
         val initialBookId = when (intent.action) {
             Intent.ACTION_VIEW -> {

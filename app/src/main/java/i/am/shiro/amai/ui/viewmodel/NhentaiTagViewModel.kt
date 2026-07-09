@@ -18,6 +18,7 @@ import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import kotlin.coroutines.cancellation.CancellationException
+import kotlin.uuid.Uuid
 
 @OptIn(SavedStateHandleSaveableApi::class)
 class NhentaiTagViewModel(
@@ -25,6 +26,8 @@ class NhentaiTagViewModel(
     private val tagId: Int,
     private val repository: GalleryRepository
 ) : ViewModel() {
+
+    private val cacheKey by handle.saved { Uuid.random() }
 
     private var page by handle.saved { 0 }
 
@@ -38,11 +41,17 @@ class NhentaiTagViewModel(
     var isLoading by mutableStateOf(false)
         private set
 
-    val books = repository.getCachedBooks()
+    val books = repository.getCachedBooks(cacheKey)
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
     init {
         if (page == 0) fetchRemotePage()
+    }
+
+    override fun onCleared() {
+        viewModelScope.launch {
+            repository.clearCache(cacheKey)
+        }
     }
 
     fun loadMore() {
@@ -71,10 +80,11 @@ class NhentaiTagViewModel(
 
         fetchJob = viewModelScope.launch {
             try {
-                val isLastPage = repository.getTaggedGalleryPage(
-                    tagId = tagId,
-                    sort = requestedSort,
-                    page = requestedPage
+                val isLastPage = repository.fetchTaggedPage(
+                    cacheKey,
+                    tagId,
+                    requestedSort,
+                    requestedPage
                 )
 
                 if (isActive) {

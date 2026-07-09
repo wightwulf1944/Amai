@@ -12,6 +12,9 @@ interface CachedDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(entity: CachedEntity)
 
+    @Query("DELETE FROM CachedEntity WHERE cacheKey = :cacheKey")
+    suspend fun clearCache(cacheKey: String)
+
     @Query("DELETE FROM CachedEntity")
-    suspend fun deleteAll()
+    suspend fun clearCache()
 }

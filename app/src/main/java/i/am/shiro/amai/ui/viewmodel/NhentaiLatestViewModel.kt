@@ -15,11 +15,14 @@ import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import kotlin.coroutines.cancellation.CancellationException
+import kotlin.uuid.Uuid
 
 class NhentaiLatestViewModel(
     handle: SavedStateHandle,
     private val repository: GalleryRepository
 ) : ViewModel() {
+
+    private val cacheKey by handle.saved { Uuid.random() }
 
     private var page by handle.saved { 0 }
 
@@ -30,11 +33,17 @@ class NhentaiLatestViewModel(
     var isLoading by mutableStateOf(false)
         private set
 
-    val books = repository.getCachedBooks()
+    val books = repository.getCachedBooks(cacheKey)
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
     init {
         if (page == 0) fetchRemotePage()
+    }
+
+    override fun onCleared() {
+        viewModelScope.launch {
+            repository.clearCache(cacheKey)
+        }
     }
 
     fun loadMore() {
@@ -56,7 +65,7 @@ class NhentaiLatestViewModel(
 
         fetchJob = viewModelScope.launch {
             try {
-                val isLastPage = repository.getLatestGalleryPage(requestedPage)
+                val isLastPage = repository.fetchLatestPage(cacheKey, requestedPage)
 
                 if (isActive) {
                     page = requestedPage

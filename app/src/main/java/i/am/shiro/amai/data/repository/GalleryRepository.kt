@@ -10,28 +10,46 @@ import i.am.shiro.amai.data.remote.Nhentai.Sort
 import i.am.shiro.amai.data.remote.dto.GalleryListItemDto
 import i.am.shiro.amai.data.remote.dto.PaginatedDto
 import i.am.shiro.amai.model.BookPreview
+import kotlin.uuid.ExperimentalUuidApi
+import kotlin.uuid.Uuid
 import kotlinx.coroutines.flow.map
 
+@OptIn(ExperimentalUuidApi::class)
 class GalleryRepository(
     private val database: AmaiDatabase,
     private val nhentaiApi: Nhentai.Api
 ) {
-    fun getCachedBooks() = database.intermediateDao.getCachedPreviews()
+    fun getCachedBooks(cacheKey: Uuid) = database.intermediateDao.getCachedPreviews(cacheKey.toString())
         .map { list -> list.map { it.toModel() } }
 
-    suspend fun getLatestGalleryPage(page: Int) =
-        fetchPage(page) { getAll(page) }
+    suspend fun clearCache(cacheKey: Uuid) = database.withTransaction {
+        database.cachedDao.clearCache(cacheKey.toString())
+        database.bookDao.deleteOrphan()
+    }
 
-    suspend fun searchGalleryPage(query: String, sort: Sort, page: Int) =
-        fetchPage(page) { search(query, sort, page) }
+    suspend fun clearAllCache() = database.withTransaction {
+        database.cachedDao.clearCache()
+        database.bookDao.deleteOrphan()
+    }
 
-    suspend fun getTaggedGalleryPage(tagId: Int, sort: Sort, page: Int) =
-        fetchPage(page) { getTagged(tagId, sort, page) }
+    suspend fun fetchLatestPage(cacheKey: Uuid, page: Int) =
+        fetchPage(cacheKey, page) { getAll(page) }
 
-    private suspend fun fetchPage(page: Int, call: suspend Nhentai.Api.() -> PaginatedDto): Boolean {
+    suspend fun fetchTaggedPage(cacheKey: Uuid, tagId: Int, sort: Sort, page: Int) =
+        fetchPage(cacheKey, page) { getTagged(tagId, sort, page) }
+
+    suspend fun fetchSearchPage(cacheKey: Uuid, query: String, sort: Sort, page: Int) =
+        fetchPage(cacheKey, page) { search(query, sort, page) }
+
+    private suspend fun fetchPage(
+        cacheKey: Uuid,
+        page: Int,
+        call: suspend Nhentai.Api.() -> PaginatedDto
+    ): Boolean {
+        val keyString = cacheKey.toString()
         if (page == 1) {
             database.withTransaction {
-                database.cachedDao.deleteAll()
+                database.cachedDao.clearCache(keyString)
                 database.bookDao.deleteOrphan()
             }
         }
@@ -40,7 +58,7 @@ class GalleryRepository(
 
         database.withTransaction {
             for (bookJson in response.result) {
-                database.cachedDao.insert(CachedEntity(0, bookJson.id))
+                database.cachedDao.insert(CachedEntity(0, keyString, bookJson.id))
                 database.bookDao.insert(bookJson.toEntity())
             }
         }
