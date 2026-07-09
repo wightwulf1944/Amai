@@ -1,19 +1,21 @@
 package i.am.shiro.amai.ui.viewmodel
 
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.serialization.saved
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.compose.SavedStateHandleSaveableApi
-import androidx.lifecycle.viewmodel.compose.saveable
 import i.am.shiro.amai.data.repository.GalleryRepository
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import timber.log.Timber
+import kotlin.coroutines.cancellation.CancellationException
 
-@OptIn(SavedStateHandleSaveableApi::class)
 class NhentaiLatestViewModel(
     handle: SavedStateHandle,
     private val repository: GalleryRepository
@@ -23,42 +25,52 @@ class NhentaiLatestViewModel(
 
     private var isComplete by handle.saved { false }
 
-    var isLoading by handle.saveable { mutableStateOf(true) }
+    private var fetchJob: Job? = null
+
+    var isLoading by mutableStateOf(false)
         private set
 
     val books = repository.getCachedBooks()
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
     init {
-        if (isLoading) fetchRemotePage()
+        if (page == 0) fetchRemotePage()
     }
 
     fun loadMore() {
-        if (isLoading || isComplete) return
+        if (isComplete || fetchJob?.isActive == true) return
         fetchRemotePage()
     }
 
     fun refresh() {
         page = 0
         isComplete = false
+        fetchJob?.cancel()
         fetchRemotePage()
     }
 
     private fun fetchRemotePage() {
-        isLoading = true
-        viewModelScope.launch {
-            try {
-                val totalPages = repository.getLatestGalleryPage(page + 1)
+        val requestedPage = page + 1
 
-                if (page < totalPages) {
-                    page++
-                } else {
-                    isComplete = true
+        isLoading = true
+
+        fetchJob = viewModelScope.launch {
+            try {
+                val isLastPage = repository.getLatestGalleryPage(requestedPage)
+
+                if (isActive) {
+                    page = requestedPage
+                    isComplete = isLastPage
                 }
+            } catch (e: CancellationException) {
+                throw e
             } catch (e: Exception) {
                 Timber.e(e)
             } finally {
-                isLoading = false
+                if (isActive) {
+                    isLoading = false
+                    fetchJob = null
+                }
             }
         }
     }

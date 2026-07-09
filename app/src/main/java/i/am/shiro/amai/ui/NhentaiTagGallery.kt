@@ -59,7 +59,7 @@ fun NhentaiTagGallery(
         books = books,
         isLoading = viewModel.isLoading,
         onRefresh = viewModel::refresh,
-        onSortChange = viewModel::sort,
+        onSortChange = viewModel::onSortChange,
         onSearchClick = onSearchClick,
         onItemClick = onItemClick,
         gridState = gridState,

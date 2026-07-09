@@ -28,7 +28,7 @@ class GalleryRepository(
     suspend fun getTaggedGalleryPage(tagId: Int, sort: Sort, page: Int) =
         fetchPage(page) { getTagged(tagId, sort, page) }
 
-    private suspend fun fetchPage(page: Int, call: suspend Nhentai.Api.() -> PaginatedDto): Int {
+    private suspend fun fetchPage(page: Int, call: suspend Nhentai.Api.() -> PaginatedDto): Boolean {
         if (page == 1) {
             database.withTransaction {
                 database.cachedDao.deleteAll()
@@ -45,7 +45,7 @@ class GalleryRepository(
             }
         }
 
-        return response.num_pages
+        return page >= response.num_pages // returns true on last page
     }
 
     private fun CachedPreviewIntermediate.toModel() = BookPreview(
