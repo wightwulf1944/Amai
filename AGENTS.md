@@ -30,6 +30,7 @@ Guidance for AI agents working in this repository.
 - **Entities**: Objects representing Room tables must end in `Entity`. (Defined in `data/local/entity/`).
 - **Intermediates**: Room objects joining multiple tables must end in `Intermediate`. (Defined in `data/local/intermediate/`).
 - **Domain Models**: Objects returned by repositories for UI consumption. They must NOT have a suffix (e.g., `BookDetail`, not `BookDetailModel`). (Defined in `model/`).
+- **Callbacks**: Use `on<Property>Change` (e.g., `onSortChange`) instead of `on<Property>Changed` for lambda parameters, following Jetpack Compose naming conventions.
 - **Repository Isolation**: Repositories must map DTOs/Entities into Domain Models. The UI layer should never see a DTO or Entity.
 
 ## Source Map (Source of Truth)

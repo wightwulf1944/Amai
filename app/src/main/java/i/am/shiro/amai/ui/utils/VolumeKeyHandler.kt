@@ -20,7 +20,7 @@ import kotlin.time.measureTime
 
 class VolumeKeyHandler(
     scope: CoroutineScope,
-    private val onHoldChanged: (Boolean) -> Unit,
+    private val onHoldChange: (Boolean) -> Unit,
     private val onVolumeDown: suspend () -> Unit,
     private val onVolumeUp: suspend () -> Unit
 ) {
@@ -51,7 +51,7 @@ class VolumeKeyHandler(
         scope.launch {
             isAnyPressedFlow.collectLatest { isAnyPressed ->
                 if (isAnyPressed) delay(300.milliseconds)
-                onHoldChanged(isAnyPressed)
+                onHoldChange(isAnyPressed)
             }
         }
     }

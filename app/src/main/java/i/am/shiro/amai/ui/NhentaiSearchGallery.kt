@@ -59,7 +59,7 @@ fun NhentaiSearchGallery(
         books = books,
         isLoading = viewModel.isLoading,
         onRefresh = viewModel::refresh,
-        onSortChanged = viewModel::sort,
+        onSortChange = viewModel::sort,
         onSearchClick = onSearchClick,
         onItemClick = onItemClick,
         gridState = gridState,
@@ -73,7 +73,7 @@ private fun SearchGalleryContent(
     books: List<BookPreview>,
     isLoading: Boolean,
     onRefresh: () -> Unit,
-    onSortChanged: (Nhentai.Sort) -> Unit,
+    onSortChange: (Nhentai.Sort) -> Unit,
     onSearchClick: () -> Unit,
     onItemClick: (Int) -> Unit,
     gridState: LazyStaggeredGridState,
@@ -83,7 +83,7 @@ private fun SearchGalleryContent(
             SearchGalleryTopBar(
                 query = query,
                 sort = sort,
-                onSortChanged = onSortChanged,
+                onSortChange = onSortChange,
                 onSearchClick = onSearchClick
             )
         },
@@ -104,7 +104,7 @@ private fun SearchGalleryContent(
 private fun SearchGalleryTopBar(
     query: String,
     sort: Nhentai.Sort,
-    onSortChanged: (Nhentai.Sort) -> Unit,
+    onSortChange: (Nhentai.Sort) -> Unit,
     onSearchClick: () -> Unit
 ) {
     TopBarContainer {
@@ -148,7 +148,7 @@ private fun SearchGalleryTopBar(
                 selected = sort,
                 expanded = expanded,
                 onDismissRequest = { expanded = false },
-                onSortChange = onSortChanged
+                onSortChange = onSortChange
             )
         }
     }

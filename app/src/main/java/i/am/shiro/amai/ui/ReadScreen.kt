@@ -79,7 +79,7 @@ fun ReadContent(
     val handler = remember {
         VolumeKeyHandler(
             scope = scope,
-            onHoldChanged = { turboOn = it },
+            onHoldChange = { turboOn = it },
             onVolumeDown = {
                 pagerState.animateScrollPageBy(-1)
             },
