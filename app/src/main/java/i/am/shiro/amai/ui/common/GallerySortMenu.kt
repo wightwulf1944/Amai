@@ -10,13 +10,13 @@ fun GallerySortMenu(
     selected: Nhentai.Sort,
     expanded: Boolean,
     onDismissRequest: () -> Unit,
-    onSortChanged: (Nhentai.Sort) -> Unit
+    onSortChange: (Nhentai.Sort) -> Unit
 ) {
     SortMenu(
         selected = selected,
         expanded = expanded,
         onDismissRequest = onDismissRequest,
-        onSortChanged = onSortChanged,
+        onSortChange = onSortChange,
         sortOptions = listOf(
             stringResource(R.string.newest) to Nhentai.Sort.DATE,
             stringResource(R.string.popular) to Nhentai.Sort.POPULAR,

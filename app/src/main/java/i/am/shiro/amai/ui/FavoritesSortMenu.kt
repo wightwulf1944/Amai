@@ -11,13 +11,13 @@ fun FavoritesSortMenu(
     selected: FavoritesSort,
     expanded: Boolean,
     onDismissRequest: () -> Unit,
-    onSortChanged: (FavoritesSort) -> Unit
+    onSortChange: (FavoritesSort) -> Unit
 ) {
     SortMenu(
         selected = selected,
         expanded = expanded,
         onDismissRequest = onDismissRequest,
-        onSortChanged = onSortChanged,
+        onSortChange = onSortChange,
         sortOptions = listOf(
             stringResource(R.string.newest_first) to FavoritesSort.New,
             stringResource(R.string.oldest_first) to FavoritesSort.Old

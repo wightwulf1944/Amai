@@ -23,7 +23,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import i.am.shiro.amai.R
-import i.am.shiro.amai.data.remote.Nhentai.Sort
+import i.am.shiro.amai.data.remote.Nhentai
 import i.am.shiro.amai.model.BookPreview
 import i.am.shiro.amai.ui.common.GalleryBody
 import i.am.shiro.amai.ui.common.GallerySortMenu
@@ -55,6 +55,7 @@ fun NhentaiSearchGallery(
 
     SearchGalleryContent(
         query = searchQuery,
+        sort = viewModel.sort,
         books = books,
         isLoading = viewModel.isLoading,
         onRefresh = viewModel::refresh,
@@ -68,10 +69,11 @@ fun NhentaiSearchGallery(
 @Composable
 private fun SearchGalleryContent(
     query: String,
+    sort: Nhentai.Sort,
     books: List<BookPreview>,
     isLoading: Boolean,
     onRefresh: () -> Unit,
-    onSortChanged: (Sort) -> Unit,
+    onSortChanged: (Nhentai.Sort) -> Unit,
     onSearchClick: () -> Unit,
     onItemClick: (Int) -> Unit,
     gridState: LazyStaggeredGridState,
@@ -80,6 +82,7 @@ private fun SearchGalleryContent(
         topBar = {
             SearchGalleryTopBar(
                 query = query,
+                sort = sort,
                 onSortChanged = onSortChanged,
                 onSearchClick = onSearchClick
             )
@@ -100,7 +103,8 @@ private fun SearchGalleryContent(
 @Composable
 private fun SearchGalleryTopBar(
     query: String,
-    onSortChanged: (Sort) -> Unit,
+    sort: Nhentai.Sort,
+    onSortChanged: (Nhentai.Sort) -> Unit,
     onSearchClick: () -> Unit
 ) {
     TopBarContainer {
@@ -133,8 +137,6 @@ private fun SearchGalleryTopBar(
             }
         }
         TopBarPill {
-            // synced with NhentaiSearchViewModel
-            var sort by remember { mutableStateOf(Sort.DATE) }
             var expanded by remember { mutableStateOf(false) }
             IconButton(onClick = { expanded = true }) {
                 Icon(
@@ -146,10 +148,7 @@ private fun SearchGalleryTopBar(
                 selected = sort,
                 expanded = expanded,
                 onDismissRequest = { expanded = false },
-                onSortChanged = {
-                    sort = it
-                    onSortChanged(it)
-                }
+                onSortChange = onSortChanged
             )
         }
     }

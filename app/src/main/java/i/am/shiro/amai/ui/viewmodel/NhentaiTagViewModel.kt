@@ -23,9 +23,10 @@ class NhentaiTagViewModel(
 
     private var page by handle.saved { 0 }
 
-    private var sort by handle.saved { Sort.DATE }
-
     private var isComplete by handle.saved { false }
+
+    var sort by handle.saveable { mutableStateOf(Sort.DATE) }
+        private set
 
     var isLoading by handle.saveable { mutableStateOf(true) }
         private set

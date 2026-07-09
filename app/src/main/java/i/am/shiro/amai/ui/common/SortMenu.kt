@@ -16,7 +16,7 @@ fun <T> SortMenu(
     selected: T,
     expanded: Boolean,
     onDismissRequest: () -> Unit,
-    onSortChanged: (T) -> Unit,
+    onSortChange: (T) -> Unit,
     sortOptions: List<Pair<String, T>>
 ) {
     DropdownMenu(
@@ -35,7 +35,7 @@ fun <T> SortMenu(
                 },
                 text = { Text(string) },
                 onClick = {
-                    onSortChanged(sort)
+                    onSortChange(sort)
                     onDismissRequest()
                 }
             )

@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.isImeVisible
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.staggeredgrid.LazyStaggeredGridState
 import androidx.compose.foundation.lazy.staggeredgrid.rememberLazyStaggeredGridState
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
@@ -19,7 +18,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -33,6 +31,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import i.am.shiro.amai.R
 import i.am.shiro.amai.model.BookPreview
 import i.am.shiro.amai.model.FavoritesSort
@@ -48,45 +47,47 @@ fun FavoritesScreen(
     onItemClick: (Int) -> Unit,
     viewModel: FavoritesViewModel = koinViewModel()
 ) {
-    val books by viewModel.favoriteBooks.collectAsState()
-    val gridState = rememberLazyStaggeredGridState()
-    var shouldScrollToTop by remember { mutableStateOf(false) }
-
-    LaunchedEffect(books) {
-        if (shouldScrollToTop) {
-            gridState.scrollToItem(0)
-            shouldScrollToTop = false
-        }
-    }
+    val books by viewModel.books.collectAsStateWithLifecycle()
+    val query by viewModel.query.collectAsStateWithLifecycle()
+    val sort by viewModel.sort.collectAsStateWithLifecycle()
 
     FavoritesContent(
         books = books,
-        onSortChanged = { sort ->
-            shouldScrollToTop = true
-            viewModel.onSort(sort)
-        },
-        onSearchSubmit = { searchQuery ->
-            shouldScrollToTop = true
-            viewModel.onSearch(searchQuery)
-        },
+        query = query,
+        sort = sort,
+        onQueryChange = viewModel::onQueryChange,
+        onSortChange = viewModel::onSortChange,
         onItemClick = onItemClick,
-        gridState = gridState
     )
 }
 
 @Composable
 fun FavoritesContent(
     books: List<BookPreview>,
-    onSortChanged: (FavoritesSort) -> Unit,
-    onSearchSubmit: (String) -> Unit,
+    query: String,
+    sort: FavoritesSort,
+    onQueryChange: (String) -> Unit,
+    onSortChange: (FavoritesSort) -> Unit,
     onItemClick: (Int) -> Unit,
-    gridState: LazyStaggeredGridState
 ) {
+    val gridState = rememberLazyStaggeredGridState()
+    var oldQuery by remember { mutableStateOf(query) }
+    var oldSort by remember { mutableStateOf(sort) }
+    LaunchedEffect(books) {
+        if (query != oldQuery || sort != oldSort) {
+            gridState.scrollToItem(0)
+            oldQuery = query
+            oldSort = sort
+        }
+    }
+
     Scaffold(
         topBar = {
             FavoriteTopBar(
-                onSearchSubmit = onSearchSubmit,
-                onSortChanged = onSortChanged
+                query = query,
+                sort = sort,
+                onQueryChange = onQueryChange,
+                onSortChange = onSortChange,
             )
         },
         content = { innerPadding ->
@@ -102,16 +103,19 @@ fun FavoritesContent(
 
 @Composable
 private fun FavoriteTopBar(
-    onSearchSubmit: (String) -> Unit,
-    onSortChanged: (FavoritesSort) -> Unit
+    query: String,
+    sort: FavoritesSort,
+    onQueryChange: (String) -> Unit,
+    onSortChange: (FavoritesSort) -> Unit
 ) {
     TopBarContainer {
         TopBarPill(modifier = Modifier.weight(1f)) {
-            SearchInput(onSearchSubmit = onSearchSubmit)
+            SearchInput(
+                query = query,
+                onQueryChange = onQueryChange
+            )
         }
         TopBarPill {
-            // synced with FavoritesViewModel
-            var sort by remember { mutableStateOf(FavoritesSort.New) }
             var expanded by remember { mutableStateOf(false) }
             IconButton(onClick = { expanded = true }) {
                 Icon(
@@ -123,10 +127,7 @@ private fun FavoriteTopBar(
                 selected = sort,
                 expanded = expanded,
                 onDismissRequest = { expanded = false },
-                onSortChanged = {
-                    sort = it
-                    onSortChanged(it)
-                }
+                onSortChange = onSortChange
             )
         }
     }
@@ -135,10 +136,9 @@ private fun FavoriteTopBar(
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun SearchInput(
-    onSearchSubmit: (String) -> Unit
+    query: String,
+    onQueryChange: (String) -> Unit,
 ) {
-    var text by remember { mutableStateOf("") }
-
     val focusManager = LocalFocusManager.current
 
     val isImeVisible = WindowInsets.isImeVisible
@@ -150,8 +150,8 @@ fun SearchInput(
     }
 
     BasicTextField(
-        value = text,
-        onValueChange = { text = it },
+        value = query,
+        onValueChange = onQueryChange,
         modifier = Modifier.fillMaxSize(),
         textStyle = MaterialTheme.typography.bodyLarge.copy(
             color = LocalContentColor.current
@@ -160,7 +160,6 @@ fun SearchInput(
             imeAction = ImeAction.Search
         ),
         keyboardActions = KeyboardActions {
-            onSearchSubmit(text)
             focusManager.clearFocus()
         },
         singleLine = true,
@@ -170,7 +169,7 @@ fun SearchInput(
                 modifier = Modifier.padding(horizontal = 16.dp),
                 contentAlignment = Alignment.CenterStart
             ) {
-                if (text.isEmpty()) {
+                if (query.isEmpty()) {
                     Text(
                         text = stringResource(R.string.search),
                         style = MaterialTheme.typography.bodyLarge,
@@ -204,10 +203,11 @@ fun FavoritesContentPreview() {
     AmaiTheme {
         FavoritesContent(
             books = mockBooks,
-            onSortChanged = {},
-            onSearchSubmit = {},
+            query = "",
+            sort = FavoritesSort.New,
+            onQueryChange = {},
+            onSortChange = {},
             onItemClick = {},
-            gridState = rememberLazyStaggeredGridState()
         )
     }
 }
