@@ -19,6 +19,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.core.net.toUri
+import androidx.core.util.Consumer
 import androidx.core.view.WindowInsetsCompat.Type
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.core.view.WindowInsetsControllerCompat.BEHAVIOR_DEFAULT
@@ -41,7 +42,6 @@ import i.am.shiro.amai.ui.rememberHomeScreenState
 import i.am.shiro.amai.ui.theme.AmaiTheme
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
-import timber.log.Timber
 
 class MainActivity : ComponentActivity() {
 
@@ -60,29 +60,11 @@ class MainActivity : ComponentActivity() {
             }
         }
 
-        val initialBookId = when (intent.action) {
-            Intent.ACTION_VIEW -> {
-                intent.data?.pathSegments?.getOrNull(1)?.toIntOrNull()
-            }
-
-            Intent.ACTION_SEND -> {
-                try {
-                    intent.getStringExtra(EXTRA_TEXT)
-                        ?.toUri()
-                        ?.lastPathSegment
-                        ?.toIntOrNull()
-                } catch (e: Exception) {
-                    Timber.e(e)
-                    null
-                }
-            }
-
-            else -> null
-        }
+        val initialBookId = parseBookId(intent)
 
         setContent {
             AmaiTheme {
-                StatusBarVisibilityEffect()
+                AdaptiveStatusBarsEffect()
 
                 val homeScreenState = rememberHomeScreenState()
 
@@ -94,6 +76,11 @@ class MainActivity : ComponentActivity() {
                     else
                         arrayOf(Route.Home, Route.Detail(initialBookId))
                 )
+
+                OnNewIntentEffect { intent ->
+                    val newBookId = parseBookId(intent)
+                    if (newBookId != null) navigator.push(Route.Detail(newBookId))
+                }
 
                 NavDisplay(
                     backStack = navigator,
@@ -162,7 +149,18 @@ class MainActivity : ComponentActivity() {
     }
 
     @Composable
-    private fun StatusBarVisibilityEffect() {
+    private fun OnNewIntentEffect(onNewIntent: (Intent) -> Unit) {
+        DisposableEffect(Unit) {
+            val listener = Consumer(onNewIntent)
+            addOnNewIntentListener(listener)
+            onDispose {
+                removeOnNewIntentListener(listener)
+            }
+        }
+    }
+
+    @Composable
+    private fun AdaptiveStatusBarsEffect() {
         val shouldShowStatusBars = currentWindowAdaptiveInfo().windowSizeClass
             .isHeightAtLeastBreakpoint(WindowSizeClass.HEIGHT_DP_MEDIUM_LOWER_BOUND)
 
@@ -181,6 +179,25 @@ class MainActivity : ComponentActivity() {
                 controller.systemBarsBehavior = BEHAVIOR_DEFAULT
             }
         }
+    }
+
+    private fun parseBookId(intent: Intent): Int? {
+        val uri = when (intent.action) {
+            Intent.ACTION_VIEW -> intent.data
+            Intent.ACTION_SEND -> {
+                try {
+                    intent.getStringExtra(EXTRA_TEXT)?.toUri()
+                } catch (_: Exception) {
+                    null
+                }
+            }
+
+            else -> null
+        }
+        if (uri == null) return null
+        if (uri.host?.endsWith("nhentai.net") == false) return null
+        if (uri.pathSegments.getOrNull(0) != "g") return null
+        return uri.pathSegments.getOrNull(1)?.toIntOrNull()
     }
 
     private fun share(bookId: Int) {
