@@ -184,14 +184,7 @@ class MainActivity : ComponentActivity() {
     private fun parseBookId(intent: Intent): Int? {
         val uri = when (intent.action) {
             Intent.ACTION_VIEW -> intent.data
-            Intent.ACTION_SEND -> {
-                try {
-                    intent.getStringExtra(EXTRA_TEXT)?.toUri()
-                } catch (_: Exception) {
-                    null
-                }
-            }
-
+            Intent.ACTION_SEND -> intent.getStringExtra(EXTRA_TEXT)?.toUri()
             else -> null
         }
         if (uri == null) return null
