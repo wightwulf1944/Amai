@@ -18,41 +18,37 @@ import kotlinx.coroutines.launch
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.measureTime
 
-class VolumeKeyHandler(
+class VolumeKeyScroller(
     scope: CoroutineScope,
     private val onHoldChange: (Boolean) -> Unit,
-    private val onVolumeDown: suspend () -> Unit,
-    private val onVolumeUp: suspend () -> Unit
+    private val onScroll: suspend (delta: Int) -> Unit,
 ) {
     private val downPressed = MutableStateFlow(false)
     private val upPressed = MutableStateFlow(false)
 
     init {
-        val actionFlow = combineTransform(downPressed, upPressed) { down, up ->
+        val deltaFlow = combineTransform(downPressed, upPressed) { down, up ->
             when {
-                down && !up -> emit(onVolumeDown)
-                up && !down -> emit(onVolumeUp)
+                down && !up -> emit(-1)
+                up && !down -> emit(1)
             }
         }
 
         scope.launch {
             while (isActive) {
-                val action = actionFlow.first()
-                val elapsed = measureTime {
-                    action()
-                }
-                delay(300.milliseconds - elapsed)
+                delay(300.milliseconds - measureTime {
+                    onScroll(deltaFlow.first())
+                })
             }
         }
 
-        val isAnyPressedFlow = combine(downPressed, upPressed) { down, up -> down || up }
-            .distinctUntilChanged()
-
         scope.launch {
-            isAnyPressedFlow.collectLatest { isAnyPressed ->
-                if (isAnyPressed) delay(300.milliseconds)
-                onHoldChange(isAnyPressed)
-            }
+            combine(downPressed, upPressed, Boolean::or)
+                .distinctUntilChanged()
+                .collectLatest { isAnyKeyPressed ->
+                    if (isAnyKeyPressed) delay(300.milliseconds)
+                    onHoldChange(isAnyKeyPressed)
+                }
         }
     }
 

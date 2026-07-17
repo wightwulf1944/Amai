@@ -44,7 +44,7 @@ import i.am.shiro.amai.model.Page
 import i.am.shiro.amai.ui.image.PageModel
 import i.am.shiro.amai.ui.image.ThumbnailModel
 import i.am.shiro.amai.ui.theme.AmaiTheme
-import i.am.shiro.amai.ui.utils.VolumeKeyHandler
+import i.am.shiro.amai.ui.utils.VolumeKeyScroller
 import i.am.shiro.amai.ui.utils.animateScrollPageBy
 import i.am.shiro.amai.ui.viewmodel.ReadViewModel
 import org.koin.compose.viewmodel.koinViewModel
@@ -77,15 +77,10 @@ fun ReadContent(
 
     val scope = rememberCoroutineScope()
     val handler = remember {
-        VolumeKeyHandler(
+        VolumeKeyScroller(
             scope = scope,
             onHoldChange = { turboOn = it },
-            onVolumeDown = {
-                pagerState.animateScrollPageBy(-1)
-            },
-            onVolumeUp = {
-                pagerState.animateScrollPageBy(1)
-            }
+            onScroll = pagerState::animateScrollPageBy
         )
     }
 
