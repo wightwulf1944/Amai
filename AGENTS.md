@@ -51,8 +51,9 @@ This document is a researched map, not a replacement for reading the code. Facts
 
 ## Implementation Details & Known Quirks
 
-### State Management
+### UI & UX
 - **Side Effects & Navigation**: Use **callbacks** (not `LaunchedEffect`) for one-time UI reactions to user actions (e.g., scrolling to top after search/sort). `LaunchedEffect` re-triggers whenever a screen is re-composed during tab switching, leading to unintended "false-positive" events.
+- **Pull-to-Refresh**: In `GalleryBody`, `PullToRefreshBox` is intentionally set to `isRefreshing = false` despite an active `isLoading` state. This avoids visual clutter when other loading indicators (like `LinearProgressIndicator`) are present in the same UI.
 
 ### Database
 - **Development Migration**: `di/Modules.kt` is configured with `.fallbackToDestructiveMigration(dropAllTables = true)`, which resets the database on schema mismatches during development.
