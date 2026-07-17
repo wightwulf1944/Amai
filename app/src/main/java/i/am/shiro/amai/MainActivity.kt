@@ -14,6 +14,8 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.core.net.toUri
 import androidx.core.util.Consumer
 import androidx.core.view.WindowInsetsCompat.Type
@@ -142,8 +144,9 @@ class MainActivity : ComponentActivity() {
 
     @Composable
     private fun OnNewIntentEffect(onNewIntent: (Intent) -> Unit) {
+        val currentOnNewIntent by rememberUpdatedState(onNewIntent)
         DisposableEffect(Unit) {
-            val listener = Consumer(onNewIntent)
+            val listener = Consumer<Intent> { currentOnNewIntent(it) }
             addOnNewIntentListener(listener)
             onDispose {
                 removeOnNewIntentListener(listener)
