@@ -23,7 +23,7 @@ class HomeScreenState(
 
     fun goToLatest() = goTo(NhentaiRoute.Latest)
 
-    fun goToTag(tag: Tag) = goTo(NhentaiRoute.Tag(tag.id, tag.name))
+    fun goToTag(tag: Tag) = goTo(NhentaiRoute.Tag(tag.id, tag.name, tag.query))
 
     fun goToSearch(query: String) = goTo(NhentaiRoute.Search(query))
 
@@ -58,7 +58,7 @@ sealed interface NhentaiRoute : NavKey {
     data object Latest : NhentaiRoute
 
     @Serializable
-    data class Tag(val tagId: Int, val tagName: String) : NhentaiRoute
+    data class Tag(val id: Int, val name: String, val query: String) : NhentaiRoute
 
     @Serializable
     data class Search(val query: String) : NhentaiRoute

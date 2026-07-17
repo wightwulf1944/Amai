@@ -33,7 +33,7 @@ import i.am.shiro.amai.R
 @Composable
 fun HomeScreen(
     state: HomeScreenState,
-    onSearchClick: () -> Unit,
+    onSearchClick: (String) -> Unit,
     onItemClick: (Int) -> Unit,
 ) {
     NavigationSuiteScaffold(
@@ -78,22 +78,22 @@ fun HomeScreen(
                         entryProvider = entryProvider {
                             entry<NhentaiRoute.Latest> {
                                 NhentaiLatestGallery(
-                                    onSearchClick = onSearchClick,
+                                    onSearchClick = { onSearchClick("") },
                                     onItemClick = onItemClick
                                 )
                             }
                             entry<NhentaiRoute.Tag> {
                                 NhentaiTagGallery(
-                                    tagId = it.tagId,
-                                    tagName = it.tagName,
-                                    onSearchClick = onSearchClick,
+                                    tagId = it.id,
+                                    tagName = it.name,
+                                    onSearchClick = { onSearchClick(it.query) },
                                     onItemClick = onItemClick
                                 )
                             }
                             entry<NhentaiRoute.Search> {
                                 NhentaiSearchGallery(
                                     searchQuery = it.query,
-                                    onSearchClick = onSearchClick,
+                                    onSearchClick = { onSearchClick(it.query) },
                                     onItemClick = onItemClick
                                 )
                             }

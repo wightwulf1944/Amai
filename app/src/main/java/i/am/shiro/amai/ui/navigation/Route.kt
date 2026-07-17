@@ -9,7 +9,7 @@ sealed interface Route : NavKey {
     data object Home : Route
 
     @Serializable
-    data object Search : Route
+    data class Search(val initialQuery: String) : Route
 
     @Serializable
     data class Detail(val bookId: Int) : Route

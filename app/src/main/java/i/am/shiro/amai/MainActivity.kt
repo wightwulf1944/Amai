@@ -14,10 +14,6 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.core.net.toUri
 import androidx.core.util.Consumer
 import androidx.core.view.WindowInsetsCompat.Type
@@ -68,8 +64,6 @@ class MainActivity : ComponentActivity() {
 
                 val homeScreenState = rememberHomeScreenState()
 
-                var searchScreenQuery by rememberSaveable { mutableStateOf("") }
-
                 val navigator = rememberNavigator(
                     *if (initialBookId == null)
                         arrayOf(Route.Home)
@@ -93,8 +87,8 @@ class MainActivity : ComponentActivity() {
                         entry<Route.Home> {
                             HomeScreen(
                                 state = homeScreenState,
-                                onSearchClick = {
-                                    navigator.push(Route.Search)
+                                onSearchClick = { initialQuery ->
+                                    navigator.push(Route.Search(initialQuery))
                                 },
                                 onItemClick = { bookId ->
                                     navigator.push(Route.Detail(bookId))
@@ -103,9 +97,8 @@ class MainActivity : ComponentActivity() {
                         }
                         entry<Route.Search> { key ->
                             SearchScreen(
-                                initialQuery = searchScreenQuery,
+                                initialQuery = key.initialQuery,
                                 onSearch = { query ->
-                                    searchScreenQuery = query
                                     navigator.pop(key)
 
                                     if (query.isEmpty()) {
@@ -130,7 +123,6 @@ class MainActivity : ComponentActivity() {
                                     navigator.push(Route.Read(key.bookId, pageIndex))
                                 },
                                 onTagClick = { tag ->
-                                    searchScreenQuery = tag.query
                                     navigator.pop(key)
                                     homeScreenState.goToTag(tag)
                                 }
