@@ -6,27 +6,32 @@ import androidx.room.RenameColumn
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import androidx.room.migration.AutoMigrationSpec
+import androidx.room.migration.Migration
+import androidx.sqlite.db.SupportSQLiteDatabase
 import i.am.shiro.amai.data.local.dao.BookDao
-import i.am.shiro.amai.data.local.dao.CachedDao
 import i.am.shiro.amai.data.local.dao.FavoriteDao
+import i.am.shiro.amai.data.local.dao.GalleryCacheDao
+import i.am.shiro.amai.data.local.dao.GalleryCacheEntryDao
 import i.am.shiro.amai.data.local.dao.ImageDao
 import i.am.shiro.amai.data.local.dao.IntermediateDao
 import i.am.shiro.amai.data.local.dao.TagDao
 import i.am.shiro.amai.data.local.entity.BookEntity
-import i.am.shiro.amai.data.local.entity.CachedEntity
 import i.am.shiro.amai.data.local.entity.FavoriteEntity
+import i.am.shiro.amai.data.local.entity.GalleryCacheEntity
+import i.am.shiro.amai.data.local.entity.GalleryCacheEntryEntity
 import i.am.shiro.amai.data.local.entity.ImageEntity
 import i.am.shiro.amai.data.local.entity.TagEntity
 
 @Database(
-    version = 32,
+    version = 33,
     exportSchema = true,
     entities = [
         BookEntity::class,
         TagEntity::class,
         ImageEntity::class,
         FavoriteEntity::class,
-        CachedEntity::class
+        GalleryCacheEntity::class,
+        GalleryCacheEntryEntity::class
     ],
     autoMigrations = [
         AutoMigration(from = 27, to = 28, spec = AmaiDatabase.Migration27To28::class),
@@ -47,9 +52,26 @@ abstract class AmaiDatabase : RoomDatabase() {
 
     abstract val favoriteDao: FavoriteDao
 
-    abstract val cachedDao: CachedDao
+    abstract val galleryCacheDao: GalleryCacheDao
+
+    abstract val galleryCacheEntryDao: GalleryCacheEntryDao
 
     abstract val intermediateDao: IntermediateDao
+
+    companion object {
+        val MIGRATION_32_33 = object : Migration(32, 33) {
+            override fun migrate(db: SupportSQLiteDatabase) {
+                // Drop old cache tables
+                db.execSQL("DROP TABLE IF EXISTS CachedEntity")
+                db.execSQL("DROP TABLE IF EXISTS RemoteKeyEntity")
+
+                // Create new cache tables
+                db.execSQL("CREATE TABLE IF NOT EXISTS GalleryCacheEntity (id TEXT NOT NULL, nextPage INTEGER, PRIMARY KEY(id))")
+                db.execSQL("CREATE TABLE IF NOT EXISTS GalleryCacheEntryEntity (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, cacheId TEXT NOT NULL, bookId INTEGER NOT NULL, FOREIGN KEY(cacheId) REFERENCES GalleryCacheEntity(id) ON UPDATE NO ACTION ON DELETE CASCADE )")
+                db.execSQL("CREATE UNIQUE INDEX IF NOT EXISTS index_GalleryCacheEntryEntity_cacheId_bookId ON GalleryCacheEntryEntity (cacheId, bookId)")
+            }
+        }
+    }
 
     @RenameColumn(
         tableName = "FavoriteEntity",

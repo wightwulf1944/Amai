@@ -27,7 +27,7 @@ class NhentaiSearchViewModel(
     private val repository: GalleryRepository
 ) : ViewModel() {
 
-    private val cacheKey by handle.saved { Uuid.random() }
+    private val cacheId by handle.saved { Uuid.random() }
 
     private var page by handle.saved { 0 }
 
@@ -41,7 +41,7 @@ class NhentaiSearchViewModel(
     var isLoading by mutableStateOf(false)
         private set
 
-    val books = repository.getCachedBooks(cacheKey)
+    val books = repository.getCachedBooks(cacheId)
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
     init {
@@ -50,7 +50,7 @@ class NhentaiSearchViewModel(
 
     override fun onCleared() {
         viewModelScope.launch {
-            repository.clearCache(cacheKey)
+            repository.clearCache(cacheId)
         }
     }
 
@@ -81,10 +81,10 @@ class NhentaiSearchViewModel(
         fetchJob = viewModelScope.launch {
             try {
                 val isLastPage = repository.fetchSearchPage(
-                    cacheKey,
-                    query,
-                    requestedSort,
-                    requestedPage
+                    cacheId = cacheId,
+                    query = query,
+                    sort = requestedSort,
+                    page = requestedPage
                 )
 
                 if (isActive) {

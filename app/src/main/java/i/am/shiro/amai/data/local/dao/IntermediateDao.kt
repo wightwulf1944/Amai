@@ -1,5 +1,6 @@
 package i.am.shiro.amai.data.local.dao
 
+import androidx.paging.PagingSource
 import androidx.room.Dao
 import androidx.room.Query
 import androidx.room.Transaction
@@ -17,8 +18,12 @@ interface IntermediateDao {
     fun getDetail(bookId: Int): Flow<DetailIntermediate?>
 
     @Transaction
-    @Query("SELECT * FROM CachedEntity WHERE cacheKey=:cacheKey ORDER BY id")
-    fun getCachedPreviews(cacheKey: Uuid): Flow<List<CachedPreviewIntermediate>>
+    @Query("SELECT * FROM GalleryCacheEntryEntity WHERE cacheId=:cacheId ORDER BY id")
+    fun getCachedPreviews(cacheId: Uuid): Flow<List<CachedPreviewIntermediate>>
+
+    @Transaction
+    @Query("SELECT * FROM GalleryCacheEntryEntity WHERE cacheId=:cacheId ORDER BY id")
+    fun getCachedPreviewsPaging(cacheId: Uuid): PagingSource<Int, CachedPreviewIntermediate>
 
     @Transaction
     @Query("SELECT * FROM FavoriteEntity")

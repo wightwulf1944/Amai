@@ -1,22 +1,21 @@
 package i.am.shiro.amai.data.local.dao
 
 import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.Upsert
 import i.am.shiro.amai.data.local.entity.BookEntity
 
 @Dao
 interface BookDao {
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Upsert
     suspend fun insert(entity: BookEntity)
 
     @Query("""
         DELETE FROM BookEntity 
         WHERE bookId NOT IN (
             SELECT bookId FROM FavoriteEntity UNION 
-            SELECT bookId FROM CachedEntity)
+            SELECT bookId FROM GalleryCacheEntryEntity)
     """)
     suspend fun deleteOrphan()
 }

@@ -21,9 +21,11 @@ import i.am.shiro.amai.model.BookPreview
 @Composable
 fun BookCard(
     book: BookPreview,
-    onItemClick: (Int) -> Unit
+    onItemClick: (Int) -> Unit,
+    modifier: Modifier = Modifier
 ) {
     Card(
+        modifier = modifier,
         onClick = { onItemClick(book.bookId) },
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surfaceContainerLow

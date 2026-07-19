@@ -27,7 +27,7 @@ class NhentaiTagViewModel(
     private val repository: GalleryRepository
 ) : ViewModel() {
 
-    private val cacheKey by handle.saved { Uuid.random() }
+    private val cacheId by handle.saved { Uuid.random() }
 
     private var page by handle.saved { 0 }
 
@@ -41,7 +41,7 @@ class NhentaiTagViewModel(
     var isLoading by mutableStateOf(false)
         private set
 
-    val books = repository.getCachedBooks(cacheKey)
+    val books = repository.getCachedBooks(cacheId)
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
     init {
@@ -50,7 +50,7 @@ class NhentaiTagViewModel(
 
     override fun onCleared() {
         viewModelScope.launch {
-            repository.clearCache(cacheKey)
+            repository.clearCache(cacheId)
         }
     }
 
@@ -81,10 +81,10 @@ class NhentaiTagViewModel(
         fetchJob = viewModelScope.launch {
             try {
                 val isLastPage = repository.fetchTaggedPage(
-                    cacheKey,
-                    tagId,
-                    requestedSort,
-                    requestedPage
+                    cacheId = cacheId,
+                    tagId = tagId,
+                    sort = requestedSort,
+                    page = requestedPage
                 )
 
                 if (isActive) {
