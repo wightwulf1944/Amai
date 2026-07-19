@@ -4,6 +4,7 @@ import androidx.room.AutoMigration
 import androidx.room.Database
 import androidx.room.RenameColumn
 import androidx.room.RoomDatabase
+import androidx.room.TypeConverters
 import androidx.room.migration.AutoMigrationSpec
 import i.am.shiro.amai.data.local.dao.BookDao
 import i.am.shiro.amai.data.local.dao.CachedDao
@@ -35,6 +36,7 @@ import i.am.shiro.amai.data.local.entity.TagEntity
         AutoMigration(from = 31, to = 32),
     ]
 )
+@TypeConverters(Converters::class)
 abstract class AmaiDatabase : RoomDatabase() {
 
     abstract val bookDao: BookDao

@@ -10,20 +10,18 @@ import i.am.shiro.amai.data.remote.Nhentai.Sort
 import i.am.shiro.amai.data.remote.dto.GalleryListItemDto
 import i.am.shiro.amai.data.remote.dto.PaginatedDto
 import i.am.shiro.amai.model.BookPreview
-import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 import kotlinx.coroutines.flow.map
 
-@OptIn(ExperimentalUuidApi::class)
 class GalleryRepository(
     private val database: AmaiDatabase,
     private val nhentaiApi: Nhentai.Api
 ) {
-    fun getCachedBooks(cacheKey: Uuid) = database.intermediateDao.getCachedPreviews(cacheKey.toString())
+    fun getCachedBooks(cacheKey: Uuid) = database.intermediateDao.getCachedPreviews(cacheKey)
         .map { list -> list.map { it.toModel() } }
 
     suspend fun clearCache(cacheKey: Uuid) = database.withTransaction {
-        database.cachedDao.clearCache(cacheKey.toString())
+        database.cachedDao.clearCache(cacheKey)
         database.bookDao.deleteOrphan()
     }
 
@@ -46,10 +44,9 @@ class GalleryRepository(
         page: Int,
         call: suspend Nhentai.Api.() -> PaginatedDto
     ): Boolean {
-        val keyString = cacheKey.toString()
         if (page == 1) {
             database.withTransaction {
-                database.cachedDao.clearCache(keyString)
+                database.cachedDao.clearCache(cacheKey)
                 database.bookDao.deleteOrphan()
             }
         }
@@ -58,7 +55,7 @@ class GalleryRepository(
 
         database.withTransaction {
             for (bookJson in response.result) {
-                database.cachedDao.insert(CachedEntity(0, keyString, bookJson.id))
+                database.cachedDao.insert(CachedEntity(0, cacheKey, bookJson.id))
                 database.bookDao.insert(bookJson.toEntity())
             }
         }

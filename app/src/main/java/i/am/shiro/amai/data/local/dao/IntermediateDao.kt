@@ -7,6 +7,7 @@ import i.am.shiro.amai.data.local.intermediate.CachedPreviewIntermediate
 import i.am.shiro.amai.data.local.intermediate.DetailIntermediate
 import i.am.shiro.amai.data.local.intermediate.FavoritesPreviewIntermediate
 import kotlinx.coroutines.flow.Flow
+import kotlin.uuid.Uuid
 
 @Dao
 interface IntermediateDao {
@@ -17,7 +18,7 @@ interface IntermediateDao {
 
     @Transaction
     @Query("SELECT * FROM CachedEntity WHERE cacheKey=:cacheKey ORDER BY id")
-    fun getCachedPreviews(cacheKey: String): Flow<List<CachedPreviewIntermediate>>
+    fun getCachedPreviews(cacheKey: Uuid): Flow<List<CachedPreviewIntermediate>>
 
     @Transaction
     @Query("SELECT * FROM FavoriteEntity")
