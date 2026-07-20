@@ -13,19 +13,33 @@ import i.am.shiro.amai.model.BookPreview
 import kotlinx.coroutines.flow.map
 import kotlin.uuid.Uuid
 
+@OptIn(ExperimentalPagingApi::class)
 class PagingGalleryRepository(
     private val database: AmaiDatabase,
     private val nhentaiApi: Nhentai.Api
 ) {
-    @OptIn(ExperimentalPagingApi::class)
+    private val pagingConfig = PagingConfig(
+        pageSize = 50,
+        initialLoadSize = 50,
+        prefetchDistance = 25
+    )
+
     fun getLatestPager(cacheId: Uuid) = Pager(
-        config = PagingConfig(
-            pageSize = 50,
-            initialLoadSize = 50,
-            prefetchDistance = 25
-        ),
-        remoteMediator = NhentaiRemoteMediator(cacheId, nhentaiApi, database),
-        pagingSourceFactory = { database.intermediateDao.getCachedPreviewsPaging(cacheId) }
+        config = pagingConfig,
+        pagingSourceFactory = { database.intermediateDao.getCachedPreviewsPaging(cacheId) },
+        remoteMediator = NhentaiRemoteMediator(cacheId, database) { page, pageSize ->
+            nhentaiApi.getAll(page = page, perPage = pageSize)
+        }
+    ).flow.map { pagingData ->
+        pagingData.map { it.toModel() }
+    }
+
+    fun getTaggedPager(cacheId: Uuid, tagId: Int, sort: Nhentai.Sort) = Pager(
+        config = pagingConfig,
+        pagingSourceFactory = { database.intermediateDao.getCachedPreviewsPaging(cacheId) },
+        remoteMediator = NhentaiRemoteMediator(cacheId, database) { page, pageSize ->
+            nhentaiApi.getTagged(tagId = tagId, sort = sort, page = page, perPage = pageSize)
+        }
     ).flow.map { pagingData ->
         pagingData.map { it.toModel() }
     }

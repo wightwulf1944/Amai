@@ -9,6 +9,7 @@ Guidance for AI agents working in this repository.
 - **Code is Truth**: The source code is the absolute authority. If it disagrees with this guide, update this guide to match the code.
 - **UI Architecture**: Prefer Jetpack Compose over XML layouts and Fragments. Always consider adding previews whenever you create new composables.
 - **Database integrity**: Whenever database schema changes are made, you MUST handle migrations.
+- **Anti-Speculation**: Prioritize the current requirements and state of the app. Do not implement changes or choose architectures driven by "what-if" scenarios or future-proofing that are not required by the active task. Keeping the code optimized for its current state is preferred over speculative flexibility.
 - **Tool Usage Policy**: 
   - **NEVER** use file-writing tools unless explicitly asked to "apply", "fix", or "go ahead". Use only read-only tools for investigations and explanations.
   - **DO NOT** use file-writing tools or propose code changes in that same turn unless explicitly asked to "fix", "refactor", "apply changes", or "go ahead".

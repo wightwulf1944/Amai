@@ -1,52 +1,36 @@
 package i.am.shiro.amai.ui.viewmodel
 
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.serialization.saved
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.compose.SavedStateHandleSaveableApi
-import androidx.lifecycle.viewmodel.compose.saveable
+import androidx.paging.cachedIn
 import i.am.shiro.amai.data.remote.Nhentai.Sort
-import i.am.shiro.amai.data.repository.GalleryRepository
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.isActive
+import i.am.shiro.amai.data.repository.PagingGalleryRepository
+import i.am.shiro.amai.ui.viewmodel.utils.savedMutableStateFlow
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.launch
-import timber.log.Timber
-import kotlin.coroutines.cancellation.CancellationException
 import kotlin.uuid.Uuid
 
-@OptIn(SavedStateHandleSaveableApi::class)
+@OptIn(ExperimentalCoroutinesApi::class)
 class NhentaiTagViewModel(
     handle: SavedStateHandle,
-    private val tagId: Int,
-    private val repository: GalleryRepository
+    private val repository: PagingGalleryRepository,
+    private val tagId: Int
 ) : ViewModel() {
 
     private val cacheId by handle.saved { Uuid.random() }
 
-    private var page by handle.saved { 0 }
+    val sortFlow by handle.savedMutableStateFlow(Sort.DATE)
 
-    private var isComplete by handle.saved { false }
-
-    private var fetchJob: Job? = null
-
-    var sort by handle.saveable { mutableStateOf(Sort.DATE) }
-        private set
-
-    var isLoading by mutableStateOf(false)
-        private set
-
-    val books = repository.getCachedBooks(cacheId)
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
-
-    init {
-        if (page == 0) fetchRemotePage()
-    }
+    val books = sortFlow.flatMapLatest { sort ->
+        repository.getTaggedPager(
+            cacheId = cacheId,
+            tagId = tagId,
+            sort = sort
+        )
+    }.cachedIn(viewModelScope)
 
     override fun onCleared() {
         viewModelScope.launch {
@@ -54,53 +38,7 @@ class NhentaiTagViewModel(
         }
     }
 
-    fun loadMore() {
-        if (isComplete || fetchJob?.isActive == true) return
-        fetchRemotePage()
-    }
-
-    fun refresh() {
-        page = 0
-        isComplete = false
-        fetchJob?.cancel()
-        fetchRemotePage()
-    }
-
-    fun onSortChange(sort: Sort) {
-        if (this.sort == sort) return
-        this.sort = sort
-        refresh()
-    }
-
-    private fun fetchRemotePage() {
-        val requestedPage = page + 1
-        val requestedSort = sort
-
-        isLoading = true
-
-        fetchJob = viewModelScope.launch {
-            try {
-                val isLastPage = repository.fetchTaggedPage(
-                    cacheId = cacheId,
-                    tagId = tagId,
-                    sort = requestedSort,
-                    page = requestedPage
-                )
-
-                if (isActive) {
-                    page = requestedPage
-                    isComplete = isLastPage
-                }
-            } catch (e: CancellationException) {
-                throw e
-            } catch (e: Exception) {
-                Timber.e(e)
-            } finally {
-                if (isActive) {
-                    isLoading = false
-                    fetchJob = null
-                }
-            }
-        }
+    fun onSortChange(newSort: Sort) {
+        sortFlow.value = newSort
     }
 }

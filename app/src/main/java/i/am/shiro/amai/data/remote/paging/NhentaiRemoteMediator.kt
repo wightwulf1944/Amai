@@ -10,8 +10,8 @@ import i.am.shiro.amai.data.local.entity.BookEntity
 import i.am.shiro.amai.data.local.entity.GalleryCacheEntity
 import i.am.shiro.amai.data.local.entity.GalleryCacheEntryEntity
 import i.am.shiro.amai.data.local.intermediate.CachedPreviewIntermediate
-import i.am.shiro.amai.data.remote.Nhentai
 import i.am.shiro.amai.data.remote.dto.GalleryListItemDto
+import i.am.shiro.amai.data.remote.dto.PaginatedDto
 import retrofit2.HttpException
 import java.io.IOException
 import kotlin.uuid.Uuid
@@ -19,8 +19,8 @@ import kotlin.uuid.Uuid
 @OptIn(ExperimentalPagingApi::class)
 class NhentaiRemoteMediator(
     private val cacheId: Uuid,
-    private val nhentaiApi: Nhentai.Api,
-    private val database: AmaiDatabase
+    private val database: AmaiDatabase,
+    private val fetchPage: suspend (page: Int, pageSize: Int) -> PaginatedDto
 ) : RemoteMediator<Int, CachedPreviewIntermediate>() {
 
     override suspend fun load(
@@ -33,7 +33,7 @@ class NhentaiRemoteMediator(
         }
 
         LoadType.REFRESH -> {
-            fetchRemotePage(loadType, 1, state.config.pageSize)
+            loadPage(loadType, 1, state.config.pageSize)
         }
 
         LoadType.APPEND -> {
@@ -42,13 +42,13 @@ class NhentaiRemoteMediator(
             if (nextPage == null) {
                 MediatorResult.Success(endOfPaginationReached = true)
             } else {
-                fetchRemotePage(loadType, nextPage, state.config.pageSize)
+                loadPage(loadType, nextPage, state.config.pageSize)
             }
         }
     }
 
-    private suspend fun fetchRemotePage(loadType: LoadType, page: Int, pageSize: Int) = try {
-        val response = nhentaiApi.getAll(page = page, perPage = pageSize)
+    private suspend fun loadPage(loadType: LoadType, page: Int, pageSize: Int) = try {
+        val response = fetchPage(page, pageSize)
         val endReached = page >= response.num_pages
 
         database.withTransaction {
