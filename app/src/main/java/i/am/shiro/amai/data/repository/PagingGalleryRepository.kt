@@ -44,6 +44,16 @@ class PagingGalleryRepository(
         pagingData.map { it.toModel() }
     }
 
+    fun getSearchPager(cacheId: Uuid, query: String, sort: Nhentai.Sort) = Pager(
+        config = pagingConfig,
+        pagingSourceFactory = { database.intermediateDao.getCachedPreviewsPaging(cacheId) },
+        remoteMediator = NhentaiRemoteMediator(cacheId, database) { page, pageSize ->
+            nhentaiApi.search(query = query, sort = sort, page = page)
+        }
+    ).flow.map { pagingData ->
+        pagingData.map { it.toModel() }
+    }
+
     private fun CachedPreviewIntermediate.toModel() = BookPreview(
         bookId = book.bookId,
         aspectRatio = book.thumbnailWidth.toFloat() / book.thumbnailHeight.toFloat(),

@@ -11,7 +11,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -22,18 +21,19 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.paging.compose.LazyPagingItems
+import androidx.paging.compose.collectAsLazyPagingItems
 import i.am.shiro.amai.R
 import i.am.shiro.amai.data.remote.Nhentai
 import i.am.shiro.amai.model.BookPreview
-import i.am.shiro.amai.ui.common.GalleryBody
 import i.am.shiro.amai.ui.common.GallerySortMenu
+import i.am.shiro.amai.ui.common.PagingGalleryBody
 import i.am.shiro.amai.ui.common.TopBarContainer
 import i.am.shiro.amai.ui.common.TopBarPill
 import i.am.shiro.amai.ui.viewmodel.NhentaiSearchViewModel
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
 
-// TODO try jetpack paging library for loading content
 @Composable
 fun NhentaiSearchGallery(
     searchQuery: String,
@@ -43,22 +43,15 @@ fun NhentaiSearchGallery(
         parametersOf(searchQuery)
     }
 ) {
-    val books by viewModel.books.collectAsStateWithLifecycle()
+    val books = viewModel.books.collectAsLazyPagingItems()
+    val sort by viewModel.sortFlow.collectAsStateWithLifecycle()
 
     val gridState = rememberLazyStaggeredGridState()
 
-    LaunchedEffect(gridState.canScrollForward) {
-        if (!gridState.canScrollForward) {
-            viewModel.loadMore()
-        }
-    }
-
     SearchGalleryContent(
         query = searchQuery,
-        sort = viewModel.sort,
+        sort = sort,
         books = books,
-        isLoading = viewModel.isLoading,
-        onRefresh = viewModel::refresh,
         onSortChange = viewModel::onSortChange,
         onSearchClick = onSearchClick,
         onItemClick = onItemClick,
@@ -70,9 +63,7 @@ fun NhentaiSearchGallery(
 private fun SearchGalleryContent(
     query: String,
     sort: Nhentai.Sort,
-    books: List<BookPreview>,
-    isLoading: Boolean,
-    onRefresh: () -> Unit,
+    books: LazyPagingItems<BookPreview>,
     onSortChange: (Nhentai.Sort) -> Unit,
     onSearchClick: () -> Unit,
     onItemClick: (Int) -> Unit,
@@ -88,10 +79,8 @@ private fun SearchGalleryContent(
             )
         },
         content = { innerPadding ->
-            GalleryBody(
+            PagingGalleryBody(
                 books = books,
-                isLoading = isLoading,
-                onRefresh = onRefresh,
                 onItemClick = onItemClick,
                 gridState = gridState,
                 contentPadding = innerPadding
