@@ -18,14 +18,13 @@ class GalleryRepository(
     private val database: AmaiDatabase,
     private val nhentaiApi: Nhentai.Api
 ) {
-    private val pagingConfig = PagingConfig(
-        pageSize = 50,
-        initialLoadSize = 50,
-        prefetchDistance = 25
-    )
 
     fun getLatestPager(cacheId: Uuid) = Pager(
-        config = pagingConfig,
+        config = PagingConfig(
+            pageSize = 40,
+            initialLoadSize = 40,
+            prefetchDistance = 20
+        ),
         pagingSourceFactory = { database.intermediateDao.getCachedPreviewsPaging(cacheId) },
         remoteMediator = NhentaiRemoteMediator(cacheId, database) { page, pageSize ->
             nhentaiApi.getAll(page = page, perPage = pageSize)
@@ -35,7 +34,11 @@ class GalleryRepository(
     }
 
     fun getTaggedPager(cacheId: Uuid, tagId: Int, sort: Nhentai.Sort) = Pager(
-        config = pagingConfig,
+        config = PagingConfig(
+            pageSize = 40,
+            initialLoadSize = 40,
+            prefetchDistance = 20
+        ),
         pagingSourceFactory = { database.intermediateDao.getCachedPreviewsPaging(cacheId) },
         remoteMediator = NhentaiRemoteMediator(cacheId, database) { page, pageSize ->
             nhentaiApi.getTagged(tagId = tagId, sort = sort, page = page, perPage = pageSize)
@@ -45,7 +48,11 @@ class GalleryRepository(
     }
 
     fun getSearchPager(cacheId: Uuid, query: String, sort: Nhentai.Sort) = Pager(
-        config = pagingConfig,
+        config = PagingConfig(
+            pageSize = 25,
+            initialLoadSize = 25,
+            prefetchDistance = 12
+        ),
         pagingSourceFactory = { database.intermediateDao.getCachedPreviewsPaging(cacheId) },
         remoteMediator = NhentaiRemoteMediator(cacheId, database) { page, _ ->
             nhentaiApi.search(query = query, sort = sort, page = page)

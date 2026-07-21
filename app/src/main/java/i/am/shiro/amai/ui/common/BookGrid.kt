@@ -13,6 +13,7 @@ import androidx.compose.ui.unit.dp
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.itemKey
 import i.am.shiro.amai.model.BookPreview
+import i.am.shiro.amai.ui.utils.rememberVelocityScalingFlingBehavior
 
 @Composable
 fun BookGrid(
@@ -21,10 +22,13 @@ fun BookGrid(
     gridState: LazyStaggeredGridState,
     contentPadding: PaddingValues
 ) {
+    val flingBehavior = rememberVelocityScalingFlingBehavior(0.7f)
+
     LazyVerticalStaggeredGrid(
         columns = Adaptive(128.dp),
         modifier = Modifier.fillMaxSize(),
         state = gridState,
+        flingBehavior = flingBehavior,
         contentPadding = contentPadding + PaddingValues(8.dp),
         horizontalArrangement = Arrangement.spacedBy(8.dp),
         verticalItemSpacing = 8.dp
