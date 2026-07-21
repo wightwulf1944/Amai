@@ -10,7 +10,6 @@ import i.am.shiro.amai.data.remote.UserAgentInterceptor
 import i.am.shiro.amai.data.repository.BookRepository
 import i.am.shiro.amai.data.repository.FavoritesRepository
 import i.am.shiro.amai.data.repository.GalleryRepository
-import i.am.shiro.amai.data.repository.PagingGalleryRepository
 import i.am.shiro.amai.data.repository.ReadRepository
 import i.am.shiro.amai.data.repository.SearchRepository
 import i.am.shiro.amai.ui.viewmodel.DetailViewModel
@@ -65,7 +64,6 @@ val mainModule = module {
 
     single { BookRepository(get(), get()) }
     single { GalleryRepository(get(), get()) }
-    single { PagingGalleryRepository(get(), get()) }
     single { ReadRepository(get()) }
     single { FavoritesRepository(get()) }
     single { SearchRepository() }

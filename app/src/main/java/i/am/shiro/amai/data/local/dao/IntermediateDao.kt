@@ -19,13 +19,15 @@ interface IntermediateDao {
 
     @Transaction
     @Query("SELECT * FROM GalleryCacheEntryEntity WHERE cacheId=:cacheId ORDER BY id")
-    fun getCachedPreviews(cacheId: Uuid): Flow<List<CachedPreviewIntermediate>>
-
-    @Transaction
-    @Query("SELECT * FROM GalleryCacheEntryEntity WHERE cacheId=:cacheId ORDER BY id")
     fun getCachedPreviewsPaging(cacheId: Uuid): PagingSource<Int, CachedPreviewIntermediate>
 
     @Transaction
-    @Query("SELECT * FROM FavoriteEntity")
-    fun getAllFavorites(): Flow<List<FavoritesPreviewIntermediate>>
+    @Query("""
+        SELECT * FROM FavoriteEntity 
+        WHERE bookId IN (SELECT bookId FROM BookEntity WHERE title LIKE '%' || :query || '%')
+        ORDER BY 
+            CASE WHEN :isDescending = 1 THEN favoriteDate END DESC,
+            CASE WHEN :isDescending = 0 THEN favoriteDate END ASC
+    """)
+    fun getFavoritesPaging(query: String, isDescending: Boolean): PagingSource<Int, FavoritesPreviewIntermediate>
 }

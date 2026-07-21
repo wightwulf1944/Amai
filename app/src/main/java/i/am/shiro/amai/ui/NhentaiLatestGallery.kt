@@ -17,7 +17,7 @@ import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import i.am.shiro.amai.R
 import i.am.shiro.amai.model.BookPreview
-import i.am.shiro.amai.ui.common.PagingGalleryBody
+import i.am.shiro.amai.ui.common.GalleryBody
 import i.am.shiro.amai.ui.common.TopBarContainer
 import i.am.shiro.amai.ui.common.TopBarPill
 import i.am.shiro.amai.ui.viewmodel.NhentaiLatestViewModel
@@ -55,7 +55,7 @@ private fun LatestGalleryContent(
             )
         },
         content = { innerPadding ->
-            PagingGalleryBody(
+            GalleryBody(
                 books = books,
                 onItemClick = onItemClick,
                 gridState = gridState,

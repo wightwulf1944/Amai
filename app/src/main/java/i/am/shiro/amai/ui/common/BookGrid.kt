@@ -7,15 +7,16 @@ import androidx.compose.foundation.layout.plus
 import androidx.compose.foundation.lazy.staggeredgrid.LazyStaggeredGridState
 import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells.Adaptive
-import androidx.compose.foundation.lazy.staggeredgrid.items
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.paging.compose.LazyPagingItems
+import androidx.paging.compose.itemKey
 import i.am.shiro.amai.model.BookPreview
 
 @Composable
 fun BookGrid(
-    books: List<BookPreview>,
+    books: LazyPagingItems<BookPreview>,
     onItemClick: (Int) -> Unit,
     gridState: LazyStaggeredGridState,
     contentPadding: PaddingValues
@@ -29,13 +30,17 @@ fun BookGrid(
         verticalItemSpacing = 8.dp
     ) {
         items(
-            items = books,
-            key = { book -> book.bookId }
-        ) {
-            BookCard(
-                book = it,
-                onItemClick = onItemClick
-            )
+            count = books.itemCount,
+            key = books.itemKey { it.bookId }
+        ) { index ->
+            val book = books[index]
+            if (book != null) {
+                BookCard(
+                    book = book,
+                    onItemClick = onItemClick,
+                    modifier = Modifier.animateItem()
+                )
+            }
         }
     }
 }

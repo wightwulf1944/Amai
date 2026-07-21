@@ -32,6 +32,9 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.paging.PagingData
+import androidx.paging.compose.LazyPagingItems
+import androidx.paging.compose.collectAsLazyPagingItems
 import i.am.shiro.amai.R
 import i.am.shiro.amai.model.BookPreview
 import i.am.shiro.amai.model.FavoritesSort
@@ -40,6 +43,7 @@ import i.am.shiro.amai.ui.common.TopBarContainer
 import i.am.shiro.amai.ui.common.TopBarPill
 import i.am.shiro.amai.ui.theme.AmaiTheme
 import i.am.shiro.amai.ui.viewmodel.FavoritesViewModel
+import kotlinx.coroutines.flow.flowOf
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
@@ -47,7 +51,7 @@ fun FavoritesScreen(
     onItemClick: (Int) -> Unit,
     viewModel: FavoritesViewModel = koinViewModel()
 ) {
-    val books by viewModel.books.collectAsStateWithLifecycle()
+    val books = viewModel.books.collectAsLazyPagingItems()
     val query by viewModel.query.collectAsStateWithLifecycle()
     val sort by viewModel.sort.collectAsStateWithLifecycle()
 
@@ -63,7 +67,7 @@ fun FavoritesScreen(
 
 @Composable
 fun FavoritesContent(
-    books: List<BookPreview>,
+    books: LazyPagingItems<BookPreview>,
     query: String,
     sort: FavoritesSort,
     onQueryChange: (String) -> Unit,
@@ -73,7 +77,7 @@ fun FavoritesContent(
     val gridState = rememberLazyStaggeredGridState()
     var oldQuery by remember { mutableStateOf(query) }
     var oldSort by remember { mutableStateOf(sort) }
-    LaunchedEffect(books) {
+    LaunchedEffect(books.itemCount) {
         if (query != oldQuery || sort != oldSort) {
             gridState.scrollToItem(0)
             oldQuery = query
@@ -201,8 +205,10 @@ fun FavoritesContentPreview() {
     }
 
     AmaiTheme {
+        val books = flowOf(PagingData.from(mockBooks)).collectAsLazyPagingItems()
+
         FavoritesContent(
-            books = mockBooks,
+            books = books,
             query = "",
             sort = FavoritesSort.New,
             onQueryChange = {},

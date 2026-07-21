@@ -1,68 +1,57 @@
 package i.am.shiro.amai.data.repository
 
+import androidx.paging.ExperimentalPagingApi
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.map
 import androidx.room.withTransaction
 import i.am.shiro.amai.data.local.AmaiDatabase
-import i.am.shiro.amai.data.local.entity.BookEntity
-import i.am.shiro.amai.data.local.entity.GalleryCacheEntity
-import i.am.shiro.amai.data.local.entity.GalleryCacheEntryEntity
 import i.am.shiro.amai.data.local.intermediate.CachedPreviewIntermediate
 import i.am.shiro.amai.data.remote.Nhentai
-import i.am.shiro.amai.data.remote.Nhentai.Sort
-import i.am.shiro.amai.data.remote.dto.GalleryListItemDto
-import i.am.shiro.amai.data.remote.dto.PaginatedDto
+import i.am.shiro.amai.data.remote.paging.NhentaiRemoteMediator
 import i.am.shiro.amai.model.BookPreview
-import kotlin.uuid.Uuid
 import kotlinx.coroutines.flow.map
+import kotlin.uuid.Uuid
 
+@OptIn(ExperimentalPagingApi::class)
 class GalleryRepository(
     private val database: AmaiDatabase,
     private val nhentaiApi: Nhentai.Api
 ) {
-    fun getCachedBooks(cacheId: Uuid) = database.intermediateDao.getCachedPreviews(cacheId)
-        .map { list -> list.map { it.toModel() } }
+    private val pagingConfig = PagingConfig(
+        pageSize = 50,
+        initialLoadSize = 50,
+        prefetchDistance = 25
+    )
 
-    suspend fun clearCache(cacheId: Uuid) = database.withTransaction {
-        database.galleryCacheDao.deleteById(cacheId)
-        database.bookDao.deleteOrphan()
+    fun getLatestPager(cacheId: Uuid) = Pager(
+        config = pagingConfig,
+        pagingSourceFactory = { database.intermediateDao.getCachedPreviewsPaging(cacheId) },
+        remoteMediator = NhentaiRemoteMediator(cacheId, database) { page, pageSize ->
+            nhentaiApi.getAll(page = page, perPage = pageSize)
+        }
+    ).flow.map { pagingData ->
+        pagingData.map { it.toModel() }
     }
 
-    suspend fun clearAllCache() = database.withTransaction {
-        database.galleryCacheDao.clearAll()
-        database.bookDao.deleteOrphan()
+    fun getTaggedPager(cacheId: Uuid, tagId: Int, sort: Nhentai.Sort) = Pager(
+        config = pagingConfig,
+        pagingSourceFactory = { database.intermediateDao.getCachedPreviewsPaging(cacheId) },
+        remoteMediator = NhentaiRemoteMediator(cacheId, database) { page, pageSize ->
+            nhentaiApi.getTagged(tagId = tagId, sort = sort, page = page, perPage = pageSize)
+        }
+    ).flow.map { pagingData ->
+        pagingData.map { it.toModel() }
     }
 
-    suspend fun fetchLatestPage(cacheId: Uuid, page: Int) =
-        fetchPage(cacheId, page) { getAll(page) }
-
-    suspend fun fetchTaggedPage(cacheId: Uuid, tagId: Int, sort: Sort, page: Int) =
-        fetchPage(cacheId, page) { getTagged(tagId, sort, page) }
-
-    suspend fun fetchSearchPage(cacheId: Uuid, query: String, sort: Sort, page: Int) =
-        fetchPage(cacheId, page) { search(query, sort, page) }
-
-    private suspend fun fetchPage(
-        cacheId: Uuid,
-        page: Int,
-        call: suspend Nhentai.Api.() -> PaginatedDto
-    ): Boolean {
-        if (page == 1) {
-            database.withTransaction {
-                database.galleryCacheDao.deleteById(cacheId)
-                database.bookDao.deleteOrphan()
-            }
+    fun getSearchPager(cacheId: Uuid, query: String, sort: Nhentai.Sort) = Pager(
+        config = pagingConfig,
+        pagingSourceFactory = { database.intermediateDao.getCachedPreviewsPaging(cacheId) },
+        remoteMediator = NhentaiRemoteMediator(cacheId, database) { page, _ ->
+            nhentaiApi.search(query = query, sort = sort, page = page)
         }
-
-        val response = nhentaiApi.call()
-
-        database.withTransaction {
-            database.galleryCacheDao.upsert(GalleryCacheEntity(cacheId, null))
-            for (bookJson in response.result) {
-                database.galleryCacheEntryDao.insert(GalleryCacheEntryEntity(0, cacheId, bookJson.id))
-                database.bookDao.insert(bookJson.toEntity())
-            }
-        }
-
-        return page >= response.num_pages // returns true on last page
+    ).flow.map { pagingData ->
+        pagingData.map { it.toModel() }
     }
 
     private fun CachedPreviewIntermediate.toModel() = BookPreview(
@@ -74,12 +63,15 @@ class GalleryRepository(
         pageCount = book.pageCount
     )
 
-    private fun GalleryListItemDto.toEntity() = BookEntity(
-        bookId = id,
-        title = english_title,
-        pageCount = num_pages,
-        thumbnailWidth = thumbnail_width,
-        thumbnailHeight = thumbnail_height,
-        thumbnailPath = thumbnail
-    )
+    suspend fun clearCache(cacheId: Uuid) {
+        database.withTransaction {
+            database.galleryCacheDao.deleteById(cacheId)
+            database.bookDao.deleteOrphan()
+        }
+    }
+
+    suspend fun clearAllCache() = database.withTransaction {
+        database.galleryCacheDao.clearAll()
+        database.bookDao.deleteOrphan()
+    }
 }

@@ -17,6 +17,9 @@ Guidance for AI agents working in this repository.
   - **Please investigate**: Interpret requests to investigate as a request for a technical explanation of an issue or code snippet. Never touch the filesystem or apply changes in response to these queries.
   - **Explain First, Edit Later**: Always provide a conceptual plan or code snippets in the chat for review before invoking any editing tools.
   - **Verification of Intent**: If unsure whether the user wants a conceptual answer or an implementation, ask for clarification.
+- **Strict Scope Adherence**: Follow the approved implementation plan exactly. If a technical necessity (e.g., fixing a broken preview or syntax error) requires a deviation, you MUST disclose these changes explicitly in your final summary.
+- **No Unsolicited "Betterments"**: Do not make design changes (e.g., changing timeouts, refactoring unrelated code, or moving methods) unless they are part of the approved plan. Even if you believe a change is an improvement, you must propose it first.
+- **Full Disclosure**: Every modification made to the filesystem must be traceable back to the approved plan or a disclosed technical necessity. Hidden or "stealth" changes are a breach of trust.
 
 
 ## Project Overview

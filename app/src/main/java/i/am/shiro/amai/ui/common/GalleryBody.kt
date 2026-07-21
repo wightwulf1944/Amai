@@ -11,20 +11,19 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.paging.compose.LazyPagingItems
 import i.am.shiro.amai.model.BookPreview
 
 @Composable
 fun GalleryBody(
-    books: List<BookPreview>,
-    isLoading: Boolean,
-    onRefresh: () -> Unit,
+    books: LazyPagingItems<BookPreview>,
     onItemClick: (Int) -> Unit,
     gridState: LazyStaggeredGridState,
     contentPadding: PaddingValues
 ) {
     PullToRefreshBox(
         isRefreshing = false,
-        onRefresh = onRefresh,
+        onRefresh = books::refresh,
         modifier = Modifier.fillMaxSize()
     ) {
         BookGrid(
@@ -34,7 +33,7 @@ fun GalleryBody(
             contentPadding = contentPadding
         )
 
-        if (isLoading) {
+        if (!books.loadState.isIdle) {
             LinearProgressIndicator(
                 modifier = Modifier
                     .fillMaxWidth()

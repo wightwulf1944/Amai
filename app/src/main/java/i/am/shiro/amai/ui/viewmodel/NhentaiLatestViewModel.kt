@@ -5,13 +5,13 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.serialization.saved
 import androidx.lifecycle.viewModelScope
 import androidx.paging.cachedIn
-import i.am.shiro.amai.data.repository.PagingGalleryRepository
+import i.am.shiro.amai.data.repository.GalleryRepository
 import kotlinx.coroutines.launch
 import kotlin.uuid.Uuid
 
 class NhentaiLatestViewModel(
     handle: SavedStateHandle,
-    private val repository: PagingGalleryRepository
+    private val repository: GalleryRepository
 ) : ViewModel() {
 
     private val cacheId by handle.saved { Uuid.random() }

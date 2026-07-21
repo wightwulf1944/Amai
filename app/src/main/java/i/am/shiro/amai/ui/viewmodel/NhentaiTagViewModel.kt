@@ -6,7 +6,7 @@ import androidx.lifecycle.serialization.saved
 import androidx.lifecycle.viewModelScope
 import androidx.paging.cachedIn
 import i.am.shiro.amai.data.remote.Nhentai.Sort
-import i.am.shiro.amai.data.repository.PagingGalleryRepository
+import i.am.shiro.amai.data.repository.GalleryRepository
 import i.am.shiro.amai.ui.viewmodel.utils.savedMutableStateFlow
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flatMapLatest
@@ -16,7 +16,7 @@ import kotlin.uuid.Uuid
 @OptIn(ExperimentalCoroutinesApi::class)
 class NhentaiTagViewModel(
     handle: SavedStateHandle,
-    private val repository: PagingGalleryRepository,
+    private val repository: GalleryRepository,
     private val tagId: Int
 ) : ViewModel() {
 
