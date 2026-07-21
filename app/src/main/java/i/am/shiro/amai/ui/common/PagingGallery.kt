@@ -57,7 +57,7 @@ fun PagingBookGrid(
     contentPadding: PaddingValues
 ) {
     LazyVerticalStaggeredGrid(
-        columns = StaggeredGridCells.Fixed(2),
+        columns = StaggeredGridCells.Adaptive(128.dp),
         modifier = Modifier.fillMaxSize(),
         state = gridState,
         contentPadding = contentPadding + PaddingValues(8.dp),
