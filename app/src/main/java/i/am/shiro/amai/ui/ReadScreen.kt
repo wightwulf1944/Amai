@@ -1,5 +1,6 @@
 package i.am.shiro.amai.ui
 
+import androidx.collection.mutableIntSetOf
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.focusable
@@ -36,10 +37,16 @@ import androidx.compose.ui.graphics.FilterQuality
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.painter.ColorPainter
 import androidx.compose.ui.input.key.onKeyEvent
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import coil3.SingletonImageLoader
+import coil3.annotation.ExperimentalCoilApi
 import coil3.compose.AsyncImage
 import coil3.compose.SubcomposeAsyncImage
+import coil3.decode.BlackholeDecoder
+import coil3.request.CachePolicy
+import coil3.request.ImageRequest
 import i.am.shiro.amai.model.Page
 import i.am.shiro.amai.ui.image.PageModel
 import i.am.shiro.amai.ui.image.ThumbnailModel
@@ -103,6 +110,11 @@ fun ReadContent(
             pageCount = pages.size
         )
     }
+
+    CoilPrefetcherEffect(
+        pagerState = pagerState,
+        pages = pages
+    )
 
     LaunchedEffect(Unit) {
         focusRequester.requestFocus()
@@ -179,6 +191,35 @@ private fun BoxScope.PageCounter(
             .background(bg, CircleShape)
             .padding(horizontal = 6.dp, vertical = 2.dp)
     )
+}
+
+@OptIn(ExperimentalCoilApi::class)
+@Composable
+fun CoilPrefetcherEffect(
+    pagerState: PagerState,
+    pages: List<Page>
+) {
+    val context = LocalContext.current
+    val imageLoader = remember { SingletonImageLoader.get(context) }
+    val requested = remember { mutableIntSetOf() }
+
+    LaunchedEffect(pagerState.currentPage) {
+        val prefetchCount = 5
+        val startIndex = pagerState.currentPage + 1
+        val endIndex = (startIndex + prefetchCount).coerceAtMost(pages.size)
+
+        for (i in startIndex until endIndex) {
+            if (requested.add(i)) {
+                imageLoader.enqueue(
+                    ImageRequest.Builder(context)
+                        .data(ThumbnailModel(pages[i].thumbnailPath))
+                        .memoryCachePolicy(CachePolicy.DISABLED)
+                        .decoderFactory(BlackholeDecoder.Factory())
+                        .build()
+                )
+            }
+        }
+    }
 }
 
 @Preview(showBackground = true)

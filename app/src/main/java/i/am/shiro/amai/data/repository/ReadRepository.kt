@@ -7,7 +7,6 @@ import i.am.shiro.amai.model.Page
 class ReadRepository(
     private val database: AmaiDatabase
 ) {
-    // TODO: add image prefetching somehow
 
     suspend fun getPages(bookId: Int) = database.imageDao.findByBookId(bookId)
         .map { it.toPage() }
