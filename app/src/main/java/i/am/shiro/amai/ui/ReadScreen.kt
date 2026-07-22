@@ -240,11 +240,8 @@ private fun PageCounterPreview() {
 private fun ReadContentPreview() {
     AmaiTheme {
         ReadContent(
-            pages = listOf(
-                Page(0, 0, "", 1f, "", 0f),
-                Page(0, 1, "", 1f, "", 0f)
-            ),
-            initialPage = 0
+            initialPage = 2,
+            pages = List(10) { Page(0, "", 1f, "", 0f) }
         )
     }
 }

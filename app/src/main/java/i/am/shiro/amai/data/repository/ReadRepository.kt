@@ -13,7 +13,6 @@ class ReadRepository(
 
     private fun ImageEntity.toPage() = Page(
         bookId = bookId,
-        pageIndex = pageIndex,
         path = path,
         aspectRatio = width.toFloat() / height.toFloat(),
         thumbnailPath = thumbnailPath,
