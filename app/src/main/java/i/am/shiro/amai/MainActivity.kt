@@ -111,6 +111,9 @@ class MainActivity : ComponentActivity() {
                                     } else {
                                         homeScreenState.goToSearch(query)
                                     }
+                                },
+                                onBackClick = {
+                                    navigator.pop(key)
                                 }
                             )
                         }

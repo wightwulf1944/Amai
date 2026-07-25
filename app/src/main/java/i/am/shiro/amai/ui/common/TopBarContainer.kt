@@ -36,7 +36,7 @@ fun TopBarContainer(
             .fillMaxWidth()
             .height(IntrinsicSize.Min)
             .background(background)
-            .padding(horizontal = 16.dp)
+            .padding(horizontal = 12.dp)
             .windowInsetsPadding(insets)
             .defaultMinSize(minHeight = 48.dp),
         content = content

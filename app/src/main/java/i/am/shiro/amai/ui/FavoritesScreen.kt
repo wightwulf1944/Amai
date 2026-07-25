@@ -1,11 +1,14 @@
 package i.am.shiro.amai.ui
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.isImeVisible
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.staggeredgrid.rememberLazyStaggeredGridState
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
@@ -169,18 +172,30 @@ fun SearchInput(
         singleLine = true,
         cursorBrush = SolidColor(MaterialTheme.colorScheme.primary),
         decorationBox = { innerTextField ->
-            Box(
-                modifier = Modifier.padding(horizontal = 16.dp),
-                contentAlignment = Alignment.CenterStart
+            Row(
+                modifier = Modifier.padding(horizontal = 12.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(4.dp)
             ) {
-                if (query.isEmpty()) {
-                    Text(
-                        text = stringResource(R.string.search),
-                        style = MaterialTheme.typography.bodyLarge,
-                        color = LocalContentColor.current.copy(alpha = 0.5f)
-                    )
+                Icon(
+                    painter = painterResource(R.drawable.ic_search),
+                    contentDescription = null,
+                    modifier = Modifier.size(20.dp),
+                    tint = LocalContentColor.current.copy(alpha = 0.5f)
+                )
+                Box(
+                    modifier = Modifier.weight(1f),
+                    contentAlignment = Alignment.CenterStart
+                ) {
+                    if (query.isEmpty()) {
+                        Text(
+                            text = stringResource(R.string.search),
+                            style = MaterialTheme.typography.bodyLarge,
+                            color = LocalContentColor.current.copy(alpha = 0.5f)
+                        )
+                    }
+                    innerTextField()
                 }
-                innerTextField()
             }
         }
     )
