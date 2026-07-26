@@ -11,6 +11,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.animation.SharedTransitionLayout
 import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
@@ -38,6 +39,7 @@ import i.am.shiro.amai.ui.navigation.Route
 import i.am.shiro.amai.ui.navigation.rememberNavigator
 import i.am.shiro.amai.ui.rememberHomeScreenState
 import i.am.shiro.amai.ui.theme.AmaiTheme
+import i.am.shiro.amai.ui.utils.sharedElementToken
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
 
@@ -78,69 +80,76 @@ class MainActivity : ComponentActivity() {
                     if (newBookId != null) navigator.push(Route.Detail(newBookId))
                 }
 
-                NavDisplay(
-                    backStack = navigator,
-                    onBack = navigator::popUnsafe,
-                    entryDecorators = listOf(
-                        rememberSaveableStateHolderNavEntryDecorator(),
-                        rememberViewModelStoreNavEntryDecorator()
-                    ),
-                    entryProvider = entryProvider {
-                        entry<Route.Home> {
-                            HomeScreen(
-                                state = homeScreenState,
-                                onSearchClick = { initialQuery ->
-                                    navigator.push(Route.Search(initialQuery))
-                                },
-                                onItemClick = { bookId ->
-                                    navigator.push(Route.Detail(bookId))
-                                }
-                            )
-                        }
-                        entry<Route.Search> { key ->
-                            SearchScreen(
-                                initialQuery = key.initialQuery,
-                                onSearch = { query ->
-                                    navigator.pop(key)
+                SharedTransitionLayout {
+                    val searchPillSharedElementToken = sharedElementToken("searchpill")
 
-                                    if (query.isEmpty()) {
-                                        homeScreenState.goToLatest()
-                                    } else if (query.matches(Regex("""^id:\d+$"""))) {
-                                        val bookId = query.substringAfter("id:").toInt()
+                    NavDisplay(
+                        backStack = navigator,
+                        onBack = navigator::popUnsafe,
+                        sharedTransitionScope = this,
+                        entryDecorators = listOf(
+                            rememberSaveableStateHolderNavEntryDecorator(),
+                            rememberViewModelStoreNavEntryDecorator()
+                        ),
+                        entryProvider = entryProvider {
+                            entry<Route.Home> {
+                                HomeScreen(
+                                    state = homeScreenState,
+                                    onSearchClick = { initialQuery ->
+                                        navigator.push(Route.Search(initialQuery))
+                                    },
+                                    onItemClick = { bookId ->
                                         navigator.push(Route.Detail(bookId))
-                                    } else {
-                                        homeScreenState.goToSearch(query)
+                                    },
+                                    searchPillToken = searchPillSharedElementToken,
+                                )
+                            }
+                            entry<Route.Search> { key ->
+                                SearchScreen(
+                                    initialQuery = key.initialQuery,
+                                    onSearch = { query ->
+                                        navigator.pop(key)
+
+                                        if (query.isEmpty()) {
+                                            homeScreenState.goToLatest()
+                                        } else if (query.matches(Regex("""^id:\d+$"""))) {
+                                            val bookId = query.substringAfter("id:").toInt()
+                                            navigator.push(Route.Detail(bookId))
+                                        } else {
+                                            homeScreenState.goToSearch(query)
+                                        }
+                                    },
+                                    onBackClick = {
+                                        navigator.pop(key)
+                                    },
+                                    searchPillToken = searchPillSharedElementToken,
+                                )
+                            }
+                            entry<Route.Detail> { key ->
+                                DetailScreen(
+                                    bookId = key.bookId,
+                                    onBackClick = {
+                                        navigator.pop(key)
+                                    },
+                                    onShareClick = { share(key.bookId) },
+                                    onThumbnailClick = { pageIndex ->
+                                        navigator.push(Route.Read(key.bookId, pageIndex))
+                                    },
+                                    onTagClick = { tag ->
+                                        navigator.pop(key)
+                                        homeScreenState.goToTag(tag)
                                     }
-                                },
-                                onBackClick = {
-                                    navigator.pop(key)
-                                }
-                            )
+                                )
+                            }
+                            entry<Route.Read> { key ->
+                                ReadScreen(
+                                    bookId = key.bookId,
+                                    initialPage = key.pageIndex
+                                )
+                            }
                         }
-                        entry<Route.Detail> { key ->
-                            DetailScreen(
-                                bookId = key.bookId,
-                                onBackClick = {
-                                    navigator.pop(key)
-                                },
-                                onShareClick = { share(key.bookId) },
-                                onThumbnailClick = { pageIndex ->
-                                    navigator.push(Route.Read(key.bookId, pageIndex))
-                                },
-                                onTagClick = { tag ->
-                                    navigator.pop(key)
-                                    homeScreenState.goToTag(tag)
-                                }
-                            )
-                        }
-                        entry<Route.Read> { key ->
-                            ReadScreen(
-                                bookId = key.bookId,
-                                initialPage = key.pageIndex
-                            )
-                        }
-                    }
-                )
+                    )
+                }
             }
         }
     }

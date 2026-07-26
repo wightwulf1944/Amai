@@ -40,13 +40,14 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation3.ui.LocalNavAnimatedContentScope
 import i.am.shiro.amai.R
 import i.am.shiro.amai.ui.common.TopBarContainer
 import i.am.shiro.amai.ui.common.TopBarPill
-import i.am.shiro.amai.ui.theme.AmaiTheme
+import i.am.shiro.amai.ui.utils.SharedElementToken
+import i.am.shiro.amai.ui.utils.sharedElement
 import i.am.shiro.amai.ui.viewmodel.SearchSuggestion
 import i.am.shiro.amai.ui.viewmodel.SearchViewModel
 import org.koin.compose.viewmodel.koinViewModel
@@ -60,7 +61,8 @@ fun SearchScreen(
     onBackClick: () -> Unit,
     viewModel: SearchViewModel = koinViewModel {
         parametersOf(initialQuery)
-    }
+    },
+    searchPillToken: SharedElementToken,
 ) {
     val suggestions by viewModel.suggestionsFlow.collectAsStateWithLifecycle()
 
@@ -68,7 +70,8 @@ fun SearchScreen(
         textFieldState = viewModel.textFieldState,
         onSearch = { onSearch(viewModel.textFieldState.text.toString()) },
         suggestions = suggestions,
-        onBackClick = onBackClick
+        onBackClick = onBackClick,
+        searchPillToken = searchPillToken,
     )
 }
 
@@ -77,7 +80,8 @@ fun SearchContent(
     textFieldState: TextFieldState,
     onBackClick: () -> Unit,
     onSearch: () -> Unit,
-    suggestions: List<SearchSuggestion>
+    suggestions: List<SearchSuggestion>,
+    searchPillToken: SharedElementToken,
 ) {
     Scaffold(
         contentWindowInsets = ScaffoldDefaults.contentWindowInsets.union(WindowInsets.ime),
@@ -85,7 +89,8 @@ fun SearchContent(
             SearchTopBar(
                 textFieldState = textFieldState,
                 onBackClick = onBackClick,
-                onSearch = onSearch
+                onSearch = onSearch,
+                searchPillToken = searchPillToken,
             )
         },
         content = { innerPadding ->
@@ -101,7 +106,8 @@ fun SearchContent(
 fun SearchTopBar(
     onBackClick: () -> Unit,
     textFieldState: TextFieldState,
-    onSearch: () -> Unit
+    onSearch: () -> Unit,
+    searchPillToken: SharedElementToken,
 ) {
     TopBarContainer {
         TopBarPill {
@@ -112,7 +118,8 @@ fun SearchTopBar(
                 )
             }
         }
-        TopBarPill {
+        val animatedVisibilityScope = LocalNavAnimatedContentScope.current
+        TopBarPill(modifier = Modifier.sharedElement(searchPillToken, animatedVisibilityScope)) {
             SearchInput(
                 textFieldState = textFieldState,
                 onSearch = onSearch
@@ -210,17 +217,4 @@ fun SuggestionItem(
             .clickable(onClick = onClick)
             .padding(horizontal = 16.dp, vertical = 8.dp)
     )
-}
-
-@Preview
-@Composable
-private fun SearchContentPreview() {
-    AmaiTheme {
-        SearchContent(
-            textFieldState = TextFieldState(),
-            suggestions = listOf(SearchSuggestion("tag:artist"), SearchSuggestion("tag:artistic")),
-            onSearch = {},
-            onBackClick = {}
-        )
-    }
 }

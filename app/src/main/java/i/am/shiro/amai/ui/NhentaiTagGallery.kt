@@ -1,5 +1,6 @@
 package i.am.shiro.amai.ui
 
+import androidx.compose.animation.AnimatedContentScope
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.padding
@@ -30,6 +31,8 @@ import i.am.shiro.amai.ui.common.GalleryBody
 import i.am.shiro.amai.ui.common.GallerySortMenu
 import i.am.shiro.amai.ui.common.TopBarContainer
 import i.am.shiro.amai.ui.common.TopBarPill
+import i.am.shiro.amai.ui.utils.SharedElementToken
+import i.am.shiro.amai.ui.utils.sharedElement
 import i.am.shiro.amai.ui.viewmodel.NhentaiTagViewModel
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
@@ -42,7 +45,9 @@ fun NhentaiTagGallery(
     onItemClick: (Int) -> Unit,
     viewModel: NhentaiTagViewModel = koinViewModel {
         parametersOf(tagId)
-    }
+    },
+    searchPillToken: SharedElementToken,
+    navAnimatedContentScope: AnimatedContentScope,
 ) {
     val books = viewModel.books.collectAsLazyPagingItems()
     val sort by viewModel.sortFlow.collectAsStateWithLifecycle()
@@ -57,6 +62,8 @@ fun NhentaiTagGallery(
         onSearchClick = onSearchClick,
         onItemClick = onItemClick,
         gridState = gridState,
+        searchPillToken = searchPillToken,
+        navAnimatedContentScope = navAnimatedContentScope,
     )
 }
 
@@ -69,6 +76,8 @@ private fun TagGalleryContent(
     onSearchClick: () -> Unit,
     onItemClick: (Int) -> Unit,
     gridState: LazyStaggeredGridState,
+    searchPillToken: SharedElementToken,
+    navAnimatedContentScope: AnimatedContentScope,
 ) {
     Scaffold(
         topBar = {
@@ -76,7 +85,9 @@ private fun TagGalleryContent(
                 tagName = tagName,
                 sort = sort,
                 onSortChange = onSortChange,
-                onSearchClick = onSearchClick
+                onSearchClick = onSearchClick,
+                searchPillToken = searchPillToken,
+                navAnimatedContentScope = navAnimatedContentScope,
             )
         },
         content = { innerPadding ->
@@ -95,10 +106,16 @@ private fun TagGalleryTopBar(
     tagName: String,
     sort: Nhentai.Sort,
     onSortChange: (Nhentai.Sort) -> Unit,
-    onSearchClick: () -> Unit
+    onSearchClick: () -> Unit,
+    searchPillToken: SharedElementToken,
+    navAnimatedContentScope: AnimatedContentScope,
 ) {
     TopBarContainer {
-        TopBarPill(modifier = Modifier.weight(1f)) {
+        TopBarPill(
+            modifier = Modifier
+                .weight(1f)
+                .sharedElement(searchPillToken, navAnimatedContentScope)
+        ) {
             FlowRow(
                 modifier = Modifier
                     .weight(1f)

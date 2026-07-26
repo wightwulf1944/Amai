@@ -1,5 +1,6 @@
 package i.am.shiro.amai.ui
 
+import androidx.compose.animation.AnimatedContentScope
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.staggeredgrid.LazyStaggeredGridState
 import androidx.compose.foundation.lazy.staggeredgrid.rememberLazyStaggeredGridState
@@ -20,6 +21,8 @@ import i.am.shiro.amai.model.BookPreview
 import i.am.shiro.amai.ui.common.GalleryBody
 import i.am.shiro.amai.ui.common.TopBarContainer
 import i.am.shiro.amai.ui.common.TopBarPill
+import i.am.shiro.amai.ui.utils.SharedElementToken
+import i.am.shiro.amai.ui.utils.sharedElement
 import i.am.shiro.amai.ui.viewmodel.NhentaiLatestViewModel
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -27,7 +30,9 @@ import org.koin.compose.viewmodel.koinViewModel
 fun NhentaiLatestGallery(
     onSearchClick: () -> Unit,
     onItemClick: (Int) -> Unit,
-    viewModel: NhentaiLatestViewModel = koinViewModel()
+    viewModel: NhentaiLatestViewModel = koinViewModel(),
+    searchPillToken: SharedElementToken,
+    navAnimatedContentScope: AnimatedContentScope,
 ) {
     val books = viewModel.books.collectAsLazyPagingItems()
 
@@ -37,7 +42,9 @@ fun NhentaiLatestGallery(
         books = books,
         onSearchClick = onSearchClick,
         onItemClick = onItemClick,
-        gridState = gridState
+        gridState = gridState,
+        searchPillToken = searchPillToken,
+        navAnimatedContentScope = navAnimatedContentScope,
     )
 }
 
@@ -47,11 +54,15 @@ private fun LatestGalleryContent(
     onSearchClick: () -> Unit,
     onItemClick: (Int) -> Unit,
     gridState: LazyStaggeredGridState,
+    searchPillToken: SharedElementToken,
+    navAnimatedContentScope: AnimatedContentScope,
 ) {
     Scaffold(
         topBar = {
             LatestGalleryTopBar(
-                onSearchClick = onSearchClick
+                onSearchClick = onSearchClick,
+                searchPillToken = searchPillToken,
+                navAnimatedContentScope = navAnimatedContentScope,
             )
         },
         content = { innerPadding ->
@@ -67,10 +78,12 @@ private fun LatestGalleryContent(
 
 @Composable
 private fun LatestGalleryTopBar(
-    onSearchClick: () -> Unit
+    onSearchClick: () -> Unit,
+    searchPillToken: SharedElementToken,
+    navAnimatedContentScope: AnimatedContentScope,
 ) {
     TopBarContainer {
-        TopBarPill {
+        TopBarPill(modifier = Modifier.sharedElement(searchPillToken, navAnimatedContentScope)) {
             Text(
                 text = stringResource(R.string.latest),
                 style = MaterialTheme.typography.titleMedium,

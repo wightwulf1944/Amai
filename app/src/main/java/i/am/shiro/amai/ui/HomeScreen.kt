@@ -27,14 +27,17 @@ import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDe
 import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
+import androidx.navigation3.ui.LocalNavAnimatedContentScope
 import androidx.navigation3.ui.NavDisplay
 import i.am.shiro.amai.R
+import i.am.shiro.amai.ui.utils.SharedElementToken
 
 @Composable
 fun HomeScreen(
     state: HomeScreenState,
     onSearchClick: (String) -> Unit,
     onItemClick: (Int) -> Unit,
+    searchPillToken: SharedElementToken,
 ) {
     NavigationSuiteScaffold(
         modifier = Modifier.windowInsetsPadding(
@@ -69,6 +72,7 @@ fun HomeScreen(
                 }
 
                 HomeScreenTab.NHENTAI -> {
+                    val outerNavAnimatedContentScope = LocalNavAnimatedContentScope.current
                     NavDisplay(
                         transitionSpec = { pushTransition },
                         popTransitionSpec = { popTransition },
@@ -79,7 +83,9 @@ fun HomeScreen(
                             entry<NhentaiRoute.Latest> {
                                 NhentaiLatestGallery(
                                     onSearchClick = { onSearchClick("") },
-                                    onItemClick = onItemClick
+                                    onItemClick = onItemClick,
+                                    searchPillToken = searchPillToken,
+                                    navAnimatedContentScope = outerNavAnimatedContentScope,
                                 )
                             }
                             entry<NhentaiRoute.Tag> {
@@ -87,14 +93,18 @@ fun HomeScreen(
                                     tagId = it.id,
                                     tagName = it.name,
                                     onSearchClick = { onSearchClick(it.query) },
-                                    onItemClick = onItemClick
+                                    onItemClick = onItemClick,
+                                    searchPillToken = searchPillToken,
+                                    navAnimatedContentScope = outerNavAnimatedContentScope,
                                 )
                             }
                             entry<NhentaiRoute.Search> {
                                 NhentaiSearchGallery(
                                     searchQuery = it.query,
                                     onSearchClick = { onSearchClick(it.query) },
-                                    onItemClick = onItemClick
+                                    onItemClick = onItemClick,
+                                    searchPillToken = searchPillToken,
+                                    navAnimatedContentScope = outerNavAnimatedContentScope,
                                 )
                             }
                         }
