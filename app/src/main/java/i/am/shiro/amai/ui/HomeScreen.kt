@@ -2,11 +2,6 @@ package i.am.shiro.amai.ui
 
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.scaleIn
-import androidx.compose.animation.scaleOut
-import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.displayCutout
@@ -25,10 +20,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
 import androidx.navigation3.runtime.NavKey
-import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
-import androidx.navigation3.ui.LocalNavAnimatedContentScope
-import androidx.navigation3.ui.NavDisplay
 import i.am.shiro.amai.R
 import i.am.shiro.amai.ui.utils.SharedElementToken
 
@@ -72,42 +64,12 @@ fun HomeScreen(
                 }
 
                 HomeScreenTab.NHENTAI -> {
-                    val outerNavAnimatedContentScope = LocalNavAnimatedContentScope.current
-                    NavDisplay(
-                        transitionSpec = { pushTransition },
-                        popTransitionSpec = { popTransition },
-                        predictivePopTransitionSpec = { popTransition },
+                    NhentaiScreen(
                         backStack = state.nhentaiNavStack,
                         entryDecorators = listOf(holderDecorator, vmStoreDecorator),
-                        entryProvider = entryProvider {
-                            entry<NhentaiRoute.Latest> {
-                                NhentaiLatestGallery(
-                                    onSearchClick = { onSearchClick("") },
-                                    onItemClick = onItemClick,
-                                    searchPillToken = searchPillToken,
-                                    navAnimatedContentScope = outerNavAnimatedContentScope,
-                                )
-                            }
-                            entry<NhentaiRoute.Tag> {
-                                NhentaiTagGallery(
-                                    tagId = it.id,
-                                    tagName = it.name,
-                                    onSearchClick = { onSearchClick(it.query) },
-                                    onItemClick = onItemClick,
-                                    searchPillToken = searchPillToken,
-                                    navAnimatedContentScope = outerNavAnimatedContentScope,
-                                )
-                            }
-                            entry<NhentaiRoute.Search> {
-                                NhentaiSearchGallery(
-                                    searchQuery = it.query,
-                                    onSearchClick = { onSearchClick(it.query) },
-                                    onItemClick = onItemClick,
-                                    searchPillToken = searchPillToken,
-                                    navAnimatedContentScope = outerNavAnimatedContentScope,
-                                )
-                            }
-                        }
+                        onSearchClick = onSearchClick,
+                        onItemClick = onItemClick,
+                        searchPillToken = searchPillToken,
                     )
                 }
             }
@@ -130,9 +92,3 @@ fun HomeNavItem(
         label = { Text(label) }
     )
 }
-
-private val pushTransition =
-    scaleIn(initialScale = 1.05f) + fadeIn() togetherWith scaleOut(targetScale = 0.95f) + fadeOut()
-
-private val popTransition =
-    scaleIn(initialScale = 0.95f) + fadeIn() togetherWith scaleOut(targetScale = 1.05f) + fadeOut()
