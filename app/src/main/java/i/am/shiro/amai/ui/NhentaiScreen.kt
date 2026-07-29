@@ -1,10 +1,10 @@
 package i.am.shiro.amai.ui
 
-import androidx.compose.animation.ContentTransform
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.togetherWith
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import androidx.navigation3.runtime.NavBackStack
 import androidx.navigation3.runtime.NavEntryDecorator
 import androidx.navigation3.runtime.NavKey
@@ -12,6 +12,7 @@ import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.ui.LocalNavAnimatedContentScope
 import androidx.navigation3.ui.NavDisplay
 import i.am.shiro.amai.ui.utils.SharedElementToken
+import i.am.shiro.amai.ui.utils.sharedElement
 
 @Composable
 fun NhentaiScreen(
@@ -21,7 +22,9 @@ fun NhentaiScreen(
     onItemClick: (Int) -> Unit,
     searchPillToken: SharedElementToken,
 ) {
-    val outerNavAnimatedContentScope = LocalNavAnimatedContentScope.current
+    val sharedElementMod =
+        Modifier.sharedElement(searchPillToken, LocalNavAnimatedContentScope.current)
+
     NavDisplay(
         predictivePopTransitionSpec = { fadeIn() togetherWith fadeOut() },
         backStack = backStack,
@@ -31,8 +34,7 @@ fun NhentaiScreen(
                 NhentaiLatestGallery(
                     onSearchClick = { onSearchClick("") },
                     onItemClick = onItemClick,
-                    searchPillToken = searchPillToken,
-                    navAnimatedContentScope = outerNavAnimatedContentScope,
+                    sharedElementModifier = sharedElementMod,
                 )
             }
             entry<NhentaiRoute.Tag> {
@@ -41,8 +43,7 @@ fun NhentaiScreen(
                     tagName = it.name,
                     onSearchClick = { onSearchClick(it.query) },
                     onItemClick = onItemClick,
-                    searchPillToken = searchPillToken,
-                    navAnimatedContentScope = outerNavAnimatedContentScope,
+                    sharedElementModifier = sharedElementMod,
                 )
             }
             entry<NhentaiRoute.Search> {
@@ -50,8 +51,7 @@ fun NhentaiScreen(
                     searchQuery = it.query,
                     onSearchClick = { onSearchClick(it.query) },
                     onItemClick = onItemClick,
-                    searchPillToken = searchPillToken,
-                    navAnimatedContentScope = outerNavAnimatedContentScope,
+                    sharedElementModifier = sharedElementMod,
                 )
             }
         }

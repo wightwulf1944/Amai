@@ -1,6 +1,8 @@
+@file:SuppressLint("ModifierParameter")
+
 package i.am.shiro.amai.ui
 
-import androidx.compose.animation.AnimatedContentScope
+import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.padding
@@ -31,8 +33,6 @@ import i.am.shiro.amai.ui.common.GalleryBody
 import i.am.shiro.amai.ui.common.GallerySortMenu
 import i.am.shiro.amai.ui.common.TopBarContainer
 import i.am.shiro.amai.ui.common.TopBarPill
-import i.am.shiro.amai.ui.utils.SharedElementToken
-import i.am.shiro.amai.ui.utils.sharedElement
 import i.am.shiro.amai.ui.viewmodel.NhentaiSearchViewModel
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
@@ -45,8 +45,7 @@ fun NhentaiSearchGallery(
     viewModel: NhentaiSearchViewModel = koinViewModel {
         parametersOf(searchQuery)
     },
-    searchPillToken: SharedElementToken,
-    navAnimatedContentScope: AnimatedContentScope,
+    sharedElementModifier: Modifier,
 ) {
     val books = viewModel.books.collectAsLazyPagingItems()
     val sort by viewModel.sortFlow.collectAsStateWithLifecycle()
@@ -61,8 +60,7 @@ fun NhentaiSearchGallery(
         onSearchClick = onSearchClick,
         onItemClick = onItemClick,
         gridState = gridState,
-        searchPillToken = searchPillToken,
-        navAnimatedContentScope = navAnimatedContentScope,
+        sharedElementModifier = sharedElementModifier,
     )
 }
 
@@ -75,8 +73,7 @@ private fun SearchGalleryContent(
     onSearchClick: () -> Unit,
     onItemClick: (Int) -> Unit,
     gridState: LazyStaggeredGridState,
-    searchPillToken: SharedElementToken,
-    navAnimatedContentScope: AnimatedContentScope,
+    sharedElementModifier: Modifier,
 ) {
     Scaffold(
         topBar = {
@@ -85,8 +82,7 @@ private fun SearchGalleryContent(
                 sort = sort,
                 onSortChange = onSortChange,
                 onSearchClick = onSearchClick,
-                searchPillToken = searchPillToken,
-                navAnimatedContentScope = navAnimatedContentScope,
+                sharedElementModifier = sharedElementModifier,
             )
         },
         content = { innerPadding ->
@@ -106,14 +102,13 @@ private fun SearchGalleryTopBar(
     sort: Nhentai.Sort,
     onSortChange: (Nhentai.Sort) -> Unit,
     onSearchClick: () -> Unit,
-    searchPillToken: SharedElementToken,
-    navAnimatedContentScope: AnimatedContentScope,
+    sharedElementModifier: Modifier,
 ) {
     TopBarContainer {
         TopBarPill(
             modifier = Modifier
                 .weight(1f)
-                .sharedElement(searchPillToken, navAnimatedContentScope)
+                .then(sharedElementModifier)
         ) {
             FlowRow(
                 modifier = Modifier
