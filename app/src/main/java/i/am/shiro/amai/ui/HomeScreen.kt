@@ -11,8 +11,11 @@ import androidx.compose.foundation.layout.union
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
+import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteItem
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffold
+import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffoldDefaults
+import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteType
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.saveable.rememberSaveableStateHolder
 import androidx.compose.ui.Modifier
@@ -31,24 +34,35 @@ fun HomeScreen(
     onItemClick: (Int) -> Unit,
     searchPillToken: SharedElementToken,
 ) {
+    val type = NavigationSuiteScaffoldDefaults.navigationSuiteType(currentWindowAdaptiveInfo())
+        .run {
+            if (this == NavigationSuiteType.ShortNavigationBarCompact)
+                NavigationSuiteType.ShortNavigationBarMedium
+            else
+                this
+        }
+
     NavigationSuiteScaffold(
         modifier = Modifier.windowInsetsPadding(
             WindowInsets.systemBars
                 .union(WindowInsets.displayCutout)
                 .only(WindowInsetsSides.Horizontal)
         ),
+        navigationSuiteType = type,
         navigationItems = {
             HomeNavItem(
                 selected = state.selectedTab == HomeScreenTab.FAVORITES,
                 onClick = { state.selectedTab = HomeScreenTab.FAVORITES },
                 iconDrawableRes = R.drawable.ic_favorite,
-                labelStringRes = R.string.favorites
+                labelStringRes = R.string.favorites,
+                navigationSuiteType = type,
             )
             HomeNavItem(
                 selected = state.selectedTab == HomeScreenTab.NHENTAI,
                 onClick = { state.selectedTab = HomeScreenTab.NHENTAI },
                 iconDrawableRes = R.drawable.ic_nhentai,
-                labelStringRes = R.string.nhentai
+                labelStringRes = R.string.nhentai,
+                navigationSuiteType = type,
             )
         }
     ) {
@@ -82,13 +96,15 @@ fun HomeNavItem(
     selected: Boolean,
     onClick: () -> Unit,
     @DrawableRes iconDrawableRes: Int,
-    @StringRes labelStringRes: Int
+    @StringRes labelStringRes: Int,
+    navigationSuiteType: NavigationSuiteType,
 ) {
     val label = stringResource(labelStringRes)
     NavigationSuiteItem(
         selected = selected,
         onClick = onClick,
         icon = { Icon(painterResource(iconDrawableRes), label) },
-        label = { Text(label) }
+        label = { Text(label) },
+        navigationSuiteType = navigationSuiteType,
     )
 }
