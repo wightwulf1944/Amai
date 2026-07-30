@@ -148,7 +148,7 @@ private fun DetailTopBar(
     onShareClick: () -> Unit,
     onFavoriteToggle: (Boolean) -> Unit,
 ) {
-    TopBarContainer(Arrangement.SpaceBetween) {
+    TopBarContainer {
         TopBarPill {
             IconButton(onClick = onBackClick) {
                 Icon(
@@ -157,6 +157,7 @@ private fun DetailTopBar(
                 )
             }
         }
+        Spacer(Modifier.weight(1f))
         TopBarPill {
             IconButton(onClick = onShareClick) {
                 Icon(
