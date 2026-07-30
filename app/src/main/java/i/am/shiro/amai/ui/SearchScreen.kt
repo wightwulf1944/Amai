@@ -155,7 +155,7 @@ fun SearchInput(
         inputTransformation = InputTransformation.byValue { _, proposed ->
             proposed.toString().lowercase()
         },
-        textStyle = MaterialTheme.typography.bodyLarge.copy(
+        textStyle = MaterialTheme.typography.bodyMedium.copy(
             color = LocalContentColor.current
         ),
         cursorBrush = SolidColor(MaterialTheme.colorScheme.primary),
@@ -190,7 +190,7 @@ private fun SuggestionsColumn(
 ) {
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
-        contentPadding = innerPadding + PaddingValues(bottom = 8.dp)
+        contentPadding = innerPadding + PaddingValues(vertical = 8.dp)
     ) {
         items(suggestions) { suggestion ->
             SuggestionItem(
