@@ -11,6 +11,7 @@ import androidx.compose.runtime.setValue
 import androidx.navigation3.runtime.NavBackStack
 import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.rememberNavBackStack
+import i.am.shiro.amai.data.remote.Nhentai
 import i.am.shiro.amai.model.Tag
 import kotlinx.serialization.Serializable
 
@@ -58,8 +59,16 @@ sealed interface NhentaiRoute : NavKey {
     data object Latest : NhentaiRoute
 
     @Serializable
-    data class Tag(val id: Int, val name: String, val query: String) : NhentaiRoute
+    data class Tag(
+        val id: Int,
+        val name: String,
+        val query: String,
+        val sort: Nhentai.Sort = Nhentai.Sort.DATE
+    ) : NhentaiRoute
 
     @Serializable
-    data class Search(val query: String) : NhentaiRoute
+    data class Search(
+        val query: String,
+        val sort: Nhentai.Sort = Nhentai.Sort.DATE
+    ) : NhentaiRoute
 }

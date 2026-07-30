@@ -41,6 +41,10 @@ fun NhentaiScreen(
                 NhentaiTagGallery(
                     tagId = it.id,
                     tagName = it.name,
+                    sort = it.sort,
+                    onSortChange = { newSort ->
+                        backStack[backStack.lastIndex] = it.copy(sort = newSort)
+                    },
                     onSearchClick = { onSearchClick(it.query) },
                     onItemClick = onItemClick,
                     sharedElementModifier = sharedElementMod,
@@ -49,6 +53,10 @@ fun NhentaiScreen(
             entry<NhentaiRoute.Search> {
                 NhentaiSearchGallery(
                     searchQuery = it.query,
+                    sort = it.sort,
+                    onSortChange = { newSort ->
+                        backStack[backStack.lastIndex] = it.copy(sort = newSort)
+                    },
                     onSearchClick = { onSearchClick(it.query) },
                     onItemClick = onItemClick,
                     sharedElementModifier = sharedElementMod,

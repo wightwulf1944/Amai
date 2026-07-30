@@ -4,7 +4,6 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.lazy.staggeredgrid.LazyStaggeredGridState
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
@@ -18,7 +17,6 @@ import i.am.shiro.amai.model.BookPreview
 fun GalleryBody(
     books: LazyPagingItems<BookPreview>,
     onItemClick: (Int) -> Unit,
-    gridState: LazyStaggeredGridState,
     contentPadding: PaddingValues
 ) {
     PullToRefreshBox(
@@ -29,7 +27,6 @@ fun GalleryBody(
         BookGrid(
             books = books,
             onItemClick = onItemClick,
-            gridState = gridState,
             contentPadding = contentPadding
         )
 

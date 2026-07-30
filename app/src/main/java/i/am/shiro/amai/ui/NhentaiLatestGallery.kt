@@ -4,8 +4,6 @@ package i.am.shiro.amai.ui
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.staggeredgrid.LazyStaggeredGridState
-import androidx.compose.foundation.lazy.staggeredgrid.rememberLazyStaggeredGridState
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -35,13 +33,10 @@ fun NhentaiLatestGallery(
 ) {
     val books = viewModel.books.collectAsLazyPagingItems()
 
-    val gridState = rememberLazyStaggeredGridState()
-
     LatestGalleryContent(
         books = books,
         onSearchClick = onSearchClick,
         onItemClick = onItemClick,
-        gridState = gridState,
         sharedElementModifier = sharedElementModifier,
     )
 }
@@ -51,7 +46,6 @@ private fun LatestGalleryContent(
     books: LazyPagingItems<BookPreview>,
     onSearchClick: () -> Unit,
     onItemClick: (Int) -> Unit,
-    gridState: LazyStaggeredGridState,
     sharedElementModifier: Modifier,
 ) {
     Scaffold(
@@ -65,7 +59,6 @@ private fun LatestGalleryContent(
             GalleryBody(
                 books = books,
                 onItemClick = onItemClick,
-                gridState = gridState,
                 contentPadding = innerPadding
             )
         }

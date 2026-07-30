@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.plus
 import androidx.compose.foundation.lazy.staggeredgrid.LazyStaggeredGridState
 import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells.Adaptive
+import androidx.compose.foundation.lazy.staggeredgrid.rememberLazyStaggeredGridState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -19,7 +20,7 @@ import i.am.shiro.amai.ui.utils.rememberVelocityScalingFlingBehavior
 fun BookGrid(
     books: LazyPagingItems<BookPreview>,
     onItemClick: (Int) -> Unit,
-    gridState: LazyStaggeredGridState,
+    gridState: LazyStaggeredGridState = rememberLazyStaggeredGridState(),
     contentPadding: PaddingValues
 ) {
     val flingBehavior = rememberVelocityScalingFlingBehavior(0.7f)

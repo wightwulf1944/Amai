@@ -6,8 +6,6 @@ import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.staggeredgrid.LazyStaggeredGridState
-import androidx.compose.foundation.lazy.staggeredgrid.rememberLazyStaggeredGridState
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -23,7 +21,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import i.am.shiro.amai.R
@@ -41,26 +38,24 @@ import org.koin.core.parameter.parametersOf
 fun NhentaiTagGallery(
     tagId: Int,
     tagName: String,
+    sort: Nhentai.Sort,
+    onSortChange: (Nhentai.Sort) -> Unit,
     onSearchClick: () -> Unit,
     onItemClick: (Int) -> Unit,
     viewModel: NhentaiTagViewModel = koinViewModel {
-        parametersOf(tagId)
+        parametersOf(tagId, sort)
     },
     sharedElementModifier: Modifier,
 ) {
     val books = viewModel.books.collectAsLazyPagingItems()
-    val sort by viewModel.sortFlow.collectAsStateWithLifecycle()
-
-    val gridState = rememberLazyStaggeredGridState()
 
     TagGalleryContent(
         tagName = tagName,
         sort = sort,
         books = books,
-        onSortChange = viewModel::onSortChange,
+        onSortChange = onSortChange,
         onSearchClick = onSearchClick,
         onItemClick = onItemClick,
-        gridState = gridState,
         sharedElementModifier = sharedElementModifier,
     )
 }
@@ -73,7 +68,6 @@ private fun TagGalleryContent(
     onSortChange: (Nhentai.Sort) -> Unit,
     onSearchClick: () -> Unit,
     onItemClick: (Int) -> Unit,
-    gridState: LazyStaggeredGridState,
     sharedElementModifier: Modifier,
 ) {
     Scaffold(
@@ -90,7 +84,6 @@ private fun TagGalleryContent(
             GalleryBody(
                 books = books,
                 onItemClick = onItemClick,
-                gridState = gridState,
                 contentPadding = innerPadding
             )
         }
