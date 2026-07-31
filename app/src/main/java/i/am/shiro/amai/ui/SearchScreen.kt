@@ -36,6 +36,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
@@ -53,24 +54,27 @@ import i.am.shiro.amai.ui.viewmodel.SearchViewModel
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
 
-// TODO investigate why keyboard dismissal is delayed when leaving this screen
 @Composable
 fun SearchScreen(
     initialQuery: String,
     onSearch: (String) -> Unit,
-    onBackClick: () -> Unit,
+    onDismissRequest: () -> Unit,
     viewModel: SearchViewModel = koinViewModel {
         parametersOf(initialQuery)
     },
     searchPillToken: SharedElementToken,
 ) {
+    val keyboardController = LocalSoftwareKeyboardController.current
     val suggestions by viewModel.suggestionsFlow.collectAsStateWithLifecycle()
 
     SearchContent(
         textFieldState = viewModel.textFieldState,
         onSearch = { onSearch(viewModel.textFieldState.text.toString()) },
         suggestions = suggestions,
-        onBackClick = onBackClick,
+        onDismissRequest = {
+            keyboardController?.hide()
+            onDismissRequest()
+        },
         searchPillToken = searchPillToken,
     )
 }
@@ -78,7 +82,7 @@ fun SearchScreen(
 @Composable
 fun SearchContent(
     textFieldState: TextFieldState,
-    onBackClick: () -> Unit,
+    onDismissRequest: () -> Unit,
     onSearch: () -> Unit,
     suggestions: List<SearchSuggestion>,
     searchPillToken: SharedElementToken,
@@ -88,7 +92,7 @@ fun SearchContent(
         topBar = {
             SearchTopBar(
                 textFieldState = textFieldState,
-                onBackClick = onBackClick,
+                onDismissRequest = onDismissRequest,
                 onSearch = onSearch,
                 searchPillToken = searchPillToken,
             )
@@ -104,14 +108,14 @@ fun SearchContent(
 
 @Composable
 fun SearchTopBar(
-    onBackClick: () -> Unit,
+    onDismissRequest: () -> Unit,
     textFieldState: TextFieldState,
     onSearch: () -> Unit,
     searchPillToken: SharedElementToken,
 ) {
     TopBarContainer {
         TopBarPill {
-            IconButton(onClick = onBackClick) {
+            IconButton(onClick = onDismissRequest) {
                 Icon(
                     painter = painterResource(R.drawable.ic_arrow_back),
                     contentDescription = stringResource(R.string.back)
@@ -122,7 +126,10 @@ fun SearchTopBar(
         TopBarPill(modifier = Modifier.sharedElement(searchPillToken, animatedVisibilityScope)) {
             SearchInput(
                 textFieldState = textFieldState,
-                onSearch = onSearch
+                onSearch = {
+                    onDismissRequest()
+                    onSearch()
+                }
             )
         }
     }

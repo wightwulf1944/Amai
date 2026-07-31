@@ -15,8 +15,10 @@ import androidx.compose.animation.SharedTransitionLayout
 import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberUpdatedState
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.core.net.toUri
 import androidx.core.util.Consumer
 import androidx.core.view.WindowInsetsCompat.Type
@@ -108,8 +110,6 @@ class MainActivity : ComponentActivity() {
                                 SearchScreen(
                                     initialQuery = key.initialQuery,
                                     onSearch = { query ->
-                                        navigator.pop(key)
-
                                         if (query.isEmpty()) {
                                             homeScreenState.goToLatest()
                                         } else if (query.matches(Regex("""^id:\d+$"""))) {
@@ -119,9 +119,7 @@ class MainActivity : ComponentActivity() {
                                             homeScreenState.goToSearch(query)
                                         }
                                     },
-                                    onBackClick = {
-                                        navigator.pop(key)
-                                    },
+                                    onDismissRequest = { navigator.pop(key) },
                                     searchPillToken = searchPillSharedElementToken,
                                 )
                             }
