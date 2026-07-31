@@ -109,14 +109,14 @@ class MainActivity : ComponentActivity() {
                             entry<Route.Search> { key ->
                                 SearchScreen(
                                     initialQuery = key.initialQuery,
-                                    onSearch = { query ->
+                                    onSearch = { query, sort ->
                                         if (query.isEmpty()) {
                                             homeScreenState.goToLatest()
                                         } else if (query.matches(Regex("""^id:\d+$"""))) {
                                             val bookId = query.substringAfter("id:").toInt()
                                             navigator.push(Route.Detail(bookId))
                                         } else {
-                                            homeScreenState.goToSearch(query)
+                                            homeScreenState.goToSearch(query, sort)
                                         }
                                     },
                                     onDismissRequest = { navigator.pop(key) },

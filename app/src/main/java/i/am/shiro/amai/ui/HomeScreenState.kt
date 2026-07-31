@@ -26,7 +26,7 @@ class HomeScreenState(
 
     fun goToTag(tag: Tag) = goTo(NhentaiRoute.Tag(tag.id, tag.name, tag.query))
 
-    fun goToSearch(query: String) = goTo(NhentaiRoute.Search(query))
+    fun goToSearch(query: String, sort: Nhentai.Sort) = goTo(NhentaiRoute.Search(query, sort))
 
     private fun goTo(destination: NavKey) {
         selectedTab = HomeScreenTab.NHENTAI
@@ -69,6 +69,6 @@ sealed interface NhentaiRoute : NavKey {
     @Serializable
     data class Search(
         val query: String,
-        val sort: Nhentai.Sort = Nhentai.Sort.DATE
+        val sort: Nhentai.Sort
     ) : NhentaiRoute
 }
