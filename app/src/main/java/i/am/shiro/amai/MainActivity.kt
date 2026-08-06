@@ -15,10 +15,8 @@ import androidx.compose.animation.SharedTransitionLayout
 import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberUpdatedState
-import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.core.net.toUri
 import androidx.core.util.Consumer
 import androidx.core.view.WindowInsetsCompat.Type
@@ -97,8 +95,8 @@ class MainActivity : ComponentActivity() {
                             entry<Route.Home> {
                                 HomeScreen(
                                     state = homeScreenState,
-                                    onSearchClick = { initialQuery ->
-                                        navigator.push(Route.Search(initialQuery))
+                                    onSearchClick = { query, sort ->
+                                        navigator.push(Route.Search(query, sort))
                                     },
                                     onItemClick = { bookId ->
                                         navigator.push(Route.Detail(bookId))
@@ -109,6 +107,7 @@ class MainActivity : ComponentActivity() {
                             entry<Route.Search> { key ->
                                 SearchScreen(
                                     initialQuery = key.initialQuery,
+                                    initialSort = key.initialSort,
                                     onSearch = { query, sort ->
                                         if (query.isEmpty()) {
                                             homeScreenState.goToLatest()

@@ -25,12 +25,13 @@ import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDe
 import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import i.am.shiro.amai.R
+import i.am.shiro.amai.data.remote.Nhentai
 import i.am.shiro.amai.ui.utils.SharedElementToken
 
 @Composable
 fun HomeScreen(
     state: HomeScreenState,
-    onSearchClick: (String) -> Unit,
+    onSearchClick: (String, Nhentai.Sort) -> Unit,
     onItemClick: (Int) -> Unit,
     searchPillToken: SharedElementToken,
 ) {

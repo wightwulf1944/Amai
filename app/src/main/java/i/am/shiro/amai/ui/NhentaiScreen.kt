@@ -11,6 +11,7 @@ import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.ui.LocalNavAnimatedContentScope
 import androidx.navigation3.ui.NavDisplay
+import i.am.shiro.amai.data.remote.Nhentai
 import i.am.shiro.amai.ui.utils.SharedElementToken
 import i.am.shiro.amai.ui.utils.sharedElement
 
@@ -18,7 +19,7 @@ import i.am.shiro.amai.ui.utils.sharedElement
 fun NhentaiScreen(
     backStack: NavBackStack<NavKey>,
     entryDecorators: List<NavEntryDecorator<NavKey>>,
-    onSearchClick: (String) -> Unit,
+    onSearchClick: (String, Nhentai.Sort) -> Unit,
     onItemClick: (Int) -> Unit,
     searchPillToken: SharedElementToken,
 ) {
@@ -32,7 +33,7 @@ fun NhentaiScreen(
         entryProvider = entryProvider {
             entry<NhentaiRoute.Latest> {
                 NhentaiLatestGallery(
-                    onSearchClick = { onSearchClick("") },
+                    onSearchClick = { onSearchClick("", Nhentai.Sort.DATE) },
                     onItemClick = onItemClick,
                     sharedElementModifier = sharedElementMod,
                 )
@@ -45,7 +46,7 @@ fun NhentaiScreen(
                     onSortChange = { newSort ->
                         backStack[backStack.lastIndex] = it.copy(sort = newSort)
                     },
-                    onSearchClick = { onSearchClick(it.query) },
+                    onSearchClick = { onSearchClick(it.query, it.sort) },
                     onItemClick = onItemClick,
                     sharedElementModifier = sharedElementMod,
                 )
@@ -57,7 +58,7 @@ fun NhentaiScreen(
                     onSortChange = { newSort ->
                         backStack[backStack.lastIndex] = it.copy(sort = newSort)
                     },
-                    onSearchClick = { onSearchClick(it.query) },
+                    onSearchClick = { onSearchClick(it.query, it.sort) },
                     onItemClick = onItemClick,
                     sharedElementModifier = sharedElementMod,
                 )

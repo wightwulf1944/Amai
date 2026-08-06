@@ -78,6 +78,7 @@ import org.koin.core.parameter.parametersOf
 @Composable
 fun SearchScreen(
     initialQuery: String,
+    initialSort: Nhentai.Sort,
     onSearch: (String, Nhentai.Sort) -> Unit,
     onDismissRequest: () -> Unit,
     viewModel: SearchViewModel = koinViewModel {
@@ -87,7 +88,7 @@ fun SearchScreen(
 ) {
     val keyboardController = LocalSoftwareKeyboardController.current
     val suggestions by viewModel.suggestionsFlow.collectAsStateWithLifecycle()
-    var selectedSort by rememberSaveable { mutableStateOf(Nhentai.Sort.DATE) }
+    var selectedSort by rememberSaveable { mutableStateOf(initialSort) }
 
     SearchContent(
         textFieldState = viewModel.textFieldState,
