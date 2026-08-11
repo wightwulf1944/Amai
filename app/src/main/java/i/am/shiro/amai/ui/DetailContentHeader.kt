@@ -1,10 +1,12 @@
 package i.am.shiro.amai.ui
 
+import android.text.format.DateUtils.getRelativeTimeSpanString
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.FlowRow
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.CircleShape
@@ -41,11 +43,28 @@ fun DetailContentHeader(
 
         HorizontalDivider(thickness = 1.dp, modifier = Modifier.padding(vertical = 4.dp))
 
-        Text(
-            text = pluralStringResource(R.plurals.pages_format, model.pageCount, model.pageCount),
-            style = MaterialTheme.typography.bodySmall,
-            modifier = Modifier.padding(bottom = 16.dp)
-        )
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(bottom = 16.dp),
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Text(
+                text = pluralStringResource(
+                    R.plurals.pages_format,
+                    model.pageCount,
+                    model.pageCount
+                ),
+                style = MaterialTheme.typography.bodySmall,
+            )
+            Text(
+                text = stringResource(
+                    R.string.uploaded_format,
+                    getRelativeTimeSpanString(model.uploadDate * 1000L)
+                ),
+                style = MaterialTheme.typography.bodySmall,
+            )
+        }
 
         listOf(
             R.string.artists to model.artistTags,

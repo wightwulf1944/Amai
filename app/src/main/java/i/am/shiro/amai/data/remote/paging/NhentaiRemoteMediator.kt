@@ -85,6 +85,7 @@ class NhentaiRemoteMediator(
         pageCount = num_pages,
         thumbnailWidth = thumbnail_width,
         thumbnailHeight = thumbnail_height,
-        thumbnailPath = thumbnail
+        thumbnailPath = thumbnail,
+        uploadDate = 0L, // GalleryListItemDto has no upload date
     )
 }

@@ -10,6 +10,7 @@ class PaginatedDto(
     val total: Int?
 )
 
+// TODO add num_favorites: Int
 // GalleryListItem in the swagger docs.
 class GalleryListItemDto(
     val id: Int,

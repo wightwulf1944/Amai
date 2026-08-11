@@ -23,7 +23,7 @@ import i.am.shiro.amai.data.local.entity.ImageEntity
 import i.am.shiro.amai.data.local.entity.TagEntity
 
 @Database(
-    version = 33,
+    version = 34,
     exportSchema = true,
     entities = [
         BookEntity::class,
@@ -39,6 +39,7 @@ import i.am.shiro.amai.data.local.entity.TagEntity
         AutoMigration(from = 29, to = 30),
         AutoMigration(from = 30, to = 31),
         AutoMigration(from = 31, to = 32),
+        AutoMigration(from = 33, to = 34),
     ]
 )
 @TypeConverters(Converters::class)

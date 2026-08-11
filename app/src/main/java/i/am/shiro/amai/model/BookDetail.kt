@@ -3,6 +3,7 @@ package i.am.shiro.amai.model
 data class BookDetail(
     val title: String,
     val pageCount: Int,
+    val uploadDate: Long,
     val isFavorite: Boolean,
     val artistTags: List<Tag>?,
     val groupTags: List<Tag>?,

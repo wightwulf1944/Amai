@@ -53,6 +53,8 @@ import i.am.shiro.amai.ui.utils.union
 import i.am.shiro.amai.ui.viewmodel.DetailViewModel
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
+import java.time.ZoneOffset
+import java.time.ZonedDateTime
 
 @Composable
 fun DetailScreen(
@@ -262,6 +264,7 @@ fun DetailContentPreview() {
 fun sampleModel() = BookDetail(
     title = "Amai: The Sweetest Adventure",
     pageCount = 256,
+    uploadDate = ZonedDateTime.of(2024, 8, 11, 0, 0, 0, 0, ZoneOffset.UTC).toEpochSecond(),
     isFavorite = true,
     artistTags = listOf(Tag(0, "shiro", ""), Tag(0, "kuro", "")),
     groupTags = listOf(Tag(0, "C86", "")),

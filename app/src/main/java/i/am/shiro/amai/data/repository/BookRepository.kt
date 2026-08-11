@@ -57,6 +57,7 @@ class BookRepository(
         return BookDetail(
             title = bookEntity.title,
             pageCount = bookEntity.pageCount,
+            uploadDate = bookEntity.uploadDate,
             isFavorite = favoriteEntity != null,
             artistTags = tagMap["artist"],
             groupTags = tagMap["group"],
@@ -76,7 +77,8 @@ class BookRepository(
             pageCount = num_pages,
             thumbnailWidth = thumbnail.width,
             thumbnailHeight = thumbnail.height,
-            thumbnailPath = thumbnail.path
+            thumbnailPath = thumbnail.path,
+            uploadDate = upload_date,
         )
 
     private fun GalleryDetailDto.tagEntities(): List<TagEntity> = tags.map {
