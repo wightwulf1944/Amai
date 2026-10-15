@@ -57,13 +57,15 @@ fun DetailContentHeader(
                 ),
                 style = MaterialTheme.typography.bodySmall,
             )
-            Text(
-                text = stringResource(
-                    R.string.uploaded_format,
-                    getRelativeTimeSpanString(model.uploadDate * 1000L)
-                ),
-                style = MaterialTheme.typography.bodySmall,
-            )
+            if (model.uploadDate != null) {
+                Text(
+                    text = stringResource(
+                        R.string.uploaded_format,
+                        getRelativeTimeSpanString(model.uploadDate * 1000L)
+                    ),
+                    style = MaterialTheme.typography.bodySmall,
+                )
+            }
         }
 
         listOf(

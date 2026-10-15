@@ -86,6 +86,6 @@ class NhentaiRemoteMediator(
         thumbnailWidth = thumbnail_width,
         thumbnailHeight = thumbnail_height,
         thumbnailPath = thumbnail,
-        uploadDate = 0L, // GalleryListItemDto has no upload date
+        uploadDate = null, // GalleryListItemDto has no upload date
     )
 }

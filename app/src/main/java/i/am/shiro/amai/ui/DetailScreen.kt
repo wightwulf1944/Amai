@@ -15,10 +15,10 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.itemsIndexed
-import androidx.compose.material3.FilledTonalIconToggleButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
+import androidx.compose.material3.IconToggleButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
@@ -168,13 +168,13 @@ private fun DetailTopBar(
                 )
             }
             val haptic = LocalHapticFeedback.current
-            FilledTonalIconToggleButton(
+            IconToggleButton(
                 checked = isFavorite,
                 onCheckedChange = {
                     haptic.performHapticFeedback(HapticFeedbackType.Toggle(it))
                     onFavoriteToggle(it)
                 },
-                colors = IconButtonDefaults.filledTonalIconToggleButtonColors(
+                colors = IconButtonDefaults.iconToggleButtonColors(
                     checkedContainerColor = MaterialTheme.colorScheme.tertiaryContainer,
                     checkedContentColor = MaterialTheme.colorScheme.onTertiaryContainer
                 )

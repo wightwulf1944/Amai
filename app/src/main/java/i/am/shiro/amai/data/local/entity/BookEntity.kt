@@ -1,6 +1,5 @@
 package i.am.shiro.amai.data.local.entity
 
-import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
@@ -13,6 +12,5 @@ class BookEntity(
     val thumbnailWidth: Int,
     val thumbnailHeight: Int,
     val thumbnailPath: String,
-    @ColumnInfo(defaultValue = "0")
-    val uploadDate: Long,
+    val uploadDate: Long?,
 )
