@@ -3,6 +3,7 @@ package i.am.shiro.amai.ui.theme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.tooling.preview.Preview
 
 @Composable
 fun AmaiTheme(content: @Composable () -> Unit) {
@@ -48,3 +49,9 @@ val colorScheme = darkColorScheme(
     outline = outline,
     outlineVariant = outlineVariant,
 )
+
+@Preview(widthDp = 1480, heightDp = 950)
+@Composable
+private fun AmaiThemePreview() {
+    AmaiTheme(content = ::ThemeShowcase)
+}
