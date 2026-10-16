@@ -145,7 +145,7 @@ class MainActivity : ComponentActivity() {
                             entry<Route.Read> { key ->
                                 ReadScreen(
                                     bookId = key.bookId,
-                                    initialPage = key.pageIndex
+                                    initialPage = key.initialPage
                                 )
                             }
                         }

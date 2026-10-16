@@ -16,5 +16,5 @@ sealed interface Route : NavKey {
     data class Detail(val bookId: Int) : Route
 
     @Serializable
-    data class Read(val bookId: Int, val pageIndex: Int) : Route
+    data class Read(val bookId: Int, val initialPage: Int) : Route
 }
