@@ -1,6 +1,7 @@
 package i.am.shiro.amai.ui
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
@@ -59,6 +60,7 @@ import java.time.ZonedDateTime
 @Composable
 fun DetailScreen(
     bookId: Int,
+    highlightedPageIndex: Int?,
     onBackClick: () -> Unit,
     onShareClick: () -> Unit,
     onThumbnailClick: (Int) -> Unit,
@@ -71,6 +73,7 @@ fun DetailScreen(
     model?.let {
         DetailContent(
             model = it,
+            highlightedPageIndex = highlightedPageIndex,
             onBackClick = onBackClick,
             onShareClick = onShareClick,
             onFavoriteToggle = viewModel::onFavoriteToggle,
@@ -83,6 +86,7 @@ fun DetailScreen(
 @Composable
 fun DetailContent(
     model: BookDetail,
+    highlightedPageIndex: Int?,
     onBackClick: () -> Unit,
     onShareClick: () -> Unit,
     onFavoriteToggle: (Boolean) -> Unit,
@@ -114,6 +118,7 @@ fun DetailContent(
         content = { innerPadding ->
             DetailBody(
                 model = model,
+                highlightedPageIndex = highlightedPageIndex,
                 onThumbnailClick = onThumbnailClick,
                 onTagClick = onTagClick,
                 contentPadding = innerPadding
@@ -206,6 +211,7 @@ private fun NavigationBarScrim() = Spacer(
 @Composable
 fun DetailBody(
     model: BookDetail,
+    highlightedPageIndex: Int?,
     onThumbnailClick: (Int) -> Unit,
     onTagClick: (Tag) -> Unit,
     contentPadding: PaddingValues,
@@ -227,10 +233,18 @@ fun DetailBody(
         }
 
         itemsIndexed(model.thumbnails) { index, thumbnail ->
+            val thumbnailModifier = if (index == highlightedPageIndex) {
+                Modifier.border(
+                    width = 2.dp,
+                    color = MaterialTheme.colorScheme.secondary
+                )
+            } else {
+                Modifier
+            }
             BookThumbnail(
                 path = thumbnail.path,
                 aspectRatio = thumbnail.aspectRatio,
-                modifier = Modifier.clickable(onClick = { onThumbnailClick(index) })
+                modifier = thumbnailModifier.clickable(onClick = { onThumbnailClick(index) })
             )
         }
     }
@@ -252,6 +266,7 @@ fun DetailContentPreview() {
     AmaiTheme {
         DetailContent(
             model = sampleModel(),
+            highlightedPageIndex = null,
             onBackClick = {},
             onShareClick = {},
             onFavoriteToggle = {},

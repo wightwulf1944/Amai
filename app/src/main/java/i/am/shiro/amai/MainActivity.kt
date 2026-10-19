@@ -34,9 +34,8 @@ import androidx.navigation3.ui.NavDisplay
 import androidx.window.core.layout.WindowSizeClass
 import i.am.shiro.amai.data.remote.Nhentai
 import i.am.shiro.amai.data.repository.GalleryRepository
-import i.am.shiro.amai.ui.DetailScreen
+import i.am.shiro.amai.ui.DetailFlow
 import i.am.shiro.amai.ui.HomeScreen
-import i.am.shiro.amai.ui.ReadScreen
 import i.am.shiro.amai.ui.SearchScreen
 import i.am.shiro.amai.ui.navigation.Route
 import i.am.shiro.amai.ui.navigation.rememberNavigator
@@ -127,25 +126,16 @@ class MainActivity : ComponentActivity() {
                                 )
                             }
                             entry<Route.Detail> { key ->
-                                DetailScreen(
+                                DetailFlow(
                                     bookId = key.bookId,
                                     onBackClick = {
                                         navigator.pop(key)
                                     },
                                     onShareClick = { share(key.bookId) },
-                                    onThumbnailClick = { pageIndex ->
-                                        navigator.push(Route.Read(key.bookId, pageIndex))
-                                    },
                                     onTagClick = { tag ->
                                         navigator.pop(key)
                                         homeScreenState.goToTag(tag)
                                     }
-                                )
-                            }
-                            entry<Route.Read> { key ->
-                                ReadScreen(
-                                    bookId = key.bookId,
-                                    initialPage = key.initialPage
                                 )
                             }
                         }

@@ -1,5 +1,6 @@
 package i.am.shiro.amai.ui
 
+import androidx.activity.compose.BackHandler
 import androidx.collection.mutableIntSetOf
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
@@ -61,20 +62,23 @@ import org.koin.core.parameter.parametersOf
 fun ReadScreen(
     bookId: Int,
     initialPage: Int,
+    onClose: (Int) -> Unit,
     viewModel: ReadViewModel = koinViewModel {
         parametersOf(bookId)
     }
 ) {
     ReadContent(
         initialPage = initialPage,
-        pages = viewModel.pages
+        pages = viewModel.pages,
+        onClose = onClose
     )
 }
 
 @Composable
 fun ReadContent(
     initialPage: Int,
-    pages: List<Page>
+    pages: List<Page>,
+    onClose: (Int) -> Unit
 ) {
     if (pages.isEmpty()) return
 
@@ -89,6 +93,10 @@ fun ReadContent(
             onHoldChange = { turboOn = it },
             onScroll = pagerState::animateScrollPageBy
         )
+    }
+
+    BackHandler {
+        onClose(pagerState.settledPage)
     }
 
     Box(
@@ -241,7 +249,8 @@ private fun ReadContentPreview() {
     AmaiTheme {
         ReadContent(
             initialPage = 2,
-            pages = List(10) { Page(0, "", 1f, "", 0f) }
+            pages = List(10) { Page(0, "", 1f, "", 0f) },
+            onClose = {}
         )
     }
 }
