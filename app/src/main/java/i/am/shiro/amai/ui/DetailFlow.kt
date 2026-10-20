@@ -42,7 +42,7 @@ fun DetailFlow(
                     highlightedPageIndex = highlightedPageIndex,
                     onBackClick = onBackClick,
                     onShareClick = onShareClick,
-                    onThumbnailClick = { initialPage ->
+                    onReadPage = { initialPage ->
                         navigator.push(DetailFlowDestination.Read(initialPage))
                     },
                     onTagClick = onTagClick

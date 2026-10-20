@@ -14,20 +14,25 @@ import androidx.compose.foundation.layout.plus
 import androidx.compose.foundation.layout.windowInsetsBottomHeight
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
+import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.itemsIndexed
+import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.IconToggleButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SmallExtendedFloatingActionButton
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -63,7 +68,7 @@ fun DetailScreen(
     highlightedPageIndex: Int?,
     onBackClick: () -> Unit,
     onShareClick: () -> Unit,
-    onThumbnailClick: (Int) -> Unit,
+    onReadPage: (Int) -> Unit,
     onTagClick: (Tag) -> Unit,
     viewModel: DetailViewModel = koinViewModel {
         parametersOf(bookId)
@@ -77,7 +82,7 @@ fun DetailScreen(
             onBackClick = onBackClick,
             onShareClick = onShareClick,
             onFavoriteToggle = viewModel::onFavoriteToggle,
-            onThumbnailClick = onThumbnailClick,
+            onReadPage = onReadPage,
             onTagClick = onTagClick
         )
     }
@@ -90,10 +95,11 @@ fun DetailContent(
     onBackClick: () -> Unit,
     onShareClick: () -> Unit,
     onFavoriteToggle: (Boolean) -> Unit,
-    onThumbnailClick: (Int) -> Unit,
+    onReadPage: (Int) -> Unit,
     onTagClick: (Tag) -> Unit
 ) {
     val snackbarHostState = remember { SnackbarHostState() }
+    val gridState = rememberLazyGridState()
 
     FavoriteSnackbarEffect(
         isFavorite = model.isFavorite,
@@ -115,13 +121,31 @@ fun DetailContent(
         bottomBar = {
             NavigationBarScrim()
         },
+        floatingActionButton = {
+            val isFabExpanded by remember {
+                derivedStateOf { !gridState.canScrollBackward || !gridState.canScrollForward }
+            }
+
+            SmallExtendedFloatingActionButton(
+                onClick = { onReadPage(0) },
+                icon = {
+                    Icon(painterResource(R.drawable.ic_book_ribbon), null)
+
+                },
+                text = {
+                    Text(stringResource(R.string.read))
+                },
+                expanded = isFabExpanded
+            )
+        },
         content = { innerPadding ->
             DetailBody(
                 model = model,
                 highlightedPageIndex = highlightedPageIndex,
-                onThumbnailClick = onThumbnailClick,
+                onThumbnailClick = onReadPage,
                 onTagClick = onTagClick,
-                contentPadding = innerPadding
+                contentPadding = innerPadding,
+                gridState = gridState,
             )
         }
     )
@@ -215,13 +239,21 @@ fun DetailBody(
     onThumbnailClick: (Int) -> Unit,
     onTagClick: (Tag) -> Unit,
     contentPadding: PaddingValues,
+    gridState: LazyGridState,
 ) {
+    val gridEdgeMargin = 8.dp
+    val smallExtendedFabHeight = 56.dp
+    val scaffoldFabBottomSpacing = 16.dp
+    val gridContentPadding = contentPadding
+        .plus(PaddingValues(vertical = gridEdgeMargin))
+        .union(PaddingValues(horizontal = gridEdgeMargin))
+        .plus(PaddingValues(bottom = smallExtendedFabHeight + scaffoldFabBottomSpacing))
+
     LazyVerticalGrid(
         columns = GridCells.Adaptive(150.dp),
         modifier = Modifier.fillMaxSize(),
-        contentPadding = contentPadding
-            .plus(PaddingValues(vertical = 8.dp))
-            .union(PaddingValues(horizontal = 8.dp)),
+        state = gridState,
+        contentPadding = gridContentPadding,
         horizontalArrangement = Arrangement.spacedBy(8.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp),
     ) {
@@ -270,7 +302,7 @@ fun DetailContentPreview() {
             onBackClick = {},
             onShareClick = {},
             onFavoriteToggle = {},
-            onThumbnailClick = {},
+            onReadPage = {},
             onTagClick = {}
         )
     }
