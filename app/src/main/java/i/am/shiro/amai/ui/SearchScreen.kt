@@ -21,7 +21,7 @@ import androidx.compose.foundation.layout.plus
 import androidx.compose.foundation.layout.union
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.text.input.InputTransformation
@@ -232,12 +232,12 @@ private fun SuggestionsColumn(
         modifier = Modifier.fillMaxSize(),
         contentPadding = innerPadding + PaddingValues(vertical = 8.dp)
     ) {
-        items(suggestions) { suggestion ->
+        itemsIndexed(suggestions) { index, suggestion ->
             SuggestionItem(
                 text = suggestion.text,
                 onClick = suggestion.onClick
             )
-            if (suggestion != suggestions.last()) {
+            if (index < suggestions.lastIndex) {
                 HorizontalDivider()
             }
         }

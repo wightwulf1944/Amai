@@ -66,7 +66,7 @@ val mainModule = module {
     single { GalleryRepository(get(), get()) }
     single { ReadRepository(get()) }
     single { FavoritesRepository(get()) }
-    single { SearchRepository() }
+    single { SearchRepository(get()) }
 
     viewModelOf(::SearchViewModel)
     viewModelOf(::FavoritesViewModel)

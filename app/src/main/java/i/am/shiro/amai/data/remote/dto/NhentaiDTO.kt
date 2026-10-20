@@ -74,3 +74,30 @@ class PageDto(
     val thumbnail_width: Int,
     val thumbnail_height: Int
 )
+
+class TagSearchRequestDto(
+    val type: String? = null,
+    val query: String? = null,
+    val limit: Int? = null
+)
+
+class TagSearchResponseDto(
+    val id: Int,
+    val type: String,
+    val name: String,
+    val slug: String,
+    val url: String,
+    val count: Int,
+    val description: String?,
+    val is_community: Boolean?,
+    val pending_describe_id: String?,
+    val links: List<TagLinkDto>?
+)
+
+class TagLinkDto(
+    val id: Int?,
+    val service: String,
+    val label: String,
+    val url: String,
+    val handle: String
+)

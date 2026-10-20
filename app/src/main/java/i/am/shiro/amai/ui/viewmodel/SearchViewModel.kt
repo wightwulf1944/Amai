@@ -9,11 +9,20 @@ import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.compose.SavedStateHandleSaveableApi
 import androidx.lifecycle.viewmodel.compose.saveable
 import i.am.shiro.amai.data.repository.SearchRepository
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.stateIn
+import kotlin.time.Duration.Companion.milliseconds
 
-@OptIn(SavedStateHandleSaveableApi::class)
+@OptIn(SavedStateHandleSaveableApi::class, FlowPreview::class, ExperimentalCoroutinesApi::class)
 class SearchViewModel(
     handle: SavedStateHandle,
     private val repository: SearchRepository,
@@ -24,41 +33,95 @@ class SearchViewModel(
         TextFieldState(initialQuery)
     }
 
-    val suggestionsFlow = snapshotFlow { textFieldState.text to textFieldState.selection }
-        .map { (text, selection) ->
-            if (selection.collapsed) {
-                getSuggestions(text, selection)
-            } else {
-                emptyList() // Hide suggestions when text is selected
-            }
+    // 1. Core input flow: emits the active term on every text/selection change
+    private val activeTermFlow: Flow<ActiveTerm?> = snapshotFlow {
+        findActiveTerm(textFieldState.text, textFieldState.selection)
+    }
+
+    // 2. Remote suggestions
+    private val remoteTagsFlow: Flow<List<String>> = activeTermFlow
+        .map { it?.term }
+        .distinctUntilChanged()
+        .debounce(300.milliseconds)
+        .mapLatest { term ->
+            if (term == null) emptyList()
+            else repository.searchRemoteTags(term)
         }
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
-    // This naively looks for whitespace to differentiate tokens and does not recognize escaped whitespace
-    fun getSuggestions(text: CharSequence, selection: TextRange): List<SearchSuggestion> {
-        val cursorIndex = selection.start
+    // 3. Combined UI suggestions flow
+    val suggestionsFlow: StateFlow<List<SearchSuggestion>> = combine(
+        activeTermFlow,
+        remoteTagsFlow
+    ) { activeTerm, remoteTags ->
+        if (activeTerm == null) return@combine emptyList()
 
-        val start = text.lastIndexOf(' ', cursorIndex - 1)
-            .let { if (it == -1) 0 else it + 1 }
+        val negationPrefix = if (activeTerm.isNegated) "-" else ""
+        val cleanTerm = activeTerm.term.replace("\"", "")
 
-        val end = text.indexOf(' ', cursorIndex)
-            .let { if (it == -1) text.length else it }
+        val matchingPrefixes = repository.getQueryPrefixes(activeTerm.term)
+        val matchingRemoteTags = remoteTags.filter { it.replace("\"", "").contains(cleanTerm) }
 
-        val currentWord = text.substring(start, cursorIndex)
-
-        return repository.getQueryPrefixes(currentWord)
-            .map {
-                SearchSuggestion(it) {
+        return@combine (matchingPrefixes + matchingRemoteTags).map { suggestionText ->
+            SearchSuggestion(
+                text = "$negationPrefix$suggestionText",
+                onClick = {
+                    val suffix = if (suggestionText.endsWith(':')) "" else " "
+                    val textToInsert = "$negationPrefix$suggestionText$suffix"
                     textFieldState.edit {
-                        replace(start, end, it)
-                        this.selection = TextRange(start + it.length)
+                        replace(activeTerm.start, activeTerm.end, textToInsert)
+                        selection = TextRange(activeTerm.start + textToInsert.length)
                     }
                 }
-            }
-    }
+            )
+        }
+    }.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(5000),
+        initialValue = emptyList()
+    )
 }
+
+private fun findActiveTerm(text: CharSequence, selection: TextRange): ActiveTerm? {
+    if (!selection.collapsed) return null
+
+    val cursor = selection.start
+
+    var inQuotes = false
+    var start = 0
+    for (i in 0 until cursor) {
+        when {
+            text[i] == '"' -> inQuotes = !inQuotes
+            text[i].isWhitespace() && !inQuotes -> start = i + 1
+        }
+    }
+
+    var end = text.length
+    var quoted = inQuotes
+    for (i in cursor until text.length) {
+        when {
+            text[i] == '"' -> quoted = !quoted
+            text[i].isWhitespace() && !quoted -> {
+                end = i
+                break
+            }
+        }
+    }
+
+    val rawTerm = text.substring(start, cursor)
+    val isNegated = rawTerm.startsWith('-')
+    val term = if (isNegated) rawTerm.substring(1) else rawTerm
+
+    return ActiveTerm(start, end, isNegated, term)
+}
+
+class ActiveTerm(
+    val start: Int,
+    val end: Int,
+    val isNegated: Boolean,
+    val term: String,
+)
 
 data class SearchSuggestion(
     val text: String,
-    val onClick: () -> Unit = {}
+    val onClick: () -> Unit
 )

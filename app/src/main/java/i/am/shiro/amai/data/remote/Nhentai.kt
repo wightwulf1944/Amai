@@ -2,7 +2,11 @@ package i.am.shiro.amai.data.remote
 
 import i.am.shiro.amai.data.remote.dto.GalleryDetailDto
 import i.am.shiro.amai.data.remote.dto.PaginatedDto
+import i.am.shiro.amai.data.remote.dto.TagSearchRequestDto
+import i.am.shiro.amai.data.remote.dto.TagSearchResponseDto
+import retrofit2.http.Body
 import retrofit2.http.GET
+import retrofit2.http.POST
 import retrofit2.http.Path
 import retrofit2.http.Query
 
@@ -65,5 +69,10 @@ object Nhentai {
         suspend fun getOne(
             @Path("id") id: Int
         ): GalleryDetailDto
+
+        @POST("tags/search")
+        suspend fun searchTag(
+            @Body body: TagSearchRequestDto
+        ): List<TagSearchResponseDto>
     }
 }
