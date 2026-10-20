@@ -1,13 +1,12 @@
 package i.am.shiro.amai.ui
 
 import android.text.format.DateUtils.getRelativeTimeSpanString
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.HorizontalDivider
@@ -16,7 +15,6 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -29,26 +27,22 @@ import i.am.shiro.amai.ui.theme.AmaiTheme
 @Composable
 fun DetailContentHeader(
     model: BookDetail,
-    onTagClick: (Tag) -> Unit
+    onTagClick: (Tag) -> Unit,
+    modifier: Modifier = Modifier
 ) {
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 8.dp)
-    ) {
+    Column(modifier = modifier.padding(horizontal = 8.dp)) {
         Text(
             text = model.title,
-            style = MaterialTheme.typography.titleMedium
+            style = MaterialTheme.typography.titleMedium,
+            modifier = Modifier.padding(bottom = 4.dp)
         )
 
-        HorizontalDivider(thickness = 1.dp, modifier = Modifier.padding(vertical = 4.dp))
+        HorizontalDivider(
+            thickness = 1.dp,
+            modifier = Modifier.padding(bottom = 4.dp)
+        )
 
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(bottom = 16.dp),
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
+        Row(modifier = Modifier.padding(bottom = 16.dp)) {
             Text(
                 text = pluralStringResource(
                     R.plurals.pages_format,
@@ -57,6 +51,9 @@ fun DetailContentHeader(
                 ),
                 style = MaterialTheme.typography.bodySmall,
             )
+
+            Spacer(modifier = Modifier.weight(1f))
+
             if (model.uploadDate != null) {
                 Text(
                     text = stringResource(
@@ -68,20 +65,22 @@ fun DetailContentHeader(
             }
         }
 
-        listOf(
-            R.string.artists to model.artistTags,
-            R.string.groups to model.groupTags,
-            R.string.parodies to model.parodyTags,
-            R.string.characters to model.characterTags,
-            R.string.language to model.languageTags,
-            R.string.categories to model.categoryTags,
-            R.string.tags to model.generalTags
-        ).forEach { (resId, tags) ->
-            TagGroup(
-                label = stringResource(resId),
-                tags = tags,
-                onTagClick = onTagClick
-            )
+        Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+            listOf(
+                R.string.artists to model.artistTags,
+                R.string.groups to model.groupTags,
+                R.string.parodies to model.parodyTags,
+                R.string.characters to model.characterTags,
+                R.string.language to model.languageTags,
+                R.string.categories to model.categoryTags,
+                R.string.tags to model.generalTags
+            ).forEach { (resId, tags) ->
+                TagGroup(
+                    label = stringResource(resId),
+                    tags = tags,
+                    onTagClick = onTagClick
+                )
+            }
         }
     }
 }
@@ -95,11 +94,8 @@ private fun TagGroup(
     if (tags == null) return
 
     FlowRow(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(bottom = 8.dp),
         horizontalArrangement = Arrangement.spacedBy(4.dp),
-        verticalArrangement = Arrangement.spacedBy(8.dp)
+        verticalArrangement = Arrangement.spacedBy(8.dp),
     ) {
         Text(
             text = label,
@@ -107,18 +103,20 @@ private fun TagGroup(
             modifier = Modifier.alignByBaseline()
         )
 
-        tags.forEach { tag ->
-            Text(
-                text = tag.name,
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurface,
-                modifier = Modifier
-                    .alignByBaseline()
-                    .clip(CircleShape)
-                    .clickable { onTagClick(tag) }
-                    .background(MaterialTheme.colorScheme.surfaceContainer)
-                    .padding(vertical = 4.dp, horizontal = 12.dp)
-            )
+        for (tag in tags) {
+            Surface(
+                shape = CircleShape,
+                color = MaterialTheme.colorScheme.surfaceContainer,
+                modifier = Modifier.alignByBaseline()
+            ) {
+                Text(
+                    text = tag.name,
+                    style = MaterialTheme.typography.bodyMedium,
+                    modifier = Modifier
+                        .clickable { onTagClick(tag) }
+                        .padding(vertical = 4.dp, horizontal = 12.dp)
+                )
+            }
         }
     }
 }

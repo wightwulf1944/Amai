@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.navigationBars
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.plus
 import androidx.compose.foundation.layout.windowInsetsBottomHeight
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -254,13 +255,14 @@ fun DetailBody(
         modifier = Modifier.fillMaxSize(),
         state = gridState,
         contentPadding = gridContentPadding,
-        horizontalArrangement = Arrangement.spacedBy(8.dp),
-        verticalArrangement = Arrangement.spacedBy(8.dp),
+        horizontalArrangement = Arrangement.spacedBy(4.dp),
+        verticalArrangement = Arrangement.spacedBy(4.dp),
     ) {
         item(span = { GridItemSpan(maxLineSpan) }) {
             DetailContentHeader(
                 model = model,
-                onTagClick = onTagClick
+                onTagClick = onTagClick,
+                modifier = Modifier.padding(bottom = 12.dp)
             )
         }
 
