@@ -9,8 +9,8 @@ import kotlinx.coroutines.launch
 import timber.log.Timber
 
 class DetailViewModel(
+    private val repository: BookRepository,
     private val bookId: Int,
-    private val repository: BookRepository
 ) : ViewModel() {
 
     val uiState = repository.getBookDetail(bookId)

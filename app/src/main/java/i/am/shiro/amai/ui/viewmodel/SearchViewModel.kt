@@ -16,8 +16,8 @@ import kotlinx.coroutines.flow.stateIn
 @OptIn(SavedStateHandleSaveableApi::class)
 class SearchViewModel(
     handle: SavedStateHandle,
-    initialQuery: String,
-    private val repository: SearchRepository
+    private val repository: SearchRepository,
+    initialQuery: String
 ) : ViewModel() {
 
     val textFieldState by handle.saveable(saver = TextFieldState.Saver) {

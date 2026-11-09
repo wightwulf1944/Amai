@@ -10,8 +10,8 @@ import i.am.shiro.amai.model.Page
 import kotlinx.coroutines.launch
 
 class ReadViewModel(
+    private val repository: ReadRepository,
     private val bookId: Int,
-    private val repository: ReadRepository
 ) : ViewModel() {
 
     var pages by mutableStateOf(emptyList<Page>())
