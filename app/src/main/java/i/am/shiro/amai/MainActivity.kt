@@ -15,7 +15,7 @@ import androidx.compose.animation.SharedTransitionLayout
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.togetherWith
-import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
+import androidx.compose.material3.adaptive.currentWindowAdaptiveInfoV2
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
@@ -159,7 +159,7 @@ class MainActivity : ComponentActivity() {
 
     @Composable
     private fun AdaptiveStatusBarsEffect() {
-        val shouldShowStatusBars = currentWindowAdaptiveInfo().windowSizeClass
+        val shouldShowStatusBars = currentWindowAdaptiveInfoV2().windowSizeClass
             .isHeightAtLeastBreakpoint(WindowSizeClass.HEIGHT_DP_MEDIUM_LOWER_BOUND)
 
         DisposableEffect(shouldShowStatusBars) {

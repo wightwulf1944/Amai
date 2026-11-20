@@ -2,7 +2,6 @@ package i.am.shiro.amai.ui
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
@@ -140,7 +139,6 @@ private fun FavoriteTopBar(
     }
 }
 
-@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun SearchInput(
     query: String,
